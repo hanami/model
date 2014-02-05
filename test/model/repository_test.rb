@@ -95,7 +95,8 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.create(users)
+        UserRepository.create(user1)
+        UserRepository.create(user2)
       end
 
       it 'returns all the records' do
@@ -113,7 +114,8 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.create(users)
+        UserRepository.create(user1)
+        UserRepository.create(user2)
       end
 
       it 'returns first record' do
@@ -131,7 +133,8 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.create(users)
+        UserRepository.create(user1)
+        UserRepository.create(user2)
       end
 
       it 'returns first record' do
@@ -149,7 +152,8 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.create(users)
+        UserRepository.create(user1)
+        UserRepository.create(user2)
       end
 
       it 'returns last record' do
@@ -168,7 +172,8 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.create(users)
+        UserRepository.create(user1)
+        UserRepository.create(user2)
       end
 
       it 'removes all the records' do

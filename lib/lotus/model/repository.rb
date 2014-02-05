@@ -9,34 +9,26 @@ module Lotus
       end
 
       module ClassMethods
-        def persist(*objects)
-          objects.flatten.each do |object|
-            if object.send(:id)
-              update(object)
-            else
-              create(object)
-            end
+        def persist(object)
+          if object.send(:id)
+            update(object)
+          else
+            create(object)
           end
         end
 
-        def create(*objects)
-          objects.flatten.each do |object|
-            @current_id += 1
-            object.send(:id=, @current_id)
-            records[@current_id] = object
-          end
+        def create(object)
+          @current_id += 1
+          object.send(:id=, @current_id)
+          records[@current_id] = object
         end
 
-        def update(*objects)
-          objects.flatten.each do |object|
-            records[object.send(:id)] = object
-          end
+        def update(object)
+          records[object.send(:id)] = object
         end
 
-        def delete(*objects)
-          objects.flatten.each do |object|
-            records[object.send(:id)] = nil
-          end
+        def delete(object)
+          records[object.send(:id)] = nil
         end
 
         def all
