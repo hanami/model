@@ -73,6 +73,19 @@ describe Lotus::Model::Repository do
     end
   end
 
+  describe '.delete' do
+    before do
+      UserRepository.create(user)
+      UserRepository.delete(user)
+    end
+
+    let(:user) { User.new(name: 'D') }
+
+    it 'delete object' do
+      UserRepository.all.wont_include(user)
+    end
+  end
+
   describe '.all' do
     describe 'without data' do
       it 'returns an empty collection' do

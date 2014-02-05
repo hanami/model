@@ -33,6 +33,12 @@ module Lotus
           end
         end
 
+        def delete(*objects)
+          objects.flatten.each do |object|
+            records[object.send(:id)] = nil
+          end
+        end
+
         def all
           records.values
         end
