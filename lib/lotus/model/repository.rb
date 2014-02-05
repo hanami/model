@@ -4,56 +4,48 @@ module Lotus
       def self.included(base)
         base.class_eval do
           extend ClassMethods
-          @current_id = 0
         end
       end
 
       module ClassMethods
+        def adapter=(adapter)
+          @adapter = adapter
+        end
+
         def persist(object)
-          if object.send(:id)
-            update(object)
-          else
-            create(object)
-          end
+          @adapter.persist(object)
         end
 
         def create(object)
-          @current_id += 1
-          object.send(:id=, @current_id)
-          records[@current_id] = object
+          @adapter.create(object)
         end
 
         def update(object)
-          records[object.send(:id)] = object
+          @adapter.update(object)
         end
 
         def delete(object)
-          records[object.send(:id)] = nil
+          @adapter.delete(object)
         end
 
         def all
-          records.values
+          @adapter.all
         end
 
         def find(id)
-          records[id]
+          @adapter.find(id)
         end
 
         def first
-          all.first
+          @adapter.first
         end
 
         def last
-          all.last
+          @adapter.last
         end
 
         def clear
-          records.clear
-        end
-
-        protected
-        def records
-          @records ||= {}
+          @adapter.clear
         end
       end
     end

@@ -18,8 +18,10 @@ end
 
 class UserRepository
   include Lotus::Model::Repository
+  self.adapter = Lotus::Model::Adapters::Memory.new
 end
 
 class ArticleRepository
   include Lotus::Model::Repository
+  self.adapter = Lotus::Model::Adapters::Memory.new
 end
