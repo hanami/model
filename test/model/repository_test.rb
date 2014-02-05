@@ -12,8 +12,11 @@ describe Lotus::Model::Repository do
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
 
+  let(:article) { Article.new(title: 'Introducing Lotus::Model') }
+
   before do
     UserRepository.clear
+    ArticleRepository.clear
   end
 
   describe '.persist' do
@@ -22,6 +25,11 @@ describe Lotus::Model::Repository do
       UserRepository.persist(user2)
 
       UserRepository.all.must_equal(users)
+    end
+
+    it 'persists different kind of records' do
+      ArticleRepository.persist(article)
+      ArticleRepository.all.must_equal([article])
     end
   end
 
