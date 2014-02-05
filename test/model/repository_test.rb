@@ -46,6 +46,24 @@ describe Lotus::Model::Repository do
     end
   end
 
+  describe '.find' do
+    describe 'without data' do
+      it 'returns nil' do
+        UserRepository.find(1).must_be_nil
+      end
+    end
+
+    describe 'with data' do
+      before do
+        UserRepository.persist(users)
+      end
+
+      it 'returns first record' do
+        UserRepository.find(user1.send(:id)).must_equal(user1)
+      end
+    end
+  end
+
   describe '.first' do
     describe 'without data' do
       it 'returns nil' do

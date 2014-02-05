@@ -1,13 +1,19 @@
 class User
   def initialize(attributes = {})
-    @name = attributes.values_at(:name)
+    @id, @name = attributes.values_at(:id, :name)
   end
+
+  protected
+  attr_accessor :id
 end
 
 class Article
   def initialize(attributes = {})
-    @title = attributes.values_at(:title)
+    @id, @title = attributes.values_at(:id, :title)
   end
+
+  protected
+  attr_accessor :id
 end
 
 class UserRepository

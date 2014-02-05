@@ -3,18 +3,26 @@ module Lotus
     module Repository
       def self.included(base)
         base.class_eval do
-          base.extend ClassMethods
+          extend ClassMethods
+          @current_id = 0
         end
       end
 
       module ClassMethods
         def persist(*objects)
-          records << objects
-          records.flatten!
+          objects.flatten.each do |object|
+            @current_id += 1
+            object.send(:id=, @current_id)
+            records[@current_id] = object
+          end
         end
 
         def all
-          records
+          records.values
+        end
+
+        def find(id)
+          records[id]
         end
 
         def first
@@ -31,7 +39,7 @@ module Lotus
 
         protected
         def records
-          @records ||= []
+          @records ||= {}
         end
       end
     end
