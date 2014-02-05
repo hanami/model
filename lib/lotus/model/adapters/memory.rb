@@ -9,26 +9,26 @@ module Lotus
           @records    = {}
         end
 
-        def persist(object)
-          if object.send(:id)
-            update(object)
+        def persist(entity)
+          if entity.send(:id)
+            update(entity)
           else
-            create(object)
+            create(entity)
           end
         end
 
-        def create(object)
+        def create(entity)
           @current_id += 1
-          object.send(:id=, @current_id)
-          records[@current_id] = object
+          entity.send(:id=, @current_id)
+          records[@current_id] = entity
         end
 
-        def update(object)
-          records[object.send(:id)] = object
+        def update(entity)
+          records[entity.send(:id)] = entity
         end
 
-        def delete(object)
-          records[object.send(:id)] = nil
+        def delete(entity)
+          records[entity.send(:id)] = nil
         end
 
         def all

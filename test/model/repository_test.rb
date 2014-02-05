@@ -81,7 +81,7 @@ describe Lotus::Model::Repository do
 
     let(:user) { User.new(name: 'D') }
 
-    it 'delete object' do
+    it 'delete entity' do
       UserRepository.all.wont_include(user)
     end
   end

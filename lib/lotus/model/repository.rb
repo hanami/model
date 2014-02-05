@@ -12,20 +12,20 @@ module Lotus
           @adapter = adapter
         end
 
-        def persist(object)
-          @adapter.persist(object)
+        def persist(entity)
+          @adapter.persist(entity)
         end
 
-        def create(object)
-          @adapter.create(object)
+        def create(entity)
+          @adapter.create(entity)
         end
 
-        def update(object)
-          @adapter.update(object)
+        def update(entity)
+          @adapter.update(entity)
         end
 
-        def delete(object)
-          @adapter.delete(object)
+        def delete(entity)
+          @adapter.delete(entity)
         end
 
         def all

@@ -2,29 +2,29 @@ require 'test_helper'
 
 describe Lotus::Model::Adapters::Abstract do
   let(:adapter) { Lotus::Model::Adapters::Abstract.new }
-  let(:object)  { Object.new }
+  let(:entity)  { Object.new }
 
   describe '#persist' do
     it 'raises error' do
-      ->{ adapter.persist(object) }.must_raise NotImplementedError
+      ->{ adapter.persist(entity) }.must_raise NotImplementedError
     end
   end
 
   describe '#create' do
     it 'raises error' do
-      ->{ adapter.create(object) }.must_raise NotImplementedError
+      ->{ adapter.create(entity) }.must_raise NotImplementedError
     end
   end
 
   describe '#update' do
     it 'raises error' do
-      ->{ adapter.update(object) }.must_raise NotImplementedError
+      ->{ adapter.update(entity) }.must_raise NotImplementedError
     end
   end
 
   describe '#delete' do
     it 'raises error' do
-      ->{ adapter.delete(object) }.must_raise NotImplementedError
+      ->{ adapter.delete(entity) }.must_raise NotImplementedError
     end
   end
 
