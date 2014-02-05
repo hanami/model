@@ -17,6 +17,7 @@ if ENV['COVERAGE'] == 'true'
 end
 
 require 'minitest/autorun'
-require 'fixtures'
 $:.unshift 'lib'
 require 'lotus-model'
+require 'lotus/model/repository'
+require 'fixtures'

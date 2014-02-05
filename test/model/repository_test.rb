@@ -1,12 +1,5 @@
 require 'test_helper'
 
-module Lotus
-  module Model
-    module Repository
-    end
-  end
-end
-
 describe Lotus::Model::Repository do
   let(:user1) { User.new(name: 'L') }
   let(:user2) { User.new(name: 'MG') }
@@ -20,10 +13,12 @@ describe Lotus::Model::Repository do
   end
 
   describe '.persist' do
-    it 'persists records' do
+    before do
       UserRepository.persist(user1)
       UserRepository.persist(user2)
+    end
 
+    it 'persists records' do
       UserRepository.all.must_equal(users)
     end
 
