@@ -1,7 +1,7 @@
-require "lotus/model/version"
+require 'lotus/model/version'
+require 'lotus/model/entity'
 
 module Lotus
   module Model
-    # Your code goes here...
   end
 end
