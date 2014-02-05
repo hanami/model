@@ -1,7 +1,9 @@
+require 'lotus/model/adapters/abstract'
+
 module Lotus
   module Model
     module Adapters
-      class Memory
+      class Memory < Abstract
         def initialize
           @current_id = 0
           @records    = {}
