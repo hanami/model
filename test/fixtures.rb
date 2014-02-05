@@ -4,7 +4,7 @@ class User
   end
 
   protected
-  attr_accessor :id
+  attr_accessor :id, :name
 end
 
 class Article

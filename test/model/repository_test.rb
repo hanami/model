@@ -13,18 +13,63 @@ describe Lotus::Model::Repository do
   end
 
   describe '.persist' do
-    before do
-      UserRepository.persist(user1)
-      UserRepository.persist(user2)
+    describe 'when new record' do
+      before do
+        UserRepository.persist(user)
+      end
+
+      let(:user) { User.new(name: 'S') }
+
+      it 'is created' do
+        id = UserRepository.last.send(:id)
+        UserRepository.find(id).must_equal(user)
+      end
     end
 
-    it 'persists records' do
+    describe 'when already persisted' do
+      before do
+        UserRepository.create(user1)
+
+        user1.send(:name=, 'Luke')
+        UserRepository.persist(user1)
+      end
+
+      let(:id) { user1.send(:id) }
+
+      it 'is updated' do
+        UserRepository.find(id).must_equal(user1)
+      end
+    end
+  end
+
+  describe '.create' do
+    before do
+      UserRepository.create(user1)
+      UserRepository.create(user2)
+    end
+
+    it 'creates records' do
       UserRepository.all.must_equal(users)
     end
 
-    it 'persists different kind of records' do
-      ArticleRepository.persist(article)
+    it 'creates different kind of records' do
+      ArticleRepository.create(article)
       ArticleRepository.all.must_equal([article])
+    end
+  end
+
+  describe '.update' do
+    before do
+      UserRepository.create(user1)
+    end
+
+    it 'updates records' do
+      id   = user1.send(:id)
+      user = User.new(id: id, name: 'Luca')
+      UserRepository.update(user)
+
+      u = UserRepository.find(id)
+      u.send(:name).must_equal('Luca')
     end
   end
 
@@ -37,7 +82,7 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.persist(users)
+        UserRepository.create(users)
       end
 
       it 'returns all the records' do
@@ -55,7 +100,7 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.persist(users)
+        UserRepository.create(users)
       end
 
       it 'returns first record' do
@@ -73,7 +118,7 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.persist(users)
+        UserRepository.create(users)
       end
 
       it 'returns first record' do
@@ -91,7 +136,7 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.persist(users)
+        UserRepository.create(users)
       end
 
       it 'returns last record' do
@@ -110,7 +155,7 @@ describe Lotus::Model::Repository do
 
     describe 'with data' do
       before do
-        UserRepository.persist(users)
+        UserRepository.create(users)
       end
 
       it 'removes all the records' do
