@@ -10,7 +10,7 @@ module Lotus
         end
 
         def persist(entity)
-          if entity.send(:id)
+          if entity.id
             update(entity)
           else
             create(entity)
@@ -19,16 +19,16 @@ module Lotus
 
         def create(entity)
           @current_id += 1
-          entity.send(:id=, @current_id)
+          entity.id = @current_id
           records[@current_id] = entity
         end
 
         def update(entity)
-          records[entity.send(:id)] = entity
+          records[entity.id] = entity
         end
 
         def delete(entity)
-          records[entity.send(:id)] = nil
+          records[entity.id] = nil
         end
 
         def all

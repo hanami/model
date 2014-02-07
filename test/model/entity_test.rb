@@ -89,6 +89,7 @@ describe Lotus::Model::Entity do
       book.title = 'A Man'
 
       book.instance_variable_get(:@title).must_equal 'A Man'
+      book.title.must_equal 'A Man'
     end
 
     it 'exposes accessor for id' do

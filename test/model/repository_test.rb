@@ -21,7 +21,7 @@ describe Lotus::Model::Repository do
       let(:user) { User.new(name: 'S') }
 
       it 'is created' do
-        id = UserRepository.last.send(:id)
+        id = UserRepository.last.id
         UserRepository.find(id).must_equal(user)
       end
     end
@@ -30,11 +30,11 @@ describe Lotus::Model::Repository do
       before do
         UserRepository.create(user1)
 
-        user1.send(:name=, 'Luke')
+        user1.name = 'Luke'
         UserRepository.persist(user1)
       end
 
-      let(:id) { user1.send(:id) }
+      let(:id) { user1.id }
 
       it 'is updated' do
         UserRepository.find(id).must_equal(user1)
@@ -63,13 +63,16 @@ describe Lotus::Model::Repository do
       UserRepository.create(user1)
     end
 
+    let(:id) { user1.id }
+
     it 'updates records' do
-      id   = user1.send(:id)
-      user = User.new(id: id, name: 'Luca')
+      user = User.new(name: 'Luca')
+      user.id = id
+
       UserRepository.update(user)
 
       u = UserRepository.find(id)
-      u.send(:name).must_equal('Luca')
+      u.name.must_equal('Luca')
     end
   end
 
@@ -119,7 +122,7 @@ describe Lotus::Model::Repository do
       end
 
       it 'returns first record' do
-        UserRepository.find(user1.send(:id)).must_equal(user1)
+        UserRepository.find(user1.id).must_equal(user1)
       end
     end
   end
