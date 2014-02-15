@@ -36,7 +36,7 @@ module Lotus
         end
 
         def find(id)
-          records[id]
+          records[id.to_i]
         end
 
         def first

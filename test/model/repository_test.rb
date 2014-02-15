@@ -121,8 +121,9 @@ describe Lotus::Model::Repository do
         UserRepository.create(user2)
       end
 
-      it 'returns first record' do
+      it 'returns the record associated with the given id' do
         UserRepository.find(user1.id).must_equal(user1)
+        UserRepository.find(user2.id.to_s).must_equal(user2)
       end
     end
   end
