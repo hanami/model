@@ -110,8 +110,8 @@ describe Lotus::Model::Repository do
 
   describe '.find' do
     describe 'without data' do
-      it 'returns nil' do
-        UserRepository.find(1).must_be_nil
+      it 'raises error' do
+        -> { UserRepository.find(1) }.must_raise(Lotus::Model::RecordNotFound)
       end
     end
 
@@ -124,6 +124,10 @@ describe Lotus::Model::Repository do
       it 'returns the record associated with the given id' do
         UserRepository.find(user1.id).must_equal(user1)
         UserRepository.find(user2.id.to_s).must_equal(user2)
+      end
+
+      it "raises error when the given id isn't associated with any record" do
+        -> { UserRepository.find(1_000_000) }.must_raise(Lotus::Model::RecordNotFound)
       end
     end
   end

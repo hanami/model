@@ -33,7 +33,9 @@ module Lotus
         end
 
         def find(id)
-          @adapter.find(id)
+          @adapter.find(id).tap do |record|
+            raise RecordNotFound.new unless record
+          end
         end
 
         def first
