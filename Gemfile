@@ -9,5 +9,6 @@ else
   gem 'lotus-utils'
 end
 
+gem 'sqlite3',   require: false
 gem 'simplecov', require: false
 gem 'coveralls', require: false

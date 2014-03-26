@@ -18,7 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'lotus-utils', '~> 0'
+  spec.add_runtime_dependency 'lotus-utils', '~> 0.1'
+  spec.add_runtime_dependency 'sequel',      '~> 4.8'
 
   spec.add_development_dependency 'bundler',  '~> 1.5'
   spec.add_development_dependency 'minitest', '~> 5'

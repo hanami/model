@@ -100,4 +100,29 @@ describe Lotus::Entity do
       book.id.must_equal 23
     end
   end
+
+  describe '#==' do
+    before do
+      @book1 = Book.new
+      @book1.id = 23
+
+      @book2 = Book.new
+      @book2.id = 23
+
+      @book3 = Book.new
+      @car   = Car.new
+    end
+
+    it 'returns true if they have the same class and id' do
+      @book1.must_equal @book2
+    end
+
+    it 'returns false if they have the same class but different id' do
+      @book1.wont_equal @book3
+    end
+
+    it 'returns false if they have different class' do
+      @book1.wont_equal @car
+    end
+  end
 end

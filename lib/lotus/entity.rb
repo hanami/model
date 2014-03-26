@@ -18,9 +18,9 @@ module Lotus
         @attributes.flatten!
 
         class_eval %{
-            def initialize(attributes = {})
+          def initialize(attributes = {})
         #{ self.attributes.map {|a| "@#{a}" }.join(', ') },_ = *attributes.values_at(#{ self.attributes.map {|a| ":#{a}"}.join(', ') })
-            end
+          end
         }
 
         ([primary_key] + attributes).each do |attr|
@@ -33,6 +33,11 @@ module Lotus
       def attributes
         @attributes
       end
+    end
+
+    def ==(other)
+      self.class == other.class &&
+         self.id == other.id
     end
   end
 end

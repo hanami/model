@@ -1,63 +1,70 @@
 require 'lotus/model/adapters/abstract'
+require 'lotus/model/adapters/implementation'
+require 'lotus/model/adapters/memory/collection'
 
 module Lotus
   module Model
     module Adapters
       class Memory < Abstract
-        def initialize
-          @mutex = Mutex.new
-          clear
+        include Implementation
+
+        def initialize(uri = nil)
+          super
+
+          @mutex       = Mutex.new
+          @collections = {}
         end
 
-        def persist(entity)
-          if entity.id
-            update(entity)
-          else
-            create(entity)
-          end
-        end
-
-        def create(entity)
+        def create(collection, entity)
           @mutex.synchronize do
-            @current_id += 1
-            entity.id = @current_id
-            records[@current_id] = entity
+            _collection(collection).create(entity)
           end
         end
 
-        def update(entity)
-          @mutex.synchronize { records[entity.id] = entity }
-        end
-
-        def delete(entity)
-          @mutex.synchronize { records[entity.id] = nil }
-        end
-
-        def all
-          @mutex.synchronize { records.values }
-        end
-
-        def find(id)
-          @mutex.synchronize { records[id] unless id.nil? }
-        end
-
-        def first
-          all.first
-        end
-
-        def last
-          all.last
-        end
-
-        def clear
+        def update(collection, entity)
           @mutex.synchronize do
-            @current_id = 0
-            @records    = {}
+            _collection(collection).update(entity)
           end
         end
 
-        protected
-        attr_reader :records
+        def delete(collection, entity)
+          @mutex.synchronize do
+            _collection(collection).delete(entity)
+          end
+        end
+
+        def all(collection)
+          @mutex.synchronize do
+            super
+          end
+        end
+
+        def find(collection, id)
+          @mutex.synchronize do
+            _collection(collection).find(id)
+          end
+        end
+
+        def first(collection)
+          @mutex.synchronize do
+            super
+          end
+        end
+
+        def last(collection)
+          all(collection).last
+        end
+
+        def clear(collection)
+          @mutex.synchronize do
+            _collection(collection).clear
+          end
+        end
+
+        private
+        def _collection(name)
+          @collections[name] ||= Collection.new(name)
+        end
       end
     end
   end

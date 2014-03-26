@@ -2,39 +2,43 @@ module Lotus
   module Model
     module Adapters
       class Abstract
-        def persist(entity)
+        def initialize(uri = nil)
+          @uri = uri
+        end
+
+        def persist(collection, entity)
           raise NotImplementedError
         end
 
-        def create(entity)
+        def create(collection, entity)
           raise NotImplementedError
         end
 
-        def update(entity)
+        def update(collection, entity)
           raise NotImplementedError
         end
 
-        def delete(entity)
+        def delete(collection, entity)
           raise NotImplementedError
         end
 
-        def all
+        def all(collection)
           raise NotImplementedError
         end
 
-        def find(id)
+        def find(collection, id)
           raise NotImplementedError
         end
 
-        def first
+        def first(collection)
           raise NotImplementedError
         end
 
-        def last
+        def last(collection)
           raise NotImplementedError
         end
 
-        def clear
+        def clear(collection)
           raise NotImplementedError
         end
       end
