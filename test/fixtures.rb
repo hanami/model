@@ -1,10 +1,10 @@
 class User
-  include Lotus::Model::Entity
+  include Lotus::Entity
   self.attributes = :name
 end
 
 class Article
-  include Lotus::Model::Entity
+  include Lotus::Entity
   self.attributes = :title
 end
 

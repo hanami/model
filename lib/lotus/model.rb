@@ -1,5 +1,5 @@
 require 'lotus/model/version'
-require 'lotus/model/entity'
+require 'lotus/entity'
 require 'lotus/model/repository'
 
 module Lotus

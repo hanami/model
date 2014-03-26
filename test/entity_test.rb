@@ -1,13 +1,13 @@
 require 'test_helper'
 
-describe Lotus::Model::Entity do
+describe Lotus::Entity do
   before do
     class Car
-      include Lotus::Model::Entity
+      include Lotus::Entity
     end
 
     class Book
-      include Lotus::Model::Entity
+      include Lotus::Entity
       self.attributes = :title, :author
     end
 
