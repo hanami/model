@@ -5,8 +5,8 @@ module Lotus
     module Adapters
       class Memory < Abstract
         def initialize
-          @current_id = 0
-          @records    = {}
+          @mutex = Mutex.new
+          clear
         end
 
         def persist(entity)
@@ -18,25 +18,27 @@ module Lotus
         end
 
         def create(entity)
-          @current_id += 1
-          entity.id = @current_id
-          records[@current_id] = entity
+          @mutex.synchronize do
+            @current_id += 1
+            entity.id = @current_id
+            records[@current_id] = entity
+          end
         end
 
         def update(entity)
-          records[entity.id] = entity
+          @mutex.synchronize { records[entity.id] = entity }
         end
 
         def delete(entity)
-          records[entity.id] = nil
+          @mutex.synchronize { records[entity.id] = nil }
         end
 
         def all
-          records.values
+          @mutex.synchronize { records.values }
         end
 
         def find(id)
-          records[id.to_i]
+          @mutex.synchronize { records[id.to_i] unless id.nil? }
         end
 
         def first
@@ -48,7 +50,10 @@ module Lotus
         end
 
         def clear
-          records.clear
+          @mutex.synchronize do
+            @current_id = 0
+            @records    = {}
+          end
         end
 
         protected
