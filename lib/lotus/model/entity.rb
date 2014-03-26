@@ -20,7 +20,7 @@ module Lotus
 
           class_eval %{
             def initialize(attributes = {})
-              #{ attributes.map {|a| "@#{a}" }.join(', ') },_ = *attributes.values_at(#{ attributes.map {|a| ":#{a}"}.join(', ') })
+              #{ self.attributes.map {|a| "@#{a}" }.join(', ') },_ = *attributes.values_at(#{ self.attributes.map {|a| ":#{a}"}.join(', ') })
             end
           }
 
