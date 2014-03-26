@@ -17,15 +17,25 @@ module Lotus
         end
 
         def create(entity)
-          @adapter.create(entity)
+          unless entity.id
+            @adapter.create(entity)
+          end
         end
 
         def update(entity)
-          @adapter.update(entity)
+          if entity.id
+            @adapter.update(entity)
+          else
+            raise NonPersistedEntityError
+          end
         end
 
         def delete(entity)
-          @adapter.delete(entity)
+          if entity.id
+            @adapter.delete(entity)
+          else
+            raise NonPersistedEntityError
+          end
         end
 
         def all
@@ -33,8 +43,8 @@ module Lotus
         end
 
         def find(id)
-          @adapter.find(id).tap do |record|
-            raise RecordNotFound.new unless record
+          @adapter.find(Integer(id)).tap do |record|
+            raise EntityNotFound.new unless record
           end
         end
 

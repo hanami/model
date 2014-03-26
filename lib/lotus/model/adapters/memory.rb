@@ -38,7 +38,7 @@ module Lotus
         end
 
         def find(id)
-          @mutex.synchronize { records[id.to_i] unless id.nil? }
+          @mutex.synchronize { records[id] unless id.nil? }
         end
 
         def first

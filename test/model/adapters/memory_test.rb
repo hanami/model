@@ -111,11 +111,11 @@ describe Lotus::Model::Adapters::Memory do
   describe '#find' do
     before do
       @adapter.create(entity)
-      @adapter.send(:records).store(0, zero_entity)
+      @adapter.send(:records).store(nil, nil_entity)
     end
 
     let(:entity)      { TestEntity.new }
-    let(:zero_entity) { TestEntity.new(0) }
+    let(:nil_entity)  { TestEntity.new(0) }
 
     it 'returns the record by id' do
       @adapter.find(entity.id).must_equal entity

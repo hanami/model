@@ -13,7 +13,7 @@ describe Lotus::Model::Repository do
   end
 
   describe '.persist' do
-    describe 'when new record' do
+    describe 'when non persisted' do
       before do
         UserRepository.persist(user)
       end
@@ -48,13 +48,20 @@ describe Lotus::Model::Repository do
       UserRepository.create(user2)
     end
 
-    it 'creates records' do
+    it 'persist entities' do
       UserRepository.all.must_equal(users)
     end
 
-    it 'creates different kind of records' do
+    it 'creates different kind of entities' do
       ArticleRepository.create(article)
       ArticleRepository.all.must_equal([article])
+    end
+
+    it 'does nothing when already persisted' do
+      id = user1.id
+
+      UserRepository.create(user1)
+      user1.id.must_equal id
     end
   end
 
@@ -65,7 +72,7 @@ describe Lotus::Model::Repository do
 
     let(:id) { user1.id }
 
-    it 'updates records' do
+    it 'updates entities' do
       user = User.new(name: 'Luca')
       user.id = id
 
@@ -73,6 +80,10 @@ describe Lotus::Model::Repository do
 
       u = UserRepository.find(id)
       u.name.must_equal('Luca')
+    end
+
+    it 'raises an error when not persisted' do
+      -> { UserRepository.update(user2) }.must_raise(Lotus::Model::NonPersistedEntityError)
     end
   end
 
@@ -86,6 +97,10 @@ describe Lotus::Model::Repository do
 
     it 'delete entity' do
       UserRepository.all.wont_include(user)
+    end
+
+    it 'raises error when the given entity is not persisted' do
+      -> { UserRepository.delete(user2) }.must_raise(Lotus::Model::NonPersistedEntityError)
     end
   end
 
@@ -102,7 +117,7 @@ describe Lotus::Model::Repository do
         UserRepository.create(user2)
       end
 
-      it 'returns all the records' do
+      it 'returns all the entities' do
         UserRepository.all.must_equal(users)
       end
     end
@@ -111,23 +126,41 @@ describe Lotus::Model::Repository do
   describe '.find' do
     describe 'without data' do
       it 'raises error' do
-        -> { UserRepository.find(1) }.must_raise(Lotus::Model::RecordNotFound)
+        -> { UserRepository.find(1) }.must_raise(Lotus::Model::EntityNotFound)
       end
     end
 
     describe 'with data' do
       before do
+        TestPrimaryKey = Struct.new(:id) do
+          def to_int
+            id
+          end
+        end
+
         UserRepository.create(user1)
         UserRepository.create(user2)
       end
 
-      it 'returns the record associated with the given id' do
+      after do
+        Object.send(:remove_const, :TestPrimaryKey)
+      end
+
+      it 'returns the entity associated with the given id' do
         UserRepository.find(user1.id).must_equal(user1)
+      end
+
+      it 'accepts a string as argument' do
         UserRepository.find(user2.id.to_s).must_equal(user2)
       end
 
-      it "raises error when the given id isn't associated with any record" do
-        -> { UserRepository.find(1_000_000) }.must_raise(Lotus::Model::RecordNotFound)
+      it 'accepts an object that can be coerced to integer' do
+        id = TestPrimaryKey.new(user2.id)
+        UserRepository.find(id).must_equal(user2)
+      end
+
+      it "raises error when the given id isn't associated with any entity" do
+        -> { UserRepository.find(1_000_000) }.must_raise(Lotus::Model::EntityNotFound)
       end
     end
   end
