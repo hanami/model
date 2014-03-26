@@ -19,6 +19,5 @@ end
 require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus-model'
-require 'lotus/model/repository'
 require 'lotus/model/adapters/memory'
 require 'fixtures'
