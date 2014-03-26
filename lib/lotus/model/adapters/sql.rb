@@ -14,7 +14,6 @@ module Lotus
         end
 
         def create(collection, entity)
-          # FIXME use primary_key strategy instead of :id.
           entity.id = _collection(collection).insert(_serialize(entity))
           entity
         end

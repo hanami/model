@@ -1,14 +1,8 @@
-require 'lotus/utils/class_attribute'
-
 module Lotus
   module Entity
     def self.included(base)
       base.class_eval do
-        extend  ClassMethods
-        include Utils::ClassAttribute
-
-        class_attribute :primary_key
-        self.primary_key = :id
+        extend ClassMethods
       end
     end
 
@@ -23,7 +17,7 @@ module Lotus
           end
         }
 
-        ([primary_key] + attributes).each do |attr|
+        ([:id] + attributes).each do |attr|
           class_eval do
             attr_accessor attr
           end
