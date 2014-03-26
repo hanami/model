@@ -1,6 +1,6 @@
 require 'lotus/model/version'
 require 'lotus/entity'
-require 'lotus/model/repository'
+require 'lotus/repository'
 
 module Lotus
   module Model
@@ -8,7 +8,7 @@ module Lotus
     #
     # @since 0.1.0
     #
-    # @see Lotus::Model::Repository.find
+    # @see Lotus::Repository.find
     class EntityNotFound < ::StandardError
     end
 
@@ -17,7 +17,7 @@ module Lotus
     #
     # @since 0.1.0
     #
-    # @see Lotus::Model::Repository.update
+    # @see Lotus::Repository.update
     class NonPersistedEntityError < ::StandardError
     end
   end

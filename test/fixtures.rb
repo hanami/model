@@ -9,11 +9,11 @@ class Article
 end
 
 class UserRepository
-  include Lotus::Model::Repository
+  include Lotus::Repository
   self.adapter = Lotus::Model::Adapters::Memory.new
 end
 
 class ArticleRepository
-  include Lotus::Model::Repository
+  include Lotus::Repository
   self.adapter = Lotus::Model::Adapters::Memory.new
 end

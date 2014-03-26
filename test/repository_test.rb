@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Repository do
+describe Lotus::Repository do
   let(:user1) { User.new(name: 'L') }
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
