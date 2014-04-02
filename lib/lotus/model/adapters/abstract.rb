@@ -2,8 +2,8 @@ module Lotus
   module Model
     module Adapters
       class Abstract
-        def initialize(uri = nil)
-          @uri = uri
+        def initialize(mapper, uri = nil)
+          @mapper, @uri = mapper, uri
         end
 
         def persist(collection, entity)

@@ -6,7 +6,8 @@ describe Lotus::Model::Adapters::Implementation do
       include Lotus::Model::Adapters::Implementation
     end
 
-    @adapter = TestAdapter.new
+    mapper   = Object.new
+    @adapter = TestAdapter.new(mapper)
   end
 
   after do

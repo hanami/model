@@ -1,7 +1,8 @@
 require 'test_helper'
 
 describe Lotus::Model::Adapters::Abstract do
-  let(:adapter)    { Lotus::Model::Adapters::Abstract.new }
+  let(:adapter)    { Lotus::Model::Adapters::Abstract.new(mapper) }
+  let(:mapper)     { Object.new }
   let(:entity)     { Object.new }
   let(:collection) { :collection }
 

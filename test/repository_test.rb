@@ -5,14 +5,14 @@ describe Lotus::Repository do
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
 
-  let(:article) { Article.new(title: 'Introducing Lotus::Model') }
+  let(:article) { Article.new(title: 'Introducing Lotus::Model', comments_count: '23') }
 
-  { memory: [Lotus::Model::Adapters::Memory, nil],
-    sql:    [Lotus::Model::Adapters::Sql, SQLITE_CONNECTION_STRING] }.each do |name, (adapter,uri)|
+  { memory: [Lotus::Model::Adapters::Memory, nil, MAPPER],
+    sql:    [Lotus::Model::Adapters::Sql, SQLITE_CONNECTION_STRING, MAPPER] }.each do |name, (adapter,uri,mapper)|
     describe "with #{ name } adapter" do
       before do
-        UserRepository.adapter    = adapter.new(uri)
-        ArticleRepository.adapter = adapter.new(uri)
+        UserRepository.adapter    = adapter.new(mapper, uri)
+        ArticleRepository.adapter = adapter.new(mapper, uri)
 
         UserRepository.clear
         ArticleRepository.clear
@@ -153,6 +153,8 @@ describe Lotus::Repository do
 
             UserRepository.create(user1)
             UserRepository.create(user2)
+
+            ArticleRepository.create(article)
           end
 
           after do
@@ -170,6 +172,11 @@ describe Lotus::Repository do
           it 'accepts an object that can be coerced to integer' do
             id = TestPrimaryKey.new(user2.id)
             UserRepository.find(id).must_equal(user2)
+          end
+
+          it 'coerces attributes as indicated by the mapper' do
+            result = ArticleRepository.find(article.id)
+            result.comments_count.must_be_kind_of(Integer)
           end
 
           it "raises error when the given id isn't associated with any entity" do

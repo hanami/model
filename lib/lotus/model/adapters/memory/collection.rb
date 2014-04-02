@@ -14,12 +14,13 @@ module Lotus
 
           def create(entity)
             @current_id += 1
-            entity.id = @current_id
+            entity[:id] = @current_id
             records[@current_id] = entity
+            @current_id
           end
 
           def update(entity)
-            records[entity.id] = entity
+            records[entity.fetch(:id)] = entity
           end
 
           def delete(entity)

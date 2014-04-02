@@ -23,6 +23,16 @@ module Lotus
         def _collection(name)
           raise NotImplementedError
         end
+
+        def _serialize(collection, entity)
+          @mapper.serialize(collection, entity)
+        end
+
+        def _deserialize(collection, *records)
+          # TODO implement a converter like Kernel.Array in Lotus::Utils
+          # so that, we can unify Array(records).flatten.compact.uniq
+          @mapper.deserialize(collection, Array(records).flatten.compact)
+        end
       end
     end
   end

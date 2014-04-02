@@ -8,7 +8,7 @@ module Lotus
       class Memory < Abstract
         include Implementation
 
-        def initialize(uri = nil)
+        def initialize(mapper, uri = nil)
           super
 
           @mutex       = Mutex.new
@@ -17,13 +17,14 @@ module Lotus
 
         def create(collection, entity)
           @mutex.synchronize do
-            _collection(collection).create(entity)
+            entity.id = _collection(collection).create(_serialize(collection, entity))
+            entity
           end
         end
 
         def update(collection, entity)
           @mutex.synchronize do
-            _collection(collection).update(entity)
+            _collection(collection).update(_serialize(collection, entity))
           end
         end
 
@@ -35,19 +36,22 @@ module Lotus
 
         def all(collection)
           @mutex.synchronize do
-            super
+            _deserialize(collection, super)
           end
         end
 
         def find(collection, id)
           @mutex.synchronize do
-            _collection(collection).find(id)
+            _deserialize(
+               collection,
+              _collection(collection).find(id)
+            ).first
           end
         end
 
         def first(collection)
           @mutex.synchronize do
-            super
+            _deserialize(collection, super).first
           end
         end
 

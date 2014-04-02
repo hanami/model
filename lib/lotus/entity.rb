@@ -8,16 +8,16 @@ module Lotus
 
     module ClassMethods
       def attributes=(*attributes)
-        @attributes = attributes
-        @attributes.flatten!
+        @attributes = Array(attributes).
+          flatten.unshift(:id).uniq
 
         class_eval %{
           def initialize(attributes = {})
-        #{ self.attributes.map {|a| "@#{a}" }.join(', ') },_ = *attributes.values_at(#{ self.attributes.map {|a| ":#{a}"}.join(', ') })
+        #{ @attributes.map {|a| "@#{a}" }.join(', ') }, = *attributes.values_at(#{ @attributes.map {|a| ":#{a}"}.join(', ') })
           end
         }
 
-        ([:id] + attributes).each do |attr|
+        @attributes.each do |attr|
           class_eval do
             attr_accessor attr
           end
@@ -26,6 +26,13 @@ module Lotus
 
       def attributes
         @attributes
+      end
+    end
+
+    # @raise NoMethodError
+    def initialize(attributes = {})
+      attributes.each do |k, v|
+        public_send("#{ k }=", v)
       end
     end
 

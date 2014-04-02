@@ -8,19 +8,19 @@ module Lotus
       class Sql < Abstract
         include Implementation
 
-        def initialize(uri)
+        def initialize(mapper, uri)
           super
           @connection = Sequel.connect(@uri)
         end
 
         def create(collection, entity)
-          entity.id = _collection(collection).insert(_serialize(entity))
+          entity.id = _collection(collection).insert(_serialize(collection, entity))
           entity
         end
 
         def update(collection, entity)
           # FIXME use primary_key strategy instead of :id.
-          _collection(collection).where(id: entity.id).update(_serialize(entity))
+          _collection(collection).where(id: entity.id).update(_serialize(collection, entity))
         end
 
         def delete(collection, entity)
@@ -59,26 +59,6 @@ module Lotus
         private
         def _collection(name)
           @connection[name]
-        end
-
-        def _serialize(entity)
-          # FIXME define a proper serialization strategy with Mapper
-          {}.tap do |result|
-            entity.class.attributes.each do |attr|
-              result[attr] = entity.public_send(attr)
-            end
-          end
-        end
-
-        def _deserialize(collection, *records)
-          # FIXME define a proper deserialization strategy with Mapper
-          klass = Object.const_get(collection.to_s.capitalize)
-
-          Array(records).flatten.compact.map do |record|
-            result = klass.new(record)
-            result.id = record[:id]
-            result
-          end
         end
       end
     end

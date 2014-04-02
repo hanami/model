@@ -13,16 +13,21 @@ describe Lotus::Entity do
 
     class NonFinctionBook < Book
     end
+
+    class Camera
+      include Lotus::Entity
+      attr_accessor :analog
+    end
   end
 
   after do
-    [:Car, :Book, :NonFinctionBook].each do |const|
+    [:Car, :Book, :NonFinctionBook, :Camera].each do |const|
       Object.send(:remove_const, const)
     end
   end
 
   describe 'attributes' do
-    let(:attributes) { [:model] }
+    let(:attributes) { [:id, :model] }
 
     it 'defines attributes' do
       Car.send(:attributes=, attributes)
@@ -31,24 +36,42 @@ describe Lotus::Entity do
   end
 
   describe '#initialize' do
-    it 'accepts given attributes' do
-      book = Book.new(title: "A Lover's Discourse: Fragments", author: 'Roland Barthes')
+    describe 'with defined attributes' do
+      it 'accepts given attributes' do
+        book = Book.new(title: "A Lover's Discourse: Fragments", author: 'Roland Barthes')
 
-      book.instance_variable_get(:@title).must_equal  "A Lover's Discourse: Fragments"
-      book.instance_variable_get(:@author).must_equal 'Roland Barthes'
+        book.instance_variable_get(:@title).must_equal  "A Lover's Discourse: Fragments"
+        book.instance_variable_get(:@author).must_equal 'Roland Barthes'
+      end
+
+      it 'ignores unknown attributes' do
+        book = Book.new(unknown: 'x')
+
+        book.instance_variable_get(:@book).must_be_nil
+      end
+
+      it 'accepts given attributes for subclass' do
+        book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')
+
+        book.instance_variable_get(:@title).must_equal  'Refactoring'
+        book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+      end
     end
 
-    it 'ignores unknown attributes' do
-      book = Book.new(unknown: 'x')
+    describe 'with undefined attributes' do
+      it 'is able to initialize an entity without given attributes' do
+        camera = Camera.new
+        camera.analog.must_be_nil
+      end
 
-      book.instance_variable_get(:@book).must_be_nil
-    end
+      it 'is able to initialize an entity if it has the right accessors' do
+        camera = Camera.new(analog: true)
+        camera.analog.must_equal(true)
+      end
 
-    it 'accepts given attributes for subclass' do
-      book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')
-
-      book.instance_variable_get(:@title).must_equal  'Refactoring'
-      book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+      it "raises an error when the given attributes don't correspond to a known accessor" do
+        -> { Camera.new(digital: true) }.must_raise(NoMethodError)
+      end
     end
   end
 

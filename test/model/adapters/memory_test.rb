@@ -2,25 +2,40 @@ require 'test_helper'
 
 describe Lotus::Model::Adapters::Memory do
   before do
-    TestUser = Struct.new(:id, :name)
-    @adapter = Lotus::Model::Adapters::Memory.new
+    TestUser = Struct.new(:id, :name) do
+      include Lotus::Entity
+    end
+
+    TestDevice = Struct.new(:id) do
+      include Lotus::Entity
+    end
+
+    @mapper = Lotus::Model::Mapper.new do
+      collection :users do
+        entity TestUser
+
+        attribute :id,   Integer
+        attribute :name, String
+      end
+
+      collection :devices do
+        entity TestDevice
+
+        attribute :id, Integer
+      end
+    end
+
+    @adapter = Lotus::Model::Adapters::Memory.new(@mapper)
   end
 
   after do
     Object.send(:remove_const, :TestUser)
+    Object.send(:remove_const, :TestDevice)
   end
 
   let(:collection) { :users }
 
   describe 'multiple collections' do
-    before do
-      TestDevice = Struct.new(:id)
-    end
-
-    after do
-      Object.send(:remove_const, :TestDevice)
-    end
-
     it 'create records' do
       user   = TestUser.new
       device = TestDevice.new
@@ -81,7 +96,7 @@ describe Lotus::Model::Adapters::Memory do
       @adapter.create(collection, entity)
     end
 
-    let(:entity) { TestUser.new(nil, 'L') }
+    let(:entity) { TestUser.new(id: nil, name: 'L') }
 
     it 'stores the changes and leave the id untouched' do
       id = entity.id
@@ -138,7 +153,7 @@ describe Lotus::Model::Adapters::Memory do
     end
 
     let(:entity)      { TestUser.new }
-    let(:nil_entity)  { TestUser.new(0) }
+    let(:nil_entity)  { TestUser.new(id: 0) }
 
     it 'returns the record by id' do
       @adapter.find(collection, entity.id).must_equal entity
