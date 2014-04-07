@@ -5,6 +5,17 @@ module Lotus
     module Adapters
       class Memory < Abstract
         class Collection
+          class PrimaryKey
+            def initialize
+              @current = 0
+            end
+
+            def increment!
+              yield(@current += 1)
+              @current
+            end
+          end
+
           attr_reader :name, :records
 
           def initialize(name)
@@ -13,10 +24,10 @@ module Lotus
           end
 
           def create(entity)
-            @current_id += 1
-            entity[:id] = @current_id
-            records[@current_id] = entity
-            @current_id
+            @primary_key.increment! do |id|
+              entity[:id] = id
+              records[id] = entity
+            end
           end
 
           def update(entity)
@@ -40,8 +51,8 @@ module Lotus
           end
 
           def clear
-            @records    = {}
-            @current_id = 0
+            @records     = {}
+            @primary_key = PrimaryKey.new
           end
         end
       end
