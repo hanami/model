@@ -14,14 +14,17 @@ describe Lotus::Repository do
         UserRepository.adapter    = adapter.new(mapper, uri)
         ArticleRepository.adapter = adapter.new(mapper, uri)
 
+        UserRepository.collection    = :users
+        ArticleRepository.collection = :articles
+
         UserRepository.clear
         ArticleRepository.clear
       end
 
       describe '.collection' do
         it 'returns the collection name' do
-          UserRepository.collection.must_equal    :user
-          ArticleRepository.collection.must_equal :article
+          UserRepository.collection.must_equal    :users
+          ArticleRepository.collection.must_equal :articles
         end
       end
 

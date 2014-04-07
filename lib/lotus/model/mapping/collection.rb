@@ -79,6 +79,16 @@ module Lotus
 
         def load!
           @coercer = Coercer.new(self)
+          configure_repository!
+        end
+
+        private
+        def configure_repository!
+          # TODO move this in an high level loader (eg Model.load!)
+          # FIXME make this hardcoded string configurable
+          repository = Object.const_get("#{ entity.name }Repository")
+          repository.collection = name
+        rescue NameError
         end
       end
     end

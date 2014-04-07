@@ -7,10 +7,7 @@ module Lotus
         extend ClassMethods
         include Lotus::Utils::ClassAttribute
 
-        # FIXME this assigment must be calculated by some Utils class
-        # TODO pluralize
         class_attribute :collection
-        self.collection = base.name.gsub(/Repository/, '').downcase.to_sym
       end
     end
 
