@@ -26,12 +26,12 @@ module Lotus
         def _compile!
           instance_eval %{
             def to_record(entity)
-              Hash[*[#{ @collection.attributes.map{|name,_| ":#{name},entity.#{name}"}.join(',') }]]
+              Hash[*[#{ @collection.attributes.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]]
             end
 
             def from_record(record)
               #{ @collection.entity }.new(
-                Hash[*[#{ @collection.attributes.map{|name,klass| ":#{name},#{klass}(record[:#{name}])"}.join(',') }]]
+                Hash[*[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},#{klass}(record[:#{mapped}])"}.join(',') }]]
               )
             end
           }
@@ -55,16 +55,16 @@ module Lotus
           end
         end
 
-        def adapter(name = nil)
+        def key(name = nil)
           if name
-            @adapter = name
+            @key = name
           else
-            @adapter
+            @key || :id
           end
         end
 
-        def attribute(name, klass)
-          @attributes[name] = klass
+        def attribute(name, klass, options = {})
+          @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
         end
 
         def serialize(entity)

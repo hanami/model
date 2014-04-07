@@ -37,31 +37,36 @@ describe Lotus::Model::Mapping::Collection do
     end
   end
 
-  describe '#adapter' do
+  describe '#key' do
     describe 'when a value is given' do
       before do
-        @collection.adapter(:memory)
+        @collection.key(:_id)
       end
 
       it 'sets the value' do
-        @collection.adapter.must_equal :memory
+        @collection.key.must_equal :_id
       end
     end
 
     describe 'when a value is not given' do
       it 'retuns the value' do
-        @collection.adapter.must_be_nil
+        @collection.key.must_equal(:id)
       end
     end
   end
 
   describe '#attribute' do
     before do
-      @collection.attribute :id, Integer
+      @collection.attribute :id,   Integer
+      @collection.attribute :name, String, as: 't_name'
     end
 
     it 'defines an attribute' do
-      @collection.attributes[:id].must_equal Integer
+      @collection.attributes[:id].must_equal [Integer, :id]
+    end
+
+    it 'defines a mapped attribute' do
+      @collection.attributes[:name].must_equal [String, :t_name]
     end
   end
 end

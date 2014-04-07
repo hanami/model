@@ -16,6 +16,10 @@ module Lotus
         end
       end
 
+      def key(collection)
+        collection(collection).key
+      end
+
       def serialize(collection, entity)
         collection(collection).load! # FIXME this isn't thread safe
         collection(collection).serialize(entity)

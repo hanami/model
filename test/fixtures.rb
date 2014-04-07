@@ -24,8 +24,8 @@ DB.create_table :users do
 end
 
 DB.create_table :articles do
-  primary_key :id
-  String :title
+  primary_key :identity
+  String :s_title
   String :comments_count # Not an error: we're testing String => Integer coercion
 end
 
@@ -41,8 +41,10 @@ MAPPER = Lotus::Model::Mapper.new do
   collection :articles do
     entity Article
 
-    attribute :id,             Integer
-    attribute :title,          String
+    attribute :id,             Integer, as: :identity
+    attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
+
+    key :identity
   end
 end

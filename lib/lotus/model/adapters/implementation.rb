@@ -3,7 +3,6 @@ module Lotus
     module Adapters
       module Implementation
         def persist(collection, entity)
-          # FIXME use primary_key strategy instead of :id.
           if entity.id
             update(collection, entity)
           else
@@ -32,6 +31,10 @@ module Lotus
           # TODO implement a converter like Kernel.Array in Lotus::Utils
           # so that, we can unify Array(records).flatten.compact.uniq
           @mapper.deserialize(collection, Array(records).flatten.compact)
+        end
+
+        def _key(collection)
+          @mapper.key(collection)
         end
       end
     end

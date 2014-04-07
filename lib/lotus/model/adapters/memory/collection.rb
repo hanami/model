@@ -16,22 +16,22 @@ module Lotus
             end
           end
 
-          attr_reader :name, :records
+          attr_reader :name, :key, :records
 
-          def initialize(name)
-            @name = name
+          def initialize(name, key)
+            @name, @key = name, key
             clear
           end
 
           def create(entity)
             @primary_key.increment! do |id|
-              entity[:id] = id
+              entity[key] = id
               records[id] = entity
             end
           end
 
           def update(entity)
-            records[entity.fetch(:id)] = entity
+            records[entity.fetch(key)] = entity
           end
 
           def delete(entity)

@@ -14,18 +14,27 @@ module Lotus
         end
 
         def create(collection, entity)
-          entity.id = _collection(collection).insert(_serialize(collection, entity))
+          entity.id = _collection(collection)
+                        .insert(
+                          _serialize(collection, entity)
+                        )
           entity
         end
 
         def update(collection, entity)
-          # FIXME use primary_key strategy instead of :id.
-          _collection(collection).where(id: entity.id).update(_serialize(collection, entity))
+          _collection(collection)
+            .where(
+              _key(collection) => entity.id
+            ).update(
+              _serialize(collection, entity)
+            )
         end
 
         def delete(collection, entity)
-          # FIXME use primary_key strategy instead of :id.
-          _collection(collection).where(id: entity.id).delete
+          _collection(collection)
+            .where(
+              _key(collection) => entity.id
+            ).delete
         end
 
         def all(collection)
@@ -33,10 +42,12 @@ module Lotus
         end
 
         def find(collection, id)
-          # FIXME use primary_key strategy instead of :id.
           _deserialize(
              collection,
-            _collection(collection).where(id: id).first
+            _collection(collection)
+              .where(
+                _key(collection) => id
+              ).first
           ).first
         end
 
@@ -45,10 +56,12 @@ module Lotus
         end
 
         def last(collection)
-          # FIXME use primary_key strategy instead of :id.
           _deserialize(
              collection,
-            _collection(collection).order(:id).last
+            _collection(collection)
+              .order(
+                _key(collection)
+              ).last
           ).first
         end
 

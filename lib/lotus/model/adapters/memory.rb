@@ -67,7 +67,7 @@ module Lotus
 
         private
         def _collection(name)
-          @collections[name] ||= Collection.new(name)
+          @collections[name] ||= Collection.new(name, @mapper.key(name))
         end
       end
     end
