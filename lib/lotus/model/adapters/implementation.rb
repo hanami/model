@@ -1,3 +1,5 @@
+require 'lotus/utils/kernel'
+
 module Lotus
   module Model
     module Adapters
@@ -28,9 +30,7 @@ module Lotus
         end
 
         def _deserialize(collection, *records)
-          # TODO implement a converter like Kernel.Array in Lotus::Utils
-          # so that, we can unify Array(records).flatten.compact.uniq
-          @mapper.deserialize(collection, Array(records).flatten.compact)
+          @mapper.deserialize(collection, Lotus::Utils::Kernel.Array(records))
         end
 
         def _key(collection)

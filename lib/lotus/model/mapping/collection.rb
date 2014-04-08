@@ -1,3 +1,5 @@
+require 'lotus/utils/kernel'
+
 module Lotus
   module Model
     module Mapping
@@ -9,18 +11,11 @@ module Lotus
       end
 
       class Coercer
+        include Lotus::Utils::Kernel
+
         def initialize(collection)
           @collection = collection
           _compile!
-        end
-
-        private
-        # TODO: Move these conversions into Lotus::Utils
-        def Integer(value)
-          # TODO benchmark:
-          #   1. if value
-          #   2. unless value.nil?
-          Kernel.Integer(value) if value
         end
 
         def _compile!
