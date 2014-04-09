@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Memory do
+describe Lotus::Model::Adapters::Sql do
   before do
     TestUser = Struct.new(:id, :name) do
       include Lotus::Entity
@@ -25,7 +25,7 @@ describe Lotus::Model::Adapters::Memory do
       end
     end
 
-    @adapter = Lotus::Model::Adapters::Memory.new(@mapper)
+    @adapter = Lotus::Model::Adapters::Sql.new(@mapper, SQLITE_CONNECTION_STRING)
   end
 
   after do
@@ -149,11 +149,9 @@ describe Lotus::Model::Adapters::Memory do
   describe '#find' do
     before do
       @adapter.create(collection, entity)
-      @adapter.instance_variable_get(:@collections).fetch(collection).records.store(nil, nil_entity)
     end
 
-    let(:entity)      { TestUser.new }
-    let(:nil_entity)  { TestUser.new(id: 0) }
+    let(:entity) { TestUser.new }
 
     it 'returns the record by id' do
       @adapter.find(collection, entity.id).must_equal entity
@@ -230,13 +228,6 @@ describe Lotus::Model::Adapters::Memory do
     it 'removes all the records' do
       @adapter.clear(collection)
       @adapter.all(collection).must_be_empty
-    end
-
-    it 'resets the id counter' do
-      @adapter.clear(collection)
-
-      @adapter.create(collection, entity)
-      entity.id.must_equal 1
     end
   end
 

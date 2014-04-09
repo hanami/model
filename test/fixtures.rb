@@ -36,6 +36,11 @@ DB.create_table :articles do
   String  :comments_count # Not an error: we're testing String => Integer coercion
 end
 
+DB.create_table :devices do
+  primary_key :id
+end
+
+
 #FIXME this should be passed by the framework internals.
 MAPPER = Lotus::Model::Mapper.new do
   collection :users do
