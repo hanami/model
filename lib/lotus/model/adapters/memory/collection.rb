@@ -54,6 +54,29 @@ module Lotus
             @records     = {}
             @primary_key = PrimaryKey.new
           end
+
+          # TODO extract into another file
+          class Query
+            def initialize(collection)
+              @collection = collection
+              @conditions = []
+            end
+
+            def where(condition)
+              @conditions.push [:find_all, *condition]
+              self
+            end
+
+            def all
+              @conditions.map do |finder, (attr,value)|
+                @collection.all.send(finder, &Proc.new{|record| record.fetch(attr) == value})
+              end
+            end
+          end
+
+          def where(condition)
+            Query.new(self).where(condition)
+          end
         end
       end
     end

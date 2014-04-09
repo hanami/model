@@ -63,6 +63,11 @@ module Lotus
       def clear
         @adapter.clear(collection)
       end
+
+      private
+      def query(&blk)
+        @adapter.query(collection, &blk)
+      end
     end
   end
 end

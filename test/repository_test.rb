@@ -5,7 +5,7 @@ describe Lotus::Repository do
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
 
-  let(:article) { Article.new(title: 'Introducing Lotus::Model', comments_count: '23') }
+  let(:article) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
 
   { memory: [Lotus::Model::Adapters::Memory, nil, MAPPER],
     sql:    [Lotus::Model::Adapters::Sql, SQLITE_CONNECTION_STRING, MAPPER] }.each do |name, (adapter,uri,mapper)|
@@ -244,6 +244,17 @@ describe Lotus::Repository do
             UserRepository.clear
             UserRepository.all.must_be_empty
           end
+        end
+      end
+
+      describe 'querying' do
+        before do
+          UserRepository.create(user1)
+          ArticleRepository.create(article)
+        end
+
+        it 'defines custom finders' do
+          ArticleRepository.by_user(user1).must_equal [article]
         end
       end
     end

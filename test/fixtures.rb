@@ -5,7 +5,7 @@ end
 
 class Article
   include Lotus::Entity
-  self.attributes = :title, :comments_count
+  self.attributes = :user_id, :title, :comments_count
 end
 
 class UserRepository
@@ -14,6 +14,12 @@ end
 
 class ArticleRepository
   include Lotus::Repository
+
+  def self.by_user(user)
+    query do
+      where(user_id: user.id)
+    end
+  end
 end
 
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
@@ -25,8 +31,9 @@ end
 
 DB.create_table :articles do
   primary_key :identity
-  String :s_title
-  String :comments_count # Not an error: we're testing String => Integer coercion
+  Integer :user_id
+  String  :s_title
+  String  :comments_count # Not an error: we're testing String => Integer coercion
 end
 
 #FIXME this should be passed by the framework internals.
@@ -42,6 +49,7 @@ MAPPER = Lotus::Model::Mapper.new do
     entity Article
 
     attribute :id,             Integer, as: :identity
+    attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
 
