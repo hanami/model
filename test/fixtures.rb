@@ -40,6 +40,7 @@ DB.create_table :devices do
   primary_key :id
 end
 
+# DB.dataset_class = Class.new(Sequel::Dataset)
 
 #FIXME this should be passed by the framework internals.
 MAPPER = Lotus::Model::Mapper.new do

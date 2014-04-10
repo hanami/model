@@ -1,4 +1,5 @@
 require 'lotus/model/adapters/abstract'
+require 'lotus/model/adapters/memory/query'
 
 module Lotus
   module Model
@@ -55,47 +56,16 @@ module Lotus
             @primary_key = PrimaryKey.new
           end
 
-          # TODO extract into another file
-          class Query
-            attr_reader :conditions
-
-            def initialize(collection)
-              @collection = collection
-              @conditions = []
-            end
-
-            def where(condition)
-              column, value = *Array(condition).flatten
-              conditions.push(Proc.new{ find_all{|r| r.fetch(column) == value} })
-              self
-            end
-
-            alias_method :and, :where
-
-            def order(column)
-              conditions.push(Proc.new{ sort_by{|r| r.fetch(column)} })
-              self
-            end
-
-            # def all(records = @collection.all)
-            #   conditions.map do |condition|
-            #     records.instance_exec(&condition)
-            #     # @collection.all.instance_exec(&condition)
-            #   end
-            # end
-            def all
-              @conditions.map do |condition|
-                @collection.all.instance_exec(&condition)
-              end
-            end
-          end
-
           def where(condition)
             query.where(condition)
           end
 
           def order(column)
             query.order(column)
+          end
+
+          def limit(number)
+            query.limit(number)
           end
 
           private

@@ -293,6 +293,37 @@ describe Lotus::Model::Adapters::Sql do
       end
     end
 
+    describe 'or' do
+      describe 'with an empty collection' do
+        it 'returns an empty result set' do
+          result = @adapter.query(collection) do
+            where(name: 'L').or(name: 'MG')
+          end
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns selected records' do
+          name1 = user1.name
+          name2 = user2.name
+
+          query = Proc.new {
+            where(name: name1).or(name: name2)
+          }
+
+          result = @adapter.query(collection, &query)
+          result.must_equal [user1, user2]
+        end
+      end
+    end
+
     describe 'order' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
@@ -317,6 +348,70 @@ describe Lotus::Model::Adapters::Sql do
 
           result = @adapter.query(collection, &query)
           result.must_equal [user1, user2]
+        end
+      end
+    end
+
+    describe 'limit' do
+      describe 'with an empty collection' do
+        it 'returns an empty result set' do
+          result = @adapter.query(collection) do
+            limit(1)
+          end
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: user2.name))
+        end
+
+        it 'returns only the number of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name).limit(1)
+          }
+
+          result = @adapter.query(collection, &query)
+          result.must_equal [user2]
+        end
+      end
+    end
+
+    describe 'offset' do
+      describe 'with an empty collection' do
+        it 'returns an empty result set' do
+          result = @adapter.query(collection) do
+            limit(1).offset(1)
+          end
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, user3)
+        end
+
+        let(:user3) { TestUser.new(name: user2.name) }
+
+        it 'returns only the number of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name).limit(1).offset(1)
+          }
+
+          result = @adapter.query(collection, &query)
+          result.must_equal [user3]
         end
       end
     end
