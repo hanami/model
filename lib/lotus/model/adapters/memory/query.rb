@@ -5,10 +5,12 @@ module Lotus
         class Query
           attr_reader :conditions, :modifiers
 
-          def initialize(collection)
+          def initialize(collection, mapper = nil, &blk)
             @collection = collection
+            @mapper     = mapper
             @conditions = []
             @modifiers  = []
+            instance_eval(&blk) if block_given?
           end
 
           def where(condition)
@@ -36,6 +38,11 @@ module Lotus
           end
 
           def all
+            @mapper.deserialize(@collection.name, Lotus::Utils::Kernel.Array(run))
+          end
+
+          private
+          def run
             result = conditions.map do |condition|
               @collection.all.instance_exec(&condition)
             end

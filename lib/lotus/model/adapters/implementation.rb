@@ -32,6 +32,10 @@ module Lotus
           raise NotImplementedError
         end
 
+        def _query
+          raise NotImplementedError
+        end
+
         def _serialize(collection, entity)
           @mapper.serialize(collection, entity)
         end

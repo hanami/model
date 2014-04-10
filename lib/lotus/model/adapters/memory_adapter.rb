@@ -1,6 +1,7 @@
 require 'lotus/model/adapters/abstract'
 require 'lotus/model/adapters/implementation'
-require 'lotus/model/adapters/memory/collection'
+require 'lotus/model/adapters/memory/collection' # TODO remove this
+require 'lotus/model/adapters/memory/query'
 
 module Lotus
   module Model
@@ -65,9 +66,17 @@ module Lotus
           end
         end
 
+        def query(collection, &blk)
+          _query.new(_collection(collection), @mapper, &blk)
+        end
+
         private
         def _collection(name)
           @collections[name] ||= Memory::Collection.new(name, @mapper.key(name))
+        end
+
+        def _query
+          Memory::Query
         end
       end
     end

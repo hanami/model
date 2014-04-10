@@ -253,7 +253,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             where(id: 23)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -272,7 +272,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -284,7 +284,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id).where(name: name)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -296,7 +296,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id).and(name: name)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
       end
@@ -307,7 +307,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             where(name: 'L').or(name: 'MG')
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -327,7 +327,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name1).or(name: name2)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
 
@@ -338,7 +338,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: 'unknown').or(name: name2)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user2]
         end
       end
@@ -349,7 +349,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             order(:id)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -366,7 +366,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             order(:id)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
       end
@@ -377,7 +377,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             limit(1)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -397,7 +397,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name).limit(1)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user2]
         end
       end
@@ -408,7 +408,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             limit(1).offset(1)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -430,7 +430,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name).limit(1).offset(1)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user3]
         end
       end
