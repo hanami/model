@@ -5,7 +5,7 @@ module Lotus
         class Query
           attr_reader :conditions, :modifiers
 
-          def initialize(collection, mapper = nil, &blk)
+          def initialize(collection, mapper, &blk)
             @collection = collection
             @mapper     = mapper
             @conditions = []

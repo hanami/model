@@ -20,13 +20,6 @@ module Lotus
           _collection(collection).first
         end
 
-        def query(collection, &blk)
-          _deserialize(
-            collection,
-           _collection(collection).instance_exec(&blk).all
-          )
-        end
-
         private
         def _collection(name)
           raise NotImplementedError

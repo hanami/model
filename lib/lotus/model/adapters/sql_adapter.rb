@@ -1,5 +1,6 @@
 require 'lotus/model/adapters/abstract'
 require 'lotus/model/adapters/implementation'
+require 'lotus/model/adapters/sql/query'
 require 'sequel'
 
 module Lotus
@@ -69,9 +70,17 @@ module Lotus
           _collection(collection).delete
         end
 
+        def query(collection, &blk)
+          _query.new(collection, _collection(collection), @mapper, &blk)
+        end
+
         private
         def _collection(name)
           @connection[name]
+        end
+
+        def _query
+          Sql::Query
         end
       end
     end

@@ -244,7 +244,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             where(id: 23)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -263,7 +263,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             where(id: id)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -275,7 +275,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             where(id: id).where(name: name)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -287,7 +287,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             where(id: id).and(name: name)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
       end
@@ -298,7 +298,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             where(name: 'L').or(name: 'MG')
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -318,7 +318,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             where(name: name1).or(name: name2)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
       end
@@ -329,7 +329,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             order(:id)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -346,7 +346,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             order(:id)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
       end
@@ -357,7 +357,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             limit(1)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -377,7 +377,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             where(name: name).limit(1)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user2]
         end
       end
@@ -388,7 +388,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         it 'returns an empty result set' do
           result = @adapter.query(collection) do
             limit(1).offset(1)
-          end
+          end.all
 
           result.must_be_empty
         end
@@ -410,8 +410,55 @@ describe Lotus::Model::Adapters::SqlAdapter do
             where(name: name).limit(1).offset(1)
           }
 
-          result = @adapter.query(collection, &query)
+          result = @adapter.query(collection, &query).all
           result.must_equal [user3]
+        end
+      end
+    end
+
+    describe 'count' do
+      describe 'with an empty collection' do
+        it 'returns 0' do
+          result = @adapter.query(collection) do
+            all
+          end.count
+
+          result.must_equal 0
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns the count of all the records' do
+          query = Proc.new {
+            all
+          }
+
+          result = @adapter.query(collection, &query).count
+          result.must_equal 2
+        end
+
+        it 'returns the count from an empty query block' do
+          query = Proc.new {
+          }
+
+          result = @adapter.query(collection, &query).count
+          result.must_equal 2
+        end
+
+        it 'returns only the count of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).count
+          result.must_equal 1
         end
       end
     end
