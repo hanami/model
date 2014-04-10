@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Memory do
+describe Lotus::Model::Adapters::MemoryAdapter do
   before do
     TestUser = Struct.new(:id, :name) do
       include Lotus::Entity
@@ -25,7 +25,7 @@ describe Lotus::Model::Adapters::Memory do
       end
     end
 
-    @adapter = Lotus::Model::Adapters::Memory.new(@mapper)
+    @adapter = Lotus::Model::Adapters::MemoryAdapter.new(@mapper)
   end
 
   after do

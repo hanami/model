@@ -5,7 +5,7 @@ require 'lotus/model/adapters/memory/collection'
 module Lotus
   module Model
     module Adapters
-      class Memory < Abstract
+      class MemoryAdapter < Abstract
         include Implementation
 
         def initialize(mapper, uri = nil)
@@ -67,7 +67,7 @@ module Lotus
 
         private
         def _collection(name)
-          @collections[name] ||= Collection.new(name, @mapper.key(name))
+          @collections[name] ||= Memory::Collection.new(name, @mapper.key(name))
         end
       end
     end

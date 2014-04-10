@@ -1,9 +1,7 @@
-require 'lotus/model/adapters/abstract'
-
 module Lotus
   module Model
     module Adapters
-      class Memory < Abstract
+      module Memory
         class Query
           attr_reader :conditions, :modifiers
 

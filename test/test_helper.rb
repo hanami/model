@@ -20,8 +20,8 @@ require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus-model'
 require 'lotus/model/mapper'
-require 'lotus/model/adapters/memory'
-require 'lotus/model/adapters/sql'
+require 'lotus/model/adapters/memory_adapter'
+require 'lotus/model/adapters/sql_adapter'
 
 db = Pathname.new(__dir__).join('../tmp/test.db')
 db.dirname.mkpath      # create directory if not exist

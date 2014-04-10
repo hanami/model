@@ -5,7 +5,7 @@ require 'sequel'
 module Lotus
   module Model
     module Adapters
-      class Sql < Abstract
+      class SqlAdapter < Abstract
         include Implementation
 
         def initialize(mapper, uri)

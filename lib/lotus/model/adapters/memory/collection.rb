@@ -1,10 +1,9 @@
-require 'lotus/model/adapters/abstract'
 require 'lotus/model/adapters/memory/query'
 
 module Lotus
   module Model
     module Adapters
-      class Memory < Abstract
+      module Memory
         class Collection
           class PrimaryKey
             def initialize

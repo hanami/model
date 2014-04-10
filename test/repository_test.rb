@@ -7,8 +7,8 @@ describe Lotus::Repository do
 
   let(:article) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
 
-  { memory: [Lotus::Model::Adapters::Memory, nil, MAPPER],
-    sql:    [Lotus::Model::Adapters::Sql, SQLITE_CONNECTION_STRING, MAPPER] }.each do |name, (adapter,uri,mapper)|
+  { memory: [Lotus::Model::Adapters::MemoryAdapter, nil, MAPPER],
+    sql:    [Lotus::Model::Adapters::SqlAdapter, SQLITE_CONNECTION_STRING, MAPPER] }.each do |name, (adapter,uri,mapper)|
     describe "with #{ name } adapter" do
       before do
         UserRepository.adapter    = adapter.new(mapper, uri)

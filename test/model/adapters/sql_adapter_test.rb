@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Sql do
+describe Lotus::Model::Adapters::SqlAdapter do
   before do
     TestUser = Struct.new(:id, :name) do
       include Lotus::Entity
@@ -25,7 +25,7 @@ describe Lotus::Model::Adapters::Sql do
       end
     end
 
-    @adapter = Lotus::Model::Adapters::Sql.new(@mapper, SQLITE_CONNECTION_STRING)
+    @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
   end
 
   after do
