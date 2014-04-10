@@ -41,11 +41,20 @@ module Lotus
             @mapper.deserialize(@collection.name, Lotus::Utils::Kernel.Array(run))
           end
 
+          def count
+            run.count
+          end
+
           private
           def run
-            result = conditions.map do |condition|
-              @collection.all.instance_exec(&condition)
-            end
+            # TODO cleanup
+            result = if conditions.any?
+                       conditions.map do |condition|
+                         @collection.all.instance_exec(&condition)
+                       end
+                     else
+                       @collection.all
+                     end
 
             modifiers.map do |modifier|
               result.instance_exec(&modifier)
