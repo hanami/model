@@ -68,6 +68,10 @@ module Lotus
 
           alias_method :avg, :average
 
+          def max(column)
+            all.map {|record| record.public_send(column) }.compact.max
+          end
+
           private
           def run
             # TODO cleanup

@@ -55,6 +55,10 @@ module Lotus
 
           alias_method :avg, :average
 
+          def max(column)
+            run.max(column)
+          end
+
           def count
             run.count
           end
