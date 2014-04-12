@@ -303,6 +303,64 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
     end
 
+    describe 'exclude' do
+      describe 'with an empty collection' do
+        it 'returns an empty result set' do
+          result = @adapter.query(collection) do
+            exclude(id: 23)
+          end.all
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, user3)
+        end
+
+        let(:user3) { TestUser.new(name: 'S', age: 2) }
+
+        it 'returns selected records' do
+          id = user1.id
+
+          query = Proc.new {
+            exclude(id: id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user2, user3]
+        end
+
+        it 'can use multiple exclude conditions' do
+          id   = user1.id
+          name = user2.name
+
+          query = Proc.new {
+            exclude(id: id).exclude(name: name)
+          }
+
+          $debug = true
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user3]
+        end
+
+        it 'can use multiple exclude conditions with "not" alias' do
+          id   = user1.id
+          name = user2.name
+
+          query = Proc.new {
+            self.not(id: id).not(name: name)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user3]
+        end
+      end
+    end
+
     describe 'or' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do

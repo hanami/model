@@ -22,6 +22,14 @@ module Lotus
           alias_method :and, :where
           alias_method :or,  :where
 
+          def exclude(condition)
+            column, value = *Array(condition).flatten
+            conditions.push(Proc.new{ reject! {|r| r.fetch(column) == value} })
+            self
+          end
+
+          alias_method :not, :exclude
+
           def order(column)
             conditions.push(Proc.new{ sort_by{|r| r.fetch(column)} })
             self
@@ -90,14 +98,11 @@ module Lotus
 
           private
           def run
-            # TODO cleanup
-            result = if conditions.any?
-                       conditions.map do |condition|
-                         @collection.all.instance_exec(&condition)
-                       end
-                     else
-                       @collection.all
-                     end
+            result = @collection.all.dup
+
+            result = conditions.map do |condition|
+              result.instance_exec(&condition)
+            end if conditions.any?
 
             modifiers.map do |modifier|
               result.instance_exec(&modifier)

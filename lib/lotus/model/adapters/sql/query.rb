@@ -25,6 +25,13 @@ module Lotus
 
           alias_method :and, :where
 
+          def exclude(condition)
+            conditions.push([:exclude, condition])
+            self
+          end
+
+          alias_method :not, :exclude
+
           def limit(number)
             conditions.push([:limit, number])
             self
