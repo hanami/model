@@ -79,6 +79,11 @@ module Lotus
             all.map {|record| record.public_send(column) }.compact.min
           end
 
+          def interval(column)
+            max(column) - min(column)
+          rescue NoMethodError
+          end
+
           private
           def run
             # TODO cleanup

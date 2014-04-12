@@ -63,6 +63,10 @@ module Lotus
             run.min(column)
           end
 
+          def interval(column)
+            run.interval(column)
+          end
+
           def count
             run.count
           end

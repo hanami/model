@@ -723,5 +723,53 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
       end
     end
+
+    describe 'interval' do
+      describe 'with an empty collection' do
+        it 'returns nil' do
+          result = @adapter.query(collection) do
+            all
+          end.interval(:age)
+
+          result.must_be_nil
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: 'S'))
+        end
+
+        it 'returns the interval of all the records' do
+          query = Proc.new {
+            all
+          }
+
+          result = @adapter.query(collection, &query).interval(:age)
+          result.must_equal 1
+        end
+
+        it 'returns the interval from an empty query block' do
+          query = Proc.new {
+          }
+
+          result = @adapter.query(collection, &query).interval(:age)
+          result.must_equal 1
+        end
+
+        it 'returns only the interval of requested records' do
+          name = user1.name
+
+          query = Proc.new {
+            where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).interval(:age)
+          result.must_equal 0
+        end
+      end
+    end
   end
 end
