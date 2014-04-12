@@ -78,6 +78,10 @@ module Lotus
             run.range(column)
           end
 
+          def exist?
+            !count.zero?
+          end
+
           def count
             run.count
           end

@@ -495,6 +495,46 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
     end
 
+    describe 'exist?' do
+      describe 'with an empty collection' do
+        it 'returns false' do
+          result = @adapter.query(collection) do
+            where(id: 23)
+          end.exist?
+
+          result.must_equal false
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns true when there are matched records' do
+          id = user1.id
+
+          query = Proc.new {
+            where(id: id)
+          }
+
+          result = @adapter.query(collection, &query).exist?
+          result.must_equal true
+        end
+
+        it 'returns false when there are matched records' do
+          query = Proc.new {
+            where(id: 'unknown')
+          }
+
+          result = @adapter.query(collection, &query).exist?
+          result.must_equal false
+        end
+      end
+    end
+
+
     describe 'count' do
       describe 'with an empty collection' do
         it 'returns 0' do
