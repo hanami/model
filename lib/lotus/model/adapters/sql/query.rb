@@ -67,6 +67,10 @@ module Lotus
             run.interval(column)
           end
 
+          def range(column)
+            run.range(column)
+          end
+
           def count
             run.count
           end

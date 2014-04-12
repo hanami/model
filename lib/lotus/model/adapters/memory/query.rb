@@ -84,6 +84,10 @@ module Lotus
           rescue NoMethodError
           end
 
+          def range(column)
+            min(column)..max(column)
+          end
+
           private
           def run
             # TODO cleanup

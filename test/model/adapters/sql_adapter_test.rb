@@ -751,5 +751,53 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
       end
     end
+
+    describe 'range' do
+      describe 'with an empty collection' do
+        it 'returns nil' do
+          result = @adapter.query(collection) do
+            all
+          end.range(:age)
+
+          result.must_equal nil..nil
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: 'S'))
+        end
+
+        it 'returns the range of all the records' do
+          query = Proc.new {
+            all
+          }
+
+          result = @adapter.query(collection, &query).range(:age)
+          result.must_equal 31..32
+        end
+
+        it 'returns the range from an empty query block' do
+          query = Proc.new {
+          }
+
+          result = @adapter.query(collection, &query).range(:age)
+          result.must_equal 31..32
+        end
+
+        it 'returns only the range of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).range(:age)
+          result.must_equal 31..31
+        end
+      end
+    end
   end
 end
