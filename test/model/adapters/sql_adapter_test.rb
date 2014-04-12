@@ -237,7 +237,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       @adapter.clear(collection)
     end
 
-    let(:user1) { TestUser.new(name: 'L',  age: 32) }
+    let(:user1) { TestUser.new(name: 'L',  age: '32') }
     let(:user2) { TestUser.new(name: 'MG', age: 31) }
 
     describe 'where' do
@@ -479,6 +479,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         before do
           @adapter.create(collection, user1)
           @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: 'S'))
         end
 
         it 'returns the sum of all the records' do
@@ -526,6 +527,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         before do
           @adapter.create(collection, user1)
           @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: 'S'))
         end
 
         it 'returns the average of all the records' do
@@ -534,7 +536,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           }
 
           result = @adapter.query(collection, &query).average(:age)
-          result.must_equal 31
+          result.must_equal 31.5
         end
 
         it 'returns the average from an empty query block' do
@@ -542,7 +544,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           }
 
           result = @adapter.query(collection, &query).average(:age)
-          result.must_equal 31
+          result.must_equal 31.5
         end
 
         it 'returns only the average of requested records' do
@@ -573,6 +575,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         before do
           @adapter.create(collection, user1)
           @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: 'S'))
         end
 
         it 'returns the average of all the records' do
@@ -581,7 +584,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           }
 
           result = @adapter.query(collection, &query).avg(:age)
-          result.must_equal 31
+          result.must_equal 31.5
         end
 
         it 'returns the average from an empty query block' do
@@ -589,7 +592,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           }
 
           result = @adapter.query(collection, &query).avg(:age)
-          result.must_equal 31
+          result.must_equal 31.5
         end
 
         it 'returns only the average of requested records' do

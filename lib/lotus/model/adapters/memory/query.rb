@@ -46,24 +46,23 @@ module Lotus
           end
 
           def sum(column)
-            result = run
+            result = all
 
             if result.any?
               result.inject(0.0) do |acc, record|
-                if value = record.fetch(column) { nil }
+                if value = record.public_send(column)
                   acc += value
                 end
+
+                acc
               end
             end
           end
 
           def average(column)
             if s = sum(column)
-              @mapper.deserialize_column(
-                @collection.name,
-                column,
-                s / run.size.to_f
-              )
+              # s / self.not(column => nil).count.to_f
+              s / run.find_all{|record| !!record[column] }.size.to_f
             end
           end
 

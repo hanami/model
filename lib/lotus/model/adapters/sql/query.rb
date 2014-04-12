@@ -50,11 +50,7 @@ module Lotus
           end
 
           def average(column)
-            @mapper.deserialize_column(
-              @table_name,
-              column,
-              run.avg(column)
-            )
+            run.avg(column)
           end
 
           alias_method :avg, :average
