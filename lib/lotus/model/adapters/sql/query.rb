@@ -45,6 +45,10 @@ module Lotus
             self
           end
 
+          def sum(column)
+            run.sum(column)
+          end
+
           def average(column)
             @mapper.deserialize_column(
               @table_name,

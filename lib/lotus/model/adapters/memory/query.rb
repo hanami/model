@@ -45,23 +45,25 @@ module Lotus
             run.count
           end
 
-          def average(column)
+          def sum(column)
             result = run
 
             if result.any?
-              sum = result.inject(0.0) do |acc, record|
+              result.inject(0.0) do |acc, record|
                 if value = record.fetch(column) { nil }
                   acc += value
                 end
               end
+            end
+          end
 
-              if sum
-                @mapper.deserialize_column(
-                  @collection.name,
-                  column,
-                  sum / result.size.to_f
-                )
-              end
+          def average(column)
+            if s = sum(column)
+              @mapper.deserialize_column(
+                @collection.name,
+                column,
+                s / run.size.to_f
+              )
             end
           end
 
