@@ -1,6 +1,6 @@
 class User
   include Lotus::Entity
-  self.attributes = :name
+  self.attributes = :name, :age
 end
 
 class Article
@@ -26,7 +26,8 @@ DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 
 DB.create_table :users do
   primary_key :id
-  String :name
+  String  :name
+  Integer :age
 end
 
 DB.create_table :articles do
@@ -49,6 +50,7 @@ MAPPER = Lotus::Model::Mapper.new do
 
     attribute :id,   Integer
     attribute :name, String
+    attribute :age,  Integer
   end
 
   collection :articles do

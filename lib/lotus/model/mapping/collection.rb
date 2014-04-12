@@ -11,14 +11,20 @@ module Lotus
       end
 
       class Coercer
-        include Lotus::Utils::Kernel
-
         def initialize(collection)
           @collection = collection
           _compile!
         end
 
         def _compile!
+          code = @collection.attributes.map do |name,(klass,_)|
+            %{
+            def deserialize_#{ name }(value)
+              Lotus::Utils::Kernel.#{klass}(value)
+            end
+            }
+          end.join("\n")
+
           instance_eval %{
             def to_record(entity)
               Hash[*[#{ @collection.attributes.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]]
@@ -26,9 +32,11 @@ module Lotus
 
             def from_record(record)
               #{ @collection.entity }.new(
-                Hash[*[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},#{klass}(record[:#{mapped}])"}.join(',') }]]
+                Hash[*[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Utils::Kernel.#{klass}(record[:#{mapped}])"}.join(',') }]]
               )
             end
+
+            #{ code }
           }
         end
       end
@@ -70,6 +78,10 @@ module Lotus
           records.map do |record|
             @coercer.from_record(record)
           end
+        end
+
+        def deserialize_attribute(attribute, value)
+          @coercer.public_send(:"deserialize_#{ attribute }", value)
         end
 
         def load!
