@@ -59,6 +59,10 @@ module Lotus
             run.max(column)
           end
 
+          def min(column)
+            run.min(column)
+          end
+
           def count
             run.count
           end

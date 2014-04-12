@@ -61,15 +61,22 @@ module Lotus
 
           def average(column)
             if s = sum(column)
+              # TODO DRY
               # s / self.not(column => nil).count.to_f
-              s / run.find_all{|record| !!record[column] }.size.to_f
+              s / all.map {|record| record.public_send(column) }.compact.size.to_f
             end
           end
 
           alias_method :avg, :average
 
           def max(column)
+            # TODO DRY
             all.map {|record| record.public_send(column) }.compact.max
+          end
+
+          def min(column)
+            # TODO DRY
+            all.map {|record| record.public_send(column) }.compact.min
           end
 
           private

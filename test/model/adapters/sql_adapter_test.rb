@@ -655,5 +655,53 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
       end
     end
+
+    describe 'min' do
+      describe 'with an empty collection' do
+        it 'returns nil' do
+          result = @adapter.query(collection) do
+            all
+          end.min(:age)
+
+          result.must_be_nil
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, TestUser.new(name: 'S'))
+        end
+
+        it 'returns the minimum of all the records' do
+          query = Proc.new {
+            all
+          }
+
+          result = @adapter.query(collection, &query).min(:age)
+          result.must_equal 31
+        end
+
+        it 'returns the minimum from an empty query block' do
+          query = Proc.new {
+          }
+
+          result = @adapter.query(collection, &query).min(:age)
+          result.must_equal 31
+        end
+
+        it 'returns only the minimum of requested records' do
+          name = user1.name
+
+          query = Proc.new {
+            where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).min(:age)
+          result.must_equal 32
+        end
+      end
+    end
   end
 end
