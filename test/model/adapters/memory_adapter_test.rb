@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Lotus::Model::Adapters::MemoryAdapter do
   before do
-    TestUser = Struct.new(:id, :name) do
+    TestUser = Struct.new(:id, :name, :age) do
       include Lotus::Entity
     end
 
@@ -16,6 +16,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
         attribute :id,   Integer
         attribute :name, String
+        attribute :age,  Integer
       end
 
       collection :devices do
@@ -245,8 +246,8 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       @adapter.clear(collection)
     end
 
-    let(:user1) { TestUser.new(name: 'L') }
-    let(:user2) { TestUser.new(name: 'MG') }
+    let(:user1) { TestUser.new(name: 'L',  age: 32) }
+    let(:user2) { TestUser.new(name: 'MG', age: 31) }
 
     describe 'where' do
       describe 'with an empty collection' do
@@ -479,6 +480,100 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
           result = @adapter.query(collection, &query).count
           result.must_equal 1
+        end
+      end
+    end
+
+    describe 'average' do
+      describe 'with an empty collection' do
+        it 'returns nil' do
+          result = @adapter.query(collection) do
+            all
+          end.average(:age)
+
+          result.must_be_nil
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns the average of all the records' do
+          query = Proc.new {
+            all
+          }
+
+          result = @adapter.query(collection, &query).average(:age)
+          result.must_equal 31
+        end
+
+        it 'returns the average from an empty query block' do
+          query = Proc.new {
+          }
+
+          result = @adapter.query(collection, &query).average(:age)
+          result.must_equal 31
+        end
+
+        it 'returns only the average of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).average(:age)
+          result.must_equal 31
+        end
+      end
+    end
+
+    describe 'avg' do
+      describe 'with an empty collection' do
+        it 'returns nil' do
+          result = @adapter.query(collection) do
+            all
+          end.avg(:age)
+
+          result.must_be_nil
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns the average of all the records' do
+          query = Proc.new {
+            all
+          }
+
+          result = @adapter.query(collection, &query).avg(:age)
+          result.must_equal 31
+        end
+
+        it 'returns the average from an empty query block' do
+          query = Proc.new {
+          }
+
+          result = @adapter.query(collection, &query).avg(:age)
+          result.must_equal 31
+        end
+
+        it 'returns only the average of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).avg(:age)
+          result.must_equal 31
         end
       end
     end

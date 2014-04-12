@@ -38,12 +38,34 @@ module Lotus
           end
 
           def all
-            @mapper.deserialize(@collection.name, Lotus::Utils::Kernel.Array(run))
+            @mapper.deserialize(@collection.name, run)
           end
 
           def count
             run.count
           end
+
+          def average(column)
+            result = run
+
+            if result.any?
+              sum = result.inject(0.0) do |acc, record|
+                if value = record.fetch(column) { nil }
+                  acc += value
+                end
+              end
+
+              if sum
+                @mapper.deserialize_column(
+                  @collection.name,
+                  column,
+                  sum / result.size.to_f
+                )
+              end
+            end
+          end
+
+          alias_method :avg, :average
 
           private
           def run
@@ -60,7 +82,7 @@ module Lotus
               result.instance_exec(&modifier)
             end
 
-            result
+            Lotus::Utils::Kernel.Array(result)
           end
         end
       end
