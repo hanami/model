@@ -32,6 +32,11 @@ module Lotus
 
           alias_method :not, :exclude
 
+          def select(*columns)
+            conditions.push([:select, *columns])
+            self
+          end
+
           def limit(number)
             conditions.push([:limit, number])
             self

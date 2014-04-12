@@ -382,6 +382,73 @@ describe Lotus::Model::Adapters::SqlAdapter do
       end
     end
 
+    describe 'select' do
+      describe 'with an empty collection' do
+        it 'returns an empty result' do
+          result = @adapter.query(collection) do
+            select(:age)
+          end.all
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, user3)
+        end
+
+        let(:user1) { TestUser.new(name: 'L', age: 32) }
+        let(:user3) { TestUser.new(name: 'S') }
+        let(:users) { [user1, user2, user3] }
+
+        it 'returns the selected columnts from all the records' do
+          query = Proc.new {
+            select(:age)
+          }
+
+          result = @adapter.query(collection, &query).all
+
+          users.each do |user|
+            record = result.find {|r| r.age == user.age }
+            record.wont_be_nil
+            record.name.must_be_nil
+          end
+        end
+
+        it 'returns only the select of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name).select(:age)
+          }
+
+          result = @adapter.query(collection, &query).all
+
+          record = result.first
+          record.age.must_equal(user2.age)
+          record.name.must_be_nil
+        end
+
+        it 'returns only the multiple select of requested records' do
+          name = user2.name
+
+          query = Proc.new {
+            where(name: name).select(:name, :age)
+          }
+
+          result = @adapter.query(collection, &query).all
+
+          record = result.first
+          record.name.must_equal(user2.name)
+          record.age.must_equal(user2.age)
+          record.id.must_be_nil
+        end
+      end
+    end
+
     describe 'order' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do

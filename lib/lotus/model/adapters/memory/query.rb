@@ -30,6 +30,11 @@ module Lotus
 
           alias_method :not, :exclude
 
+          def select(*columns)
+            columns = Lotus::Utils::Kernel.Array(columns).uniq
+            modifiers.push(Proc.new{ flatten!; each {|r| r.delete_if {|k,_| !columns.include?(k)} } })
+          end
+
           def order(column)
             conditions.push(Proc.new{ sort_by{|r| r.fetch(column)} })
             self
