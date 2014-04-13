@@ -78,22 +78,18 @@ module Lotus
 
           def average(column)
             if s = sum(column)
-              # TODO DRY
-              # s / self.not(column => nil).count.to_f
-              s / all.map {|record| record.public_send(column) }.compact.size.to_f
+              s / _all_with_present_column(column).count.to_f
             end
           end
 
           alias_method :avg, :average
 
           def max(column)
-            # TODO DRY
-            all.map {|record| record.public_send(column) }.compact.max
+            _all_with_present_column(column).max
           end
 
           def min(column)
-            # TODO DRY
-            all.map {|record| record.public_send(column) }.compact.min
+            _all_with_present_column(column).min
           end
 
           def interval(column)
@@ -118,6 +114,10 @@ module Lotus
             end
 
             Lotus::Utils::Kernel.Array(result)
+          end
+
+          def _all_with_present_column(column)
+            all.map {|record| record.public_send(column) }.compact
           end
         end
       end
