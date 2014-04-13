@@ -67,7 +67,9 @@ module Lotus
         end
 
         def query(collection, &blk)
-          _query.new(_collection(collection), @mapper, &blk)
+          @mutex.synchronize do
+            _query.new(_collection(collection), @mapper, &blk)
+          end
         end
 
         private
