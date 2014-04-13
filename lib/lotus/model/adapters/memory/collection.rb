@@ -35,7 +35,7 @@ module Lotus
           end
 
           def delete(entity)
-            records[entity.id] = nil
+            records.delete(entity.id)
           end
 
           def all

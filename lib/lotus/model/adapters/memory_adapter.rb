@@ -35,31 +35,6 @@ module Lotus
           end
         end
 
-        def all(collection)
-          @mutex.synchronize do
-            _deserialize(collection, super)
-          end
-        end
-
-        def find(collection, id)
-          @mutex.synchronize do
-            _deserialize(
-               collection,
-              _collection(collection).find(id)
-            ).first
-          end
-        end
-
-        def first(collection)
-          @mutex.synchronize do
-            _deserialize(collection, super).first
-          end
-        end
-
-        def last(collection)
-          all(collection).last
-        end
-
         def clear(collection)
           @mutex.synchronize do
             _collection(collection).clear
@@ -78,6 +53,7 @@ module Lotus
         end
 
         def _query
+          # FIXME Dependency injection
           Memory::Query
         end
       end

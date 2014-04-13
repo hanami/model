@@ -154,7 +154,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     end
 
     let(:entity)      { TestUser.new }
-    let(:nil_entity)  { TestUser.new(id: 0) }
+    let(:nil_entity)  { {id: 0} }
 
     it 'returns the record by id' do
       @adapter.find(collection, entity.id).must_equal entity

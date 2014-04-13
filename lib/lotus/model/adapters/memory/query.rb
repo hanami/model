@@ -3,6 +3,7 @@ module Lotus
     module Adapters
       module Memory
         class Query
+          include Enumerable
           attr_reader :conditions, :modifiers
 
           def initialize(collection, mapper, &blk)
@@ -11,6 +12,10 @@ module Lotus
             @conditions = []
             @modifiers  = []
             instance_eval(&blk) if block_given?
+          end
+
+          def each(&blk)
+            all.each(&blk)
           end
 
           def where(condition)

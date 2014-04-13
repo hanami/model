@@ -38,34 +38,6 @@ module Lotus
             ).delete
         end
 
-        def all(collection)
-          _deserialize(collection, super)
-        end
-
-        def find(collection, id)
-          _deserialize(
-             collection,
-            _collection(collection)
-              .where(
-                _key(collection) => id
-              ).first
-          ).first
-        end
-
-        def first(collection)
-          _deserialize(collection, super).first
-        end
-
-        def last(collection)
-          _deserialize(
-             collection,
-            _collection(collection)
-              .order(
-                _key(collection)
-              ).last
-          ).first
-        end
-
         def clear(collection)
           _collection(collection).delete
         end
@@ -76,10 +48,24 @@ module Lotus
 
         private
         def _collection(name)
+          # FIXME wrap the collection, so that Sql::Query and Memory::Query
+          # #initialize can have the same signature.
+          #
+          # class Sql::Collection < Sequel::Dataset
+          #   def initialize(*args)
+          #     super(*args)
+          #     @name = name
+          #   end
+          # end
+          #
+          # And use it:
+          #
+          # Sequel.dataset_class = Sql::Collection
           @connection[name]
         end
 
         def _query
+          # FIXME Dependency injection
           Sql::Query
         end
       end

@@ -3,6 +3,7 @@ module Lotus
     module Adapters
       module Sql
         class Query
+          include Enumerable
           attr_reader :conditions
 
           def initialize(table_name, collection, mapper, &blk)
@@ -12,6 +13,10 @@ module Lotus
 
             @conditions = []
             instance_eval(&blk) if block_given?
+          end
+
+          def each(&blk)
+            all.each(&blk)
           end
 
           def all

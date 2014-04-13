@@ -16,6 +16,7 @@ module Lotus
         end
       end
 
+      # FIXME rename into identity
       def key(collection)
         collection(collection).key
       end
@@ -71,13 +72,13 @@ module Lotus
         collection(collection).serialize(entity)
       end
 
-      # FIXME remove this indirection level
+      # FIXME remove this indirection level, use collection directly
       def deserialize(collection, records)
         collection(collection).load! # FIXME this isn't thread safe
         collection(collection).deserialize(records)
       end
 
-      # FIXME remove this indirection level
+      # FIXME remove this indirection level, use collection directly
       def deserialize_column(collection, column, value)
         collection(collection).load! # FIXME this isn't thread safe
         collection(collection).deserialize_attribute(column, value)

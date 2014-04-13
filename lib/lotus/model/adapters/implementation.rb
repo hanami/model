@@ -13,11 +13,22 @@ module Lotus
         end
 
         def all(collection)
-          _collection(collection).all
+          query(collection).all
+        end
+
+        def find(collection, id)
+          # TODO DRY see #first, #last
+          query(collection).where(_key(collection) => id).limit(1).first
         end
 
         def first(collection)
-          _collection(collection).first
+          # TODO DRY see #find, #last
+          query(collection).asc(_key(collection)).limit(1).first
+        end
+
+        def last(collection)
+          # TODO DRY see #find, #first
+          query(collection).desc(_key(collection)).limit(1).first
         end
 
         private
@@ -33,10 +44,7 @@ module Lotus
           @mapper.serialize(collection, entity)
         end
 
-        def _deserialize(collection, *records)
-          @mapper.deserialize(collection, Lotus::Utils::Kernel.Array(records))
-        end
-
+        # FIXME rename into _identity
         def _key(collection)
           @mapper.key(collection)
         end
