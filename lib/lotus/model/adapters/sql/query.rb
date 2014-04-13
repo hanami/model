@@ -52,6 +52,13 @@ module Lotus
             self
           end
 
+          alias_method :asc, :order
+
+          def desc(column)
+            conditions.push([:order, Sequel.desc(column)])
+            self
+          end
+
           def or(condition)
             conditions.push([:or, condition])
             self

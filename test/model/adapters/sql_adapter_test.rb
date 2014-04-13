@@ -477,6 +477,63 @@ describe Lotus::Model::Adapters::SqlAdapter do
       end
     end
 
+    describe 'asc' do
+      describe 'with an empty collection' do
+        it 'returns an empty result set' do
+          result = @adapter.query(collection) do
+            asc(:id)
+          end.all
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns sorted records' do
+          query = Proc.new {
+            asc(:id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user1, user2]
+        end
+      end
+    end
+
+    describe 'desc' do
+      describe 'with an empty collection' do
+        it 'returns an empty result set' do
+          result = @adapter.query(collection) do
+            desc(:id)
+          end.all
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+        end
+
+        it 'returns reverse sorted records' do
+          query = Proc.new {
+            desc(:id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user2, user1]
+        end
+      end
+    end
+
+
     describe 'limit' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do

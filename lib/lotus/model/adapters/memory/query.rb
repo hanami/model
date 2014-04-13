@@ -40,6 +40,13 @@ module Lotus
             self
           end
 
+          alias_method :asc, :order
+
+          def desc(column)
+            conditions.push(Proc.new{ sort_by{|r| r.fetch(column)}.reverse })
+            self
+          end
+
           def limit(number)
             modifiers.push(Proc.new{ replace(flatten.first(number)) })
             self
