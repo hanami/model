@@ -18,18 +18,21 @@ module Lotus
         end
 
         def find(collection, id)
-          # TODO DRY see #first, #last
-          _find(collection, id).limit(1).first
+          _first(
+            _find(collection, id)
+          )
         end
 
         def first(collection)
-          # TODO DRY see #find, #last
-          query(collection).asc(_identity(collection)).limit(1).first
+          _first(
+            query(collection).asc(_identity(collection))
+          )
         end
 
         def last(collection)
-          # TODO DRY see #find, #first
-          query(collection).desc(_identity(collection)).limit(1).first
+          _first(
+            query(collection).desc(_identity(collection))
+          )
         end
 
         private
@@ -44,6 +47,10 @@ module Lotus
         def _find(collection, id)
           identity = _identity(collection)
           query(collection).where(identity => _id(collection, identity, id))
+        end
+
+        def _first(query)
+          query.limit(1).first
         end
 
         def _identity(collection)
