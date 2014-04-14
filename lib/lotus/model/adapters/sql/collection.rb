@@ -20,6 +20,10 @@ module Lotus
             Collection.new(super, @mapper)
           end
 
+          def insert(entity)
+            super _serialize(entity)
+          end
+
           def limit(*args)
             Collection.new(super, @mapper)
           end
@@ -44,8 +48,17 @@ module Lotus
             Collection.new(super, @mapper)
           end
 
+          def update(entity)
+            super _serialize(entity)
+          end
+
           def to_a
             @mapper.deserialize(name, self)
+          end
+
+          private
+          def _serialize(entity)
+            @mapper.serialize(name, entity)
           end
         end
       end

@@ -42,7 +42,7 @@ module Lotus
         end
 
         def command(query)
-          Sql::Command.new(query, @mapper)
+          Sql::Command.new(query)
         end
 
         def query(collection, &blk)
