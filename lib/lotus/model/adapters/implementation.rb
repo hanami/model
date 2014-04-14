@@ -13,6 +13,7 @@ module Lotus
         end
 
         def all(collection)
+          # TODO consider to make this lazy (aka remove #all)
           query(collection).all
         end
 
@@ -34,14 +35,6 @@ module Lotus
         private
         def _collection(name)
           raise NotImplementedError
-        end
-
-        def _query
-          raise NotImplementedError
-        end
-
-        def _serialize(collection, entity)
-          @mapper.serialize(collection, entity)
         end
 
         # FIXME rename into _identity

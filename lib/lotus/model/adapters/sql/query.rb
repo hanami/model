@@ -6,9 +6,8 @@ module Lotus
           include Enumerable
           attr_reader :conditions
 
-          def initialize(table_name, collection, mapper, &blk)
+          def initialize(collection, mapper, &blk)
             @collection = collection
-            @table_name = table_name
             @mapper     = mapper
 
             @conditions = []
@@ -20,7 +19,7 @@ module Lotus
           end
 
           def all
-            @mapper.deserialize(@table_name, Lotus::Utils::Kernel.Array(run))
+            @mapper.deserialize(@collection.name, Lotus::Utils::Kernel.Array(run))
           end
 
           def where(condition)

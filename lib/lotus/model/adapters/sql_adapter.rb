@@ -1,5 +1,7 @@
 require 'lotus/model/adapters/abstract'
 require 'lotus/model/adapters/implementation'
+require 'lotus/model/adapters/sql/collection'
+require 'lotus/model/adapters/sql/command'
 require 'lotus/model/adapters/sql/query'
 require 'sequel'
 
@@ -12,61 +14,37 @@ module Lotus
         def initialize(mapper, uri)
           super
           @connection = Sequel.connect(@uri)
+          @connection.extend_datasets(Sql::Collection)
         end
 
         def create(collection, entity)
-          entity.id = _collection(collection)
-                        .insert(
-                          _serialize(collection, entity)
-                        )
+          entity.id = command(collection).create(entity)
           entity
         end
 
         def update(collection, entity)
-          _collection(collection)
-            .where(
-              _key(collection) => entity.id
-            ).update(
-              _serialize(collection, entity)
-            )
+          command(collection).update(entity, _key(collection))
         end
 
         def delete(collection, entity)
-          _collection(collection)
-            .where(
-              _key(collection) => entity.id
-            ).delete
+          command(collection).delete(entity, _key(collection))
         end
 
         def clear(collection)
-          _collection(collection).delete
+          command(collection).clear
+        end
+
+        def command(collection)
+          Sql::Command.new(_collection(collection), @mapper)
         end
 
         def query(collection, &blk)
-          _query.new(collection, _collection(collection), @mapper, &blk)
+          Sql::Query.new(_collection(collection), @mapper, &blk)
         end
 
         private
         def _collection(name)
-          # FIXME wrap the collection, so that Sql::Query and Memory::Query
-          # #initialize can have the same signature.
-          #
-          # class Sql::Collection < Sequel::Dataset
-          #   def initialize(*args)
-          #     super(*args)
-          #     @name = name
-          #   end
-          # end
-          #
-          # And use it:
-          #
-          # Sequel.dataset_class = Sql::Collection
           @connection[name]
-        end
-
-        def _query
-          # FIXME Dependency injection
-          Sql::Query
         end
       end
     end

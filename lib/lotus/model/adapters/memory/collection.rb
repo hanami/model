@@ -1,5 +1,3 @@
-require 'lotus/model/adapters/memory/query'
-
 module Lotus
   module Model
     module Adapters
@@ -53,23 +51,6 @@ module Lotus
           def clear
             @records     = {}
             @primary_key = PrimaryKey.new
-          end
-
-          def where(condition)
-            query.where(condition)
-          end
-
-          def order(column)
-            query.order(column)
-          end
-
-          def limit(number)
-            query.limit(number)
-          end
-
-          private
-          def query
-            Query.new(self)
           end
         end
       end
