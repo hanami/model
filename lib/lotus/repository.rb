@@ -47,8 +47,7 @@ module Lotus
       end
 
       def find(id)
-        # FIXME id coercion should second the type defined in the mapper
-        @adapter.find(collection, Integer(id)).tap do |record|
+        @adapter.find(collection, id).tap do |record|
           raise Lotus::Model::EntityNotFound.new unless record
         end
       end

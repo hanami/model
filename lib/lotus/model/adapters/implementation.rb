@@ -19,7 +19,8 @@ module Lotus
 
         def find(collection, id)
           # TODO DRY see #first, #last
-          query(collection).where(_key(collection) => id).limit(1).first
+          key = _key(collection)
+          query(collection).where(key => _id(collection, key, id)).limit(1).first
         end
 
         def first(collection)
@@ -40,6 +41,10 @@ module Lotus
         # FIXME rename into _identity
         def _key(collection)
           @mapper.key(collection)
+        end
+
+        def _id(collection, key, value)
+          @mapper.deserialize_column(collection, key, value)
         end
       end
     end

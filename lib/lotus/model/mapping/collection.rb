@@ -17,9 +17,9 @@ module Lotus
         end
 
         def _compile!
-          code = @collection.attributes.map do |name,(klass,_)|
+          code = @collection.attributes.map do |_,(klass,mapped)|
             %{
-            def deserialize_#{ name }(value)
+            def deserialize_#{ mapped }(value)
               Lotus::Utils::Kernel.#{klass}(value)
             end
             }
