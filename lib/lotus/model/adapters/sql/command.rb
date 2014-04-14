@@ -3,35 +3,32 @@ module Lotus
     module Adapters
       module Sql
         class Command
-          def initialize(collection, mapper)
-            @collection = collection
+          def initialize(query, mapper)
+            @collection = query.scoped
             @mapper     = mapper
           end
 
           def create(entity)
             @collection.insert(
-              _serialize(@collection.name, entity)
+              _serialize(entity)
             )
           end
 
-          def update(entity, key)
-            @collection.where(key => entity.id).update(
-              _serialize(@collection.name, entity)
+          def update(entity)
+            @collection.update(
+              _serialize(entity)
             )
           end
 
-          def delete(entity, key)
-            @collection.where(key => entity.id)
-              .delete
-          end
-
-          def clear
+          def delete
             @collection.delete
           end
 
+          alias_method :clear, :delete
+
           private
-          def _serialize(collection, entity)
-            @mapper.serialize(collection, entity)
+          def _serialize(entity)
+            @mapper.serialize(@collection.name, entity)
           end
         end
       end

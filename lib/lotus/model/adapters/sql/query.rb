@@ -102,7 +102,6 @@ module Lotus
             run.count
           end
 
-          private
           def run
             current_scope = @collection
 
@@ -112,6 +111,8 @@ module Lotus
 
             current_scope
           end
+
+          alias_method :scoped, :run
         end
       end
     end

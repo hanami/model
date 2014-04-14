@@ -19,8 +19,7 @@ module Lotus
 
         def find(collection, id)
           # TODO DRY see #first, #last
-          key = _key(collection)
-          query(collection).where(key => _id(collection, key, id)).limit(1).first
+          _find(collection, id).limit(1).first
         end
 
         def first(collection)
@@ -36,6 +35,11 @@ module Lotus
         private
         def _collection(name)
           raise NotImplementedError
+        end
+
+        def _find(collection, id)
+          key = _key(collection)
+          query(collection).where(key => _id(collection, key, id))
         end
 
         # FIXME rename into _identity

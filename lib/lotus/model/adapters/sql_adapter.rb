@@ -19,24 +19,30 @@ module Lotus
         end
 
         def create(collection, entity)
-          entity.id = command(collection).create(entity)
+          entity.id = command(
+                        query(collection)
+                      ).create(entity)
           entity
         end
 
         def update(collection, entity)
-          command(collection).update(entity, _key(collection))
+          command(
+            _find(collection, entity.id)
+          ).update(entity)
         end
 
         def delete(collection, entity)
-          command(collection).delete(entity, _key(collection))
+          command(
+            _find(collection, entity.id)
+          ).delete
         end
 
         def clear(collection)
-          command(collection).clear
+          command(query(collection)).clear
         end
 
-        def command(collection)
-          Sql::Command.new(_collection(collection), @mapper)
+        def command(query)
+          Sql::Command.new(query, @mapper)
         end
 
         def query(collection, &blk)
