@@ -255,13 +255,7 @@ describe Lotus::Repository do
 
         it 'defines custom finders' do
           actual = ArticleRepository.by_user(user1)
-
-          # FIXME remove this condition
-          if actual.respond_to?(:all)
-            actual.all.must_equal [article]
-          else
-            actual.must_equal [article]
-          end
+          actual.all.must_equal [article]
         end
       end
     end
