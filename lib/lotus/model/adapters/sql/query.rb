@@ -6,11 +6,10 @@ module Lotus
           include Enumerable
           attr_reader :conditions
 
-          def initialize(collection, mapper, &blk)
+          def initialize(collection, &blk)
             @collection = collection
-            @mapper     = mapper
-
             @conditions = []
+
             instance_eval(&blk) if block_given?
           end
 
@@ -19,7 +18,7 @@ module Lotus
           end
 
           def all
-            @mapper.deserialize(@collection.name, Lotus::Utils::Kernel.Array(run))
+            Lotus::Utils::Kernel.Array(run)
           end
 
           def where(condition)

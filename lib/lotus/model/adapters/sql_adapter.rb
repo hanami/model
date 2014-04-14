@@ -15,7 +15,7 @@ module Lotus
           super
 
           @connection = Sequel.connect(@uri)
-          @connection.extend_datasets(Sql::Collection)
+          @connection.extend_datasets(Sql::Collection::Interface)
         end
 
         def create(collection, entity)
@@ -46,12 +46,12 @@ module Lotus
         end
 
         def query(collection, &blk)
-          Sql::Query.new(_collection(collection), @mapper, &blk)
+          Sql::Query.new(_collection(collection), &blk)
         end
 
         private
         def _collection(name)
-          @connection[name]
+          Sql::Collection.new(@connection[name], @mapper)
         end
       end
     end
