@@ -3,13 +3,6 @@ require 'lotus/utils/kernel'
 module Lotus
   module Model
     module Mapping
-      #TODO check if move this into lotus/model/mapping.rb
-      class UnmappedCollectionError < ::StandardError
-        def initialize(name)
-          super("Cannot find collection: #{ name }")
-        end
-      end
-
       class Coercer
         def initialize(collection)
           @collection = collection

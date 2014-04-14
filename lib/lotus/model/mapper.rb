@@ -1,4 +1,4 @@
-require 'lotus/model/mapping/collection'
+require 'lotus/model/mapping'
 
 module Lotus
   module Model
