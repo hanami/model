@@ -54,7 +54,7 @@ module Lotus
 
         private
         def _collection(name)
-          @collections[name] ||= Memory::Collection.new(name, @mapper.key(name))
+          @collections[name] ||= Memory::Collection.new(name, @mapper.identity(name))
         end
       end
     end

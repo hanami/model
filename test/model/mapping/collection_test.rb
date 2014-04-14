@@ -37,20 +37,20 @@ describe Lotus::Model::Mapping::Collection do
     end
   end
 
-  describe '#key' do
+  describe '#identity' do
     describe 'when a value is given' do
       before do
-        @collection.key(:_id)
+        @collection.identity(:_id)
       end
 
       it 'sets the value' do
-        @collection.key.must_equal :_id
+        @collection.identity.must_equal :_id
       end
     end
 
     describe 'when a value is not given' do
       it 'retuns the value' do
-        @collection.key.must_equal(:id)
+        @collection.identity.must_equal(:id)
       end
     end
   end

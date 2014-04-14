@@ -16,9 +16,8 @@ module Lotus
         end
       end
 
-      # FIXME rename into identity
-      def key(collection)
-        collection(collection).key
+      def identity(collection)
+        collection(collection).identity
       end
 
       # FIXME remove this indirection level

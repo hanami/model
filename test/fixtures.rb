@@ -31,7 +31,7 @@ DB.create_table :users do
 end
 
 DB.create_table :articles do
-  primary_key :identity
+  primary_key :_id
   Integer :user_id
   String  :s_title
   String  :comments_count # Not an error: we're testing String => Integer coercion
@@ -56,11 +56,11 @@ MAPPER = Lotus::Model::Mapper.new do
   collection :articles do
     entity Article
 
-    attribute :id,             Integer, as: :identity
+    attribute :id,             Integer, as: :_id
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
 
-    key :identity
+    identity :_id
   end
 end

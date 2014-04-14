@@ -24,12 +24,12 @@ module Lotus
 
         def first(collection)
           # TODO DRY see #find, #last
-          query(collection).asc(_key(collection)).limit(1).first
+          query(collection).asc(_identity(collection)).limit(1).first
         end
 
         def last(collection)
           # TODO DRY see #find, #first
-          query(collection).desc(_key(collection)).limit(1).first
+          query(collection).desc(_identity(collection)).limit(1).first
         end
 
         private
@@ -38,17 +38,16 @@ module Lotus
         end
 
         def _find(collection, id)
-          key = _key(collection)
-          query(collection).where(key => _id(collection, key, id))
+          identity = _identity(collection)
+          query(collection).where(identity => _id(collection, identity, id))
         end
 
-        # FIXME rename into _identity
-        def _key(collection)
-          @mapper.key(collection)
+        def _identity(collection)
+          @mapper.identity(collection)
         end
 
-        def _id(collection, key, value)
-          @mapper.deserialize_column(collection, key, value)
+        def _id(collection, column, value)
+          @mapper.deserialize_column(collection, column, value)
         end
       end
     end

@@ -58,11 +58,11 @@ module Lotus
           end
         end
 
-        def key(name = nil)
+        def identity(name = nil)
           if name
-            @key = name
+            @identity = name
           else
-            @key || :id
+            @identity || :id
           end
         end
 
