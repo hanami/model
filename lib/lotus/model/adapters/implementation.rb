@@ -37,17 +37,21 @@ module Lotus
           raise NotImplementedError
         end
 
+        def _mapped_collection(name)
+          @mapper.collection(name)
+        end
+
         def _find(collection, id)
           identity = _identity(collection)
           query(collection).where(identity => _id(collection, identity, id))
         end
 
         def _identity(collection)
-          @mapper.identity(collection)
+          _mapped_collection(collection).identity
         end
 
         def _id(collection, column, value)
-          @mapper.deserialize_column(collection, column, value)
+          _mapped_collection(collection).deserialize_attribute(column, value)
         end
       end
     end

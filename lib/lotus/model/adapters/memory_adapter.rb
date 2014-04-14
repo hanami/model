@@ -43,18 +43,18 @@ module Lotus
         end
 
         def command(collection)
-          Memory::Command.new(_collection(collection), @mapper)
+          Memory::Command.new(_collection(collection), _mapped_collection(collection))
         end
 
         def query(collection, &blk)
           @mutex.synchronize do
-            Memory::Query.new(_collection(collection), @mapper, &blk)
+            Memory::Query.new(_collection(collection), _mapped_collection(collection), &blk)
           end
         end
 
         private
         def _collection(name)
-          @collections[name] ||= Memory::Collection.new(name, @mapper.identity(name))
+          @collections[name] ||= Memory::Collection.new(name, _identity(name))
         end
       end
     end

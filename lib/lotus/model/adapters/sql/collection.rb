@@ -11,13 +11,13 @@ module Lotus
             end
           end
 
-          def initialize(dataset, mapper)
+          def initialize(dataset, collection)
             super(dataset)
-            @mapper = mapper
+            @collection = collection
           end
 
           def exclude(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def insert(entity)
@@ -25,27 +25,27 @@ module Lotus
           end
 
           def limit(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def offset(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def or(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def order(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def select(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def where(*args)
-            Collection.new(super, @mapper)
+            Collection.new(super, @collection)
           end
 
           def update(entity)
@@ -53,12 +53,12 @@ module Lotus
           end
 
           def to_a
-            @mapper.deserialize(name, self)
+            @collection.deserialize(self)
           end
 
           private
           def _serialize(entity)
-            @mapper.serialize(name, entity)
+            @collection.serialize(entity)
           end
         end
       end

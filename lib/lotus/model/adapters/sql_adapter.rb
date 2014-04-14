@@ -51,7 +51,7 @@ module Lotus
 
         private
         def _collection(name)
-          Sql::Collection.new(@connection[name], @mapper)
+          Sql::Collection.new(@connection[name], _mapped_collection(name))
         end
       end
     end

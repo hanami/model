@@ -6,9 +6,9 @@ module Lotus
           include Enumerable
           attr_reader :conditions, :modifiers
 
-          def initialize(collection, mapper, &blk)
+          def initialize(dataset, collection, &blk)
+            @dataset    = dataset
             @collection = collection
-            @mapper     = mapper
             @conditions = []
             @modifiers  = []
             instance_eval(&blk) if block_given?
@@ -63,7 +63,7 @@ module Lotus
           end
 
           def all
-            @mapper.deserialize(@collection.name, run)
+            @collection.deserialize(run)
           end
 
           def exist?
@@ -115,7 +115,7 @@ module Lotus
 
           private
           def run
-            result = @collection.all.dup
+            result = @dataset.all.dup
 
             result = conditions.map do |condition|
               result.instance_exec(&condition)

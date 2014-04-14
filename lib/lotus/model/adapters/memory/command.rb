@@ -3,34 +3,33 @@ module Lotus
     module Adapters
       module Memory
         class Command
-          def initialize(collection, mapper)
-            @collection = collection
-            @mapper     = mapper
+          def initialize(dataset, collection)
+            @dataset, @collection = dataset, collection
           end
 
           def create(entity)
-            @collection.create(
-              _serialize(@collection.name, entity)
+            @dataset.create(
+              _serialize(entity)
             )
           end
 
           def update(entity)
-            @collection.update(
-              _serialize(@collection.name, entity)
+            @dataset.update(
+              _serialize(entity)
             )
           end
 
           def delete(entity)
-            @collection.delete(entity)
+            @dataset.delete(entity)
           end
 
           def clear
-            @collection.clear
+            @dataset.clear
           end
 
           private
-          def _serialize(collection, entity)
-            @mapper.serialize(collection, entity)
+          def _serialize(entity)
+            @collection.serialize(entity)
           end
         end
       end
