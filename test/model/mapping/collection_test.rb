@@ -5,6 +5,12 @@ describe Lotus::Model::Mapping::Collection do
     @collection = Lotus::Model::Mapping::Collection.new(:users)
   end
 
+  describe '::Boolean' do
+    it 'defines top level constant' do
+      assert defined?(::Boolean)
+    end
+  end
+
   describe '#initialize' do
     it 'assigns the name' do
       @collection.name.must_equal :users

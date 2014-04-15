@@ -37,6 +37,9 @@ module Lotus
       class Collection
         REPOSITORY_SUFFIX = 'Repository'.freeze
 
+        class ::Boolean
+        end
+
         attr_reader :name, :attributes
 
         def initialize(name, &blk)
