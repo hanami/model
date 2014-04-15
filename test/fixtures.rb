@@ -20,6 +20,10 @@ class ArticleRepository
       where(user_id: user.id)
     end
   end
+
+  def self.not_by_user(user)
+    exclude by_user(user)
+  end
 end
 
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)

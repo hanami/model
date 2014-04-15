@@ -113,6 +113,10 @@ module Lotus
             min(column)..max(column)
           end
 
+          def negate!
+            raise NotImplementedError
+          end
+
           private
           def run
             result = @dataset.all.dup

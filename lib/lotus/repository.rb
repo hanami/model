@@ -68,6 +68,11 @@ module Lotus
       def query(&blk)
         @adapter.query(collection, &blk)
       end
+
+      def exclude(query)
+        query.negate!
+        query
+      end
     end
   end
 end

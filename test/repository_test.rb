@@ -257,6 +257,13 @@ describe Lotus::Repository do
           actual = ArticleRepository.by_user(user1)
           actual.all.must_equal [article]
         end
+
+        if adapter == :sql
+          it 'negates a query' do
+            actual = ArticleRepository.not_by_user(user1)
+            actual.all.must_equal []
+          end
+        end
       end
     end
   end
