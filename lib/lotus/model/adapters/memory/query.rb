@@ -1,9 +1,15 @@
+require 'forwardable'
+require 'lotus/utils/kernel'
+
 module Lotus
   module Model
     module Adapters
       module Memory
         class Query
           include Enumerable
+          extend  Forwardable
+
+          def_delegators :all, :each, :to_s, :empty?
           attr_reader :conditions, :modifiers
 
           def initialize(dataset, collection, &blk)
@@ -12,10 +18,6 @@ module Lotus
             @conditions = []
             @modifiers  = []
             instance_eval(&blk) if block_given?
-          end
-
-          def each(&blk)
-            all.each(&blk)
           end
 
           def where(condition)
