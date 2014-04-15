@@ -14,10 +14,9 @@ describe Lotus::Model::Adapters::Implementation do
     Object.send(:remove_const, :TestAdapter)
   end
 
-  it 'must implement #_collection'
-  # it 'must implement #_collection' do
-  #   -> {
-  #     @adapter.all(:collection)
-  #   }.must_raise NotImplementedError
-  # end
+  it 'must implement #_collection' do
+    -> {
+      @adapter.send(:_collection, :x)
+    }.must_raise NotImplementedError
+  end
 end

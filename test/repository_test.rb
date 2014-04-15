@@ -8,8 +8,8 @@ describe Lotus::Repository do
   let(:article) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
 
   { memory: [Lotus::Model::Adapters::MemoryAdapter, nil, MAPPER],
-    sql:    [Lotus::Model::Adapters::SqlAdapter, SQLITE_CONNECTION_STRING, MAPPER] }.each do |name, (adapter,uri,mapper)|
-    describe "with #{ name } adapter" do
+    sql:    [Lotus::Model::Adapters::SqlAdapter, SQLITE_CONNECTION_STRING, MAPPER] }.each do |adapter_name, (adapter,uri,mapper)|
+    describe "with #{ adapter_name } adapter" do
       before do
         UserRepository.adapter    = adapter.new(mapper, uri)
         ArticleRepository.adapter = adapter.new(mapper, uri)
@@ -258,7 +258,7 @@ describe Lotus::Repository do
           actual.all.must_equal [article]
         end
 
-        if adapter == :sql
+        if adapter_name == :sql
           it 'negates a query' do
             actual = ArticleRepository.not_by_user(user1)
             actual.all.must_equal []
