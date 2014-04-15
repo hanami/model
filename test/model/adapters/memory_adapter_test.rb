@@ -24,7 +24,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
         attribute :id, Integer
       end
-    end
+    end.load!
 
     @adapter = Lotus::Model::Adapters::MemoryAdapter.new(@mapper)
   end

@@ -24,7 +24,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
 
         attribute :id, Integer
       end
-    end
+    end.load!
 
     @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
   end

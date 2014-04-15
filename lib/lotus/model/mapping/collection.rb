@@ -64,19 +64,16 @@ module Lotus
         end
 
         def serialize(entity)
-          self.load! # FIXME this isn't thread safe
           @coercer.to_record(entity)
         end
 
         def deserialize(records)
-          self.load! # FIXME this isn't thread safe
           records.map do |record|
             @coercer.from_record(record)
           end
         end
 
         def deserialize_attribute(attribute, value)
-          self.load! # FIXME this isn't thread safe
           @coercer.public_send(:"deserialize_#{ attribute }", value)
         end
 
@@ -87,7 +84,6 @@ module Lotus
 
         private
         def configure_repository!
-          # TODO move this in an high level loader (eg Model.load!)
           # FIXME make this hardcoded string configurable
           repository = Object.const_get("#{ entity.name }Repository")
           repository.collection = name

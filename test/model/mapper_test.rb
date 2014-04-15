@@ -11,7 +11,7 @@ describe Lotus::Model::Mapper do
         collection :articles do
           entity Article
         end
-      end
+      end.load!
 
       mapper.collection(:articles).must_be_kind_of Lotus::Model::Mapping::Collection
     end
@@ -23,6 +23,8 @@ describe Lotus::Model::Mapper do
         @mapper.collection :users do
           entity User
         end
+
+        @mapper.load!
 
         collection = @mapper.collection(:users)
         collection.must_be_kind_of Lotus::Model::Mapping::Collection
@@ -36,6 +38,8 @@ describe Lotus::Model::Mapper do
           @mapper.collection :users do
             entity User
           end
+
+          @mapper.load!
         end
 
         it 'returns the collection' do

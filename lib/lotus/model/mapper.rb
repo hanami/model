@@ -15,6 +15,11 @@ module Lotus
           @collections[name] or raise Mapping::UnmappedCollectionError.new(name)
         end
       end
+
+      def load!
+        @collections.each {|_, collection| collection.load! }
+        self
+      end
     end
   end
 end

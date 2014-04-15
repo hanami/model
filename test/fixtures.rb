@@ -63,4 +63,4 @@ MAPPER = Lotus::Model::Mapper.new do
 
     identity :_id
   end
-end
+end.load!
