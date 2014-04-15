@@ -182,6 +182,10 @@ describe Lotus::Repository do
             result.comments_count.must_be_kind_of(Integer)
           end
 
+          it "doesn't assign a value to unmapped attributes" do
+            ArticleRepository.find(article.id).unmapped_attribute.must_be_nil
+          end
+
           it "raises error when the given id isn't associated with any entity" do
             -> { UserRepository.find(1_000_000) }.must_raise(Lotus::Model::EntityNotFound)
           end

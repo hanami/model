@@ -5,7 +5,7 @@ end
 
 class Article
   include Lotus::Entity
-  self.attributes = :user_id, :title, :comments_count
+  self.attributes = :user_id, :unmapped_attribute, :title, :comments_count
 end
 
 class UserRepository
@@ -39,6 +39,7 @@ DB.create_table :articles do
   Integer :user_id
   String  :s_title
   String  :comments_count # Not an error: we're testing String => Integer coercion
+  String  :umapped_column
 end
 
 DB.create_table :devices do
