@@ -1,3 +1,6 @@
+require 'forwardable'
+require 'lotus/utils/kernel'
+
 module Lotus
   module Model
     module Adapters
@@ -9,6 +12,9 @@ module Lotus
           }.freeze
 
           include Enumerable
+          extend  Forwardable
+
+          def_delegators :all, :each, :to_s, :empty?
           attr_reader :conditions
 
           def initialize(collection, &blk)
@@ -16,10 +22,6 @@ module Lotus
             @conditions = []
 
             instance_eval(&blk) if block_given?
-          end
-
-          def each(&blk)
-            all.each(&blk)
           end
 
           def all
