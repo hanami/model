@@ -3,6 +3,11 @@ module Lotus
     module Adapters
       module Sql
         class Query
+          OPERATORS_MAPPING = {
+            where:   :exclude,
+            exclude: :where
+          }.freeze
+
           include Enumerable
           attr_reader :conditions
 
@@ -99,6 +104,12 @@ module Lotus
 
           def count
             run.count
+          end
+
+          def negate!
+            conditions.map! do |(operator, condition)|
+              [OPERATORS_MAPPING.fetch(operator) { operator }, condition]
+            end
           end
 
           def run
