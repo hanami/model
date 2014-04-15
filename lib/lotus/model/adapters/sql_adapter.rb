@@ -13,9 +13,7 @@ module Lotus
 
         def initialize(mapper, uri)
           super
-
           @connection = Sequel.connect(@uri)
-          @connection.extend_datasets(Sql::Collection::Interface)
         end
 
         def create(collection, entity)

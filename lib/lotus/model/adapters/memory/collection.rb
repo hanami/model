@@ -40,14 +40,6 @@ module Lotus
             records.values
           end
 
-          def find(id)
-            records[id] unless id.nil?
-          end
-
-          def first
-            all.first
-          end
-
           def clear
             @records     = {}
             @primary_key = PrimaryKey.new

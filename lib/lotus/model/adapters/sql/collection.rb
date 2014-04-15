@@ -5,12 +5,6 @@ module Lotus
     module Adapters
       module Sql
         class Collection < SimpleDelegator
-          module Interface
-            def name
-              first_source_table
-            end
-          end
-
           def initialize(dataset, collection)
             super(dataset)
             @collection = collection
