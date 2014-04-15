@@ -1,5 +1,3 @@
-require 'lotus/utils/kernel'
-
 module Lotus
   module Model
     module Adapters
