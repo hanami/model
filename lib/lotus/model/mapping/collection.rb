@@ -35,6 +35,8 @@ module Lotus
       end
 
       class Collection
+        REPOSITORY_SUFFIX = 'Repository'.freeze
+
         attr_reader :name, :attributes
 
         def initialize(name, &blk)
@@ -84,8 +86,7 @@ module Lotus
 
         private
         def configure_repository!
-          # FIXME make this hardcoded string configurable
-          repository = Object.const_get("#{ entity.name }Repository")
+          repository = Object.const_get("#{ entity.name }#{ REPOSITORY_SUFFIX }")
           repository.collection = name
         rescue NameError
         end
