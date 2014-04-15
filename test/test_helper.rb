@@ -19,7 +19,6 @@ end
 require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus-model'
-require 'lotus/model/mapper'
 require 'lotus/model/adapters/memory_adapter'
 require 'lotus/model/adapters/sql_adapter'
 

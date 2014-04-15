@@ -1,6 +1,7 @@
 require 'lotus/model/version'
 require 'lotus/entity'
 require 'lotus/repository'
+require 'lotus/model/mapper'
 
 module Lotus
   module Model
