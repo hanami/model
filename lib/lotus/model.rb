@@ -4,6 +4,9 @@ require 'lotus/repository'
 require 'lotus/model/mapper'
 
 module Lotus
+  # Model
+  #
+  # @since 0.1.0
   module Model
     # Error for not found entity
     #
