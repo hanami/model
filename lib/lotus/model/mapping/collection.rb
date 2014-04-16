@@ -1,5 +1,3 @@
-require 'lotus/model/mapping/coercer'
-
 module Lotus
   module Model
     module Mapping
@@ -60,6 +58,12 @@ module Lotus
         # @api private
         attr_reader :name
 
+        # @attr_reader coercer_class [Class] the coercer class
+        #
+        # @since 0.1.0
+        # @api private
+        attr_reader :coercer_class
+
         # @attr_reader attributes [Hash] the set of attributes
         #
         # @since 0.1.0
@@ -76,9 +80,8 @@ module Lotus
         # @since 0.1.0
         #
         # @see Lotus::Model::Mapper#collection
-        def initialize(name, &blk)
-          @name       = name
-          @attributes = {}
+        def initialize(name, coercer_class, &blk)
+          @name, @coercer_class, @attributes = name, coercer_class, {}
           instance_eval(&blk) if block_given?
         end
 
@@ -307,7 +310,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def load!
-          @coercer = Coercer.new(self)
+          @coercer = coercer_class.new(self)
           configure_repository!
         end
 

@@ -6,6 +6,24 @@ describe Lotus::Model::Mapper do
   end
 
   describe '#initialize' do
+    before do
+      class FakeCoercer
+      end
+    end
+
+    after do
+      Object.send(:remove_const, :FakeCoercer)
+    end
+
+    it 'uses the given coercer' do
+      mapper  = Lotus::Model::Mapper.new(FakeCoercer) do
+        collection :articles do
+        end
+      end
+
+      mapper.collection(:articles).coercer_class.must_equal(FakeCoercer)
+    end
+
     it 'executes the given block' do
       mapper = Lotus::Model::Mapper.new do
         collection :articles do
