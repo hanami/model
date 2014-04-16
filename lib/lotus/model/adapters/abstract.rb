@@ -41,6 +41,14 @@ module Lotus
         def clear(collection)
           raise NotImplementedError
         end
+
+        def command(query)
+          raise NotImplementedError
+        end
+
+        def query(collection, &blk)
+          raise NotImplementedError
+        end
       end
     end
   end

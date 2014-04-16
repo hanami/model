@@ -4,6 +4,7 @@ describe Lotus::Model::Adapters::Abstract do
   let(:adapter)    { Lotus::Model::Adapters::Abstract.new(mapper) }
   let(:mapper)     { Object.new }
   let(:entity)     { Object.new }
+  let(:query)      { Object.new }
   let(:collection) { :collection }
 
   describe '#persist' do
@@ -57,6 +58,18 @@ describe Lotus::Model::Adapters::Abstract do
   describe '#clear' do
     it 'raises error' do
       ->{ adapter.clear(collection) }.must_raise NotImplementedError
+    end
+  end
+
+  describe '#command' do
+    it 'raises error' do
+      ->{ adapter.command(query) }.must_raise NotImplementedError
+    end
+  end
+
+  describe '#query' do
+    it 'raises error' do
+      ->{ adapter.query(collection) }.must_raise NotImplementedError
     end
   end
 end
