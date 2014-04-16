@@ -49,6 +49,26 @@ describe Lotus::Model::Adapters::SqlAdapter do
     end
   end
 
+  describe '#initialize' do
+    it 'raises an error when the given URI refers to a non registered database adapter' do
+      -> {
+        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'postgres://host')
+      }.must_raise(Lotus::Model::Adapters::DatabaseAdapterNotFound)
+    end
+
+    it 'raises an error when the given URI refers to an unknown database adapter' do
+      -> {
+        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'unknown://host')
+      }.must_raise(Lotus::Model::Adapters::DatabaseAdapterNotFound)
+    end
+
+    it 'raises an error when the given URI is malformed' do
+      -> {
+        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'unknown_db:host')
+      }.must_raise(URI::InvalidURIError)
+    end
+  end
+
   describe '#persist' do
     describe 'when the given entity is not persisted' do
       let(:entity) { TestUser.new }
