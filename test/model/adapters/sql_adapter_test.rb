@@ -494,6 +494,24 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
+
+        it 'returns sorted records, using multiple columns' do
+          query = Proc.new {
+            order(:age, :id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user2, user1]
+        end
+
+        it 'returns sorted records, using multiple invokations' do
+          query = Proc.new {
+            order(:age).order(:id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user2, user1]
+        end
       end
     end
 
@@ -550,9 +568,26 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user2, user1]
         end
+
+        it 'returns sorted records, using multiple columns' do
+          query = Proc.new {
+            desc(:age, :id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user1, user2]
+        end
+
+        it 'returns sorted records, using multiple invokations' do
+          query = Proc.new {
+            desc(:age).desc(:id)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user1, user2]
+        end
       end
     end
-
 
     describe 'limit' do
       describe 'with an empty collection' do
