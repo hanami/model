@@ -8,6 +8,10 @@ module Lotus
   module Model
     module Adapters
       # In memory adapter that behaves like a SQL database.
+      # Not all the features of the SQL adapter are supported.
+      #
+      # This adapter SHOULD be used only for development or testing purposes,
+      # because its computations are inefficient and the data is volatile.
       #
       # @see Lotus::Model::Adapters::Implementation
       #

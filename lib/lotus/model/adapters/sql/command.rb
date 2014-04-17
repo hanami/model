@@ -25,7 +25,7 @@ module Lotus
           #
           # @see Lotus::Model::Adapters::Sql::Collection#insert
           #
-          # @return the primary key of the just created object.
+          # @return the primary key of the just created record.
           #
           # @api private
           # @since 0.1.0

@@ -4,14 +4,13 @@ module Lotus
   module Model
     module Adapters
       module Sql
-        # Maps a database table and perfom manipulations on it.
+        # Maps a SQL database table and perfoms manipulations on it.
         #
         # @api private
         # @since 0.1.0
         #
         # @see http://sequel.jeremyevans.net/rdoc/files/doc/dataset_basics_rdoc.html
         # @see http://sequel.jeremyevans.net/rdoc/files/doc/dataset_filtering_rdoc.html
-        # @see http://sequel.jeremyevans.net/rdoc/files/doc/querying_rdoc.html
         class Collection < SimpleDelegator
           # Initialize a collection
           #
@@ -44,13 +43,13 @@ module Lotus
             Collection.new(super, @collection)
           end
 
-          # Creates a record for the given entity.
+          # Creates a record for the given entity and assigns an id.
           #
           # @param entity [Object] the entity to persist
           #
           # @see Lotus::Model::Adapters::Sql::Command#create
           #
-          # @return the primary key of the just created object.
+          # @return the primary key of the created record
           #
           # @api private
           # @since 0.1.0

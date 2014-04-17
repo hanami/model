@@ -321,13 +321,13 @@ module Lotus
           #
           #   query.desc(:name, :year)
           #
-          #   # => SELECT * FROM `people` ORDER BY `name`, `year`
+          #   # => SELECT * FROM `people` ORDER BY `name`, `year` DESC
           #
           # @example Multiple invokations
           #
-          #   query.order(:name).order(:year)
+          #   query.desc(:name).desc(:year)
           #
-          #   # => SELECT * FROM `people` ORDER BY `name`, `year`
+          #   # => SELECT * FROM `people` ORDER BY `name`, `year` DESC
           def desc(*columns)
             Array(columns).each do |column|
               conditions.push([_order_operator, Sequel.desc(column)])
