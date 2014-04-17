@@ -1,4 +1,5 @@
 require 'delegate'
+require 'Lotus/utils/kernel' unless RUBY_VERSION >= '2.1'
 
 module Lotus
   module Model
@@ -143,8 +144,14 @@ module Lotus
           #
           # @api private
           # @since 0.1.0
-          def select(*args)
-            Collection.new(super, @collection)
+          if RUBY_VERSION >= '2.1'
+            def select(*args)
+              Collection.new(super, @collection)
+            end
+          else
+            def select(*args)
+              Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @collection)
+            end
           end
 
           # Filters the current scope with an `where` directive.
