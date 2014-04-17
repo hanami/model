@@ -175,10 +175,14 @@ module Lotus
         #
         #   * Array
         #   * Boolean
+        #   * Date
+        #   * DateTime
+        #   * Float
         #   * Hash
         #   * Integer
         #   * Set
         #   * String
+        #   * Time
         #
         # @param name [Symbol] the name of the attribute, as we want it to be
         #   mapped in the object
