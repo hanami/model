@@ -98,8 +98,7 @@ module Lotus
 
         # Fabricates a command for the given query.
         #
-        # @param query [Lotus::Model::Adapters::Memory::Query] the query object
-        #   to act on.
+        # @param collection [Symbol] the collection name (it must be mapped)
         #
         # @return [Lotus::Model::Adapters::Memory::Command]
         #

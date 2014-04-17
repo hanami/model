@@ -168,7 +168,7 @@ module Lotus
           # Specify the ascending order of the records, sorted by the given
           # columns.
           #
-          # @param column [Array<Symbol>] the column names
+          # @param columns [Array<Symbol>] the column names
           #
           # @return self
           #
