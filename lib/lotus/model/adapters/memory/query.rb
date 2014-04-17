@@ -99,7 +99,7 @@ module Lotus
           #   query.where(language: 'ruby')
           #        .where(framework: 'lotus')
           def where(condition)
-            column, value = *Array(condition).flatten
+            column, value = _expand_condition(condition)
             conditions.push(Proc.new{ find_all{|r| r.fetch(column) == value} })
             self
           end
@@ -136,7 +136,7 @@ module Lotus
           #   query.where(language: 'java')
           #        .where(company: 'enterprise')
           def exclude(condition)
-            column, value = *Array(condition).flatten
+            column, value = _expand_condition(condition)
             conditions.push(Proc.new{ reject! {|r| r.fetch(column) == value} })
             self
           end
@@ -436,6 +436,10 @@ module Lotus
 
           def _all_with_present_column(column)
             all.map {|record| record.public_send(column) }.compact
+          end
+
+          def _expand_condition(condition)
+            Array(condition).flatten
           end
         end
       end
