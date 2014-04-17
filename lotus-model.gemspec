@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Lotus::Model::VERSION
   spec.authors       = ['Luca Guidi']
   spec.email         = ['me@lucaguidi.com']
-  spec.summary       = %q{Model layer for Lotus}
-  spec.description   = %q{Model framework with repositories, entities and query objects}
+  spec.summary       = %q{A persistence layer for Lotus}
+  spec.description   = %q{A persistence framework with entities, repositories, data mapper and query objects}
   spec.homepage      = 'http://lotusrb.org'
   spec.license       = 'MIT'
 
