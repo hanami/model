@@ -1,5 +1,5 @@
 require 'delegate'
-require 'Lotus/utils/kernel' unless RUBY_VERSION >= '2.1'
+require 'lotus/utils/kernel' unless RUBY_VERSION >= '2.1'
 
 module Lotus
   module Model
