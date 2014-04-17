@@ -4,6 +4,30 @@ module Lotus
   # Mediates between the entities and the persistence layer, by offering an API
   # to query and execute commands on a databse.
   #
+  #
+  #
+  # IMPORTANT: A repository MUST be named after an entity, by appeding the
+  # `Repository` suffix to the entity class name.
+  #
+  # @example
+  #   require 'lotus/model'
+  #
+  #   class Article
+  #     include Lotus::Entity
+  #   end
+  #
+  #   # valid
+  #   class ArticleRepository
+  #     include Lotus::Repository
+  #   end
+  #
+  #   # not valid for Article
+  #   class PostRepository
+  #     include Lotus::Repository
+  #   end
+  #
+  #
+  #
   # A repository is storage idenpendent.
   # All the queries and commands are delegated to the current adapter.
   #
@@ -23,6 +47,8 @@ module Lotus
   #
   #   * SqlAdapter
   #   * MemoryAdapter
+  #
+  #
   #
   # All the queries and commands are private.
   # This decision forces developers to define intention revealing API, instead
@@ -76,11 +102,11 @@ module Lotus
   #     end
   #   end
   #
+  # @since 0.1.0
+  #
   # @see Lotus::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  #
-  # @since 0.1.0
   module Repository
     # Inject the public API into the hosting class.
     #
@@ -486,6 +512,8 @@ module Lotus
       #
       # The returned query SHOULD be lazy: the entities should be fetched by
       # the database only when needed.
+      #
+      # The returned query SHOULD refer to the entire collection by default.
       #
       # Queries can be reused but not combined together (for now). See the
       # example below
