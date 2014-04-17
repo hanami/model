@@ -1,7 +1,7 @@
 require 'lotus/utils/kernel'
 
 module Lotus
-  # An object that is not defined by its attributes, by but it's identity.
+  # An object that is not defined by its attributes, but by its identity.
   # See Domain Driven Design by Eric Evans.
   #
   # An entity is the core of an application, where the part of the domain
