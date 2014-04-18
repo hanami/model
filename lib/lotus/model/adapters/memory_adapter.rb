@@ -122,7 +122,7 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def query(collection, &blk)
+        def query(collection, context = nil, &blk)
           @mutex.synchronize do
             Memory::Query.new(_collection(collection), _mapped_collection(collection), &blk)
           end

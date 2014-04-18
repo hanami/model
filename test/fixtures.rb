@@ -15,6 +15,12 @@ end
 class ArticleRepository
   include Lotus::Repository
 
+  def self.rank
+    query do
+      desc(:comments_count)
+    end
+  end
+
   def self.by_user(user)
     query do
       where(user_id: user.id)
@@ -23,6 +29,10 @@ class ArticleRepository
 
   def self.not_by_user(user)
     exclude by_user(user)
+  end
+
+  def self.rank_by_user(user)
+    rank.by_user(user)
   end
 end
 

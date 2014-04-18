@@ -410,6 +410,15 @@ module Lotus
             raise NotImplementedError
           end
 
+          protected
+          def method_missing(m, *args, &blk)
+            if @context.respond_to?(m)
+              apply @context.public_send(m, *args, &blk)
+            else
+              super
+            end
+          end
+
           private
           # Apply all the conditions and returns a filtered collection.
           #

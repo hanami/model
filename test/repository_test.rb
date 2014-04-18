@@ -5,7 +5,9 @@ describe Lotus::Repository do
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
 
-  let(:article) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
+  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
+  let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
+  let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
   { memory: [Lotus::Model::Adapters::MemoryAdapter, nil, MAPPER],
     sql:    [Lotus::Model::Adapters::SqlAdapter, SQLITE_CONNECTION_STRING, MAPPER] }.each do |adapter_name, (adapter,uri,mapper)|
@@ -69,8 +71,8 @@ describe Lotus::Repository do
         end
 
         it 'creates different kind of entities' do
-          ArticleRepository.create(article)
-          ArticleRepository.all.must_equal([article])
+          ArticleRepository.create(article1)
+          ArticleRepository.all.must_equal([article1])
         end
 
         it 'does nothing when already persisted' do
@@ -157,7 +159,7 @@ describe Lotus::Repository do
             UserRepository.create(user1)
             UserRepository.create(user2)
 
-            ArticleRepository.create(article)
+            ArticleRepository.create(article1)
           end
 
           after do
@@ -178,12 +180,12 @@ describe Lotus::Repository do
           end
 
           it 'coerces attributes as indicated by the mapper' do
-            result = ArticleRepository.find(article.id)
+            result = ArticleRepository.find(article1.id)
             result.comments_count.must_be_kind_of(Integer)
           end
 
           it "doesn't assign a value to unmapped attributes" do
-            ArticleRepository.find(article.id).unmapped_attribute.must_be_nil
+            ArticleRepository.find(article1.id).unmapped_attribute.must_be_nil
           end
 
           it "raises error when the given id isn't associated with any entity" do
@@ -254,15 +256,22 @@ describe Lotus::Repository do
       describe 'querying' do
         before do
           UserRepository.create(user1)
-          ArticleRepository.create(article)
+          ArticleRepository.create(article1)
+          ArticleRepository.create(article2)
+          ArticleRepository.create(article3)
         end
 
         it 'defines custom finders' do
           actual = ArticleRepository.by_user(user1)
-          actual.all.must_equal [article]
+          actual.all.must_equal [article1, article2]
         end
 
         if adapter_name == :sql
+          it 'combines queries' do
+            actual = ArticleRepository.rank_by_user(user1)
+            actual.all.must_equal [article2, article1]
+          end
+
           it 'negates a query' do
             actual = ArticleRepository.not_by_user(user1)
             actual.all.must_equal []

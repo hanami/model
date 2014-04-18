@@ -515,8 +515,8 @@ module Lotus
       #
       # The returned query SHOULD refer to the entire collection by default.
       #
-      # Queries can be reused but not combined together (for now). See the
-      # example below
+      # Queries can be reused and combined together. See the example below.
+      # IMPORTANT: This feature works only with the Sql adapter.
       #
       # A repository is storage independent.
       # All the queries are deletegated to the current adapter, which is
@@ -553,8 +553,7 @@ module Lotus
       #     end
       #
       #     def self.most_recent_published_by_author(author, limit = 8)
-      #       # These two queries can't be combined, because Sql::Query
-      #       # doesn't respond to #published.
+      #       # combine .most_recent_published_by_author and .published queries
       #       most_recent_by_author(author, limit).published
       #     end
       #
@@ -565,12 +564,12 @@ module Lotus
       #     end
       #
       #     def self.rank
-      #       # reuse .published, because Sql::Query respond to #desc
+      #       # reuse .published, which returns a query that respond to #desc
       #       published.desc(:comments_count)
       #     end
       #
       #     def self.best_article_ever
-      #       # reuse .published, because Sql::Query respond to #limit
+      #       # reuse .published, which returns a query that respond to #limit
       #       rank.limit(1)
       #     end
       #
@@ -579,7 +578,7 @@ module Lotus
       #     end
       #   end
       def query(&blk)
-        @adapter.query(collection, &blk)
+        @adapter.query(collection, self, &blk)
       end
 
       # Negates the filtering conditions of a the given query with the logical

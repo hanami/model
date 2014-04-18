@@ -58,8 +58,8 @@ module Lotus
           #   context of the current query
           #
           # @return [Lotus::Model::Adapters::Sql::Query]
-          def initialize(collection, &blk)
-            @collection = collection
+          def initialize(collection, context = nil, &blk)
+            @collection, @context = collection, context
             @conditions = []
 
             instance_eval(&blk) if block_given?
@@ -516,18 +516,91 @@ module Lotus
           #
           # @since 0.1.0
           def scoped
-            current_scope = @collection
+            scope = @collection
 
             conditions.each do |(method,*args)|
-              current_scope = current_scope.public_send(method, *args)
+              scope = scope.public_send(method, *args)
             end
 
-            current_scope
+            scope
           end
 
           alias_method :run, :scoped
 
+          protected
+          # Handles missing methods for query combinations
+          #
+          # @api private
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters:Sql::Query#apply
+          def method_missing(m, *args, &blk)
+            if @context.respond_to?(m)
+              apply @context.public_send(m, *args, &blk)
+            else
+              super
+            end
+          end
+
           private
+
+          # Returns a new query that is the result of the merge of the current
+          # conditions with the ones of the given query.
+          #
+          # This is used to combine queries together in a Repository.
+          #
+          # @param query [Lotus::Model::Adapters::Sql::Query] the query to apply
+          #
+          # @return [Lotus::Model::Adapters::Sql::Query] a new query with the
+          #   merged conditions
+          #
+          # @api private
+          # @since 0.1.0
+          #
+          # @example
+          #   require 'lotus/model'
+          #
+          #   class ArticleRepository
+          #     include Lotus::Repository
+          #
+          #     def self.by_author(author)
+          #       query do
+          #         where(author_id: author.id)
+          #       end
+          #     end
+          #
+          #     def self.rank
+          #       query.desc(:comments_count)
+          #     end
+          #
+          #     def self.rank_by_author(author)
+          #       rank.by_author(author)
+          #     end
+          #   end
+          #
+          #   # The code above combines two queries: `rank` and `by_author`.
+          #   #
+          #   # The first class method `rank` returns a `Sql::Query` instance
+          #   # which doesn't respond to `by_author`. How to solve this problem?
+          #   #
+          #   # 1. When we use `query` to fabricate a `Sql::Query` we pass the
+          #   # current context (the repository itself) to the query initializer.
+          #   #
+          #   # 2. When that query receives the `by_author` message, it's captured
+          #   # by `method_missing` and dispatched to the repository.
+          #   #
+          #   # 3. The class method `by_author` returns a query too.
+          #   #
+          #   # 4. We just return a new query that is the result of the current
+          #   # query's conditions (`rank`) and of the conditions from `by_author`.
+          #   #
+          #   # You're welcome ;)
+          def apply(query)
+            dup.tap do |result|
+              result.conditions.push(*query.conditions)
+            end
+          end
+
           def _order_operator
             if conditions.any? {|c, _| c == :order }
               :order_more

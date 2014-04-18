@@ -129,8 +129,8 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def query(collection, &blk)
-          Sql::Query.new(_collection(collection), &blk)
+        def query(collection, context = nil, &blk)
+          Sql::Query.new(_collection(collection), context, &blk)
         end
 
         private
