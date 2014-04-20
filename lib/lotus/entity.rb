@@ -1,47 +1,51 @@
 require 'lotus/utils/kernel'
 
 module Lotus
-  # An object that is not defined by its attributes, but by its identity.
+  # An object that is defined by its identity.
   # See Domain Driven Design by Eric Evans.
   #
   # An entity is the core of an application, where the part of the domain
-  # logic is implemented. It's small, cohesive object that express coherent
+  # logic is implemented. It's a small, cohesive object that express coherent
   # and meagniful behaviors.
   #
-  # It implements one and only one responsibility that is pertinent to the
+  # It deals with one and only one responsibility that is pertinent to the
   # domain of the application, without caring about details such as persistence
   # or validations.
   #
   # This simplicity of design allows developers to focus on behaviors, or
-  # message passing if you will, which is the core of Object Oriented Programming.
+  # message passing if you will, which is the quintessence of Object Oriented
+  # Programming.
   #
+  # @example With Lotus::Entity
+  #   require 'lotus/model'
   #
+  #   class Person
+  #     include Lotus::Entity
+  #     self.attributes = :name, :age
+  #   end
   #
-  # Lotus::Model ships Entity only for ease of usage for developers, but the
-  # can work with any Ruby object that implement the following interface:
+  # When a class includes `Lotus::Entity` it will receive the following interface:
   #
   #   * #id
   #   * #id=
   #   * #initialize(attributes = {})
   #
-  # For instance an entity can be created by using a `Struct`:
+  # Also, the usage of `.attributes=` defines accessors for the given attribute
+  # names.
   #
-  # @example
-  #   require 'lotus/model'
+  # If we expand the code above in pure Ruby, it would be:
   #
-  #   Person = Struct.new(:id, :name)
+  # @example Pure Ruby
+  #   class Person
+  #     attr_accessor :id, :name, :age
+  #
   #     def initialize(attributes = {})
-  #       @id, @name = attributes.values_at(:id, :name)
+  #       @id, @name, @age = attributes.values_at(:id, :name, :age)
   #     end
   #   end
   #
-  #   person = Person.new(name: 'Luca')
-  #
-  #   class PersonRepository
-  #     include Lotus::Repository
-  #   end
-  #
-  #   PersonRepository.create(person)
+  # Indeed, **Lotus::Model** ships `Entity` only for developers's convenience, but the
+  # rest of the framework is able to accept any object that implements the interface above.
   #
   # However, we suggest to implement this interface by including `Lotus::Entity`,
   # in case that future versions of the framework will expand it.

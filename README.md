@@ -55,23 +55,239 @@ Or install it yourself as:
 
 ### Entities
 
-  TODO expand
+An object that is defined by its identity.
+
+An entity is the core of an application, where the part of the domain logic is implemented.
+It's a small, cohesive object that express coherent and meagniful behaviors.
+
+It deals with one and only one responsibility that is pertinent to the
+domain of the application, without caring about details such as persistence
+or validations.
+
+This simplicity of design allows developers to focus on behaviors, or
+message passing if you will, which is the quintessence of Object Oriented Programming.
+
+```ruby
+require 'lotus/model'
+
+class Person
+  include Lotus::Entity
+  self.attributes = :name, :age
+end
+```
+
+When a class includes `Lotus::Entity` it will receive the following interface:
+
+  * `#id`
+  * `#id=`
+  * `#initialize(attributes = {})`
+
+Also, the usage of `.attributes=` defines accessors for the given attribute names.
+
+If we expand the code above in **pure Ruby**, it would be:
+
+```ruby
+class Person
+  attr_accessor :id, :name, :age
+
+  def initialize(attributes = {})
+    @id, @name, @age = attributes.values_at(:id, :name, :age)
+  end
+end
+```
+
+Indeed, **Lotus::Model** ships `Entity` only for developers's convenience, but the
+rest of the framework is able to accept any object that implements the interface above.
 
 ### Repositories
 
-  TODO expand
+A object that mediates between entites and the persistence layer.
+It offers a standardized API to query and execute commands on a database.
+
+A repository is **storage idenpendent**, all the queries and commands are
+delegated to the current adapter.
+
+This architecture has several advantages:
+
+  * Applications depends on an standard API, instead of low level details
+    (Dependency Inversion principle)
+
+  * Applications depends on a stable API, that doesn't change if the
+    storage changes
+
+  * Developers can postpone storage decisions
+
+  * Confines persistence logic at a low level
+
+  * Multiple data sources can easily coexist in an application
+
+When a class includes `Lotus::Repository`, it will receive the following interface:
+
+  * `.persist(entity)` – Create or update an entity
+  * `.create(entity)`  – Create a record for the given entity
+  * `.update(entity)`  – Update the record correspoding to the given entity
+  * `.delete(entity)`  – Delete the record correspoding to the given entity
+  * `.all`   - Fetch all the entities from the collection
+  * `.first` - Fetch the first entity from the collection
+  * `.last`  - Fetch the last entity from the collection
+  * `.clear` - Delete all the records from the collection
+  * `.query` - Fabricates a query object
+
+**A collection is a homogenous set of records.**
+It corresponds to a table for a SQL database or to a MongoDB collection.
+
+**All the queries are private**.
+This decision forces developers to define intention revealing API, instead leak storage API details outside of a repository.
+
+Look at the following code:
+
+```ruby
+ArticleRepository.where(author_id: 23).order(:published_at).limit(8)
+```
+
+This is **bad** for a variety of reasons:
+
+  * The caller has an intimate knowledge of the internal mechanisms of the Repository.
+
+  * The caller works on several levels of abstraction.
+
+  * It doesn't express a clear intent, it's just a chain of methods.
+
+  * The caller can't be easily tested in isolation.
+
+  * If we change the storage, we are forced to change the code of the caller(s).
+
+There is a better way:
+
+```ruby
+require 'lotus/model'
+
+class ArticleRepository
+  include Lotus::Repository
+
+  def self.most_recent_by_author(author, limit = 8)
+    query do
+      where(author_id: author.id).
+        order(:published_at)
+    end.limit(limit)
+  end
+end
+```
+
+This is a **huge improvement**, because:
+
+  * The caller doesn't know how the repository fetches the entities.
+
+  * The caller works on a single level of abstraction. It doesn't even know about records, only works with entities.
+
+  * It expresses a clear intent.
+
+  * The caller can be easily tested in isolation. It's just a matter of stub this method.
+
+  * If we change the storage, the callers aren't affected.
+
+Here an extended example of a repository that uses the SQL adapter.
+
+```ruby
+class ArticleRepository
+  include Lotus::Repository
+
+  def self.most_recent_by_author(author, limit = 8)
+    query do
+      where(author_id: author.id).
+        desc(:id).
+        limit(limit)
+    end
+  end
+
+  def self.most_recent_published_by_author(author, limit = 8)
+    most_recent_by_author(author, limit).published
+  end
+
+  def self.published
+    query do
+      where(published: true)
+    end
+  end
+
+  def self.drafts
+    exclude published
+  end
+
+  def self.rank
+    published.desc(:comments_count)
+  end
+
+  def self.best_article_ever
+    rank.limit(1)
+  end
+
+  def self.comments_average
+    query.average(:comments_count)
+  end
+end
+```
 
 ### Data Mapper
 
-  TODO expand
+A persistence mapper that keep entities independent from database details.
+It's database independent, it can work with SQL, document, and even with key/value stores.
+
+The role of a data mapper is to translate database columns into the corresponding attribute of an entity.
+
+```ruby
+require 'lotus/model'
+
+mapper = Lotus::Model::Mapper.new do
+  collection :users do
+    entity User
+
+    attribute :id,   Integer
+    attribute :name, String
+    attribute :age,  Integer
+  end
+end
+```
+
+For simplicity sake, imagine that the mapper above is used with a SQL database.
+We use `#collection` to indicate the table that we want to map, `#entity` to indicate the class that we want to associate.
+In the end, each `#attribute` call, is to associate the column with a Ruby type.
+
+For advanced mapping and legacy databases, please have a look at the API doc.
 
 ### Adapter
 
-  TODO expand
+An adapter is a concrete implementation of persistence logic for a specific database.
+**Lotus::Model** is shipped with two adapters:
+
+  * SqlAdapter
+  * MemoryAdapter
+
+An adapter can be associated to one or multiple repositories.
+
+```ruby
+require 'pg'
+require 'lotus/model'
+require 'lotus/model/adapters/sql_adapter'
+
+mapper = Lotus::Model::Mapper.new do
+  # ...
+end
+
+adapter = Lotus::Model::Adapters::SqlAdapter.new(mapper, 'postgres://host:port/database')
+
+PersonRepository.adapter  = adapter
+ArticleRepository.adapter = adapter
+```
+
+In the example above, we reuse the adpter because the target tables (`people` and `articles`) are defined in the same database.
+**As rule of thumb, one adapter instance per database.**
 
 ### Query
 
-  TODO expand
+An object that implements an interface for quering the database.
+This interface may vary, according to the adapter's specifications.
+Think of an adapter for Redis, it will probably employ different strategies to filter records from an SQL query object.
 
 ### Conventions
 
