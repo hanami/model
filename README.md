@@ -306,13 +306,19 @@ end
 
 **This is not necessary, when Lotus::Model is used within a Lotus application.**
 
+## Example
+
+For a full working example, have a look at [EXAMPLE.md](https://github.com/lotus/model/blob/master/EXAMPLE.md).
+Please remember that the setup code is only required for the standalone usage of **Lotus::Model**.
+A **Lotus** application will handle that configurations for you.
+
 ## Versioning
 
 __Lotus::Model__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/lotus-model/fork )
+1. Fork it ( https://github.com/lotus/model/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
