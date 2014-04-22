@@ -27,6 +27,12 @@ module Lotus
     #   # to start the app code.
     #   mapper.load!
     class Mapper
+      # @attr_reader collections [Hash] all the mapped collections
+      #
+      # @since 0.1.0
+      # @api private
+      attr_reader :collections
+
       # Instantiate a mapper.
       #
       # It accepts an optional argument (`coercer`) a class that defines the

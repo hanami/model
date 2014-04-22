@@ -35,6 +35,22 @@ describe Lotus::Model::Mapper do
     end
   end
 
+  describe '#collections' do
+    before do
+      @mapper = Lotus::Model::Mapper.new do
+        collection :teas do
+        end
+      end
+    end
+
+    it 'returns the mapped collections' do
+      name, collection = @mapper.collections.first
+
+      name.must_equal :teas
+      collection.must_be_kind_of Lotus::Model::Mapping::Collection
+    end
+  end
+
   describe '#collection' do
     describe 'when a block is given' do
       it 'register a collection' do
