@@ -35,7 +35,7 @@ Like all the other Lotus compontents, it can be used as a standalone framework o
 
 ## Rubies
 
-__Lotus::View__ supports Ruby (MRI) 2+
+__Lotus::Model__ supports Ruby (MRI) 2+
 
 ## Installation
 
