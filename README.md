@@ -128,6 +128,7 @@ When a class includes `Lotus::Repository`, it will receive the following interfa
   * `.update(entity)`  – Update the record correspoding to the given entity
   * `.delete(entity)`  – Delete the record correspoding to the given entity
   * `.all`   - Fetch all the entities from the collection
+  * `.find`  - Fetch an entity from the collection by its ID
   * `.first` - Fetch the first entity from the collection
   * `.last`  - Fetch the last entity from the collection
   * `.clear` - Delete all the records from the collection
