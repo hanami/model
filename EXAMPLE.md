@@ -1,6 +1,7 @@
 # Lotus::Model
 
 This is a guide that helps you to getting started with [**Lotus::Model**](https://github.com/lotus/model).
+You can find the full code source [here](https://gist.github.com/jodosha/11211048).
 
 ## Gems
 
