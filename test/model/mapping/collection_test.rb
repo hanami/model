@@ -41,7 +41,7 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     describe 'when a value is not given' do
-      it 'retuns the value' do
+      it 'returns the value' do
         @collection.entity.must_be_nil
       end
     end
@@ -59,7 +59,7 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     describe 'when a value is not given' do
-      it 'retuns the value' do
+      it 'returns the value' do
         @collection.identity.must_equal(:id)
       end
     end
