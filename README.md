@@ -3,7 +3,7 @@
 A persistence framework for [Lotus](http://lotusrb.org).
 
 It delivers a convenient public API to execute queries and commands against a database.
-The architecture allows to keep business logic (entities) separated from details such as persistence or validations.
+The architecture eases keeping the business logic (entities) separated from details such as persistence or validations.
 
 It implements the following concepts:
 
@@ -13,7 +13,7 @@ It implements the following concepts:
   * [Adapter](#adapters) – A database adapter.
   * [Query](#queries) - An object that represents a database query.
 
-Like all the other Lotus compontents, it can be used as a standalone framework or within a full Lotus application.
+Like all the other Lotus components, it can be used as a standalone framework or within a full Lotus application.
 
 ## Status
 
@@ -101,7 +101,7 @@ rest of the framework is able to accept any object that implements the interface
 
 ### Repositories
 
-A object that mediates between entites and the persistence layer.
+An object that mediates between entites and the persistence layer.
 It offers a standardized API to query and execute commands on a database.
 
 A repository is **storage idenpendent**, all the queries and commands are
@@ -182,11 +182,11 @@ This is a **huge improvement**, because:
 
   * It expresses a clear intent.
 
-  * The caller can be easily tested in isolation. It's just a matter of stub this method.
+  * The caller can be easily tested in isolation. It's just a matter of stubbing this method.
 
   * If we change the storage, the callers aren't affected.
 
-Here an extended example of a repository that uses the SQL adapter.
+Here is an extended example of a repository that uses the SQL adapter.
 
 ```ruby
 class ArticleRepository
@@ -230,8 +230,8 @@ end
 
 ### Data Mapper
 
-A persistence mapper that keep entities independent from database details.
-It's database independent, it can work with SQL, document, and even with key/value stores.
+A persistence mapper that keeps entities independent from database details.
+It is database independent, it can work with SQL, document, and even with key/value stores.
 
 The role of a data mapper is to translate database columns into the corresponding attribute of an entity.
 
@@ -250,7 +250,7 @@ end
 ```
 
 For simplicity sake, imagine that the mapper above is used with a SQL database.
-We use `#collection` to indicate the table that we want to map, `#entity` to indicate the class that we want to associate.
+We use `#collection` to indicate the name of the table that we want to map, `#entity` to indicate the class that we want to associate.
 In the end, each `#attribute` call, is to associate the column with a Ruby type.
 
 For advanced mapping and legacy databases, please have a look at the API doc.
@@ -263,7 +263,7 @@ An adapter is a concrete implementation of persistence logic for a specific data
   * SqlAdapter
   * MemoryAdapter
 
-An adapter can be associated to one or multiple repositories.
+An adapter can be associated with one or multiple repositories.
 
 ```ruby
 require 'pg'
@@ -280,14 +280,14 @@ PersonRepository.adapter  = adapter
 ArticleRepository.adapter = adapter
 ```
 
-In the example above, we reuse the adpter because the target tables (`people` and `articles`) are defined in the same database.
+In the example above, we reuse the adapter because the target tables (`people` and `articles`) are defined in the same database.
 **As rule of thumb, one adapter instance per database.**
 
 ### Query
 
 An object that implements an interface for quering the database.
 This interface may vary, according to the adapter's specifications.
-Think of an adapter for Redis, it will probably employ different strategies to filter records from an SQL query object.
+Think of an adapter for Redis, it will probably employ different strategies to filter records than an SQL query object.
 
 ### Conventions
 
