@@ -72,9 +72,7 @@ module Lotus
     #     include Lotus::Entity
     #   end
     def self.included(base)
-      base.class_eval do
-        extend ClassMethods
-      end
+      base.extend ClassMethods
     end
 
     module ClassMethods
@@ -113,11 +111,7 @@ module Lotus
           end
         }
 
-        @attributes.each do |attr|
-          class_eval do
-            attr_accessor attr
-          end
-        end
+        attr_accessor *@attributes
       end
 
       def attributes
