@@ -186,8 +186,8 @@ module Lotus
           #
           # @example Multiple conditions
           #
-          #   query.where(language: 'java')
-          #        .where(company: 'enterprise')
+          #   query.exclude(language: 'java')
+          #        .exclude(company: 'enterprise')
           #
           #   # => SELECT * FROM `projects` WHERE (`language` != 'java') AND (`company` != 'enterprise')
           def exclude(condition)
