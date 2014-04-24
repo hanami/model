@@ -266,10 +266,10 @@ module Lotus
       #   article = Article.new(title: 'Introducing Lotus::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.persist(article) # creates a record
+      #   ArticleRepository.create(article) # creates a record
       #   article.id # => 23
       #
-      #   ArticleRepository.persist(article) # no-op
+      #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless entity.id
           @adapter.create(collection, entity)
