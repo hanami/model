@@ -93,7 +93,7 @@ module Lotus
       #
       # @since 0.1.0
       def load!
-        @collections.each {|_, collection| collection.load! }
+        @collections.each_value {|collection| collection.load! }
         self
       end
     end
