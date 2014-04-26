@@ -273,7 +273,7 @@ module Lotus
         #   # For instance: we need to use it for translate `:s_title` to
         #   # `:title`, but not for `:comments_count`.
         def attribute(name, klass, options = {})
-          @attributes[name] = [klass, options.fetch(:as, name).to_sym]
+          @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
         end
 
         # Serializes an entity to be persisted in the database.
