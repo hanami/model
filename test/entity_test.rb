@@ -47,7 +47,7 @@ describe Lotus::Entity do
       it 'ignores unknown attributes' do
         book = Book.new(unknown: 'x')
 
-        book.instance_variable_get(:@book).must_be_nil
+        book.instance_variable_get(:@unknown).must_be_nil
       end
 
       it 'accepts given attributes for subclass' do
