@@ -24,14 +24,13 @@ module Lotus
   #     self.attributes = :name, :age
   #   end
   #
-  # When a class includes `Lotus::Entity` it will receive the following interface:
+  # When a class includes `Lotus::Entity` the `.attributes=` method is exposed.
+  # By then calling the `.attributes=` class method, the following methods are
+  # added:
   #
   #   * #id
   #   * #id=
   #   * #initialize(attributes = {})
-  #
-  # Also, the usage of `.attributes=` defines accessors for the given attribute
-  # names.
   #
   # If we expand the code above in pure Ruby, it would be:
   #
