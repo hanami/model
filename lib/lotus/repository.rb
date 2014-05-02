@@ -2,11 +2,11 @@ require 'lotus/utils/class_attribute'
 
 module Lotus
   # Mediates between the entities and the persistence layer, by offering an API
-  # to query and execute commands on a databse.
+  # to query and execute commands on a database.
   #
   #
   #
-  # IMPORTANT: A repository MUST be named after an entity, by appeding the
+  # IMPORTANT: A repository MUST be named after an entity, by appending the
   # `Repository` suffix to the entity class name.
   #
   # @example
@@ -28,15 +28,15 @@ module Lotus
   #
   #
   #
-  # A repository is storage idenpendent.
+  # A repository is storage independent.
   # All the queries and commands are delegated to the current adapter.
   #
   # This architecture has several advantages:
   #
-  #   * Applications depends on an abstract API, instead of low level details
+  #   * Applications depend on an abstract API, instead of low level details
   #     (Dependency Inversion principle)
   #
-  #   * Applications depends on a stable API, that doesn't change if the
+  #   * Applications depend on a stable API, that doesn't change if the
   #     storage changes
   #
   #   * Developers can postpone storage decisions
@@ -519,7 +519,7 @@ module Lotus
       # IMPORTANT: This feature works only with the Sql adapter.
       #
       # A repository is storage independent.
-      # All the queries are deletegated to the current adapter, which is
+      # All the queries are delegated to the current adapter, which is
       # responsible to implement a querying API.
       #
       # Lotus::Model is shipped with two adapters:
@@ -581,7 +581,7 @@ module Lotus
         @adapter.query(collection, self, &blk)
       end
 
-      # Negates the filtering conditions of a the given query with the logical
+      # Negates the filtering conditions of a given query with the logical
       # opposite operator.
       #
       # This is only supported by the SqlAdapter.
