@@ -42,7 +42,7 @@ module Lotus
         end
 
         private
-        # Compile itself for perfomance boost.
+        # Compile itself for performance boost.
         #
         # @api private
         # @since 0.1.0

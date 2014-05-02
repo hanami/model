@@ -87,7 +87,7 @@ module Lotus
 
         # Defines the entity that is persisted with this collection.
         #
-        # The entity can be any kind of object as long it implements the
+        # The entity can be any kind of object as long as it implements the
         # following interface: `#initialize(attributes = {})`.
         #
         # @param klass [Class] the entity persisted with this collection.
@@ -165,7 +165,7 @@ module Lotus
         # This is storage independent. For instance, it can map an SQL column,
         # a MongoDB attribute or everything that makes sense for your database.
         #
-        # Each attribute defines an Ruby type, to coerce that value from the
+        # Each attribute defines a Ruby type, to coerce that value from the
         # database. This fixes a huge problem, because database types don't
         # match Ruby types.
         # Think of Redis, where everything is stored as a string or integer,

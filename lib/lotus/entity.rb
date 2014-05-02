@@ -6,7 +6,7 @@ module Lotus
   #
   # An entity is the core of an application, where the part of the domain
   # logic is implemented. It's a small, cohesive object that express coherent
-  # and meagniful behaviors.
+  # and meaningful behaviors.
   #
   # It deals with one and only one responsibility that is pertinent to the
   # domain of the application, without caring about details such as persistence
