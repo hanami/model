@@ -58,7 +58,7 @@ Or install it yourself as:
 An object that is defined by its identity.
 
 An entity is the core of an application, where the part of the domain logic is implemented.
-It's a small, cohesive object that express coherent and meagniful behaviors.
+It's a small, cohesive object that expresses coherent and meaningful behaviors.
 
 It deals with one and only one responsibility that is pertinent to the
 domain of the application, without caring about details such as persistence
@@ -101,18 +101,18 @@ rest of the framework is able to accept any object that implements the interface
 
 ### Repositories
 
-An object that mediates between entites and the persistence layer.
+An object that mediates between entities and the persistence layer.
 It offers a standardized API to query and execute commands on a database.
 
-A repository is **storage idenpendent**, all the queries and commands are
+A repository is **storage independent**, all the queries and commands are
 delegated to the current adapter.
 
 This architecture has several advantages:
 
-  * Applications depends on an standard API, instead of low level details
+  * Applications depend on a standard API, instead of low level details
     (Dependency Inversion principle)
 
-  * Applications depends on a stable API, that doesn't change if the
+  * Applications depend on a stable API, that doesn't change if the
     storage changes
 
   * Developers can postpone storage decisions
@@ -125,8 +125,8 @@ When a class includes `Lotus::Repository`, it will receive the following interfa
 
   * `.persist(entity)` – Create or update an entity
   * `.create(entity)`  – Create a record for the given entity
-  * `.update(entity)`  – Update the record correspoding to the given entity
-  * `.delete(entity)`  – Delete the record correspoding to the given entity
+  * `.update(entity)`  – Update the record corresponding to the given entity
+  * `.delete(entity)`  – Delete the record corresponding to the given entity
   * `.all`   - Fetch all the entities from the collection
   * `.find`  - Fetch an entity from the collection by its ID
   * `.first` - Fetch the first entity from the collection
@@ -292,7 +292,7 @@ Think of an adapter for Redis, it will probably employ different strategies to f
 
 ### Conventions
 
-  * A repository must be named after an entity, by appeding `"Repository"` to the entity class name (eg. `Article` => `ArticleRepository`).
+  * A repository must be named after an entity, by appending `"Repository"` to the entity class name (eg. `Article` => `ArticleRepository`).
 
 ### Thread safety
 
