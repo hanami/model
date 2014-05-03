@@ -17,12 +17,12 @@ Like all the other Lotus components, it can be used as a standalone framework or
 
 ## Status
 
-[![Gem Version](https://badge.fury.io/rb/lotus-model.png)](http://badge.fury.io/rb/lotus-model)
-[![Build Status](https://secure.travis-ci.org/lotus/model.png?branch=master)](http://travis-ci.org/lotus/model?branch=master)
-[![Coverage](https://coveralls.io/repos/lotus/model/badge.png?branch=master)](https://coveralls.io/r/lotus/model)
-[![Code Climate](https://codeclimate.com/github/lotus/model.png)](https://codeclimate.com/github/lotus/model)
-[![Dependencies](https://gemnasium.com/lotus/model.png)](https://gemnasium.com/lotus/model)
-[![Inline docs](http://inch-pages.github.io/github/lotus/model.png)](http://inch-pages.github.io/github/lotus/model)
+[![Gem Version](https://badge.fury.io/rb/lotus-model.svg)](http://badge.fury.io/rb/lotus-model)
+[![Build Status](https://secure.travis-ci.org/lotus/model.svg?branch=master)](http://travis-ci.org/lotus/model?branch=master)
+[![Coverage](https://img.shields.io/coveralls/lotus/model/master.svg)](https://coveralls.io/r/lotus/model)
+[![Code Climate](https://img.shields.io/codeclimate/github/lotus/model.svg)](https://codeclimate.com/github/lotus/model)
+[![Dependencies](https://gemnasium.com/lotus/model.svg)](https://gemnasium.com/lotus/model)
+[![Inline docs](http://inch-pages.github.io/github/lotus/model.svg)](http://inch-pages.github.io/github/lotus/model)
 
 ## Contact
 
