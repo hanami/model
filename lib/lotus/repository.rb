@@ -124,6 +124,8 @@ module Lotus
         include Lotus::Utils::ClassAttribute
 
         class_attribute :collection
+
+        self.adapter = Lotus::Model::Adapters::NullAdapter.new
       end
     end
 

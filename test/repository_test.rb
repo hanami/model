@@ -9,6 +9,13 @@ describe Lotus::Repository do
   let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
+  describe 'with no adapter specified' do
+    it 'defaults to nulladapter' do
+      NullRepository.instance_variable_get("@adapter")
+        .must_be_kind_of Lotus::Model::Adapters::NullAdapter
+    end
+  end
+
   { memory: [Lotus::Model::Adapters::MemoryAdapter, nil, MAPPER],
     sql:    [Lotus::Model::Adapters::SqlAdapter, SQLITE_CONNECTION_STRING, MAPPER] }.each do |adapter_name, (adapter,uri,mapper)|
     describe "with #{ adapter_name } adapter" do
