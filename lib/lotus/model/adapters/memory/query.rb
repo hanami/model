@@ -129,12 +129,12 @@ module Lotus
           #
           # @example Range
           #
-          #   query.where(year: 1900..1982)
+          #   query.exclude(year: 1900..1982)
           #
           # @example Multiple conditions
           #
-          #   query.where(language: 'java')
-          #        .where(company: 'enterprise')
+          #   query.exclude(language: 'java')
+          #        .exclude(company: 'enterprise')
           def exclude(condition)
             column, value = _expand_condition(condition)
             conditions.push(Proc.new{ reject! {|r| r.fetch(column) == value} })
@@ -261,7 +261,7 @@ module Lotus
 
           # Returns the sum of the values for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Numeric]
           #
@@ -286,7 +286,7 @@ module Lotus
 
           # Returns the average of the values for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Numeric]
           #
@@ -305,7 +305,7 @@ module Lotus
 
           # Returns the maximum value for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return result
           #
@@ -320,7 +320,7 @@ module Lotus
 
           # Returns the minimum value for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return result
           #
@@ -335,7 +335,7 @@ module Lotus
 
           # Returns the difference between the MAX and MIN for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Numeric]
           #
@@ -355,7 +355,7 @@ module Lotus
           # Returns a range of values between the MAX and the MIN for the given
           # column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Range]
           #

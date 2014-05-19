@@ -180,7 +180,7 @@ module Lotus
           #
           # @example Range
           #
-          #   query.where(year: 1900..1982)
+          #   query.exclude(year: 1900..1982)
           #
           #   # => SELECT * FROM `people` WHERE ((`year` < 1900) AND (`year` > 1982))
           #
@@ -338,7 +338,7 @@ module Lotus
 
           # Returns the sum of the values for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Numeric]
           #
@@ -355,7 +355,7 @@ module Lotus
 
           # Returns the average of the values for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Numeric]
           #
@@ -374,7 +374,7 @@ module Lotus
 
           # Returns the maximum value for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return result
           #
@@ -397,7 +397,7 @@ module Lotus
 
           # Returns the minimum value for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return result
           #
@@ -420,7 +420,7 @@ module Lotus
 
           # Returns the difference between the MAX and MIN for the given column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Numeric]
           #
@@ -441,7 +441,7 @@ module Lotus
           # Returns a range of values between the MAX and the MIN for the given
           # column.
           #
-          # @param column [Symbol] the colum name
+          # @param column [Symbol] the column name
           #
           # @return [Range]
           #
