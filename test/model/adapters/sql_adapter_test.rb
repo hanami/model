@@ -27,6 +27,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
     end.load!
 
     @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
+    @adapter.clear(collection)
   end
 
   after do
