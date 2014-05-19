@@ -58,20 +58,36 @@ module Lotus
           instance_eval %{
             def to_record(entity)
               if entity.id
-                Hash[*[#{ @collection.attributes.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]]
+                Hash[*[#{ map_attribute_names_to_entity_values(@collection.attributes) }]]
               else
-                Hash[*[#{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]]
+                Hash[*[#{ map_attribute_names_to_entity_values(attributes_except_identity(@collection)) }]]
               end
             end
 
             def from_record(record)
               #{ @collection.entity }.new(
-                Hash[*[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Utils::Kernel.#{klass}(record[:#{mapped}])"}.join(',') }]]
+                Hash[*[#{ map_attribute_names_to_coerced_values(@collection.attributes) }]]
               )
             end
 
             #{ code }
           }
+        end
+
+        def attributes_except_identity(collection)
+          collection.attributes.reject { |name, _| name == collection.identity }
+        end
+        
+        def map_attribute_names_to_entity_values(attributes)
+          attributes.map do |name, (_, mapped)|
+            ":#{ mapped }, entity.#{ name }"
+          end.join(',')
+        end
+
+        def map_attribute_names_to_coerced_values(attributes)
+          attributes.map do |name, (klass, mapped)|
+            ":#{ name }, Lotus::Utils::Kernel.#{ klass }(record[:#{ mapped }])"
+          end.join(',')
         end
       end
     end
