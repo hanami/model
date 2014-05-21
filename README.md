@@ -9,9 +9,9 @@ It implements the following concepts:
 
   * [Entity](#entities) - An object defined by its identity.
   * [Repository](#repositories) - An object that mediates between the entities and the persistence layer.
-  * [Data Mapper](#datamapper) - A persistence mapper that keep entities independent from database details.
-  * [Adapter](#adapters) – A database adapter.
-  * [Query](#queries) - An object that represents a database query.
+  * [Data Mapper](#data-mapper) - A persistence mapper that keep entities independent from database details.
+  * [Adapter](#adapter) – A database adapter.
+  * [Query](#query) - An object that represents a database query.
 
 Like all the other Lotus components, it can be used as a standalone framework or within a full Lotus application.
 
