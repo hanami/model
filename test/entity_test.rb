@@ -59,6 +59,12 @@ describe Lotus::Entity do
     end
 
     describe 'with undefined attributes' do
+      it 'has default accessor for id' do
+        camera = Camera.new
+        camera.must_respond_to :id
+        camera.must_respond_to :id=        
+      end
+      
       it 'is able to initialize an entity without given attributes' do
         camera = Camera.new
         camera.analog.must_be_nil

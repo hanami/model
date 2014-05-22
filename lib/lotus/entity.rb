@@ -72,6 +72,7 @@ module Lotus
     #   end
     def self.included(base)
       base.extend ClassMethods
+      base.send :attr_accessor, :id
     end
 
     module ClassMethods
