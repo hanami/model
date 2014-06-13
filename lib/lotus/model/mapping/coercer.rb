@@ -1,4 +1,4 @@
-require 'lotus/utils/kernel'
+require 'lotus/model/mapping/coercer'
 
 module Lotus
   module Model
@@ -50,7 +50,7 @@ module Lotus
           code = @collection.attributes.map do |_,(klass,mapped)|
             %{
             def deserialize_#{ mapped }(value)
-              Lotus::Utils::Kernel.#{klass}(value)
+              Lotus::Model::Mapping::Coercions.#{klass}(value)
             end
             }
           end.join("\n")
@@ -66,7 +66,7 @@ module Lotus
 
             def from_record(record)
               #{ @collection.entity }.new(
-                Hash[*[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Utils::Kernel.#{klass}(record[:#{mapped}])"}.join(',') }]]
+                Hash[*[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Model::Mapping::Coercions.#{klass}(record[:#{mapped}])"}.join(',') }]]
               )
             end
 
