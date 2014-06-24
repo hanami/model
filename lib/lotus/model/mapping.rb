@@ -1,5 +1,6 @@
 require 'lotus/model/mapping/collection'
 require 'lotus/model/mapping/coercer'
+require 'lotus/model/mapping/coercions'
 
 module Lotus
   module Model
