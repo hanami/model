@@ -1,3 +1,12 @@
+## v0.1.2
+### Jun 26, 2014
+
+27eef39 2014-06-26 **Luca Guidi** Bump version to 0.1.2
+
+afc33eb 2014-06-24 **Stanislav Spiridonov** Fix Coercions require
+
+f5778e4 2014-05-22 **Krzysztof Zalewski** Entity defines #id accessor by default
+
 ## v0.1.1
 ### Jun 23, 2014
 
