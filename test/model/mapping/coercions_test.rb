@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'lotus/model/mapping/coercions'
 
 describe Lotus::Model::Mapping::Coercions do
   describe '.Array' do
