@@ -229,6 +229,25 @@ class ArticleRepository
 end
 ```
 
+**Your models and repositories have to be in the same namespace.** Otherwise `Lotus::Model::Mapper#load!`
+will not initialize your repositories correctly.
+
+```ruby
+class MyLotusApp::Model::User
+  # your code here
+end
+
+# This repository will work...
+class MyLotusApp::Model::UserRepository
+  # your code here
+end
+
+# ...this will not!
+class MyLotusApp::Repository::UserRepository
+  # your code here
+end
+```
+
 ### Data Mapper
 
 A persistence mapper that keeps entities independent from database details.
