@@ -234,16 +234,19 @@ will not initialize your repositories correctly.
 
 ```ruby
 class MyLotusApp::Model::User
+  include Lotus::Entity
   # your code here
 end
 
 # This repository will work...
 class MyLotusApp::Model::UserRepository
+  include Lotus::Repository
   # your code here
 end
 
 # ...this will not!
 class MyLotusApp::Repository::UserRepository
+  include Lotus::Repository
   # your code here
 end
 ```
