@@ -111,7 +111,7 @@ class ArticleRepository
   end
 
   def self.best_article_ever
-    rank.limit(1)
+    rank.limit(1).first
   end
 
   def self.comments_average
