@@ -41,7 +41,9 @@ __Lotus::Model__ supports Ruby (MRI) 2+
 
 Add this line to your application's Gemfile:
 
-    gem 'lotus-model'
+```ruby
+gem 'lotus-model'
+```
 
 And then execute:
 
