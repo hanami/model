@@ -6,7 +6,7 @@ module Lotus
   #
   #
   #
-  # IMPORTANT: A repository MUST be named after an entity, by appending the
+  # By default, a repository is named after an entity, by appending the
   # `Repository` suffix to the entity class name.
   #
   # @example
@@ -26,7 +26,17 @@ module Lotus
   #     include Lotus::Repository
   #   end
   #
+  # Repository for an entity can be configured by setting # the `#repository`
+  # on the mapper.
   #
+  # @example
+  #   # PostRepository is repository for Article
+  #   mapper = Lotus::Model::Mapper.new do
+  #     collection :articles do
+  #       entity Article
+  #       repository PostRepository
+  #     end
+  #   end
   #
   # A repository is storage independent.
   # All the queries and commands are delegated to the current adapter.

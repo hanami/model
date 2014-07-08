@@ -103,6 +103,32 @@ module Lotus
           end
         end
 
+        # Defines the repository that interacts with this collection.
+        #
+        # @param klass [Class] the repository that interacts with this collection.
+        #
+        # @since 0.2.0
+        #
+        # @see Lotus::Repository
+        #
+        # @example
+        #   require 'lotus/model'
+        #
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity Article
+        #
+        #       repository RemoteArticleRepository
+        #     end
+        #   end
+        def repository(klass = nil)
+          if klass
+            @repository = klass
+          else
+            @repository ||= default_repository_klass
+          end
+        end
+
         # Defines the identity for a collection.
         #
         # An identity is an unique value that identifies a record.
@@ -326,9 +352,18 @@ module Lotus
         # @api private
         # @since 0.1.0
         def configure_repository!
-          repository = Object.const_get("#{ entity.name }#{ REPOSITORY_SUFFIX }")
           repository.collection = name
-        rescue NameError
+          rescue NameError
+        end
+
+        # Retrieves the default repository class
+        #
+        # @see Lotus::Repository
+        #
+        # @api private
+        # @since 0.2.0
+        def default_repository_klass
+          Object.const_get("#{ entity.name }#{ REPOSITORY_SUFFIX }")
         end
       end
     end
