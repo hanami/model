@@ -8,6 +8,10 @@ class Article
   self.attributes = :user_id, :unmapped_attribute, :title, :comments_count
 end
 
+class CustomUserRepository
+  include Lotus::Repository
+end
+
 class UserRepository
   include Lotus::Repository
 end

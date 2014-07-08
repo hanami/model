@@ -47,6 +47,39 @@ describe Lotus::Model::Mapping::Collection do
     end
   end
 
+  describe '#repository' do
+    before do
+      @collection.entity User
+    end
+
+    describe 'when a value is given' do
+      before do
+        @collection.repository(CustomUserRepository)
+      end
+
+      it 'sets the value' do
+        @collection.repository.must_equal CustomUserRepository
+      end
+    end
+
+    describe 'when a value is not given' do
+      it 'returns the default value' do
+        @collection.repository.must_equal UserRepository
+      end
+
+      describe 'when repository class is not found' do
+        before do
+          class KlassWithoutRepository; end
+          @collection.entity KlassWithoutRepository
+        end
+
+        it 'raises NameError' do
+          -> { @collection.repository }.must_raise NameError
+        end
+      end
+    end
+  end
+
   describe '#identity' do
     describe 'when a value is given' do
       before do
