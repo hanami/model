@@ -2,6 +2,7 @@ require 'lotus/model/version'
 require 'lotus/entity'
 require 'lotus/repository'
 require 'lotus/model/mapper'
+require 'lotus/model/configuration'
 
 module Lotus
   # Model
@@ -23,6 +24,35 @@ module Lotus
     #
     # @see Lotus::Repository.update
     class NonPersistedEntityError < ::StandardError
+    end
+
+    include Utils::ClassAttribute
+
+
+    # Framework configuration
+    #
+    # @since 0.2.0
+    # @api private
+    class_attribute :configuration
+    self.configuration = Configuration.new
+
+    # Configure the framework.
+    # It yields the given block in the context of the configuration
+    #
+    # @param blk [Proc] the configuration block
+    #
+    # @since 0.2.0
+    #
+    # @see Lotus::Model::Configuration
+    #
+    # @example
+    #   require 'lotus/model'
+    #
+    #   Lotus::Model.configure do
+    #     adapter :adapter_name, 'postgres://localhost/database', type: :sql, default: true
+    #   end
+    def self.configure(&blk)
+      configuration.instance_eval(&blk)
     end
   end
 end
