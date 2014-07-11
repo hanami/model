@@ -20,7 +20,7 @@ module Lotus
     #
     # This architecture allows to have a global configuration that capture the
     # most common cases for an application, and let views and layouts
-    # layouts to specify exceptions.
+    # to specify exceptions.
     #
     # @since 0.2.0
     class Configuration
@@ -33,7 +33,7 @@ module Lotus
       # with the given class.
       #
       # When multiple instances of Lotus::Model are used in the same application,
-      # we want to make sure that a repository or a datamapper will  receive the
+      # we want to make sure that a repository or a datamapper will receive the
       # expected configuration.
       #
       # @param base [Class] a repository or a data mapper
@@ -121,31 +121,34 @@ module Lotus
       # @since 0.2.0
       # @api private
       def reset!
-        @adapters   = Hash.new
+        @adapters        = Hash.new
         @default_adapter = nil
       end
 
       # Add new adapter for the current app
       #
       # @param [Symbol] name The adapter's name to be referenced later in data-mapper
-      # @param [String] url The adapter's usl
+      # @param [String] url The adapter's url
       # @param [Hash] opts Options of the adapter
-      # @option opts [Symbol, Class] :type Type of the adapter, currently support :sql, :memory
-      # @option opts [Boolean] :default Mark this adapter as default
+      # @option opts [Symbol, String] :type Type of the adapter, 
+      #   if type is Symbol, it will be inflected from symbol to class
+      #   if type is String, it will be constantize.
+      #
+      # @option opts [Boolean] :default Mark this adapter as default, default to false
       #
       # @since 0.2.0
       # @api private
       #
       # @example
       #   Lotus::Model.configure do
-      #     adapter :adapter_name, 'postgres://localhost/database', type: :sql, default: true
+      #     adapter :main_db, 'postgres://localhost/database', type: :sql, default: true
+      #     adapter :remote_api, 'http://example.com', type: 'MyApp::Adapters::MyRemoteAdapter'
       #   end
-      def adapter(name, url, options)
-        default_options = {
-          :type => :memory,
-          :default => false,
+      def adapter(name, url, type: :memory, default: false)
+        options = {
+          type: type,
+          default: default
         }
-        options = default_options.merge(options)
 
         adapter = Lotus::Model::Config::Adapter.new(url, options[:type])
         @adapters.merge!({name.to_sym => adapter})
@@ -154,7 +157,12 @@ module Lotus
       end
 
       alias_method :unload!, :reset!
-      attr_reader :adapters, :default_adapter
+
+      # Get all the adapter configurations in the registry
+      attr_reader :adapters
+
+      # Get the default adapter configuration from the registry
+      attr_reader :default_adapter
     end
   end
 end

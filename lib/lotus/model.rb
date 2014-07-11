@@ -28,7 +28,6 @@ module Lotus
 
     include Utils::ClassAttribute
 
-
     # Framework configuration
     #
     # @since 0.2.0
