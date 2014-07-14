@@ -2,6 +2,7 @@ require 'lotus/model/version'
 require 'lotus/entity'
 require 'lotus/repository'
 require 'lotus/model/mapper'
+require 'lotus/model/config/adapter'
 
 module Lotus
   # Model
@@ -26,8 +27,6 @@ module Lotus
     end
 
     include Utils::ClassAttribute
-
-    Adapter = Struct.new(:name, :uri, :default)
 
     # Framework adapters
     #
@@ -80,7 +79,7 @@ module Lotus
     #     adapter :sql, 'postgres://localhost/database', default: true
     #   end
     def self.adapter(name, uri, default: false)
-      adapters[name] = Adapter.new(name, uri, default)
+      adapters[name] = Lotus::Model::Config::Adapter.new(name, uri, default)
     end
   end
 end

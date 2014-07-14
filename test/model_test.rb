@@ -18,7 +18,6 @@ describe Lotus::Model do
       adapter = Lotus::Model.adapters[:sql]
 
       adapter.default.must_equal(true)
-      #adapter.class.must_equal(Lotus::Model::Adapters::SqlAdapter)
       adapter.uri.must_equal('postgres://localhost/database')
     end
   end
