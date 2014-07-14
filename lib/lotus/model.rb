@@ -2,6 +2,7 @@ require 'lotus/model/version'
 require 'lotus/entity'
 require 'lotus/repository'
 require 'lotus/model/mapper'
+require 'lotus/model/configuration'
 require 'lotus/model/config/adapter'
 
 module Lotus
@@ -28,12 +29,12 @@ module Lotus
 
     include Utils::ClassAttribute
 
-    # Framework adapters
+    # Framework configuration
     #
     # @since 0.2.0
     # @api private
-    class_attribute :adapters
-    self.adapters = {}
+    class_attribute :configuration
+    self.configuration = Configuration.new
 
     # Configure the framework.
     # It yields the given block in the context of the configuration
@@ -80,8 +81,8 @@ module Lotus
     #   end
     def self.adapter(name, uri, default: false)
       adapter = Lotus::Model::Config::Adapter.new(name, uri)
-      adapters[name] = adapter
-      adapters[:default] = adapter if default
+      configuration.adapters[name] = adapter
+      configuration.adapters[:default] = adapter if default
     end
   end
 end
