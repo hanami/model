@@ -79,7 +79,9 @@ module Lotus
     #     adapter :sql, 'postgres://localhost/database', default: true
     #   end
     def self.adapter(name, uri, default: false)
-      adapters[name] = Lotus::Model::Config::Adapter.new(name, uri, default)
+      adapter = Lotus::Model::Config::Adapter.new(name, uri)
+      adapters[name] = adapter
+      adapters[:default] = adapter if default
     end
   end
 end

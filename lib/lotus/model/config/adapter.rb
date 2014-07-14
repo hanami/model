@@ -41,22 +41,14 @@ module Lotus
         # @see Lotus::Config::Adapter#uri
         attr_reader :uri
 
-        # @return default [TrueClass, FalseClass] Decide if the adapter
-        # is used by default
-        #
-        # @since 0.2.0
-        #
-        # @see Lotus::Config::Adapter#default
-        attr_reader :default
-
         # Initialize an adapter configuration instance
         #
         # @return [Lotus::Model::Config::Adapter] a new apdapter configuration's
         #   instance
         #
         # @since 0.2.0
-        def initialize(name, uri, default = false)
-          @name, @uri, @default = name, uri, default
+        def initialize(name, uri)
+          @name, @uri, @default = name, uri
         end
       end
     end

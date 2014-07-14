@@ -22,14 +22,15 @@ describe Lotus::Model do
 
     it 'allows to register SQL adapter' do
       adapter = Lotus::Model.adapters[:sql]
-
-      adapter.default.must_equal(true)
       adapter.uri.must_equal('postgres://localhost/database')
+
+      Lotus::Model.adapters[:default].must_equal adapter
     end
   end
 
   describe '.adapters' do
     before do
+      Lotus::Model.adapter :sql, 'postgres://localhost/database', default: true
       Lotus::Model.adapter :redis, 'redis://localhost/database'
     end
 
@@ -38,8 +39,13 @@ describe Lotus::Model do
     end
 
     it 'returns registered adapters' do
-      Lotus::Model.adapters.count.must_equal 1
       Lotus::Model.adapters[:redis].wont_be_nil
+      Lotus::Model.adapters[:sql].wont_be_nil
+    end
+
+    it 'returns default adapters' do
+      default_adapter = Lotus::Model.adapters[:default]
+      default_adapter.name.must_equal :sql
     end
   end
 end
