@@ -111,7 +111,9 @@ module Lotus
           #        .where(framework: 'lotus')
           #
           #   # => SELECT * FROM `projects` WHERE (`language` = 'ruby') AND (`framework` = 'lotus')
-          def where(condition)
+          def where(condition=nil, &blk)
+            raise ArgumentError, "You need to specify an condition." unless condition or block_given?
+            condition = blk unless condition
             conditions.push([:where, condition])
             self
           end

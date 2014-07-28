@@ -312,6 +312,15 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
+        
+        it 'can use code block(sequel block) to describe where conditions' do
+          query = Proc.new {
+            where{ age > 31 }
+          }
+          
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user1]
+        end
       end
     end
 
