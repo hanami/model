@@ -318,6 +318,21 @@ Think of an adapter for Redis, it will probably employ different strategies to f
 
   * A repository must be named after an entity, by appending `"Repository"` to the entity class name (eg. `Article` => `ArticleRepository`).
 
+### Configurations
+
+  * Non-standard respository can be configured for an entity, by setting `repository` on the collection.
+
+  ```ruby
+  require 'lotus/model'
+
+  mapper = Lotus::Model::Mapper.new do
+    collection :users do
+      entity User
+      repository EmployeeRepository
+    end
+  end
+  ```
+
 ### Thread safety
 
 **Lotus::Model**'s is thread safe during the runtime, but it isn't during the loading process.
