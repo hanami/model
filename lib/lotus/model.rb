@@ -52,37 +52,7 @@ module Lotus
     #     adapter :sql, 'postgres://localhost/database', default: true
     #   end
     def self.configure(&block)
-      instance_eval(&block)
-    end
-
-    # Register adapter
-    #
-    # If `default` params is set to `true`, the adapter will be used as default one
-    #
-    # @param name    [Symbol] Derive adapter class name
-    # @param uri     [String] The adapter uri
-    # @param default [TrueClass,FalseClass] Decide if adapter is used by default
-    #
-    # @since 0.2.0
-    #
-    # @see Lotus::Model#adapter
-    # @see Lotus::Model#configure
-    #
-    # @example Register SQL Adapter as default adapter
-    #   require 'lotus/model'
-    #
-    #   Lotus::Model.adapters # => {}
-    #
-    # @example Register an adapter
-    #   require 'lotus/model'
-    #
-    #   Lotus::Model.configure do
-    #     adapter :sql, 'postgres://localhost/database', default: true
-    #   end
-    def self.adapter(name, uri, default: false)
-      adapter = Lotus::Model::Config::Adapter.new(name, uri)
-      configuration.adapters[name] = adapter
-      configuration.adapters[:default] = adapter if default
+      configuration.instance_eval(&block)
     end
   end
 end
