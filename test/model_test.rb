@@ -1,6 +1,12 @@
 require 'test_helper'
 
 describe Lotus::Model do
+  describe '.configuration' do
+    it 'exposes class configuration' do
+      Lotus::Model.configuration.must_be_kind_of(Lotus::Model::Configuration)
+    end
+  end
+
   describe '.configure' do
     describe '.adapter' do
       before do

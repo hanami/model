@@ -8,12 +8,12 @@ module Lotus
     # @since 0.2.0
     class Configuration
 
-      # @attr_accessor adapters [Hash] a hash of Lotus::Model::Config::Adapter
+      # @attr_reader adapters [Hash] a hash of Lotus::Model::Config::Adapter
       #
       # @since 0.2.0
       #
-      # @see Lotus::Controller::Configuration#adapters
-      attr_accessor :adapters
+      # @see Lotus::Model::Configuration#adapters
+      attr_reader :adapters
 
       # Initialize a configuration instance
       #
@@ -22,7 +22,7 @@ module Lotus
       #
       # @since 0.2.0
       def initialize
-        @adapters = {}
+        reset!
       end
 
       # Reset all the values to the defaults
@@ -31,6 +31,42 @@ module Lotus
       # @api private
       def reset!
         @adapters = {}
+      end
+
+      # Register adapter
+      #
+      # If `default` params is set to `true`, the adapter will be used as default one
+      #
+      # @param name    [Symbol] Derive adapter class name
+      # @param uri     [String] The adapter uri
+      # @param default [TrueClass, FalseClass] Decide if adapter is used by default
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model#configure
+      #
+      # @example Register SQL Adapter as default adapter
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     adapter :sql, 'postgres://localhost/database', default: true
+      #   end
+      #
+      #   Lotus::Model.adapters.fetch(:default)
+      #   Lotus::Model.adapters.fetch(:sql)
+      #
+      # @example Register an adapter
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     adapter :sql, 'postgres://localhost/database'
+      #   end
+      #
+      #   Lotus::Model.adapters.fetch(:sql)
+      def adapter(name, uri, default: false)
+        adapter = Lotus::Model::Config::Adapter.new(name, uri)
+        @adapters[name] = adapter
+        @adapters[:default] = adapter if default
       end
     end
   end
