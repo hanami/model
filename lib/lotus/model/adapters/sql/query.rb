@@ -111,15 +111,8 @@ module Lotus
           #        .where(framework: 'lotus')
           #
           #   # => SELECT * FROM `projects` WHERE (`language` = 'ruby') AND (`framework` = 'lotus')
-          #
-          # @example Expressions
-          #
-          #   query.where{ publish_at > function(:DATE, Date.today) }
-          #
-          #   # => SELECT * FROM `articles` WHERE (`publish_at` > DATE('2014-07-29'))
           def where(condition=nil, &blk)
-            condition or blk or raise ArgumentError.new("You need to specify an condition.")
-            condition = blk unless condition
+            condition = (condition or blk or raise ArgumentError.new('You need to specify an condition.'))
             conditions.push([:where, condition])
             self
           end
@@ -157,7 +150,8 @@ module Lotus
           #   query.where(country: 'italy').or(year: 1900..1982)
           #
           #   # => SELECT * FROM `people` WHERE ((`country` = 'italy') OR ((`year` >= 1900) AND (`year` <= 1982)))
-          def or(condition)
+          def or(condition=nil, &blk)
+            condition = (condition or blk or raise ArgumentError.new('You need to specify an condition.'))
             conditions.push([:or, condition])
             self
           end
@@ -198,7 +192,8 @@ module Lotus
           #        .exclude(company: 'enterprise')
           #
           #   # => SELECT * FROM `projects` WHERE (`language` != 'java') AND (`company` != 'enterprise')
-          def exclude(condition)
+          def exclude(condition=nil, &blk)
+            condition = (condition or blk or raise ArgumentError.new('You need to specify an condition.'))
             conditions.push([:exclude, condition])
             self
           end
