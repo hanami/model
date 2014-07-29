@@ -10,7 +10,7 @@ describe Lotus::Model do
   describe '.configure' do
     describe '.adapter' do
       before do
-        Lotus::Model::configure do
+        Lotus::Model.configure do
           adapter :sql, 'postgres://localhost/database', default: true
         end
       end
