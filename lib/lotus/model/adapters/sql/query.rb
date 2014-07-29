@@ -111,8 +111,14 @@ module Lotus
           #        .where(framework: 'lotus')
           #
           #   # => SELECT * FROM `projects` WHERE (`language` = 'ruby') AND (`framework` = 'lotus')
+          #
+          # @example Expressions
+          #
+          #   query.where{ publish_at > function(:DATE, Date.today) }
+          #
+          #   # => SELECT * FROM `articles` WHERE (`publish_at` > DATE('2014-07-29'))
           def where(condition=nil, &blk)
-            raise ArgumentError, "You need to specify an condition." unless condition or block_given?
+            condition or blk or raise ArgumentError.new("You need to specify an condition.")
             condition = blk unless condition
             conditions.push([:where, condition])
             self

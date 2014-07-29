@@ -317,9 +317,18 @@ describe Lotus::Model::Adapters::SqlAdapter do
           query = Proc.new {
             where{ age > 31 }
           }
-          
+
           result = @adapter.query(collection, &query).all
           result.must_equal [user1]
+        end
+        
+        it 'raises an error if you dont specify condition or block' do
+          -> {
+            query = Proc.new {
+              where()
+            }
+            @adapter.query(collection, &query).all
+          }.must_raise(ArgumentError)
         end
       end
     end
