@@ -8,12 +8,12 @@ module Lotus
     # @since 0.2.0
     class Configuration
 
-      # @attr_accessor adapters [Hash] a hash of Lotus::Model::Config::Adapter
+      # @attr_reader adapters [Hash] a hash of Lotus::Model::Config::Adapter
       #
       # @since 0.2.0
       #
-      # @see Lotus::Controller::Configuration#adapters
-      attr_accessor :adapters
+      # @see Lotus::Model::Configuration#adapters
+      attr_reader :adapters
 
       # Initialize a configuration instance
       #
@@ -59,8 +59,8 @@ module Lotus
       #   end
       def adapter(name, uri, default: false)
         adapter = Lotus::Model::Config::Adapter.new(name, uri)
-        adapters[name] = adapter
-        adapters[:default] = adapter if default
+        @adapters[name] = adapter
+        @adapters[:default] = adapter if default
       end
     end
   end
