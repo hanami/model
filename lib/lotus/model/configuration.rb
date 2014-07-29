@@ -39,24 +39,30 @@ module Lotus
       #
       # @param name    [Symbol] Derive adapter class name
       # @param uri     [String] The adapter uri
-      # @param default [TrueClass,FalseClass] Decide if adapter is used by default
+      # @param default [TrueClass, FalseClass] Decide if adapter is used by default
       #
-      # @since 0.2.0
+      # @since x.x.x
       #
-      # @see Lotus::Model#adapter
       # @see Lotus::Model#configure
       #
       # @example Register SQL Adapter as default adapter
       #   require 'lotus/model'
       #
-      #   Lotus::Model.adapters # => {}
+      #   Lotus::Model.configure do
+      #     adapter :sql, 'postgres://localhost/database', default: true
+      #   end
+      #
+      #   Lotus::Model.adapters.fetch(:default)
+      #   Lotus::Model.adapters.fetch(:sql)
       #
       # @example Register an adapter
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :sql, 'postgres://localhost/database', default: true
+      #     adapter :sql, 'postgres://localhost/database'
       #   end
+      #
+      #   Lotus::Model.adapters.fetch(:sql)
       def adapter(name, uri, default: false)
         adapter = Lotus::Model::Config::Adapter.new(name, uri)
         @adapters[name] = adapter
