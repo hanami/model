@@ -5,7 +5,7 @@ describe Lotus::Model::Configuration do
     @configuration = Lotus::Model::Configuration.new
   end
 
-  describe '#adapters' do
+  describe '#adapter' do
     it 'defaults to an empty set' do
       @configuration.adapters.must_be_empty
     end
@@ -33,4 +33,5 @@ describe Lotus::Model::Configuration do
       @configuration.adapters.size.must_equal(1)
     end
   end
+
 end
