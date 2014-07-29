@@ -22,7 +22,7 @@ module Lotus
       #
       # @since 0.2.0
       def initialize
-        @adapters = {}
+        reset!
       end
 
       # Reset all the values to the defaults
