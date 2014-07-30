@@ -56,7 +56,7 @@ module Lotus
         #
         # @since 0.2.0
         def initialize(name, uri = nil)
-          @name, @uri, @default = name, uri
+          @name, @uri = name, uri
         end
 
         # Initialize the adapter
