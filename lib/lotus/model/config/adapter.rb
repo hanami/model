@@ -3,7 +3,7 @@ require 'lotus/utils/class'
 module Lotus
   module Model
     module Config
-      # It's raised when an adapter class does not exist
+      # Raised when an adapter class does not exist
       #
       # @since x.x.x
       class AdapterNotFound < ::StandardError
