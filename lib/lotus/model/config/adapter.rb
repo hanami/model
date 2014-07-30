@@ -3,6 +3,12 @@ require 'lotus/utils/class'
 module Lotus
   module Model
     module Config
+      # It's raised when an adapter class does not exist
+      #
+      # @since x.x.x
+      class AdapterNotFound < ::StandardError
+      end
+
       # Configuration for the adapter
       #
       # Lotus::Model has its own global configuration that can be manipulated
@@ -70,7 +76,11 @@ module Lotus
 
         def adapter_class
           klass_name = Lotus::Utils::String.new("#{name}_adapter").classify
-          Lotus::Utils::Class.load!(klass_name, Lotus::Model::Adapters)
+          begin
+            Lotus::Utils::Class.load!(klass_name, Lotus::Model::Adapters)
+          rescue
+            raise AdapterNotFound
+          end
         end
       end
     end
