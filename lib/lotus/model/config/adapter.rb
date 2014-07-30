@@ -1,3 +1,5 @@
+require 'lotus/utils/class'
+
 module Lotus
   module Model
     module Config
@@ -47,8 +49,28 @@ module Lotus
         #   instance
         #
         # @since 0.2.0
-        def initialize(name, uri)
+        def initialize(name, uri = nil)
           @name, @uri, @default = name, uri
+        end
+
+        # Initialize the adapter
+        #
+        # @param name [Lotus::Model::Mapper] the mapper instance
+        #
+        # @return [Lotus::Model::Adapters::SqlAdapter, Lotus::Model::Adapters::MemoryAdapter] an apdapter instance
+        #
+        # @see Lotus::Model::Adapters
+        #
+        # @since x.x.x
+        def load!(mapper)
+          adapter_class.new(mapper, uri)
+        end
+
+        private
+
+        def adapter_class
+          klass_name = Lotus::Utils::String.new("#{name}_adapter").classify
+          Lotus::Utils::Class.load!(klass_name, Lotus::Model::Adapters)
         end
       end
     end
