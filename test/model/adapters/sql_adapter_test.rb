@@ -392,7 +392,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           query = Proc.new {
             exclude{ age > 31 }
           }
-
+          puts @adapter.query(collection, &query).run.sql
           result = @adapter.query(collection, &query).all
           result.must_equal [user2, user3]
         end
@@ -437,13 +437,13 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result.must_equal [user1, user2]
         end
         
-        it 'can use lambda to describe exclude conditions' do
+        it 'can use lambda to describe or conditions' do
           name1 = user1.name
           
           query = Proc.new {
             where(name: name1).or{ age < 32 }
           }
-
+          
           result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
