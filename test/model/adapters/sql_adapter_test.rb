@@ -392,7 +392,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           query = Proc.new {
             exclude{ age > 31 }
           }
-          puts @adapter.query(collection, &query).run.sql
+          
           result = @adapter.query(collection, &query).all
           result.must_equal [user2, user3]
         end
