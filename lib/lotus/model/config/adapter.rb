@@ -63,7 +63,7 @@ module Lotus
         #
         # @param name [Lotus::Model::Mapper] the mapper instance
         #
-        # @return [Lotus::Model::Adapters::SqlAdapter, Lotus::Model::Adapters::MemoryAdapter] an apdapter instance
+        # @return [Lotus::Model::Adapters::SqlAdapter, Lotus::Model::Adapters::MemoryAdapter] an adapter instance
         #
         # @see Lotus::Model::Adapters
         #
