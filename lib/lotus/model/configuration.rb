@@ -15,6 +15,9 @@ module Lotus
       # @see Lotus::Model::Configuration#adapters
       attr_reader :adapters
 
+      # TODO doc
+      attr_reader :mapper
+
       # Initialize a configuration instance
       #
       # @return [Lotus::Model::Configuration] a new configuration's
@@ -31,6 +34,7 @@ module Lotus
       # @api private
       def reset!
         @adapters = {}
+        @mapper = nil
       end
 
       # Register adapter
@@ -67,6 +71,30 @@ module Lotus
         adapter = Lotus::Model::Config::Adapter.new(name, uri)
         @adapters[name] = adapter
         @adapters[:default] = adapter if default
+      end
+
+      # Set global persistence mapper
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model#configure
+      # @see Lotus::Model::Mapper
+      #
+      # @example Set global persistence mapper
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     mapping do
+      #       collection :users do
+      #         entity User
+      #
+      #         attribute :id,   Integer
+      #         attribute :name, String
+      #       end
+      #     end
+      #   end
+      def mapping(&blk)
+        @mapper = Lotus::Model::Mapper.new(&blk) if block_given?
       end
     end
   end

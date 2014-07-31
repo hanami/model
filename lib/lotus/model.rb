@@ -50,6 +50,15 @@ module Lotus
     #
     #   Lotus::Model.configure do
     #     adapter :sql, 'postgres://localhost/database', default: true
+    #
+    #     mapping do
+    #       collection :users do
+    #         entity User
+    #
+    #         attribute :id,   Integer
+    #         attribute :name, String
+    #       end
+    #     end
     #   end
     def self.configure(&block)
       configuration.instance_eval(&block)

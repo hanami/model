@@ -49,5 +49,30 @@ describe Lotus::Model do
         default_adapter.name.must_equal :sql
       end
     end
+
+    describe '.mapping' do
+      before do
+        Lotus::Model.configure do
+          mapping do
+            collection :users do
+              entity User
+
+              attribute :id, Integer
+              attribute :name, String
+            end
+          end
+        end
+      end
+
+      after do
+        Lotus::Model.configuration.reset!
+      end
+
+      it 'configures the global persistence mapper' do
+        collection = Lotus::Model.configuration.mapper.collection(:users)
+        collection.must_be_kind_of Lotus::Model::Mapping::Collection
+        collection.name.must_equal :users
+      end
+    end
   end
 end

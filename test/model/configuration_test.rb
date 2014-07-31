@@ -32,4 +32,28 @@ describe Lotus::Model::Configuration do
     end
   end
 
+  describe '#mapping' do
+    describe "when a block is given" do
+      it 'configures the global persistence mapper through block' do
+        @configuration.mapping do
+          collection :users do
+            entity User
+
+            attribute :id, Integer
+            attribute :name, String
+          end
+        end
+
+        collection = @configuration.mapper.collection(:users)
+        collection.must_be_kind_of Lotus::Model::Mapping::Collection
+        collection.name.must_equal :users
+      end
+    end
+
+    describe "when a block isn't given" do
+      it 'defaults to the null' do
+        @configuration.mapping.must_be_nil
+      end
+    end
+  end
 end
