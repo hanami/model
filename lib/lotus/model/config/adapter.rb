@@ -1,6 +1,14 @@
+require 'lotus/utils/class'
+
 module Lotus
   module Model
     module Config
+      # Raised when an adapter class does not exist
+      #
+      # @since x.x.x
+      class AdapterNotFound < ::StandardError
+      end
+
       # Configuration for the adapter
       #
       # Lotus::Model has its own global configuration that can be manipulated
@@ -47,8 +55,32 @@ module Lotus
         #   instance
         #
         # @since 0.2.0
-        def initialize(name, uri)
-          @name, @uri, @default = name, uri
+        def initialize(name, uri = nil)
+          @name, @uri = name, uri
+        end
+
+        # Initialize the adapter
+        #
+        # @param name [Lotus::Model::Mapper] the mapper instance
+        #
+        # @return [Lotus::Model::Adapters::SqlAdapter, Lotus::Model::Adapters::MemoryAdapter] an adapter instance
+        #
+        # @see Lotus::Model::Adapters
+        #
+        # @since x.x.x
+        def load!(mapper)
+          adapter_class.new(mapper, uri)
+        end
+
+        private
+
+        def adapter_class
+          klass_name = Lotus::Utils::String.new("#{name}_adapter").classify
+          begin
+            Lotus::Utils::Class.load!(klass_name, Lotus::Model::Adapters)
+          rescue
+            raise AdapterNotFound
+          end
         end
       end
     end
