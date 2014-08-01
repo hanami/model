@@ -63,5 +63,13 @@ module Lotus
     def self.configure(&block)
       configuration.instance_eval(&block)
     end
+
+    # Load the framework
+    #
+    # @since x.x.x
+    # @api private
+    def self.load!
+      configuration.load!
+    end
   end
 end
