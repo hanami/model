@@ -68,7 +68,7 @@ module Lotus
         # @see Lotus::Model::Adapters
         #
         # @since x.x.x
-        def load!(mapper)
+        def build(mapper)
           adapter_class.new(mapper, uri)
         end
 

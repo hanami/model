@@ -49,7 +49,7 @@ module Lotus
       # @api private
       def load!
         adapter_configs.each do |name, config|
-          @adapters[name] = config.__send__(:load!, mapper)
+          @adapters[name] = config.__send__(:build, mapper)
         end
       end
 
