@@ -5,17 +5,19 @@ module Lotus
     # Lotus::Model has its own global configuration that can be manipulated
     # via `Lotus::Model.configure`.
     #
-    # @since 0.2.0
+    # @since x.x.x
     class Configuration
 
       # @attr_reader adapters [Hash] a hash of Lotus::Model::Config::Adapter
       #
-      # @since 0.2.0
-      #
-      # @see Lotus::Model::Configuration#adapters
+      # @since x.x.x
+      # @api private
       attr_reader :adapters
 
-      # TODO doc
+      # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
+      #
+      # @since x.x.x
+      # @api private
       attr_reader :mapper
 
       # Initialize a configuration instance
@@ -23,14 +25,14 @@ module Lotus
       # @return [Lotus::Model::Configuration] a new configuration's
       #   instance
       #
-      # @since 0.2.0
+      # @since x.x.x
       def initialize
         reset!
       end
 
       # Reset all the values to the defaults
       #
-      # @since 0.2.0
+      # @since x.x.x
       # @api private
       def reset!
         @adapters = {}
@@ -47,7 +49,8 @@ module Lotus
       #
       # @since x.x.x
       #
-      # @see Lotus::Model#configure
+      # @see Lotus::Model.configure
+      # @see Lotus::Model::Config::Adapter
       #
       # @example Register SQL Adapter as default adapter
       #   require 'lotus/model'
@@ -77,7 +80,7 @@ module Lotus
       #
       # @since x.x.x
       #
-      # @see Lotus::Model#configure
+      # @see Lotus::Model.configure
       # @see Lotus::Model::Mapper
       #
       # @example Set global persistence mapper
