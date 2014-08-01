@@ -3,32 +3,51 @@ require 'test_helper'
 describe Lotus::Model::Configuration do
   let(:configuration) { Lotus::Model::Configuration.new }
 
-  describe '#adapter' do
+  describe '#adapter_configs' do
     it 'defaults to an empty set' do
       configuration.adapters.must_be_empty
     end
 
-    it 'allows to register adapter' do
+    it 'allows to register adapter configuration' do
       configuration.adapter(:sql, 'postgres://localhost/database')
 
-      adapter = configuration.adapters.fetch(:sql)
-      adapter.must_be_kind_of Lotus::Model::Config::Adapter
-      adapter.uri.must_equal 'postgres://localhost/database'
+      adapter_config = configuration.adapter_configs.fetch(:sql)
+      adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
+      adapter_config.uri.must_equal 'postgres://localhost/database'
     end
 
     it 'allows to register default adapter' do
       configuration.adapter(:sql, 'postgres://localhost/database', default: true)
 
-      default_adapter = configuration.adapters.fetch(:default)
-      default_adapter.must_be_kind_of Lotus::Model::Config::Adapter
-      default_adapter.uri.must_equal 'postgres://localhost/database'
+      default_adapter_config = configuration.adapter_configs.fetch(:default)
+      default_adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
+      default_adapter_config.uri.must_equal 'postgres://localhost/database'
     end
 
     it 'eliminates duplications' do
       configuration.adapter(:sql, 'postgres://localhost/database')
       configuration.adapter(:sql, 'postgres://localhost/database')
 
-      configuration.adapters.size.must_equal(1)
+      configuration.adapter_configs.size.must_equal(1)
+    end
+  end
+
+  describe '#load!' do
+    it 'instantiates all registered adapters' do
+      configuration.mapping do
+        collection :users do
+          entity User
+
+          attribute :id, Integer
+          attribute :name, String
+        end
+      end
+
+      configuration.adapter(:memory, nil)
+      configuration.load!
+
+      adapter = configuration.adapters.fetch(:memory)
+      adapter.must_be_instance_of Lotus::Model::Adapters::MemoryAdapter
     end
   end
 
@@ -45,7 +64,7 @@ describe Lotus::Model::Configuration do
         end
 
         collection = configuration.mapper.collection(:users)
-        collection.must_be_kind_of Lotus::Model::Mapping::Collection
+        collection.must_be_instance_of Lotus::Model::Mapping::Collection
         collection.name.must_equal :users
       end
     end

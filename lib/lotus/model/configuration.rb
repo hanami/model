@@ -12,6 +12,7 @@ module Lotus
       #
       # @since x.x.x
       # @api private
+      attr_reader :adapter_configs
       attr_reader :adapters
 
       # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
@@ -35,8 +36,19 @@ module Lotus
       # @since x.x.x
       # @api private
       def reset!
+        @adapter_configs = {}
         @adapters = {}
         @mapper = nil
+      end
+
+      # Load the configuration for the current framework
+      #
+      # @since x.x.x
+      # @api private
+      def load!
+        adapter_configs.each do |name, config|
+          @adapters[name] = config.__send__(:load!, mapper)
+        end
       end
 
       # Register adapter
@@ -70,10 +82,10 @@ module Lotus
       #   end
       #
       #   Lotus::Model.adapters.fetch(:sql)
-      def adapter(name, uri, default: false)
+      def adapter(name, uri = nil, default: false)
         adapter = Lotus::Model::Config::Adapter.new(name, uri)
-        @adapters[name] = adapter
-        @adapters[:default] = adapter if default
+        adapter_configs[name] = adapter
+        adapter_configs[:default] = adapter if default
       end
 
       # Set global persistence mapper
