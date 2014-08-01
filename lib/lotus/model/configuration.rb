@@ -41,6 +41,8 @@ module Lotus
         @mapper = nil
       end
 
+      alias_method :unload!, :reset!
+
       # Load the configuration for the current framework
       #
       # @since x.x.x
