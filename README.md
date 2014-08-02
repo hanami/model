@@ -140,7 +140,7 @@ When a class includes `Lotus::Repository`, it will receive the following interfa
 It corresponds to a table for a SQL database or to a MongoDB collection.
 
 **All the queries are private**.
-This decision forces developers to define intention revealing API, instead leak storage API details outside of a repository.
+This decision forces developers to define intention revealing API, instead of leaking storage API details outside of a repository.
 
 Look at the following code:
 
