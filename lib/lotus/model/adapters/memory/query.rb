@@ -161,7 +161,7 @@ module Lotus
           #
           #   query.select(:name, :year)
           def select(*columns)
-            columns = Lotus::Utils::Kernel.Array(columns).uniq
+            columns = Lotus::Utils::Kernel.Array(columns)
             modifiers.push(Proc.new{ flatten!; each {|r| r.delete_if {|k,_| !columns.include?(k)} } })
           end
 
