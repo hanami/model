@@ -3,7 +3,6 @@ require 'lotus/entity'
 require 'lotus/repository'
 require 'lotus/model/mapper'
 require 'lotus/model/configuration'
-require 'lotus/model/config/adapter'
 
 module Lotus
   # Model

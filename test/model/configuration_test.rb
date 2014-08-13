@@ -9,26 +9,26 @@ describe Lotus::Model::Configuration do
     end
 
     it 'allows to register adapter configuration' do
-      configuration.adapter(:sql, 'postgres://localhost/database')
+      configuration.adapter(:sql, SQLITE_CONNECTION_STRING)
 
-      adapter_config = configuration.adapter_configs.fetch(:sql)
+      adapter_config = configuration.adapter_registry.adapter_configs.fetch(:sql)
       adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
-      adapter_config.uri.must_equal 'postgres://localhost/database'
+      adapter_config.uri.must_equal SQLITE_CONNECTION_STRING
     end
 
     it 'allows to register default adapter' do
-      configuration.adapter(:sql, 'postgres://localhost/database', default: true)
+      configuration.adapter(:sql, SQLITE_CONNECTION_STRING, default: true)
 
-      default_adapter_config = configuration.adapter_configs.default
+      default_adapter_config = configuration.adapter_registry.adapter_configs.default
       default_adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
-      default_adapter_config.uri.must_equal 'postgres://localhost/database'
+      default_adapter_config.uri.must_equal SQLITE_CONNECTION_STRING
     end
 
     it 'eliminates duplications' do
-      configuration.adapter(:sql, 'postgres://localhost/database')
-      configuration.adapter(:sql, 'postgres://localhost/database')
+      configuration.adapter(:sql, SQLITE_CONNECTION_STRING)
+      configuration.adapter(:sql, SQLITE_CONNECTION_STRING)
 
-      configuration.adapter_configs.size.must_equal(1)
+      configuration.adapter_registry.adapter_configs.select { |name, config| name == :sql }.size.must_equal(1)
     end
   end
 

@@ -1,3 +1,5 @@
+require 'lotus/model/adapter_registry'
+
 module Lotus
   module Model
     # Configuration for the framework, models and adapters.
@@ -8,12 +10,18 @@ module Lotus
     # @since x.x.x
     class Configuration
 
-      # @attr_reader adapters [Hash] a hash of Lotus::Model::Config::Adapter
+      include Utils::ClassAttribute
+
+      class_attribute :adapter_registry
+      self.adapter_registry = Lotus::Model::AdapterRegistry.new
+
+      # A hash of adapter instances
       #
       # @since x.x.x
       # @api private
-      attr_reader :adapter_configs
-      attr_reader :adapters
+      def adapters
+        adapter_registry.adapters
+      end
 
       # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
       #
@@ -31,13 +39,16 @@ module Lotus
         reset!
       end
 
+      def adapter_registry
+        self.class.adapter_registry
+      end
+
       # Reset all the values to the defaults
       #
       # @since x.x.x
       # @api private
       def reset!
-        @adapter_configs = {}
-        @adapters = {}
+        adapter_registry.reset!
         @mapper = nil
       end
 
@@ -48,9 +59,7 @@ module Lotus
       # @since x.x.x
       # @api private
       def load!
-        adapter_configs.each do |name, config|
-          @adapters[name] = config.__send__(:build, mapper)
-        end
+        adapter_registry.build(mapper)
       end
 
       # Register adapter
@@ -85,9 +94,7 @@ module Lotus
       #
       #   Lotus::Model.adapters.fetch(:sql)
       def adapter(name, uri = nil, default: false)
-        adapter = Lotus::Model::Config::Adapter.new(name, uri)
-        adapter_configs[name] = adapter
-        adapter_configs.default = adapter if default
+        adapter_registry.register(name, uri, default)
       end
 
       # Set global persistence mapper
