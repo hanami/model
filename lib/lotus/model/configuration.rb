@@ -73,7 +73,7 @@ module Lotus
       #     adapter :sql, 'postgres://localhost/database', default: true
       #   end
       #
-      #   Lotus::Model.adapters.fetch(:default)
+      #   Lotus::Model.adapters.default
       #   Lotus::Model.adapters.fetch(:sql)
       #
       # @example Register an adapter
@@ -87,7 +87,7 @@ module Lotus
       def adapter(name, uri = nil, default: false)
         adapter = Lotus::Model::Config::Adapter.new(name, uri)
         adapter_configs[name] = adapter
-        adapter_configs[:default] = adapter if default
+        adapter_configs.default = adapter if default
       end
 
       # Set global persistence mapper
