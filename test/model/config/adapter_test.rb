@@ -33,6 +33,26 @@ describe Lotus::Model::Config::Adapter do
         }.must_raise(Lotus::Model::Config::AdapterNotFound)
       end
     end
+
+    describe 'given custom adapter class name is provided' do
+      module Lotus
+        module Model
+          module Adapters
+            class FakeRedis < Abstract
+              def initialize(mapper, uri)
+              end
+            end
+          end
+        end
+      end
+
+      let(:config) { Lotus::Model::Config::Adapter.new(:redis, 'redis://not_exist', 'FakeRedis') }
+
+      it 'instantiates custom type adapter' do
+        adapter = config.build(mapper)
+        adapter.must_be_kind_of Lotus::Model::Adapters::FakeRedis
+      end
+    end
   end
 
 end
