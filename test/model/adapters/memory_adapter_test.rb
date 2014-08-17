@@ -76,7 +76,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         @adapter.persist(collection, entity)
 
         entity.id.must_equal(id)
-        @adapter.find(collection, entity.id).must_equal entity
+        @adapter.find(collection, entity.id).name.must_equal entity.name
       end
     end
   end

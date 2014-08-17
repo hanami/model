@@ -97,7 +97,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         @adapter.persist(collection, entity)
 
         entity.id.must_equal(id)
-        @adapter.find(collection, entity.id).must_equal entity
+        @adapter.find(collection, entity.id).name.must_equal entity.name
       end
     end
   end
@@ -312,7 +312,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
-        
+
         it 'can use lambda to describe where conditions' do
           query = Proc.new {
             where{ age > 31 }
@@ -321,7 +321,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user1]
         end
-        
+
         it 'raises an error if you dont specify condition or block' do
           -> {
             query = Proc.new {
@@ -387,16 +387,16 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user3]
         end
-        
+
         it 'can use lambda to describe exclude conditions' do
           query = Proc.new {
             exclude{ age > 31 }
           }
-          
+
           result = @adapter.query(collection, &query).all
           result.must_equal [user2, user3]
         end
-        
+
         it 'raises an error if you dont specify condition or block' do
           -> {
             query = Proc.new {
@@ -436,22 +436,22 @@ describe Lotus::Model::Adapters::SqlAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
-        
+
         it 'can use lambda to describe or conditions' do
           name1 = user1.name
-          
+
           query = Proc.new {
             where(name: name1).or{ age < 32 }
           }
-          
+
           result = @adapter.query(collection, &query).all
           result.must_equal [user1, user2]
         end
-        
+
         it 'raises an error if you dont specify condition or block' do
           -> {
             name1 = user1.name
-            
+
             query = Proc.new {
               where(name: name1).or()
             }
