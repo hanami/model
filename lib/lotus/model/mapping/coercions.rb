@@ -111,6 +111,21 @@ module Lotus
         def self.Integer(arg)
           Utils::Kernel.Integer(arg) unless arg.nil?
         end
+        
+        # Coerce into an BigDecimal, unless the argument is nil
+        #
+        # @param arg [Object] the object to coerce
+        #
+        # @return [Integer] the result of the coercion
+        #
+        # @raise [TypeError] if the argument can't be coerced
+        #
+        # @since 0.2.X
+        #
+        # @see http://rdoc.info/gems/lotus-utils/Lotus/Utils/Kernel##BigDecimal-class_method
+        def self.BigDecimal(arg)
+          Utils::Kernel.BigDecimal(arg) unless arg.nil?
+        end
 
         # Coerce into a Set, unless the argument is nil
         #
