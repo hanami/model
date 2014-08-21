@@ -84,6 +84,18 @@ describe Lotus::Model::Mapping::Coercions do
       actual.must_be_nil
     end
   end
+  
+  describe '.BigDecimal' do
+    it 'converts the input into an BigDecimal' do
+      actual = Lotus::Model::Mapping::Coercions.BigDecimal('23')
+      actual.must_equal 23
+    end
+
+    it 'returns nil when nil is given' do
+      actual = Lotus::Model::Mapping::Coercions.BigDecimal(nil)
+      actual.must_be_nil
+    end
+  end
 
   describe '.Set' do
     it 'converts the input into a set' do
