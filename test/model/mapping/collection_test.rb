@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Lotus::Model::Mapping::Collection do
   before do
-    @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer, MAPPER)
+    @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer)
   end
 
   describe '::Boolean' do
@@ -21,7 +21,7 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     it 'executes the given block' do
-      collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer, nil) do
+      collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer) do
         entity User
       end
 

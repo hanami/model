@@ -84,8 +84,8 @@ module Lotus
         # @since 0.1.0
         #
         # @see Lotus::Model::Mapper#collection
-        def initialize(name, coercer_class, mapper, &blk)
-          @name, @coercer_class, @mapper = name, coercer_class, mapper
+        def initialize(name, coercer_class, &blk)
+          @name, @coercer_class = name, coercer_class
           @associations, @attributes = {}, {}
           instance_eval(&blk) if block_given?
         end
@@ -362,7 +362,6 @@ module Lotus
         def load!
           @coercer = coercer_class.new(self)
           configure_repository!
-          load_associations!
         end
 
         private
@@ -375,16 +374,6 @@ module Lotus
         def configure_repository!
           repository.collection = name
           rescue NameError
-        end
-
-        def load_associations!
-          @associations.each do |_, association|
-            association.repository = repository_for(association.collection)
-          end
-        end
-
-        def repository_for(collection)
-          @mapper.collection(collection).repository
         end
 
         def many_to_one(options)

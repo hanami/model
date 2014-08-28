@@ -3,14 +3,13 @@ module Lotus
     module Associations
       class ManyToOne
         attr_reader :collection
+        attr_accessor :repository
+
         def initialize(opts)
           @name        = opts.fetch(:name)
           @collection  = opts.fetch(:collection)
           @foreign_key = opts.fetch(:foreign_key) {default_foreign_key}
-        end
-
-        def repository=(repository)
-          @repository = repository
+          @repository  = nil
         end
 
         def associate_entities!(entities)
