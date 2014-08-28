@@ -283,7 +283,6 @@ describe Lotus::Repository do
         end
       end
 
-
       describe 'preloading' do
         before do
           UserRepository.create(user1)
@@ -292,15 +291,15 @@ describe Lotus::Repository do
         end
 
         it 'many to one' do
-          articles = ArticleRepository.all_with_user.all
+          articles = ArticleRepository.all_with_user.all.first
 
-          articles.first.user.must_equal user1
+          article.user.must_equal user1
         end
 
         it 'one to many' do
-          associated = UserRepository.all_with_articles.first.articles
+          user = UserRepository.all_with_articles.first
 
-          associated.must_equal [article1]
+          user.articles.must_equal [article1]
         end
 
         it 'allows chaining' do
