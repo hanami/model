@@ -79,7 +79,7 @@ module Lotus
       # @see Lotus::Model::Mapping::Collection
       def collection(name, &blk)
         if block_given?
-          @collections[name] = Mapping::Collection.new(name, @coercer, &blk)
+          @collections[name] = Mapping::Collection.new(name, @coercer, self, &blk)
         else
           # TODO implement a getter with a private API.
           @collections[name] or raise Mapping::UnmappedCollectionError.new(name)

@@ -56,6 +56,7 @@ module Lotus
             @dataset    = dataset
             @collection = collection
             @conditions = []
+            @associations = []
             @modifiers  = []
             instance_eval(&blk) if block_given?
           end
@@ -67,7 +68,7 @@ module Lotus
           #
           # @since 0.1.0
           def all
-            @collection.deserialize(run)
+            @collection.deserialize(run, @associations)
           end
 
           # Adds a condition that behaves like SQL `WHERE`.
@@ -408,6 +409,11 @@ module Lotus
           # @see Lotus::Model::Adapters::Sql::Query#negate!
           def negate!
             raise NotImplementedError
+          end
+
+          def preload(association)
+            @associations << association
+            self
           end
 
           protected

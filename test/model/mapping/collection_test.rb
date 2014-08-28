@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Lotus::Model::Mapping::Collection do
   before do
-    @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer)
+    @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer, MAPPER)
   end
 
   describe '::Boolean' do
@@ -21,7 +21,7 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     it 'executes the given block' do
-      collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer) do
+      collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer, nil) do
         entity User
       end
 
@@ -110,6 +110,21 @@ describe Lotus::Model::Mapping::Collection do
 
     it 'defines a mapped attribute' do
       @collection.attributes[:name].must_equal [String, :t_name]
+    end
+  end
+
+  describe '#association' do
+    before do
+      @collection.association :user, User, foreign_key: :user_id, collection: :users
+      @collection.association :users, [User], foreign_key: :collection_id, collection: :users
+    end
+
+    it 'defines a many to one association' do
+      @collection.associations[:user].must_be_instance_of Lotus::Model::Associations::ManyToOne
+    end
+
+    it 'defines a many to one association' do
+      @collection.associations[:users].must_be_instance_of Lotus::Model::Associations::OneToMany
     end
   end
 end
