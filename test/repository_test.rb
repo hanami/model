@@ -291,7 +291,7 @@ describe Lotus::Repository do
         end
 
         it 'many to one' do
-          articles = ArticleRepository.all_with_user.all.first
+          article = ArticleRepository.all_with_user.all.first
 
           article.user.must_equal user1
         end
