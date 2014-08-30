@@ -89,10 +89,17 @@ module Lotus
         #
         # @since x.x.x
         def build(mapper)
+          load_dependency
           adapter_class.new(mapper, uri)
         end
 
         private
+
+        def load_dependency
+          if [:sql, :memory].include?(name)
+            require "lotus/model/adapters/#{name}_adapter"
+          end
+        end
 
         def adapter_class
           @class_name ||= Lotus::Utils::String.new("#{name}_adapter").classify
