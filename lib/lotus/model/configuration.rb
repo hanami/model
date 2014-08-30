@@ -94,7 +94,7 @@ module Lotus
       #
       #   Lotus::Model.adapters.fetch(:sql)
       def adapter(name, uri = nil, default: false)
-        adapter_registry.register(name, uri, default)
+        adapter_registry.register(name, uri, default: default)
       end
 
       # Set global persistence mapper

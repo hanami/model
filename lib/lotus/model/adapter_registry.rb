@@ -10,7 +10,7 @@ module Lotus
         reset!
       end
 
-      def register(name, uri, default = false)
+      def register(name, uri, default: false)
         adapter = Lotus::Model::Config::Adapter.new(name, uri)
         adapter_configs[name] = adapter
         adapter_configs.default = adapter if default
