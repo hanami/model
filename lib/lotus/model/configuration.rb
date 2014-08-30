@@ -118,7 +118,11 @@ module Lotus
       #     end
       #   end
       def mapping(&blk)
-        @mapper = Lotus::Model::Mapper.new(&blk) if block_given?
+        if block_given?
+          @mapper = Lotus::Model::Mapper.new(&blk)
+        else
+          raise Lotus::Model::InvalidMappingError
+        end
       end
     end
   end

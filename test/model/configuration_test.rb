@@ -71,7 +71,7 @@ describe Lotus::Model::Configuration do
 
     describe "when a block isn't given" do
       it 'defaults to the null' do
-        configuration.mapping.must_be_nil
+        -> { configuration.mapping }.must_raise Lotus::Model::InvalidMappingError
       end
     end
   end

@@ -26,6 +26,15 @@ module Lotus
     class NonPersistedEntityError < ::StandardError
     end
 
+    # Error for invalid mapper configuration
+    # It's raised when mapping is not configured correctly
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Configuration#mapping
+    class InvalidMappingError < ::StandardError
+    end
+
     include Utils::ClassAttribute
 
     # Framework configuration
