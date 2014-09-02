@@ -60,6 +60,7 @@ module Lotus
       # @api private
       def load!
         adapter_registry.build(mapper)
+        mapper.load!
       end
 
       # Register adapter
