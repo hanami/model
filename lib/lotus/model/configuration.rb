@@ -56,11 +56,7 @@ module Lotus
       # @since x.x.x
       def load!
         adapter_registry.build(mapper)
-        mapper.load!
-
-        mapper.collections.each_value do |c|
-          c.repository.adapter = adapters.default
-        end
+        mapper.load!(adapters)
       end
 
       # Register adapter

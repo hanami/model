@@ -339,9 +339,9 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def load!
+        def load!(adapter)
           @coercer = coercer_class.new(self)
-          configure_repository!
+          configure_repository!(adapter)
         end
 
         private
@@ -351,8 +351,9 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def configure_repository!
+        def configure_repository!(adapter)
           repository.collection = name
+          repository.adapter = adapter
           rescue NameError
         end
 
