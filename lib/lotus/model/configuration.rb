@@ -18,7 +18,6 @@ module Lotus
       # A hash of adapter instances
       #
       # @since x.x.x
-      # @api private
       def adapters
         adapter_registry.adapters
       end
@@ -26,7 +25,6 @@ module Lotus
       # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
       #
       # @since x.x.x
-      # @api private
       attr_reader :mapper
 
       # Initialize a configuration instance
@@ -46,7 +44,6 @@ module Lotus
       # Reset all the values to the defaults
       #
       # @since x.x.x
-      # @api private
       def reset!
         adapter_registry.reset!
         @mapper = nil
@@ -57,10 +54,13 @@ module Lotus
       # Load the configuration for the current framework
       #
       # @since x.x.x
-      # @api private
       def load!
         adapter_registry.build(mapper)
         mapper.load!
+
+        mapper.collections.each_value do |c|
+          c.repository.adapter = adapters.default
+        end
       end
 
       # Register adapter
@@ -70,8 +70,6 @@ module Lotus
       # @param name    [Symbol] Derive adapter class name
       # @param uri     [String] The adapter uri
       # @param default [TrueClass, FalseClass] Decide if adapter is used by default
-      #
-      # @since x.x.x
       #
       # @see Lotus::Model.configure
       # @see Lotus::Model::Config::Adapter
@@ -94,13 +92,13 @@ module Lotus
       #   end
       #
       #   Lotus::Model.adapters.fetch(:sql)
+      #
+      # @since x.x.x
       def adapter(name, uri = nil, default: false)
         adapter_registry.register(name, uri, default: default)
       end
 
       # Set global persistence mapper
-      #
-      # @since x.x.x
       #
       # @see Lotus::Model.configure
       # @see Lotus::Model::Mapper
@@ -118,6 +116,8 @@ module Lotus
       #       end
       #     end
       #   end
+      #
+      # @since x.x.x
       def mapping(&blk)
         if block_given?
           @mapper = Lotus::Model::Mapper.new(&blk)
