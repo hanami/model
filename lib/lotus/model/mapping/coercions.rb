@@ -157,6 +157,21 @@ module Lotus
           Utils::Kernel.String(arg) unless arg.nil?
         end
 
+        # Coerce into a Symbol, unless the argument is nil
+        #
+        # @param arg [Object] the object to coerce
+        #
+        # @return [Symbol] the result of the coercion
+        #
+        # @raise [TypeError] if the argument can't be coerced
+        #
+        # @since 0.1.3
+        #
+        # @see http://rdoc.info/gems/lotus-utils/Lotus/Utils/Kernel#Symbol-class_method
+        def self.Symbol(arg)
+          Utils::Kernel.Symbol(arg) unless arg.nil?
+        end
+
         # Coerce into a Time, unless the argument is nil
         #
         # @param arg [Object] the object to coerce
