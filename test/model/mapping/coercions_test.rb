@@ -121,7 +121,7 @@ describe Lotus::Model::Mapping::Coercions do
     end
   end
 
-  describe '.Symbold' do
+  describe '.Symbol' do
     it 'converts the input into a symbol' do
       actual = Lotus::Model::Mapping::Coercions.Symbol('wat')
       actual.must_equal :wat
