@@ -165,7 +165,7 @@ module Lotus
         #
         # @raise [TypeError] if the argument can't be coerced
         #
-        # @since 0.1.3
+        # @since x.x.x
         #
         # @see http://rdoc.info/gems/lotus-utils/Lotus/Utils/Kernel#Symbol-class_method
         def self.Symbol(arg)
