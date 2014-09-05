@@ -91,4 +91,26 @@ describe Lotus::Model::Mapper do
       end
     end
   end
+
+  describe '#load!' do
+    let(:association) {Lotus::Model::Associations::OneToMany.new(collection: :articles, foreign_key: :user_id, name: :articles)}
+
+    before do
+      @mapper.collection :users do
+        entity User
+      end
+
+      @mapper.collection :articles do
+        entity Article
+      end
+
+      @mapper.collection(:users).associations[:articles] = association
+    end
+
+    it 'configures repositories for associations' do
+      association.repository.must_be_nil
+      @mapper.load!
+      association.repository.must_equal ArticleRepository
+    end
+  end
 end

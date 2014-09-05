@@ -112,4 +112,19 @@ describe Lotus::Model::Mapping::Collection do
       @collection.attributes[:name].must_equal [String, :t_name]
     end
   end
+
+  describe '#association' do
+    before do
+      @collection.association :user, User, foreign_key: :user_id, collection: :users
+      @collection.association :users, [User], foreign_key: :collection_id, collection: :users
+    end
+
+    it 'defines a many to one association' do
+      @collection.associations[:user].must_be_instance_of Lotus::Model::Associations::ManyToOne
+    end
+
+    it 'defines a many to one association' do
+      @collection.associations[:users].must_be_instance_of Lotus::Model::Associations::OneToMany
+    end
+  end
 end

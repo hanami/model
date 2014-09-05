@@ -93,8 +93,19 @@ module Lotus
       #
       # @since 0.1.0
       def load!
-        @collections.each_value { |collection| collection.load! }
+        @collections.each_value do |collection| 
+          collection.load! 
+          load_associations!(collection)
+        end
         self
+      end
+
+      private
+
+      def load_associations!(_collection)
+        _collection.associations.each_value do |association|
+          association.repository = collection(association.collection).repository
+        end
       end
     end
   end

@@ -1,3 +1,6 @@
+require 'lotus/model/associations/many_to_one'
+require 'lotus/model/associations/one_to_many'
+
 module Lotus
   module Model
     module Mapping
@@ -70,6 +73,7 @@ module Lotus
         # @api private
         attr_reader :attributes
 
+        attr_reader :associations
         # Instantiate a new collection
         #
         # @param name [Symbol] the name of the mapped collection. If used with a
@@ -81,7 +85,8 @@ module Lotus
         #
         # @see Lotus::Model::Mapper#collection
         def initialize(name, coercer_class, &blk)
-          @name, @coercer_class, @attributes = name, coercer_class, {}
+          @name, @coercer_class = name, coercer_class
+          @associations, @attributes = {}, {}
           instance_eval(&blk) if block_given?
         end
 
@@ -303,6 +308,16 @@ module Lotus
           @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
         end
 
+        def association(name, type, options = {})
+          @associations[name] = 
+            if type.is_a? Array
+              one_to_many(options.merge(name: name))
+            else
+              many_to_one(options.merge(name: name))
+            end
+        end
+
+
         # Serializes an entity to be persisted in the database.
         #
         # @param entity [Object] an entity
@@ -319,10 +334,15 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def deserialize(records)
-          records.map do |record|
+        def deserialize(records, associations=[])
+          entities = records.map do |record|
             @coercer.from_record(record)
           end
+
+          associations.each do |association|
+            @associations[association].associate_entities!(entities)
+          end
+          entities
         end
 
         # Deserialize only one attribute from a raw value.
@@ -355,6 +375,14 @@ module Lotus
         def configure_repository!
           repository.collection = name
           rescue NameError
+        end
+
+        def many_to_one(options)
+          Lotus::Model::Associations::ManyToOne.new(options)
+        end
+
+        def one_to_many(options)
+          Lotus::Model::Associations::OneToMany.new(options)
         end
 
         # Retrieves the default repository class

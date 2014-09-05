@@ -527,6 +527,11 @@ module Lotus
             end
           end
 
+          def preload(association)
+            @collection.preload(association)
+            self
+          end
+
           # Apply all the conditions and returns a filtered collection.
           #
           # This operation is idempotent, and the returned result didn't
