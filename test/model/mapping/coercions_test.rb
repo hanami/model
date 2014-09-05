@@ -121,6 +121,18 @@ describe Lotus::Model::Mapping::Coercions do
     end
   end
 
+  describe '.Symbol' do
+    it 'converts the input into a symbol' do
+      actual = Lotus::Model::Mapping::Coercions.Symbol('wat')
+      actual.must_equal :wat
+    end
+
+    it 'returns nil when nil is given' do
+      actual = Lotus::Model::Mapping::Coercions.Symbol(nil)
+      actual.must_equal nil
+    end
+  end
+
   describe '.Time' do
     it 'converts the input into a string' do
       actual = Lotus::Model::Mapping::Coercions.Time(0)
