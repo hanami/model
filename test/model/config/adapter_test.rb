@@ -24,33 +24,21 @@ describe Lotus::Model::Config::Adapter do
       end
     end
 
-    describe 'given adapter type does not exist' do
+    describe 'given adapter type is nout found' do
       let(:config) { Lotus::Model::Config::Adapter.new(:redis, 'redis://not_exist') }
 
       it 'raises an error' do
-        -> {
-          config.build(mapper)
-        }.must_raise(Lotus::Model::Config::AdapterNotFound)
+        -> { config.build(mapper) }.must_raise(LoadError)
       end
     end
 
-    describe 'given custom adapter class name is provided' do
-      module Lotus
-        module Model
-          module Adapters
-            class FakeRedis < Abstract
-              def initialize(mapper, uri)
-              end
-            end
-          end
+    describe 'given adapter class is nout found' do
+      let(:config) { Lotus::Model::Config::Adapter.new(:redis, SQLITE_CONNECTION_STRING) }
+
+      it 'raises an error' do
+        config.stub(:load_dependency, nil) do
+          -> { config.build(mapper) }.must_raise(Lotus::Model::Config::AdapterNotFound)
         end
-      end
-
-      let(:config) { Lotus::Model::Config::Adapter.new(:redis, 'redis://not_exist', 'FakeRedis') }
-
-      it 'instantiates custom type adapter' do
-        adapter = config.build(mapper)
-        adapter.must_be_kind_of Lotus::Model::Adapters::FakeRedis
       end
     end
   end

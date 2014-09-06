@@ -28,17 +28,6 @@ module Lotus
       # By convention, Lotus inflects adapter name to find the adapter class
       # For example, if adapter name is :sql, derived class will be `Lotus::Model::Adapters::SqlAdapter`
       #
-      # Custom adapter class can be configured via `class_name` option
-      #
-      # @example
-      #   require 'lotus/model'
-      #
-      #   Lotus::Model.configure do
-      #     adapter :sql, 'postgres://localhost/database', class_name: 'UberSqlAdapter'
-      #   end
-      #
-      # which would load `Lotus::Model::Adapters::UberSqlAdapter`
-      #
       #
       # Registered adapters can be retrieved via `Lotus::Model.adapters`
       #
@@ -69,14 +58,14 @@ module Lotus
         #
         # @param name [Symbol] adapter config name
         # @param uri  [String] adapter URI
-        # @param class_name [String] adapter class name
         #
         # @return [Lotus::Model::Config::Adapter] a new apdapter configuration's
         #   instance
         #
         # @since x.x.x
-        def initialize(name, uri = nil, class_name = nil)
-          @name, @uri, @class_name = name, uri, class_name
+        def initialize(name, uri = nil)
+          @name, @uri = name, uri
+          @class_name ||= Lotus::Utils::String.new("#{name}_adapter").classify
         end
 
         # Initialize the adapter
@@ -90,25 +79,28 @@ module Lotus
         # @since x.x.x
         def build(mapper)
           load_dependency
-          adapter_class.new(mapper, uri)
+          instantiate_adapter(mapper)
         end
 
         private
 
         def load_dependency
-          if [:sql, :memory].include?(name)
+          begin
             require "lotus/model/adapters/#{name}_adapter"
+          rescue LoadError => e
+            raise LoadError.new("Cannot find Lotus::Model adapter '#{ name }' (#{ e.message })")
           end
         end
 
-        def adapter_class
-          @class_name ||= Lotus::Utils::String.new("#{name}_adapter").classify
+        def instantiate_adapter(mapper)
           begin
-            Lotus::Utils::Class.load!(class_name, Lotus::Model::Adapters)
+            klass = Lotus::Utils::Class.load!(class_name, Lotus::Model::Adapters)
+            klass.new(mapper, uri)
           rescue
             raise AdapterNotFound
           end
         end
+
       end
     end
   end

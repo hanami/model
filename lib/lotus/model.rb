@@ -69,19 +69,8 @@ module Lotus
     #     end
     #   end
     #
-    # By convention, Lotus inflects adapter name to find the adapter class
+    # Adapter MUST follow the convention in which adapter class is inflection of adapter name
     # The above example has name :sql, thus derived class will be `Lotus::Model::Adapters::SqlAdapter`
-    #
-    # Custom adapter class can be configured via `class_name` option
-    #
-    # @example
-    #   require 'lotus/model'
-    #
-    #   Lotus::Model.configure do
-    #     adapter :sql, 'postgres://localhost/database', class_name: 'UberSqlAdapter'
-    #   end
-    #
-    # which would load `Lotus::Model::Adapters::UberSqlAdapter`
     def self.configure(&block)
       configuration.instance_eval(&block)
     end
