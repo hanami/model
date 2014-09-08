@@ -31,6 +31,15 @@ describe Lotus::Repository do
       end
 
       describe '.persist' do
+        describe 'when passed a non-persisted entity' do
+          let(:user) { User.new(name: 'S') }
+
+          it 'should return that entity' do
+            UserRepository.persist(user).must_equal(user)
+          end
+        end
+
+
         describe 'when non persisted' do
           before do
             UserRepository.persist(user)
