@@ -92,7 +92,7 @@ module Lotus
       # application.
       #
       # @since 0.1.0
-      def load!(adapters = {})
+      def load!(adapters)
         @collections.each_value { |collection| collection.load!(adapters.default) }
         self
       end

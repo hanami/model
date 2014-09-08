@@ -63,6 +63,7 @@ end
 # DB.dataset_class = Class.new(Sequel::Dataset)
 
 #FIXME this should be passed by the framework internals.
+adapters = {}
 MAPPER = Lotus::Model::Mapper.new do
   collection :users do
     entity User
@@ -82,4 +83,4 @@ MAPPER = Lotus::Model::Mapper.new do
 
     identity :_id
   end
-end.load!
+end.load!(adapters)
