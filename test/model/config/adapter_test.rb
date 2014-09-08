@@ -24,7 +24,7 @@ describe Lotus::Model::Config::Adapter do
       end
     end
 
-    describe 'given adapter type is nout found' do
+    describe 'given adapter type is not found' do
       let(:config) { Lotus::Model::Config::Adapter.new(:redis, 'redis://not_exist') }
 
       it 'raises an error' do
@@ -32,7 +32,7 @@ describe Lotus::Model::Config::Adapter do
       end
     end
 
-    describe 'given adapter class is nout found' do
+    describe 'given adapter class is not found' do
       let(:config) { Lotus::Model::Config::Adapter.new(:redis, SQLITE_CONNECTION_STRING) }
 
       it 'raises an error' do
