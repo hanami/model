@@ -7,6 +7,9 @@ module Lotus
       #
       # @since x.x.x
       class AdapterNotFound < ::StandardError
+        def initialize(adapter_name)
+          super "Cannot find Lotus::Model adapter #{adapter_name}"
+        end
       end
 
       # Configuration for the adapter
@@ -88,7 +91,7 @@ module Lotus
           begin
             require "lotus/model/adapters/#{name}_adapter"
           rescue LoadError => e
-            raise LoadError.new("Cannot find Lotus::Model adapter '#{ name }' (#{ e.message })")
+            raise LoadError.new("Cannot find Lotus::Model adapter '#{name}' (#{e.message})")
           end
         end
 
@@ -96,8 +99,10 @@ module Lotus
           begin
             klass = Lotus::Utils::Class.load!(class_name, Lotus::Model::Adapters)
             klass.new(mapper, uri)
-          rescue
-            raise AdapterNotFound
+          rescue NameError
+            raise AdapterNotFound.new(class_name)
+          rescue => e
+            raise "Cannot instantiate adapter of #{klass} (#{e.message})"
           end
         end
 
