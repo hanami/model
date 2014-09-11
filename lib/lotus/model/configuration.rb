@@ -11,7 +11,7 @@ module Lotus
     class Configuration
 
       extend Forwardable
-      delegate :adapters => :adapter_registry
+      delegate adapters: :adapter_registry
 
       # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
       #
