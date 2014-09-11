@@ -56,7 +56,8 @@ module Lotus
       # @since x.x.x
       def load!
         adapter_registry.build(mapper)
-        mapper.load!(adapters)
+        mapper.adapters = adapters
+        mapper.load!
       end
 
       # Register adapter

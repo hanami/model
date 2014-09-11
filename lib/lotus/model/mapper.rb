@@ -33,6 +33,12 @@ module Lotus
       # @api private
       attr_reader :collections
 
+      # @attr_reader adapters [Hash] all the adapter instances
+      #
+      # @since x.x.x
+      # @api private
+      attr_accessor :adapters
+
       # Instantiate a mapper.
       #
       # It accepts an optional argument (`coercer`) a class that defines the
@@ -61,6 +67,8 @@ module Lotus
       def initialize(coercer = nil, &blk)
         @coercer     = coercer || Mapping::Coercer
         @collections = {}
+        @adapters    = {}
+
         instance_eval(&blk) if block_given?
       end
 
@@ -92,7 +100,7 @@ module Lotus
       # application.
       #
       # @since 0.1.0
-      def load!(adapters)
+      def load!
         @collections.each_value { |collection| collection.load!(adapters.default) }
         self
       end
