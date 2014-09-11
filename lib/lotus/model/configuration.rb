@@ -10,22 +10,18 @@ module Lotus
     # @since x.x.x
     class Configuration
 
-      include Utils::ClassAttribute
-
-      class_attribute :adapter_registry
-      self.adapter_registry = Lotus::Model::AdapterRegistry.new
-
-      # A hash of adapter instances
-      #
-      # @since x.x.x
-      def adapters
-        adapter_registry.adapters
-      end
+      extend Forwardable
+      delegate :adapters => :adapter_registry
 
       # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
       #
       # @since x.x.x
       attr_reader :mapper
+
+      # @attr_reader mapper [Lotus::Model::AdapterRegistry] a registry of adapter templates
+      #
+      # @since x.x.x
+      attr_reader :adapter_registry
 
       # Initialize a configuration instance
       #
@@ -37,15 +33,12 @@ module Lotus
         reset!
       end
 
-      def adapter_registry
-        self.class.adapter_registry
-      end
-
       # Reset all the values to the defaults
       #
       # @since x.x.x
       def reset!
-        adapter_registry.reset!
+        @adapter_registry ||= Lotus::Model::AdapterRegistry.new
+        @adapter_registry.reset!
         @mapper = nil
       end
 
