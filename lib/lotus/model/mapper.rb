@@ -101,7 +101,10 @@ module Lotus
       #
       # @since 0.1.0
       def load!
-        @collections.each_value { |collection| collection.load!(adapters.default) }
+        @collections.each_value do |collection|
+          collection.adapter = adapters.default
+          collection.load!
+        end
         self
       end
     end
