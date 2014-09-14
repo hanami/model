@@ -123,133 +123,33 @@ describe Lotus::Repository do
       end
 
       describe '.all' do
-        describe 'without data' do
-          it 'returns an empty collection' do
-            UserRepository.all.must_be_empty
-          end
-        end
-
-        describe 'with data' do
-          before do
-            UserRepository.create(user1)
-            UserRepository.create(user2)
-          end
-
-          it 'returns all the entities' do
-            UserRepository.all.must_equal(users)
-          end
+        it 'returns an empty collection' do
+          UserRepository.all.must_be_empty
         end
       end
 
       describe '.find' do
-        describe 'without data' do
-          it 'raises error' do
-            -> { UserRepository.find(1) }.must_raise(Lotus::Model::EntityNotFound)
-          end
-        end
-
-        describe 'with data' do
-          before do
-            TestPrimaryKey = Struct.new(:id) do
-              def to_int
-                id
-              end
-            end
-
-            UserRepository.create(user1)
-            UserRepository.create(user2)
-
-            ArticleRepository.create(article1)
-          end
-
-          after do
-            Object.send(:remove_const, :TestPrimaryKey)
-          end
-
-          it 'returns the entity associated with the given id' do
-            UserRepository.find(user1.id).must_equal(user1)
-          end
-
-          it 'accepts a string as argument' do
-            UserRepository.find(user2.id.to_s).must_equal(user2)
-          end
-
-          it 'accepts an object that can be coerced to integer' do
-            id = TestPrimaryKey.new(user2.id)
-            UserRepository.find(id).must_equal(user2)
-          end
-
-          it 'coerces attributes as indicated by the mapper' do
-            result = ArticleRepository.find(article1.id)
-            result.comments_count.must_be_kind_of(Integer)
-          end
-
-          it "doesn't assign a value to unmapped attributes" do
-            ArticleRepository.find(article1.id).unmapped_attribute.must_be_nil
-          end
-
-          it "raises error when the given id isn't associated with any entity" do
-            -> { UserRepository.find(1_000_000) }.must_raise(Lotus::Model::EntityNotFound)
-          end
+        it 'raises error' do
+          -> { UserRepository.find(1) }.must_raise(Lotus::Model::EntityNotFound)
         end
       end
 
       describe '.first' do
-        describe 'without data' do
-          it 'returns nil' do
-            UserRepository.first.must_be_nil
-          end
-        end
-
-        describe 'with data' do
-          before do
-            UserRepository.create(user1)
-            UserRepository.create(user2)
-          end
-
-          it 'returns first record' do
-            UserRepository.first.must_equal(user1)
-          end
+        it 'returns nil' do
+          UserRepository.first.must_be_nil
         end
       end
 
       describe '.last' do
-        describe 'without data' do
-          it 'returns nil' do
-            UserRepository.last.must_be_nil
-          end
-        end
-
-        describe 'with data' do
-          before do
-            UserRepository.create(user1)
-            UserRepository.create(user2)
-          end
-
-          it 'returns last record' do
-            UserRepository.last.must_equal(user2)
-          end
+        it 'returns nil' do
+          UserRepository.last.must_be_nil
         end
       end
 
       describe '.clear' do
-        describe 'without data' do
-          it 'removes all the records' do
-            UserRepository.clear
-            UserRepository.all.must_be_empty
-          end
-        end
-
-        describe 'with data' do
-          before do
-            UserRepository.create(user1)
-            UserRepository.create(user2)
-          end
-
-          it 'removes all the records' do
-            UserRepository.clear
-            UserRepository.all.must_be_empty
-          end
+        it 'removes all the records' do
+          UserRepository.clear
+          UserRepository.all.must_be_empty
         end
       end
 
@@ -276,6 +176,45 @@ describe Lotus::Repository do
             actual = ArticleRepository.not_by_user(user1)
             actual.all.must_equal []
           end
+        end
+      end
+    end
+  end
+
+  describe "with no adapter" do
+    before do
+      UserRepository.adapter    = nil
+      ArticleRepository.adapter = nil
+
+      UserRepository.collection    = :users
+      ArticleRepository.collection = :articles
+    end
+    let(:user) { User.new(name: 'S') }
+
+    describe '.collection' do
+      it 'returns the collection name' do
+        UserRepository.collection.must_equal    :users
+        ArticleRepository.collection.must_equal :articles
+      end
+    end
+
+    {
+     '.persist' => -> { UserRepository.persist(User.new) },
+     '.create' => -> { UserRepository.create(User.new) },
+     '.update' => -> { UserRepository.update(User.new) },
+     '.delete' => -> { UserRepository.delete(User.new) },
+     '.all' => -> { UserRepository.all },
+     '.find' => -> { UserRepository.find(1) },
+     '.first' => -> { UserRepository.first },
+     '.last' => -> { UserRepository.last },
+     '.clear' => -> { UserRepository.clear },
+     'defining custom finders' => -> { ArticleRepository.by_user(User.new) },
+     'combining queries' => -> { ArticleRepository.rank_by_user(User.new) },
+     'negating a query' => -> { ArticleRepository.not_by_user(User.new) },
+    }.each do |description, code|
+      describe description do
+        it 'raises an error' do
+          code.must_raise(Lotus::Repository::NoAdapterError)
         end
       end
     end
