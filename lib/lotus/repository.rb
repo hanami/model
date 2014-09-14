@@ -137,6 +137,16 @@ module Lotus
       end
     end
 
+    # Error for no adapter
+    # It's raised when any repository methods are called without first
+    # setting a database adapter
+    #
+    # @since 0.1.3
+    #
+    # @see Lotus::Repository.update
+    class NoAdapterError < ::StandardError
+    end
+
     module ClassMethods
       # Assigns an adapter.
       #
@@ -250,6 +260,7 @@ module Lotus
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
+        ensure_adapter_presence
         @adapter.persist(collection, entity)
       end
 
@@ -281,6 +292,7 @@ module Lotus
       #
       #   ArticleRepository.create(article) # no-op
       def create(entity)
+        ensure_adapter_presence
         unless entity.id
           @adapter.create(collection, entity)
         end
@@ -331,6 +343,7 @@ module Lotus
       #
       #   ArticleRepository.update(article) # raises Lotus::Model::NonPersistedEntityError
       def update(entity)
+        ensure_adapter_presence
         if entity.id
           @adapter.update(collection, entity)
         else
@@ -381,6 +394,7 @@ module Lotus
       #
       #   ArticleRepository.delete(article) # raises Lotus::Model::NonPersistedEntityError
       def delete(entity)
+        ensure_adapter_presence
         if entity.id
           @adapter.delete(collection, entity)
         else
@@ -405,6 +419,7 @@ module Lotus
       #
       #   ArticleRepository.all # => [ #<Article:0x007f9b19a60098> ]
       def all
+        ensure_adapter_presence
         @adapter.all(collection)
       end
 
@@ -431,6 +446,7 @@ module Lotus
       #
       #   ArticleRepository.find(9) # => raises Lotus::Model::EntityNotFound
       def find(id)
+        ensure_adapter_presence
         @adapter.find(collection, id).tap do |record|
           raise Lotus::Model::EntityNotFound.new unless record
         end
@@ -462,6 +478,7 @@ module Lotus
       #
       #   ArticleRepository.first # => nil
       def first
+        ensure_adapter_presence
         @adapter.first(collection)
       end
 
@@ -491,6 +508,7 @@ module Lotus
       #
       #   ArticleRepository.last # => nil
       def last
+        ensure_adapter_presence
         @adapter.last(collection)
       end
 
@@ -509,6 +527,7 @@ module Lotus
       #
       #   ArticleRepository.clear # deletes all the records
       def clear
+        ensure_adapter_presence
         @adapter.clear(collection)
       end
 
@@ -588,6 +607,7 @@ module Lotus
       #     end
       #   end
       def query(&blk)
+        ensure_adapter_presence
         @adapter.query(collection, self, &blk)
       end
 
@@ -625,6 +645,20 @@ module Lotus
         query.negate!
         query
       end
+
+      # Raises an error unless an adapter has been set.
+      # Called by persistence and query methods
+      #
+      # @api private
+      # @since 0.1.3
+      def ensure_adapter_presence
+        unless @adapter
+        raise NoAdapterError,
+          "#{self.class} has no persistence adapter." +
+          "See http://rdoc.info/gems/lotus-model"
+        end
+      end
+
     end
   end
 end

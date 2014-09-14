@@ -214,7 +214,7 @@ describe Lotus::Repository do
     }.each do |description, code|
       describe description do
         it 'raises an error' do
-          code.must_raise(NoMethodError)
+          code.must_raise(Lotus::Repository::NoAdapterError)
         end
       end
     end
