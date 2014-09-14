@@ -198,83 +198,24 @@ describe Lotus::Repository do
       end
     end
 
-    describe '.persist' do
-      it 'raises an error' do
-        -> { UserRepository.persist(user) }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.create' do
-      it 'raises an error' do
-        -> { UserRepository.create(user1) }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.update' do
-      it 'raises an error' do
-        user = User.new(name: 'Luca')
-        user.id = 1
-
-        -> { UserRepository.update(user) }.must_raise(NoMethodError)
-      end
-
-      it 'raises an error when not persisted' do
-        -> { UserRepository.update(user2) }.must_raise(Lotus::Model::NonPersistedEntityError)
-      end
-    end
-
-    describe '.delete' do
-      it 'raises an error' do
-        skip
-        -> { UserRepository.delete(user) }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.all' do
-      it 'raises an error' do
-        -> { UserRepository.all }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.find' do
-      it 'raises error' do
-        -> { UserRepository.find(1) }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.first' do
-      it 'raises an error' do
-        -> { UserRepository.first }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.last' do
-      it 'raises an error' do
-        -> { UserRepository.last }.must_raise(NoMethodError)
-      end
-    end
-
-    describe '.clear' do
-      it 'raises an error' do
-        -> { UserRepository.clear }.must_raise(NoMethodError)
-      end
-    end
-
-    describe 'defining custom finders' do
-      it 'raises an error' do
-        -> { ArticleRepository.by_user(user1) }.must_raise(NoMethodError)
-      end
-    end
-
-    describe 'combining queries' do
-      it 'raises an error' do
-        -> { ArticleRepository.rank_by_user(user1) }.must_raise(NoMethodError)
-      end
-    end
-
-    describe 'negating a query' do
-      it 'raises an error' do
-        -> { ArticleRepository.not_by_user(user1) }.must_raise(NoMethodError)
+    {
+     '.persist' => -> { UserRepository.persist(User.new) },
+     '.create' => -> { UserRepository.create(User.new) },
+     '.update' => -> { UserRepository.update(User.new) },
+     '.delete' => -> { UserRepository.delete(User.new) },
+     '.all' => -> { UserRepository.all },
+     '.find' => -> { UserRepository.find(1) },
+     '.first' => -> { UserRepository.first },
+     '.last' => -> { UserRepository.last },
+     '.clear' => -> { UserRepository.clear },
+     'defining custom finders' => -> { ArticleRepository.by_user(User.new) },
+     'combining queries' => -> { ArticleRepository.rank_by_user(User.new) },
+     'negating a query' => -> { ArticleRepository.not_by_user(User.new) },
+    }.each do |description, code|
+      describe description do
+        it 'raises an error' do
+          code.must_raise(NoMethodError)
+        end
       end
     end
   end
