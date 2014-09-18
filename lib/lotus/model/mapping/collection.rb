@@ -215,6 +215,7 @@ module Lotus
         #   * Integer
         #   * Set
         #   * String
+        #   * Symbol
         #   * Time
         #
         # @param name [Symbol] the name of the attribute, as we want it to be
