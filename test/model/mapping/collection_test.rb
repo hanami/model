@@ -112,4 +112,22 @@ describe Lotus::Model::Mapping::Collection do
       @collection.attributes[:name].must_equal [String, :t_name]
     end
   end
+
+  describe '#load!' do
+    before do
+      @adapter = Lotus::Model::Adapters::SqlAdapter.new(nil, SQLITE_CONNECTION_STRING)
+      @collection.entity(User)
+      @collection.adapter = @adapter
+      @collection.load!
+    end
+
+    it 'sets up repository' do
+      UserRepository.collection.must_equal :users
+      UserRepository.instance_variable_get(:@adapter).must_equal @adapter
+    end
+
+    it 'instantiates coercer' do
+      @collection.instance_variable_get(:@coercer).must_be_instance_of Lotus::Model::Mapping::Coercer
+    end
+  end
 end

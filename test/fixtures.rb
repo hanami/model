@@ -82,4 +82,7 @@ MAPPER = Lotus::Model::Mapper.new do
 
     identity :_id
   end
-end.load!
+end
+
+MAPPER.adapters = {}
+MAPPER.load!

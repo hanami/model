@@ -3,7 +3,6 @@ require 'lotus/entity'
 require 'lotus/repository'
 require 'lotus/model/mapper'
 require 'lotus/model/configuration'
-require 'lotus/model/config/adapter'
 
 module Lotus
   # Model
@@ -25,6 +24,15 @@ module Lotus
     #
     # @see Lotus::Repository.update
     class NonPersistedEntityError < ::StandardError
+    end
+
+    # Error for invalid mapper configuration
+    # It's raised when mapping is not configured correctly
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Configuration#mapping
+    class InvalidMappingError < ::StandardError
     end
 
     include Utils::ClassAttribute
@@ -50,9 +58,38 @@ module Lotus
     #
     #   Lotus::Model.configure do
     #     adapter :sql, 'postgres://localhost/database', default: true
+    #
+    #     mapping do
+    #       collection :users do
+    #         entity User
+    #
+    #         attribute :id,   Integer
+    #         attribute :name, String
+    #       end
+    #     end
     #   end
+    #
+    # Adapter MUST follow the convention in which adapter class is inflection of adapter name
+    # The above example has name :sql, thus derived class will be `Lotus::Model::Adapters::SqlAdapter`
     def self.configure(&block)
       configuration.instance_eval(&block)
     end
+
+    # Load the framework
+    #
+    # @since x.x.x
+    # @api private
+    def self.load!
+      configuration.load!
+    end
+
+    # Unload the framework
+    #
+    # @since x.x.x
+    # @api private
+    def self.unload!
+      configuration.unload!
+    end
+
   end
 end
