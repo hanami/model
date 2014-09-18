@@ -1,6 +1,10 @@
 require 'test_helper'
 
 describe Lotus::Model do
+  before do
+    Lotus::Model.unload!
+  end
+
   describe '.configuration' do
     it 'exposes class configuration' do
       Lotus::Model.configuration.must_be_kind_of(Lotus::Model::Configuration)
@@ -19,19 +23,25 @@ describe Lotus::Model do
         Lotus::Model.configuration.reset!
       end
 
-      it 'allows to register SQL adapter' do
-        adapter = Lotus::Model.configuration.adapters.fetch(:sql)
+      it 'allows to register SQL adapter configuration' do
+        adapter = Lotus::Model.configuration.adapter_registry.adapter_configs.fetch(:sql)
         adapter.uri.must_equal('postgres://localhost/database')
 
-        Lotus::Model.configuration.adapters.fetch(:default).must_equal adapter
+        Lotus::Model.configuration.adapter_registry.adapter_configs.default.must_equal adapter
       end
     end
 
-    describe '.adapters' do
+    describe '.mapping' do
       before do
         Lotus::Model.configure do
-          adapter :sql, 'postgres://localhost/database', default: true
-          adapter :redis, 'redis://localhost/database'
+          mapping do
+            collection :users do
+              entity User
+
+              attribute :id, Integer
+              attribute :name, String
+            end
+          end
         end
       end
 
@@ -39,14 +49,10 @@ describe Lotus::Model do
         Lotus::Model.configuration.reset!
       end
 
-      it 'returns registered adapters' do
-        Lotus::Model.configuration.adapters.fetch(:redis).wont_be_nil
-        Lotus::Model.configuration.adapters.fetch(:sql).wont_be_nil
-      end
-
-      it 'returns default adapters' do
-        default_adapter = Lotus::Model.configuration.adapters.fetch(:default)
-        default_adapter.name.must_equal :sql
+      it 'configures the global persistence mapper' do
+        collection = Lotus::Model.configuration.mapper.collection(:users)
+        collection.must_be_kind_of Lotus::Model::Mapping::Collection
+        collection.name.must_equal :users
       end
     end
   end

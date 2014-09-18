@@ -70,11 +70,18 @@ module Lotus
         # @api private
         attr_reader :attributes
 
+        # @attr_reader adapter [Lotus::Model::Adapters] the instance of adapter
+        #
+        # @since 0.1.0
+        # @api private
+        attr_accessor :adapter
+
         # Instantiate a new collection
         #
         # @param name [Symbol] the name of the mapped collection. If used with a
         #   SQL database it's the table name.
         #
+        # @param coercer_class [Class] the coercer class
         # @param blk [Proc] the block that maps the attributes of that collection.
         #
         # @since 0.1.0
@@ -353,6 +360,7 @@ module Lotus
         # @since 0.1.0
         def configure_repository!
           repository.collection = name
+          repository.adapter = adapter
           rescue NameError
         end
 
