@@ -96,7 +96,7 @@ module Lotus
           raise NotImplementedError
         end
 
-        # Returns an unique record from the given collection, with the given
+        # Returns a unique record from the given collection, with the given
         # identity.
         #
         # @param collection [Symbol] the target collection (it must be mapped).

@@ -58,7 +58,7 @@ module Lotus
             super _serialize(entity)
           end
 
-          # Filters the current scope with an `limit` directive.
+          # Filters the current scope with a `limit` directive.
           #
           # @param args [Array] the array of arguments
           #
@@ -133,7 +133,7 @@ module Lotus
             Collection.new(super, @collection)
           end
 
-          # Filters the current scope with an `select` directive.
+          # Filters the current scope with a `select` directive.
           #
           # @param args [Array] the array of arguments
           #
@@ -154,7 +154,7 @@ module Lotus
             end
           end
 
-          # Filters the current scope with an `where` directive.
+          # Filters the current scope with a `where` directive.
           #
           # @param args [Array] the array of arguments
           #

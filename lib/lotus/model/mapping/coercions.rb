@@ -112,7 +112,7 @@ module Lotus
           Utils::Kernel.Integer(arg) unless arg.nil?
         end
 
-        # Coerce into an BigDecimal, unless the argument is nil
+        # Coerce into a BigDecimal, unless the argument is nil
         #
         # @param arg [Object] the object to coerce
         #

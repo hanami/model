@@ -118,7 +118,7 @@ module Lotus
           #
           #   # => SELECT * FROM `users` WHERE (`age` > 31)
           def where(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify an condition.'))
+            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
             conditions.push([:where, condition])
             self
           end
@@ -163,7 +163,7 @@ module Lotus
           #
           #   # => SELECT * FROM `users` WHERE ((`name` = 'John') OR (`age` < 32))
           def or(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify an condition.'))
+            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
             conditions.push([:or, condition])
             self
           end
@@ -210,7 +210,7 @@ module Lotus
           #
           #   # => SELECT * FROM `users` WHERE (`age` <= 31)
           def exclude(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify an condition.'))
+            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
             conditions.push([:exclude, condition])
             self
           end
