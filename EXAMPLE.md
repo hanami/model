@@ -1,6 +1,6 @@
 # Lotus::Model
 
-This is a guide that helps you to getting started with [**Lotus::Model**](https://github.com/lotus/model).
+This is a guide that helps you to get started with [**Lotus::Model**](https://github.com/lotus/model).
 You can find the full code source [here](https://gist.github.com/jodosha/11211048).
 
 ## Gems
@@ -18,8 +18,12 @@ Then we can fetch the dependencies with `bundle install`.
 
 ## Setup
 
-**Lotus::Model** doesn't have migrations, for this example we're gonna use [Sequel](http://sequel.jeremyevans.net).
-We create the database first, and then two tables: `authors` and `articles`.
+<a name="connection-url"></a>
+
+**Lotus::Model** doesn't have migrations.
+For this example we will use [Sequel](http://sequel.jeremyevans.net).
+We create the database first.
+Then we create two tables: `authors` and `articles`.
 
 ```ruby
 require 'bundler/setup'
@@ -147,7 +151,7 @@ end
 
 ## Loading
 
-We create an adapter instance, passing `mapper` and the connection URI (see above).
+We create an adapter instance, passing `mapper` and the connection URI ([see above](#connection-url)).
 Please remember that the setup code is only required for the standalone usage of **Lotus::Model**.
 A **Lotus** application will handle that configurations for you.
 
@@ -161,7 +165,7 @@ mapper.load! # last operation
 
 ## Persist
 
-Let's instantiate and persist some objects for our example:
+We instantiate and persist an `Author` and a few `Articles` for our example:
 
 ```ruby
 author = Author.new(name: 'Luca')
@@ -181,7 +185,7 @@ end
 
 ## Query
 
-We can use repositories to query the database and return the entities we're looking for:
+We use the repositories to query the database and return the entities we're looking for:
 
 ```ruby
 ArticleRepository.first # => return the first article
@@ -200,10 +204,11 @@ ArticleRepository.most_recent_by_author(author) # => most recent articles by an 
 ArticleRepository.most_recent_published_by_author(author) # => most recent published articles by an author
 ```
 
-## Business logic
+## Business Logic
 
 As we've seen above, `Article` implements an API for publishing.
-We're gonna use that logic to alter the state of an article (from draft to published) and then we use the repository to persist this new state.
+We use that logic to alter the state of an article (from draft to published).
+We then use the repository to persist this new state.
 
 ```ruby
 article = ArticleRepository.drafts.first
