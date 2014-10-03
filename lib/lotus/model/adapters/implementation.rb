@@ -36,7 +36,7 @@ module Lotus
           query(collection).all
         end
 
-        # Returns an unique record from the given collection, with the given
+        # Returns a unique record from the given collection, with the given
         # id.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
