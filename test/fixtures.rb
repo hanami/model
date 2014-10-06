@@ -40,6 +40,10 @@ class ArticleRepository
   end
 end
 
+class NullRepository
+  include Lotus::Repository
+end
+
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 
 DB.create_table :users do
