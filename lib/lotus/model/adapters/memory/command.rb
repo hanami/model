@@ -18,7 +18,8 @@ module Lotus
           # @api private
           # @since 0.1.0
           def initialize(dataset, collection)
-            @dataset, @collection = dataset, collection
+            @dataset    = dataset
+            @collection = collection
           end
 
           # Creates a record for the given entity.
