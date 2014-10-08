@@ -51,6 +51,21 @@ describe Lotus::Model::Mapper do
     end
   end
 
+  describe '#adapter' do
+    before do
+      @mapper = Lotus::Model::Mapper.new do
+        adapter :sql do
+        end
+      end
+    end
+
+    it 'sets and returns the adapter template name' do
+      name = @mapper.instance_variable_get(:@adapter_template_name)
+
+      name.must_equal :sql
+    end
+  end
+
   describe '#collection' do
     describe 'when a block is given' do
       it 'register a collection' do

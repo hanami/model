@@ -72,6 +72,22 @@ module Lotus
         instance_eval(&blk) if block_given?
       end
 
+      # Set adapter for collection
+      #
+      # @param name [Symbol] the name of the adapter instance
+      #
+      # @param blk [Proc] the block that maps the adapter to collection.
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Mapping::Collection
+      def adapter(name, &block)
+        instance_eval do
+          @adapter_template_name = name
+          yield
+        end
+      end
+
       # Maps a collection.
       #
       # A collection is a set of homogeneous records. Think of a table of a SQL
@@ -88,6 +104,7 @@ module Lotus
       def collection(name, &blk)
         if block_given?
           @collections[name] = Mapping::Collection.new(name, @coercer, &blk)
+          @collections[name].adapter_template_name = @adapter_template_name
         else
           # TODO implement a getter with a private API.
           @collections[name] or raise Mapping::UnmappedCollectionError.new(name)
@@ -102,7 +119,11 @@ module Lotus
       # @since 0.1.0
       def load!
         @collections.each_value do |collection|
-          collection.adapter = adapters.default
+          collection.adapter = if collection.adapter_template_name
+                                 adapters.fetch(collection.adapter_template_name)
+                               else
+                                 collection.adapter = adapters.default
+                               end
           collection.load!
         end
         self

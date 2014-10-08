@@ -70,11 +70,17 @@ module Lotus
         # @api private
         attr_reader :attributes
 
-        # @attr_reader adapter [Lotus::Model::Adapters] the instance of adapter
+        # @attr_accessor adapter [Lotus::Model::Adapters] the instance of adapter
         #
         # @since 0.1.0
         # @api private
         attr_accessor :adapter
+
+        # @attr_accessor adapter template name [Symbol] the name of of adapter template
+        #
+        # @since x.x.x
+        # @api private
+        attr_accessor :adapter_template_name
 
         # Instantiate a new collection
         #
