@@ -35,7 +35,8 @@ module Lotus
         #
         # @since 0.1.0
         def initialize(mapper, uri = nil)
-          @mapper, @uri = mapper, uri
+          @mapper = mapper
+          @uri    = uri
         end
 
         # Creates or updates a record in the database for the given entity.
