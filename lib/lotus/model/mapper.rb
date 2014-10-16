@@ -85,6 +85,7 @@ module Lotus
         instance_eval do
           @adapter_template_name = name
           yield
+          @adapter_template_name = nil
         end
       end
 
@@ -122,8 +123,9 @@ module Lotus
           collection.adapter = if collection.adapter_template_name
                                  adapters.fetch(collection.adapter_template_name)
                                else
-                                 collection.adapter = adapters.default
+                                 adapters.default
                                end
+
           collection.load!
         end
         self
