@@ -41,7 +41,6 @@ describe Lotus::Repository do
           end
         end
 
-
         describe 'when passed a persisted entity' do
           let(:user) { User.new(name: 'S') }
           let(:persisted_user) { UserRepository.persist(user) }
@@ -51,7 +50,6 @@ describe Lotus::Repository do
           end
         end
 
-      
         describe 'when non persisted' do
           before do
             UserRepository.persist(user)
