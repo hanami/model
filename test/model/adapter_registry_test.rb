@@ -14,7 +14,7 @@ describe Lotus::Model::AdapterRegistry do
   describe '#reset!' do
     before do
       mapper = Lotus::Model::Mapper.new
-      registry.register(:memory, nil)
+      registry.register(:cache, :memory, nil)
       registry.build(mapper)
     end
 
@@ -33,7 +33,7 @@ describe Lotus::Model::AdapterRegistry do
     it 'adds new adapter config' do
       registry.adapter_configs.must_equal({})
 
-      registry.register(:memory, nil)
+      registry.register(:cache, :memory, nil)
 
       registry.adapter_configs.wont_equal({})
     end
@@ -42,8 +42,8 @@ describe Lotus::Model::AdapterRegistry do
       it 'adds new adapter default' do
         registry.adapter_configs.must_equal({})
 
-        registry.register(:sql, SQLITE_CONNECTION_STRING)
-        registry.register(:memory, nil, default: true)
+        registry.register(:sqlite3, :sql, SQLITE_CONNECTION_STRING)
+        registry.register(:cache, :memory, nil, default: true)
 
         registry.adapter_configs.default.name.must_equal(:memory)
       end
@@ -53,7 +53,7 @@ describe Lotus::Model::AdapterRegistry do
       it 'makes the adapter default' do
         registry.adapter_configs.must_equal({})
 
-        registry.register(:memory, nil)
+        registry.register(:cache, :memory, nil)
 
         registry.adapter_configs.default.wont_be_nil
       end
@@ -64,7 +64,7 @@ describe Lotus::Model::AdapterRegistry do
     let(:mapper) { Lotus::Model::Mapper.new }
 
     before do
-      registry.register(:memory, nil)
+      registry.register(:cache, :memory, nil)
     end
 
     it 'instantiates registered adapters' do

@@ -24,8 +24,8 @@ module Lotus
       # Register new adapter configuration
       #
       # @since x.x.x
-      def register(name, uri, default: false)
-        adapter_config = Lotus::Model::Config::Adapter.new(name, uri)
+      def register(name, type, uri, default: false)
+        adapter_config = Lotus::Model::Config::Adapter.new(type, uri)
         adapter_configs[name] = adapter_config
         adapter_configs.default = adapter_config if !adapter_configs.default || default
       end

@@ -25,11 +25,11 @@ module Lotus
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :sql, 'postgres://localhost/database'
+      #     adapter :postgresql, type: :sql, 'postgres://localhost/database'
       #   end
       #
-      # By convention, Lotus inflects adapter name to find the adapter class
-      # For example, if adapter name is :sql, derived class will be `Lotus::Model::Adapters::SqlAdapter`
+      # By convention, Lotus inflects type to find the adapter class
+      # For example, if type is :sql, derived class will be `Lotus::Model::Adapters::SqlAdapter`
       #
       #
       # Registered adapters can be retrieved via `Lotus::Model.adapters`
