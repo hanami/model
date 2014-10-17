@@ -250,7 +250,9 @@ module Lotus
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
-        @adapter.persist(collection, entity)
+        entity.tap do |e|
+          @adapter.persist(collection, e)
+        end
       end
 
       # Creates a record in the database for the given entity.
