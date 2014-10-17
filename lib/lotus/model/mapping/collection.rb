@@ -138,7 +138,7 @@ module Lotus
 
         # Defines the identity for a collection.
         #
-        # An identity is an unique value that identifies a record.
+        # An identity is a unique value that identifies a record.
         # If used with an SQL table it corresponds to the primary key.
         #
         # This is an optional feature.

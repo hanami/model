@@ -35,7 +35,8 @@ module Lotus
         #
         # @since 0.1.0
         def initialize(mapper, uri = nil)
-          @mapper, @uri = mapper, uri
+          @mapper = mapper
+          @uri    = uri
         end
 
         # Creates or updates a record in the database for the given entity.
@@ -96,7 +97,7 @@ module Lotus
           raise NotImplementedError
         end
 
-        # Returns an unique record from the given collection, with the given
+        # Returns a unique record from the given collection, with the given
         # identity.
         #
         # @param collection [Symbol] the target collection (it must be mapped).

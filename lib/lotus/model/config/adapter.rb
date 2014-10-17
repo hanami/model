@@ -67,7 +67,8 @@ module Lotus
         #
         # @since x.x.x
         def initialize(name, uri = nil)
-          @name, @uri = name, uri
+          @name = name
+          @uri  = uri
           @class_name ||= Lotus::Utils::String.new("#{name}_adapter").classify
         end
 

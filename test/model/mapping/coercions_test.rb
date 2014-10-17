@@ -86,7 +86,7 @@ describe Lotus::Model::Mapping::Coercions do
   end
 
   describe '.BigDecimal' do
-    it 'converts the input into an BigDecimal' do
+    it 'converts the input into a BigDecimal' do
       actual = Lotus::Model::Mapping::Coercions.BigDecimal('23')
       actual.must_equal BigDecimal.new(23)
     end
