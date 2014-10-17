@@ -57,7 +57,8 @@ module Lotus
       #
       # If `default` params is set to `true`, the adapter will be used as default one
       #
-      # @param name    [Symbol] Derive adapter class name
+      # @param name    [Symbol] Unique adapter name
+      # @param type    [Symbol] Derive adapter class name
       # @param uri     [String] The adapter uri
       # @param default [TrueClass, FalseClass] Decide if adapter is used by default
       #
@@ -68,24 +69,24 @@ module Lotus
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :sql, 'postgres://localhost/database', default: true
+      #     adapter :postgresql, type: :sql, 'postgres://localhost/database', default: true
       #   end
       #
       #   Lotus::Model.adapters.default
-      #   Lotus::Model.adapters.fetch(:sql)
+      #   Lotus::Model.adapters.fetch(:postgresql)
       #
       # @example Register an adapter
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :sql, 'postgres://localhost/database'
+      #     adapter :sqlite3, type: :sql, 'sqlite3://localhost/database'
       #   end
       #
-      #   Lotus::Model.adapters.fetch(:sql)
+      #   Lotus::Model.adapters.fetch(:sqlite3)
       #
       # @since x.x.x
-      def adapter(name, uri = nil, default: false)
-        adapter_registry.register(name, uri, default: default)
+      def adapter(name, type, uri = nil, default: false)
+        adapter_registry.register(name, type, uri, default: default)
       end
 
       # Set global persistence mapper

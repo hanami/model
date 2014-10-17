@@ -15,7 +15,7 @@ describe Lotus::Model do
     describe '.adapter' do
       before do
         Lotus::Model.configure do
-          adapter :sql, 'postgres://localhost/database', default: true
+          adapter :postgresql, :sql, 'postgres://localhost/database', default: true
         end
       end
 
@@ -24,8 +24,9 @@ describe Lotus::Model do
       end
 
       it 'allows to register SQL adapter configuration' do
-        adapter = Lotus::Model.configuration.adapter_registry.adapter_configs.fetch(:sql)
-        adapter.uri.must_equal('postgres://localhost/database')
+        adapter = Lotus::Model.configuration.adapter_registry.adapter_configs.fetch(:postgresql)
+        adapter.name.must_equal :sql
+        adapter.uri.must_equal 'postgres://localhost/database'
 
         Lotus::Model.configuration.adapter_registry.adapter_configs.default.must_equal adapter
       end
