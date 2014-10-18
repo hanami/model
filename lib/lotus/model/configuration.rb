@@ -69,7 +69,7 @@ module Lotus
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :postgresql, type: :sql, 'postgres://localhost/database', default: true
+      #     adapter :postgresql, :sql, 'postgres://localhost/database', default: true
       #   end
       #
       #   Lotus::Model.adapters.default
@@ -79,7 +79,7 @@ module Lotus
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :sqlite3, type: :sql, 'sqlite3://localhost/database'
+      #     adapter :sqlite3, :sql, 'sqlite3://localhost/database'
       #   end
       #
       #   Lotus::Model.adapters.fetch(:sqlite3)
