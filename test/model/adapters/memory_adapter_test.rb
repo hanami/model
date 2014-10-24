@@ -6,6 +6,10 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       include Lotus::Entity
     end
 
+    TestDocument = Struct.new(:primary_identifier, :title) do
+      include Lotus::Entity
+    end
+
     TestDevice = Struct.new(:id) do
       include Lotus::Entity
     end
@@ -24,6 +28,13 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
         attribute :id, Integer
       end
+
+      collection :documents do
+        entity TestDocument
+
+        attribute :primary_identifier, Integer
+        identity :primary_identifier
+      end
     end.load!
 
     @adapter = Lotus::Model::Adapters::MemoryAdapter.new(@mapper)
@@ -32,6 +43,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
   after do
     Object.send(:remove_const, :TestUser)
     Object.send(:remove_const, :TestDevice)
+    Object.send(:remove_const, :TestDocument)
   end
 
   let(:collection) { :users }
@@ -111,15 +123,30 @@ describe Lotus::Model::Adapters::MemoryAdapter do
   end
 
   describe '#delete' do
-    before do
-      @adapter.create(collection, entity)
+    describe 'with implicit identity' do
+      before do
+        @adapter.create(collection, entity)
+      end
+
+      let(:entity) { TestUser.new }
+
+      it 'removes the given identity' do
+        @adapter.delete(collection, entity)
+        @adapter.find(collection, entity.id).must_be_nil
+      end
     end
 
-    let(:entity) { TestUser.new }
+    describe 'with explicit identity' do
+      before do
+        @adapter.create(collection, entity)
+      end
+      let(:collection) { :documents }
+      let(:entity) { TestDocument.new }
 
-    it 'removes the given identity' do
-      @adapter.delete(collection, entity)
-      @adapter.find(collection, entity.id).must_be_nil
+      it 'removes the given identity' do
+        @adapter.delete(collection, entity)
+        @adapter.find(collection, entity.primary_identifier).must_be_nil
+      end
     end
   end
 
