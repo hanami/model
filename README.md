@@ -58,6 +58,7 @@ Or install it yourself as:
 ### Entities
 
 An object that is defined by its identity.
+See "Domain Driven Design" by Eric Evans.
 
 An entity is the core of an application, where the part of the domain logic is implemented.
 It's a small, cohesive object that expresses coherent and meaningful behaviors.
@@ -78,13 +79,13 @@ class Person
 end
 ```
 
-When a class includes `Lotus::Entity` it will receive the following interface:
+When a class includes `Lotus::Entity` it receives the following interface:
 
   * `#id`
   * `#id=`
   * `#initialize(attributes = {})`
 
-Also, the usage of `.attributes=` defines accessors for the given attribute names.
+`Lotus::Entity` also provides the `.attributes=` for defining attribute accessors for the given names.
 
 If we expand the code above in **pure Ruby**, it would be:
 
@@ -98,8 +99,14 @@ class Person
 end
 ```
 
-Indeed, **Lotus::Model** ships `Entity` only for developers's convenience, but the
-rest of the framework is able to accept any object that implements the interface above.
+**Lotus::Model** ships `Lotus::Entity` for developers's convenience.
+
+**Lotus::Model** depends on a narrow and well-defined interface for an Entity - `#id`, `#id=`, `#initialize(attributes={})`.
+If your object implements that interface then that object can be used as an Entity in the **Lotus::Model** framework.
+
+However, we suggest to implement this interface by including `Lotus::Entity`, in case that future versions of the framework will expand it.
+
+See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
 
 ### Repositories
 

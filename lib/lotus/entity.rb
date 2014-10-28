@@ -2,10 +2,10 @@ require 'lotus/utils/kernel'
 
 module Lotus
   # An object that is defined by its identity.
-  # See Domain Driven Design by Eric Evans.
+  # See "Domain Driven Design" by Eric Evans.
   #
   # An entity is the core of an application, where the part of the domain
-  # logic is implemented. It's a small, cohesive object that express coherent
+  # logic is implemented. It's a small, cohesive object that expresses coherent
   # and meaningful behaviors.
   #
   # It deals with one and only one responsibility that is pertinent to the
@@ -24,15 +24,15 @@ module Lotus
   #     self.attributes = :name, :age
   #   end
   #
-  # When a class includes `Lotus::Entity` the `.attributes=` method is exposed.
-  # By then calling the `.attributes=` class method, the following methods are
-  # added:
+  # When a class includes `Lotus::Entity` it receives the following interface:
   #
   #   * #id
   #   * #id=
   #   * #initialize(attributes = {})
   #
-  # If we expand the code above in pure Ruby, it would be:
+  # `Lotus::Entity` also provides the `.attributes=` for defining attribute accessors for the given names.
+  #
+  # If we expand the code above in **pure Ruby**, it would be:
   #
   # @example Pure Ruby
   #   class Person
@@ -43,11 +43,18 @@ module Lotus
   #     end
   #   end
   #
-  # Indeed, **Lotus::Model** ships `Entity` only for developers's convenience, but the
-  # rest of the framework is able to accept any object that implements the interface above.
+  # **Lotus::Model** ships `Lotus::Entity` for developers's convenience.
   #
-  # However, we suggest to implement this interface by including `Lotus::Entity`,
-  # in case that future versions of the framework will expand it.
+  # **Lotus::Model** depends on a narrow and well-defined interface for an
+  # Entity - `#id`, `#id=`, `#initialize(attributes={})`.If your object
+  # implements that interface then that object can be used as an Entity in the
+  # **Lotus::Model** framework.
+  #
+  # However, we suggest to implement this interface by including
+  # `Lotus::Entity`, in case that future versions of the framework will expand
+  # it.
+  #
+  # See Dependency Inversion Principle for more on interfaces.
   #
   # @since 0.1.0
   #
