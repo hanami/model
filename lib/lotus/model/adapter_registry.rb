@@ -9,6 +9,8 @@ module Lotus
 
       # A hash of adapter config instances
       #
+      # @return [Hash<Lotus::Model::Config::Adapter>]
+      #
       # @since x.x.x
       attr_reader :adapter_configs
 
@@ -23,14 +25,26 @@ module Lotus
 
       # Register new adapter configuration
       #
+      # @param config_key [Symbol] The name that you can use to lookup the
+      #   registered adapter
+      # @param adapter_name [Symbol] The symbolic name of the adapter.
+      # @param uri [String] URI reference to the persistence end point
+      # @param default [Boolean] Is this the default adapter for the
+      #   application?
+      #
+      # @return void
+      #
+      # @see Lotus::Model::Config::Adapter
       # @since x.x.x
-      def register(name, type, uri, default: false)
-        adapter_config = Lotus::Model::Config::Adapter.new(type, uri)
-        adapter_configs[name] = adapter_config
+      def register(config_key, adapter_name, uri, default: false)
+        adapter_config = Lotus::Model::Config::Adapter.new(adapter_name, uri)
+        adapter_configs[config_key] = adapter_config
         adapter_configs.default = adapter_config if !adapter_configs.default || default
       end
 
       # Instantiate all registered adapters
+      #
+      # @return void
       #
       # @since x.x.x
       def build(mapper)
@@ -42,6 +56,8 @@ module Lotus
 
       # Reset all the values to the defaults
       #
+      # @return void
+      #
       # @since x.x.x
       def reset!
         @adapter_configs = {}
@@ -51,6 +67,8 @@ module Lotus
       private
 
       # Check if the adapter config is default
+      #
+      # @return [Boolean]
       #
       # @since x.x.x
       # @api private
