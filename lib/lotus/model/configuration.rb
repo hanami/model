@@ -13,12 +13,16 @@ module Lotus
       extend Forwardable
       delegate adapters: :adapter_registry
 
-      # @attr_reader mapper [Lotus::Model::Mapper] the persistence mapper
+      # The persistence mapper
+      #
+      # @return [Lotus::Model::Mapper]
       #
       # @since x.x.x
       attr_reader :mapper
 
-      # @attr_reader mapper [Lotus::Model::AdapterRegistry] a registry of adapter templates
+      # A registry of adapter templates
+      #
+      # @return [Lotus::Model::AdapterRegistry]
       #
       # @since x.x.x
       attr_reader :adapter_registry
@@ -35,6 +39,8 @@ module Lotus
 
       # Reset all the values to the defaults
       #
+      # @return void
+      #
       # @since x.x.x
       def reset!
         @adapter_registry ||= Lotus::Model::AdapterRegistry.new
@@ -45,6 +51,8 @@ module Lotus
       alias_method :unload!, :reset!
 
       # Load the configuration for the current framework
+      #
+      # @return void
       #
       # @since x.x.x
       def load!
@@ -61,6 +69,8 @@ module Lotus
       # @param type    [Symbol] Derive adapter class name
       # @param uri     [String] The adapter uri
       # @param default [TrueClass, FalseClass] Decide if adapter is used by default
+      #
+      # @return void
       #
       # @see Lotus::Model.configure
       # @see Lotus::Model::Config::Adapter
@@ -90,6 +100,8 @@ module Lotus
       end
 
       # Set global persistence mapper
+      #
+      # @return void
       #
       # @see Lotus::Model.configure
       # @see Lotus::Model::Mapper
