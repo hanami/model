@@ -89,8 +89,7 @@ module Lotus
         if block_given?
           @collections[name] = Mapping::Collection.new(name, @coercer, &blk)
         else
-          # TODO implement a getter with a private API.
-          @collections[name] or raise Mapping::UnmappedCollectionError.new(name)
+          _collection(name)
         end
       end
 
@@ -107,6 +106,14 @@ module Lotus
         end
         self
       end
+
+      private
+
+      # @since 0.1.2
+      def _collection(name)
+        @collections[name] or raise Mapping::UnmappedCollectionError.new(name)
+      end
+
     end
   end
 end
