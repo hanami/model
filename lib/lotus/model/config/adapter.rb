@@ -25,7 +25,7 @@ module Lotus
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter :postgresql, type: :sql, 'postgres://localhost/database'
+      #     adapter :postgresql, :sql, 'postgres://localhost/database'
       #   end
       #
       # By convention, Lotus inflects type to find the adapter class
