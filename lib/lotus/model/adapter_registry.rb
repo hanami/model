@@ -36,9 +36,9 @@ module Lotus
       #
       # @see Lotus::Model::Config::Adapter
       # @since x.x.x
-      def register(config_key, adapter_name, uri, default: false)
-        adapter_config = Lotus::Model::Config::Adapter.new(adapter_name, uri)
-        adapter_configs[config_key] = adapter_config
+      def register(adapter_name, adapter_type, uri, default: false)
+        adapter_config = Lotus::Model::Config::Adapter.new(adapter_name, adapter_type, uri)
+        adapter_configs[adapter_name] = adapter_config
         adapter_configs.default = adapter_config if !adapter_configs.default || default
       end
 
@@ -48,9 +48,9 @@ module Lotus
       #
       # @since x.x.x
       def build(mapper)
-        adapter_configs.each do |name, config|
-          @adapters[name] = config.__send__(:build, mapper)
-          @adapters.default = @adapters[name] if default?(config)
+        adapter_configs.each do |type, config|
+          @adapters[type] = config.__send__(:build, mapper)
+          @adapters.default = @adapters[type] if default?(config)
         end
       end
 

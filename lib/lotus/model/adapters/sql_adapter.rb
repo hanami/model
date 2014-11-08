@@ -40,7 +40,7 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def initialize(mapper, uri)
+        def initialize(mapper, uri, name)
           super
           @connection = Sequel.connect(@uri)
         rescue Sequel::AdapterNotFound => e

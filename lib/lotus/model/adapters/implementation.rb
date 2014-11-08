@@ -85,8 +85,8 @@ module Lotus
           raise NotImplementedError
         end
 
-        def _mapped_collection(name)
-          @mapper.collection(name)
+        def _mapped_collection(name, type)
+          @mapper.collection(name, type)
         end
 
         def _find(collection, id)

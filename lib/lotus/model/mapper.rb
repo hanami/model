@@ -1,4 +1,5 @@
 require 'lotus/model/mapping'
+require 'byebug'
 
 module Lotus
   module Model
@@ -116,7 +117,7 @@ module Lotus
 
         if block_given?
           instance_eval(&blk)
-          @adapter_scope = nil
+          remove_instance_variable(:@adapter_scope)
         else
           @adapter_scope
         end

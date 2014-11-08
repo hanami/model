@@ -63,26 +63,26 @@ end
 # DB.dataset_class = Class.new(Sequel::Dataset)
 
 #FIXME this should be passed by the framework internals.
-MAPPER = Lotus::Model::Mapper.new do
-  collection :users do
-    entity User
-
-    attribute :id,   Integer
-    attribute :name, String
-    attribute :age,  Integer
-  end
-
-  collection :articles do
-    entity Article
-
-    attribute :id,             Integer, as: :_id
-    attribute :user_id,        Integer
-    attribute :title,          String,  as: 's_title'
-    attribute :comments_count, Integer
-
-    identity :_id
-  end
-end
-
-MAPPER.adapters = {}
-MAPPER.load!
+#MAPPER = Lotus::Model::Mapper.new do
+#  collection :users do
+#    entity User
+#
+#    attribute :id,   Integer
+#    attribute :name, String
+#    attribute :age,  Integer
+#  end
+#
+#  collection :articles do
+#    entity Article
+#
+#    attribute :id,             Integer, as: :_id
+#    attribute :user_id,        Integer
+#    attribute :title,          String,  as: 's_title'
+#    attribute :comments_count, Integer
+#
+#    identity :_id
+#  end
+#end
+#
+#MAPPER.adapters = {}
+#MAPPER.load!
