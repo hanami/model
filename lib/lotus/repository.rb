@@ -510,6 +510,7 @@ module Lotus
       #
       #   ArticleRepository.clear # deletes all the records
       def clear
+        byebug
         @adapter.clear(collection)
       end
 

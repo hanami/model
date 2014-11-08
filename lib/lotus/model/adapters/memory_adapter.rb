@@ -31,7 +31,7 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def initialize(mapper, uri = nil)
+        def initialize(mapper, uri = nil, name = nil)
           super
 
           @mutex       = Mutex.new

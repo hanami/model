@@ -1,4 +1,5 @@
 require 'lotus/model/mapping'
+require 'byebug'
 
 module Lotus
   module Model
@@ -31,7 +32,17 @@ module Lotus
       #
       # @since 0.1.0
       # @api private
-      attr_reader :collections
+      def collections
+        puts "[WARN] This function is deprecated, please use #collections_grouped_by_adapters"
+        @collections_grouped_by_adapters
+      end
+
+      # @attr_reader collections_grouped_by_adapters [Hash] all the mapped collections
+      # grouped by adapter name
+      #
+      # @since x.x.x
+      # @api private
+      attr_reader :collections_grouped_by_adapters
 
       # @attr_reader adapters [Hash] all the adapter instances
       #
@@ -66,7 +77,7 @@ module Lotus
       # @since 0.1.0
       def initialize(coercer = nil, &blk)
         @coercer     = coercer || Mapping::Coercer
-        @collections = {}
+        @collections_grouped_by_adapters = Hash.new { |hash, key| hash[key] = {} }
         @adapters    = {}
 
         instance_eval(&blk) if block_given?
@@ -87,9 +98,28 @@ module Lotus
       # @see Lotus::Model::Mapping::Collection
       def collection(name, &blk)
         if block_given?
-          @collections[name] = Mapping::Collection.new(name, @coercer, &blk)
+          _collection_mapping = Mapping::Collection.new(name, @coercer, &blk)
+          @collections_grouped_by_adapters[@adapter_scope][name] = _collection_mapping
         else
-          @collections[name] or raise Mapping::UnmappedCollectionError.new(name)
+          @collections_grouped_by_adapters[@adapter_scope][name] or raise Mapping::UnmappedCollectionError.new(name)
+        end
+      end
+
+      # Wrap a collection with adapter
+      #
+      # @param name [Symbol] the name of the adapter.
+      #
+      # @param blk [Proc] the block that maps the attributes of that collection.
+      #
+      # @since x.x.x
+      def adapter(name, &blk)
+        @adapter_scope = name
+
+        if block_given?
+          instance_eval(&blk)
+          remove_instance_variable(:@adapter_scope)
+        else
+          @adapter_scope
         end
       end
 
@@ -100,9 +130,11 @@ module Lotus
       #
       # @since 0.1.0
       def load!
-        @collections.each_value do |collection|
-          collection.adapter = adapters.default
-          collection.load!
+        collections_grouped_by_adapters.each do |adapter_name, kollections|
+          kollections.each_value do |collection|
+            collection.adapter = adapter_name ? adapters[adapter_name] : adapters.default
+            collection.load!
+          end
         end
         self
       end

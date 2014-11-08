@@ -46,6 +46,9 @@ module Lotus
         #
         # @since x.x.x
         attr_reader :name
+        
+        #TODO doc
+        attr_reader :type
 
         # @return uri [String] the adapter URI
         #
@@ -60,16 +63,18 @@ module Lotus
         # Initialize an adapter configuration instance
         #
         # @param name [Symbol] adapter config name
+        # @param type [Symbol] adapter config type
         # @param uri  [String] adapter URI
         #
         # @return [Lotus::Model::Config::Adapter] a new apdapter configuration's
         #   instance
         #
         # @since x.x.x
-        def initialize(name, uri = nil)
+        def initialize(name, type, uri = nil)
           @name = name
+          @type = type
           @uri  = uri
-          @class_name ||= Lotus::Utils::String.new("#{name}_adapter").classify
+          @class_name ||= Lotus::Utils::String.new("#{type}_adapter").classify
         end
 
         # Initialize the adapter
@@ -82,6 +87,7 @@ module Lotus
         #
         # @since x.x.x
         def build(mapper)
+          byebug
           load_dependency
           instantiate_adapter(mapper)
         end
@@ -90,16 +96,16 @@ module Lotus
 
         def load_dependency
           begin
-            require "lotus/model/adapters/#{name}_adapter"
+            require "lotus/model/adapters/#{type}_adapter"
           rescue LoadError => e
-            raise LoadError.new("Cannot find Lotus::Model adapter '#{name}' (#{e.message})")
+            raise LoadError.new("Cannot find Lotus::Model adapter '#{type}' (#{e.message})")
           end
         end
 
         def instantiate_adapter(mapper)
           begin
             klass = Lotus::Utils::Class.load!(class_name, Lotus::Model::Adapters)
-            klass.new(mapper, uri)
+            klass.new(mapper, uri, name)
           rescue NameError
             raise AdapterNotFound.new(class_name)
           rescue => e

@@ -35,19 +35,35 @@ describe Lotus::Model::Mapper do
     end
   end
 
-  describe '#collections' do
-    before do
-      @mapper = Lotus::Model::Mapper.new do
-        collection :teas do
+  describe '#collections_grouped_by_adapters' do
+    describe 'when no explicit adapter is given' do
+      before do
+        @mapper = Lotus::Model::Mapper.new do
+          collection :teas do
+          end
         end
+      end
+
+      it 'returns the default mapped collections' do
+        collection = @mapper.collections_grouped_by_adapters[nil][:teas]
+        collection.must_be_kind_of Lotus::Model::Mapping::Collection
       end
     end
 
-    it 'returns the mapped collections' do
-      name, collection = @mapper.collections.first
+    describe 'when an adapter is given' do
+      before do
+        @mapper = Lotus::Model::Mapper.new do
+          adapter :mysql2 do
+            collection :coffees do
+            end
+          end
+        end
+      end
 
-      name.must_equal :teas
-      collection.must_be_kind_of Lotus::Model::Mapping::Collection
+      it 'returns the default mapped collections' do
+        collection = @mapper.collections_grouped_by_adapters[:mysql2][:coffees]
+        collection.must_be_kind_of Lotus::Model::Mapping::Collection
+      end
     end
   end
 
