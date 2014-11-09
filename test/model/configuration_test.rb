@@ -9,7 +9,7 @@ describe Lotus::Model::Configuration do
     end
 
     it 'allows to register adapter configuration' do
-      configuration.adapter(:sqlite3, :sql, SQLITE_CONNECTION_STRING)
+      configuration.adapter(name: :sqlite3, type: :sql, uri: SQLITE_CONNECTION_STRING)
 
       adapter_config = configuration.adapter_registry.adapter_configs.fetch(:sqlite3)
       adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
@@ -17,7 +17,7 @@ describe Lotus::Model::Configuration do
     end
 
     it 'allows to register default adapter' do
-      configuration.adapter(:sqlite3, :sql, SQLITE_CONNECTION_STRING, default: true)
+      configuration.adapter(name: :sqlite3, type: :sql, uri: SQLITE_CONNECTION_STRING, default: true)
 
       default_adapter_config = configuration.adapter_registry.adapter_configs.default
       default_adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
@@ -25,8 +25,8 @@ describe Lotus::Model::Configuration do
     end
 
     it 'eliminates duplications' do
-      configuration.adapter(:sqlite3, :sql, SQLITE_CONNECTION_STRING)
-      configuration.adapter(:sqlite3, :sql, SQLITE_CONNECTION_STRING)
+      configuration.adapter(name: :sqlite3, type: :sql, uri: SQLITE_CONNECTION_STRING)
+      configuration.adapter(name: :sqlite3, type: :sql, uri: SQLITE_CONNECTION_STRING)
 
       configuration.adapter_registry.adapter_configs.select { |name, _| name == :sqlite3 }.size.must_equal(1)
     end
@@ -43,7 +43,7 @@ describe Lotus::Model::Configuration do
         end
       end
 
-      configuration.adapter(:cache, :memory, nil)
+      configuration.adapter(name: :cache, type: :memory)
       configuration.load!
 
       adapter = configuration.adapters.fetch(:cache)

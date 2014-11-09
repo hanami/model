@@ -3,7 +3,7 @@ require 'test_helper'
 describe 'Configuration DSL' do
   before do
     Lotus::Model.configure do
-      adapter :in_mem, :memory, 'memory://localhost'
+      adapter name: :in_mem, type: :memory, uri: 'memory://localhost'
 
       mapping do
         collection :users do
