@@ -95,8 +95,10 @@ module Lotus
       #   Lotus::Model.adapters.fetch(:sqlite3)
       #
       # @since x.x.x
-      def adapter(name:, type:, uri: nil, default: false)
-        adapter_registry.register(name, type, uri, default: default)
+      def adapter(**options)
+        set_default_params(options)
+        check_params(options)
+        adapter_registry.register(options)
       end
 
       # Set global persistence mapper
@@ -126,6 +128,19 @@ module Lotus
           @mapper = Lotus::Model::Mapper.new(&blk)
         else
           raise Lotus::Model::InvalidMappingError
+        end
+      end
+
+      private
+
+      def set_default_params(options)
+        options[:uri] ||= nil
+        options[:default] ||= false
+      end
+
+      def check_params(options)
+        [:name, :type].each do |keyword|
+          raise ArgumentError.new("missing keyword: #{keyword}") if !options.keys.include?(keyword)
         end
       end
     end

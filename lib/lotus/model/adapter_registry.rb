@@ -25,9 +25,9 @@ module Lotus
 
       # Register new adapter configuration
       #
-      # @param config_key [Symbol] The name that you can use to lookup the
+      # @param name [Symbol] The name that you can use to lookup the
       #   registered adapter
-      # @param adapter_name [Symbol] The symbolic name of the adapter.
+      # @param type [Symbol] The type of the adapter.
       # @param uri [String] URI reference to the persistence end point
       # @param default [Boolean] Is this the default adapter for the
       #   application?
@@ -36,10 +36,13 @@ module Lotus
       #
       # @see Lotus::Model::Config::Adapter
       # @since x.x.x
-      def register(config_key, adapter_name, uri, default: false)
-        adapter_config = Lotus::Model::Config::Adapter.new(adapter_name, uri)
-        adapter_configs[config_key] = adapter_config
-        adapter_configs.default = adapter_config if !adapter_configs.default || default
+      def register(**options)
+        set_default_params(options)
+        check_params(options)
+
+        adapter_config = Lotus::Model::Config::Adapter.new(options[:type], options[:uri])
+        adapter_configs[options[:name]] = adapter_config
+        adapter_configs.default = adapter_config if !adapter_configs.default || options[:default]
       end
 
       # Instantiate all registered adapters
@@ -76,6 +79,18 @@ module Lotus
         adapter_config == adapter_configs.default
       end
 
+      private
+
+      def set_default_params(options)
+        options[:uri] ||= nil
+        options[:default] ||= false
+      end
+
+      def check_params(options)
+        [:name, :type].each do |keyword|
+          raise ArgumentError.new("missing keyword: #{keyword}") if !options.keys.include?(keyword)
+        end
+      end
     end
   end
 end
