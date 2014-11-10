@@ -248,6 +248,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
     let(:user1) { TestUser.new(name: 'L',  age: '32') }
     let(:user2) { TestUser.new(name: 'MG', age: 31) }
+    let(:user3) { TestUser.new(name: 'JS', age: 31) }
 
     describe 'where' do
       describe 'with an empty collection' do
@@ -264,6 +265,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         before do
           @adapter.create(collection, user1)
           @adapter.create(collection, user2)
+          @adapter.create(collection, user3)
         end
 
         it 'returns selected records' do
@@ -299,6 +301,18 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
           result = @adapter.query(collection, &query).all
           result.must_equal [user1]
+        end
+
+        it 'requires all conditions be satisfied' do
+          name = user3.name
+          age  = user3.age
+
+          query = Proc.new {
+            where(age: age).where(name: name)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [user3]
         end
       end
     end

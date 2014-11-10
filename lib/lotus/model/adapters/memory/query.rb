@@ -100,12 +100,42 @@ module Lotus
           #        .where(framework: 'lotus')
           def where(condition)
             column, value = _expand_condition(condition)
-            conditions.push(Proc.new{ find_all{|r| r.fetch(column) == value} })
+            conditions.push([:where, Proc.new{ find_all{|r| r.fetch(column) == value} }])
             self
           end
 
           alias_method :and, :where
-          alias_method :or,  :where
+
+          # Adds a condition that behaves like SQL `OR`.
+          #
+          # It accepts a `Hash` with only one pair.
+          # The key must be the name of the column expressed as a `Symbol`.
+          # The value is the one used by the SQL query
+          #
+          # This condition will be ignored if not used with WHERE.
+          #
+          # @param condition [Hash]
+          #
+          # @return self
+          #
+          # @since 0.1.0
+          #
+          # @example Fixed value
+          #
+          #   query.where(language: 'ruby').or(framework: 'lotus')
+          #
+          # @example Array
+          #
+          #   query.where(id: 1).or(author_id: [15, 23])
+          #
+          # @example Range
+          #
+          #   query.where(country: 'italy').or(year: 1900..1982)
+          def or(condition=nil, &blk)
+            column, value = _expand_condition(condition)
+            conditions.push([:or, Proc.new{ find_all{|r| r.fetch(column) == value} }])
+            self
+          end
 
           # Logical negation of a #where condition.
           #
@@ -137,7 +167,7 @@ module Lotus
           #        .exclude(company: 'enterprise')
           def exclude(condition)
             column, value = _expand_condition(condition)
-            conditions.push(Proc.new{ reject! {|r| r.fetch(column) == value} })
+            conditions.push([:where, Proc.new{ reject {|r| r.fetch(column) == value} }])
             self
           end
 
@@ -189,7 +219,7 @@ module Lotus
           #   query.order(:name).order(:year)
           def order(*columns)
             Lotus::Utils::Kernel.Array(columns).each do |column|
-              conditions.push(Proc.new{ sort_by{|r| r.fetch(column)} })
+              modifiers.push(Proc.new{ sort_by!{|r| r.fetch(column)} })
             end
 
             self
@@ -221,7 +251,7 @@ module Lotus
           #   query.desc(:name).desc(:year)
           def desc(*columns)
             Lotus::Utils::Kernel.Array(columns).each do |column|
-              conditions.push(Proc.new{ sort_by{|r| r.fetch(column)}.reverse })
+              modifiers.push(Proc.new{ sort_by!{|r| r.fetch(column)}.reverse! })
             end
 
             self
@@ -432,9 +462,18 @@ module Lotus
           def run
             result = @dataset.all.dup
 
-            result = conditions.map do |condition|
-              result.instance_exec(&condition)
-            end if conditions.any?
+            if conditions.any?
+              prev_result = nil
+              conditions.each do |(type, condition)|
+                case type
+                when :where
+                  prev_result = result
+                  result = prev_result.instance_exec(&condition)
+                when :or
+                  result |= prev_result.instance_exec(&condition)
+                end
+              end
+            end
 
             modifiers.map do |modifier|
               result.instance_exec(&modifier)
