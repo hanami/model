@@ -17,16 +17,16 @@ module Lotus
           #
           # @param dataset [Sequel::Dataset] the dataset that maps a table or a
           #   subset of it.
-          # @param collection [Lotus::Model::Mapping::Collection] a mapped
-          #   collection
+          # @param mapped_collection [Lotus::Model::Mapping::Collection] a
+          #   mapped collection
           #
           # @return [Lotus::Model::Adapters::Sql::Collection]
           #
           # @api private
           # @since 0.1.0
-          def initialize(dataset, collection)
+          def initialize(dataset, mapped_collection)
             super(dataset)
-            @collection = collection
+            @mapped_collection = mapped_collection
           end
 
           # Filters the current scope with an `exclude` directive.
@@ -41,7 +41,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def exclude(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Creates a record for the given entity and assigns an id.
@@ -70,7 +70,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def limit(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Filters the current scope with an `offset` directive.
@@ -85,7 +85,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def offset(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Filters the current scope with an `or` directive.
@@ -100,7 +100,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def or(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Filters the current scope with an `order` directive.
@@ -115,7 +115,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def order(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Filters the current scope with an `order` directive.
@@ -130,7 +130,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def order_more(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Filters the current scope with a `select` directive.
@@ -146,11 +146,11 @@ module Lotus
           # @since 0.1.0
           if RUBY_VERSION >= '2.1'
             def select(*args)
-              Collection.new(super, @collection)
+              Collection.new(super, @mapped_collection)
             end
           else
             def select(*args)
-              Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @collection)
+              Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @mapped_collection)
             end
           end
 
@@ -166,7 +166,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def where(*args)
-            Collection.new(super, @collection)
+            Collection.new(super, @mapped_collection)
           end
 
           # Updates the record corresponding to the given entity.
@@ -189,7 +189,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def to_a
-            @collection.deserialize(self)
+            @mapped_collection.deserialize(self)
           end
 
           private
@@ -200,7 +200,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def _serialize(entity)
-            @collection.serialize(entity)
+            @mapped_collection.serialize(entity)
           end
         end
       end
