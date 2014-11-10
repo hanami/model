@@ -37,9 +37,6 @@ module Lotus
       # @see Lotus::Model::Config::Adapter
       # @since x.x.x
       def register(**options)
-        set_default_params(options)
-        check_params(options)
-
         adapter_config = Lotus::Model::Config::Adapter.new(options[:type], options[:uri])
         adapter_configs[options[:name]] = adapter_config
         adapter_configs.default = adapter_config if !adapter_configs.default || options[:default]
@@ -79,18 +76,6 @@ module Lotus
         adapter_config == adapter_configs.default
       end
 
-      private
-
-      def set_default_params(options)
-        options[:uri] ||= nil
-        options[:default] ||= false
-      end
-
-      def check_params(options)
-        [:name, :type].each do |keyword|
-          raise ArgumentError.new("missing keyword: #{keyword}") if !options.keys.include?(keyword)
-        end
-      end
     end
   end
 end
