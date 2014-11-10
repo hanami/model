@@ -25,18 +25,20 @@ module Lotus
 
       # Register new adapter configuration
       #
-      # @param name [Symbol] The name that you can use to lookup the
+      # @param options [Hash] A set of options to register an adapter
+      # @option options [Symbol] :name The name that you can use to lookup the
       #   registered adapter
-      # @param type [Symbol] The type of the adapter.
-      # @param uri [String] URI reference to the persistence end point
-      # @param default [Boolean] Is this the default adapter for the
-      #   application?
+      # @option options [Symbol] :type The type of the adapter.
+      # @option options [String] :uri URI reference to the persistence end point
+      # @option options [Boolean] :default Set if the current adapter is the
+      #   default one for the application scope.
       #
       # @return void
       #
-      # @see Lotus::Model::Config::Adapter
       # @since x.x.x
-      def register(**options)
+      #
+      # @see Lotus::Model::Config::Adapter
+      def register(options)
         adapter_config = Lotus::Model::Config::Adapter.new(options[:type], options[:uri])
         adapter_configs[options[:name]] = adapter_config
         adapter_configs.default = adapter_config if !adapter_configs.default || options[:default]

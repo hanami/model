@@ -30,6 +30,21 @@ describe Lotus::Model::Configuration do
 
       configuration.adapter_registry.adapter_configs.select { |name, _| name == :sqlite3 }.size.must_equal(1)
     end
+
+    it 'raises error when :name is omitted' do
+      exception = -> { configuration.adapter(type: :sql, uri: SQLITE_CONNECTION_STRING) }.must_raise(ArgumentError)
+      exception.message.must_equal 'missing keyword: name'
+    end
+
+    it 'raises error when :type is omitted' do
+      exception = -> { configuration.adapter(name: :sqlite3, uri: SQLITE_CONNECTION_STRING) }.must_raise(ArgumentError)
+      exception.message.must_equal 'missing keyword: type'
+    end
+
+    it 'raises error when :uri is omitted' do
+      exception = -> { configuration.adapter(name: :app, type: :memory) }.must_raise(ArgumentError)
+      exception.message.must_equal 'missing keyword: uri'
+    end
   end
 
   describe '#load!' do
@@ -43,7 +58,7 @@ describe Lotus::Model::Configuration do
         end
       end
 
-      configuration.adapter(name: :cache, type: :memory)
+      configuration.adapter(name: :cache, type: :memory, uri: 'memory://localhost')
       configuration.load!
 
       adapter = configuration.adapters.fetch(:cache)

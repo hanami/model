@@ -65,12 +65,17 @@ module Lotus
       #
       # If `default` params is set to `true`, the adapter will be used as default one
       #
-      # @param name    [Symbol] Unique adapter name
-      # @param type    [Symbol] Derive adapter class name
-      # @param uri     [String] The adapter uri
-      # @param default [TrueClass, FalseClass] Decide if adapter is used by default
+      # @param @options [Hash] A set of options to register an adapter
+      # @option options [Symbol] :name Unique adapter name (mandatory)
+      # @option options [Symbol] :type The adapter type. Eg. :sql, :memory
+      #   (mandatory)
+      # @option options [String] :uri The database uri string (mandatory)
+      # @option options [TrueClass, FalseClass] :default Set if the current adapter is the
+      #   default one for the application scope.
       #
       # @return void
+      #
+      # @raise [ArgumentError] if one of the mandatory options is omitted
       #
       # @see Lotus::Model.configure
       # @see Lotus::Model::Config::Adapter
@@ -95,9 +100,8 @@ module Lotus
       #   Lotus::Model.adapters.fetch(:sqlite3)
       #
       # @since x.x.x
-      def adapter(**options)
-        set_default_params(options)
-        check_params(options)
+      def adapter(options)
+        _check_adapter_options!(options)
         adapter_registry.register(options)
       end
 
@@ -133,13 +137,17 @@ module Lotus
 
       private
 
-      def set_default_params(options)
-        options[:uri] ||= nil
-        options[:default] ||= false
-      end
-
-      def check_params(options)
-        [:name, :type].each do |keyword|
+      # @api private
+      # @since x.x.x
+      #
+      # NOTE Drop this manual check when Ruby 2.0 will not be supported anymore.
+      #   Use keyword arguments instead.
+      def _check_adapter_options!(options)
+        # TODO Maybe this is a candidate for Lotus::Utils::Options
+        # We already have two similar cases:
+        #   1. Lotus::Router :only/:except for RESTful resources
+        #   2. Lotus::Validations.validate_options!
+        [:name, :type, :uri].each do |keyword|
           raise ArgumentError.new("missing keyword: #{keyword}") if !options.keys.include?(keyword)
         end
       end
