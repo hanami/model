@@ -15,7 +15,7 @@ describe Lotus::Model do
     describe '.adapter' do
       before do
         Lotus::Model.configure do
-          adapter :postgresql, :sql, 'postgres://localhost/database', default: true
+          adapter name: :postgresql, type: :sql, uri: 'postgres://localhost/database', default: true
         end
       end
 
