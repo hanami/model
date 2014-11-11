@@ -361,7 +361,7 @@ module Lotus
         # @since 0.1.0
         def configure_repository!
           repository.collection = name
-          repository.adapter = adapter
+          repository.adapter ||= adapter
           rescue NameError
         end
 
