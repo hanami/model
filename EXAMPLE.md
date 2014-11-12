@@ -124,43 +124,35 @@ class ArticleRepository
 end
 ```
 
-## Mapper
-
-We create a correspondence between the database columns with the entities' attributes.
-
-```ruby
-mapper = Lotus::Model::Mapper.new do
-  collection :authors do
-    entity Author
-
-    attribute :id,   Integer
-    attribute :name, String
-  end
-
-  collection :articles do
-    entity Article
-
-    attribute :id,             Integer
-    attribute :author_id,      Integer
-    attribute :title,          String
-    attribute :comments_count, Integer
-    attribute :published,      Boolean
-  end
-end
-```
-
 ## Loading
 
-We create an adapter instance, passing `mapper` and the connection URI ([see above](#connection-url)).
-Please remember that the setup code is only required for the standalone usage of **Lotus::Model**.
-A **Lotus** application will handle that configurations for you.
-
 ```ruby
-adapter = Lotus::Model::Adapters::SqlAdapter.new(mapper, connection_uri)
-AuthorRepository.adapter  = adapter
-ArticleRepository.adapter = adapter
+Lotus::Model.configure do
+  adapter name: :application, type: :sql, uri: connection_uri
 
-mapper.load! # last operation
+  mapping do
+    collection :authors do
+      entity     Author
+      repository AuthorRepository
+
+      attribute :id,   Integer
+      attribute :name, String
+    end
+
+    collection :articles do
+      entity     Article
+      repository ArticleRepository
+
+      attribute :id,             Integer
+      attribute :author_id,      Integer
+      attribute :title,          String
+      attribute :comments_count, Integer
+      attribute :published,      Boolean
+    end
+  end
+end
+
+Lotus::Model.load!
 ```
 
 ## Persist
