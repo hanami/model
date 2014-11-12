@@ -112,11 +112,11 @@ module Lotus
       def attributes=(*attributes)
         @attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
 
-        class_eval %{
+        class_eval <<-END_EVAL, __FILE__, __LINE__
           def initialize(attributes = {})
             #{ @attributes.map {|a| "@#{a} = attributes[:#{a}]" }.join("\n") }
           end
-        }
+        END_EVAL
 
         attr_accessor *@attributes
       end
