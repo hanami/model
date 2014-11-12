@@ -210,6 +210,15 @@ module Lotus
         @adapter = adapter
       end
 
+      # @return adapter [Object] an object that implements
+      #   `Lotus::Model::Adapters::Abstract` interface
+      #
+      # @api private
+      # @since 0.1.2
+      def adapter
+        @adapter
+      end
+
       # Creates or updates a record in the database for the given entity.
       #
       # @param entity [#id, #id=] the entity to persist
@@ -250,7 +259,7 @@ module Lotus
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
-        @adapter.persist(collection, entity)
+        adapter.persist(collection, entity)
         entity
       end
 
@@ -283,7 +292,7 @@ module Lotus
       #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless entity.id
-          @adapter.create(collection, entity)
+          adapter.create(collection, entity)
         end
 
         entity
@@ -333,7 +342,7 @@ module Lotus
       #   ArticleRepository.update(article) # raises Lotus::Model::NonPersistedEntityError
       def update(entity)
         if entity.id
-          @adapter.update(collection, entity)
+          adapter.update(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
         end
@@ -383,7 +392,7 @@ module Lotus
       #   ArticleRepository.delete(article) # raises Lotus::Model::NonPersistedEntityError
       def delete(entity)
         if entity.id
-          @adapter.delete(collection, entity)
+          adapter.delete(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
         end
@@ -406,7 +415,7 @@ module Lotus
       #
       #   ArticleRepository.all # => [ #<Article:0x007f9b19a60098> ]
       def all
-        @adapter.all(collection)
+        adapter.all(collection)
       end
 
       # Finds an entity by its identity.
@@ -432,7 +441,7 @@ module Lotus
       #
       #   ArticleRepository.find(9) # => raises Lotus::Model::EntityNotFound
       def find(id)
-        @adapter.find(collection, id).tap do |record|
+        adapter.find(collection, id).tap do |record|
           raise Lotus::Model::EntityNotFound.new unless record
         end
       end
@@ -463,7 +472,7 @@ module Lotus
       #
       #   ArticleRepository.first # => nil
       def first
-        @adapter.first(collection)
+        adapter.first(collection)
       end
 
       # Returns the last entity in the database.
@@ -492,7 +501,7 @@ module Lotus
       #
       #   ArticleRepository.last # => nil
       def last
-        @adapter.last(collection)
+        adapter.last(collection)
       end
 
       # Deletes all the records from the current collection.
@@ -510,7 +519,7 @@ module Lotus
       #
       #   ArticleRepository.clear # deletes all the records
       def clear
-        @adapter.clear(collection)
+        adapter.clear(collection)
       end
 
       private
@@ -589,7 +598,7 @@ module Lotus
       #     end
       #   end
       def query(&blk)
-        @adapter.query(collection, self, &blk)
+        adapter.query(collection, self, &blk)
       end
 
       # Negates the filtering conditions of a given query with the logical
