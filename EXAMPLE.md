@@ -128,7 +128,7 @@ end
 
 ```ruby
 Lotus::Model.configure do
-  adapter name: :application, type: :sql, uri: connection_uri
+  adapter type: :sql, uri: connection_uri
 
   mapping do
     collection :authors do

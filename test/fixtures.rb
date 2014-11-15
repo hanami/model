@@ -84,5 +84,4 @@ MAPPER = Lotus::Model::Mapper.new do
   end
 end
 
-MAPPER.adapters = {}
 MAPPER.load!

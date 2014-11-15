@@ -25,27 +25,21 @@ module Lotus
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
-      #     adapter name: :postgresql, type: :sql, uri: 'postgres://localhost/database'
+      #     adapter type: :sql, uri: 'postgres://localhost/database'
       #   end
+      #
+      #   Lotus::Model.adapter_config
+      #   # => Lotus::Model::Config::Adapter(type: :sql, uri: 'postgres://localhost/database')
       #
       # By convention, Lotus inflects type to find the adapter class
       # For example, if type is :sql, derived class will be `Lotus::Model::Adapters::SqlAdapter`
       #
-      #
-      # Registered adapters can be retrieved via `Lotus::Model.adapters`
-      #
-      # @see Lotus::Model.adapters
-      #
-      # @example
-      #   Lotus::Model.adapter[:sql]
-      #   # => Lotus::Model::Config::Adapter(name: :sql, uri: 'postgres://localhost/database')
-      #
       # @since x.x.x
       class Adapter
-        # @return name [Symbol] the unique adapter name
+        # @return type [Symbol] the adapter name
         #
         # @since x.x.x
-        attr_reader :name
+        attr_reader :type
 
         # @return uri [String] the adapter URI
         #
@@ -59,17 +53,17 @@ module Lotus
 
         # Initialize an adapter configuration instance
         #
-        # @param name [Symbol] adapter config name
+        # @param type [Symbol] adapter type name
         # @param uri  [String] adapter URI
         #
         # @return [Lotus::Model::Config::Adapter] a new apdapter configuration's
         #   instance
         #
         # @since x.x.x
-        def initialize(name, uri = nil)
-          @name = name
-          @uri  = uri
-          @class_name ||= Lotus::Utils::String.new("#{name}_adapter").classify
+        def initialize(**options)
+          @type = options[:type]
+          @uri  = options[:uri]
+          @class_name ||= Lotus::Utils::String.new("#{@type}_adapter").classify
         end
 
         # Initialize the adapter
@@ -90,9 +84,9 @@ module Lotus
 
         def load_dependency
           begin
-            require "lotus/model/adapters/#{name}_adapter"
+            require "lotus/model/adapters/#{type}_adapter"
           rescue LoadError => e
-            raise LoadError.new("Cannot find Lotus::Model adapter '#{name}' (#{e.message})")
+            raise LoadError.new("Cannot find Lotus::Model adapter '#{type}' (#{e.message})")
           end
         end
 

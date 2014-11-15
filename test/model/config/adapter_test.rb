@@ -7,7 +7,7 @@ describe Lotus::Model::Config::Adapter do
     let(:adapter) { config.build(mapper) }
 
     describe 'given adapter type is memory' do
-      let(:config) { Lotus::Model::Config::Adapter.new(:memory) }
+      let(:config) { Lotus::Model::Config::Adapter.new(type: :memory) }
 
       it 'instantiates memory adapter' do
         adapter = config.build(mapper)
@@ -16,7 +16,7 @@ describe Lotus::Model::Config::Adapter do
     end
 
     describe 'given adapter type is SQL' do
-      let(:config) { Lotus::Model::Config::Adapter.new(:sql, SQLITE_CONNECTION_STRING) }
+      let(:config) { Lotus::Model::Config::Adapter.new(type: :sql, uri: SQLITE_CONNECTION_STRING) }
 
       it 'instantiates SQL adapter' do
         adapter = config.build(mapper)
@@ -25,7 +25,7 @@ describe Lotus::Model::Config::Adapter do
     end
 
     describe 'given adapter type is not found' do
-      let(:config) { Lotus::Model::Config::Adapter.new(:redis, 'redis://not_exist') }
+      let(:config) { Lotus::Model::Config::Adapter.new(type: :redis, uri: 'redis://not_exist') }
 
       it 'raises an error' do
         -> { config.build(mapper) }.must_raise(LoadError)
@@ -33,7 +33,7 @@ describe Lotus::Model::Config::Adapter do
     end
 
     describe 'given adapter class is not found' do
-      let(:config) { Lotus::Model::Config::Adapter.new(:redis, SQLITE_CONNECTION_STRING) }
+      let(:config) { Lotus::Model::Config::Adapter.new(type: :redis, uri: SQLITE_CONNECTION_STRING) }
 
       it 'raises an error' do
         config.stub(:load_dependency, nil) do
