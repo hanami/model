@@ -340,6 +340,30 @@ Think of an adapter for Redis, it will probably employ different strategies to f
   end
   ```
 
+## Lotus::Model
+
+This class provides a DSL to configure adapter, mapping and collection.
+
+```ruby
+require 'lotus/model'
+
+Lotus::Model.configure do
+  adapter type: :sql, uri: 'postgres://localhost/database'
+
+  mapping do
+    collection :users do
+      entity User
+      respository UserRepository
+
+      attribute :id,   Integer
+      attribute :name, String
+    end
+  end
+end
+
+Lotus::Model.load!
+```
+
 ### Thread safety
 
 **Lotus::Model**'s is thread safe during the runtime, but it isn't during the loading process.

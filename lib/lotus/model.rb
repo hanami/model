@@ -57,7 +57,7 @@ module Lotus
     #   require 'lotus/model'
     #
     #   Lotus::Model.configure do
-    #     adapter name: :postgresql, type: :sql, uri: 'postgres://localhost/database', default: true
+    #     adapter type: :sql, uri: 'postgres://localhost/database'
     #
     #     mapping do
     #       collection :users do
