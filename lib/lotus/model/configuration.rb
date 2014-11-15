@@ -120,6 +120,19 @@ module Lotus
         end
       end
 
+      # Duplicate by copying the settings in a new instance.
+      #
+      # @return [Lotus::Model::Configuration] a copy of the configuration
+      #
+      # @since x.x.x
+      # @api private
+      def duplicate
+        Configuration.new.tap do |c|
+          c.instance_variable_set(:@adapter_config, @adapter_config)
+          c.instance_variable_set(:@mapper, @mapper)
+        end
+      end
+
       private
 
       # @api private

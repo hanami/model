@@ -78,4 +78,5 @@ describe Lotus::Model::Configuration do
       end
     end
   end
+
 end
