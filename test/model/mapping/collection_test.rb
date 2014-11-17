@@ -31,12 +31,24 @@ describe Lotus::Model::Mapping::Collection do
 
   describe '#entity' do
     describe 'when a value is given' do
-      before do
-        @collection.entity(User)
+      describe 'when the value is a class' do
+        before do
+          @collection.entity(User)
+        end
+
+        it 'sets the value' do
+          @collection.entity.must_equal User
+        end
       end
 
-      it 'sets the value' do
-        @collection.entity.must_equal User
+      describe 'when the value is a string' do
+        before do
+          @collection.entity('User')
+        end
+
+        it 'sets the value and classify the value' do
+          @collection.entity.must_equal User
+        end
       end
     end
 
@@ -53,12 +65,24 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     describe 'when a value is given' do
-      before do
-        @collection.repository(CustomUserRepository)
+      describe 'when the value is a class' do
+        before do
+          @collection.repository(CustomUserRepository)
+        end
+
+        it 'sets the value' do
+          @collection.repository.must_equal CustomUserRepository
+        end
       end
 
-      it 'sets the value' do
-        @collection.repository.must_equal CustomUserRepository
+      describe 'when the value is a string' do
+        before do
+          @collection.repository('CustomUserRepository')
+        end
+
+        it 'sets the value and classify the value' do
+          @collection.repository.must_equal CustomUserRepository
+        end
       end
     end
 
