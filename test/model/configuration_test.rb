@@ -10,7 +10,7 @@ describe Lotus::Model::Configuration do
     end
 
     it 'allows to register adapter configuration' do
-      configuration.adapter(name: :sqlite3, type: :sql, uri: SQLITE_CONNECTION_STRING)
+      configuration.adapter(type: :sql, uri: SQLITE_CONNECTION_STRING)
 
       adapter_config = configuration.adapter_config
       adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
@@ -25,12 +25,12 @@ describe Lotus::Model::Configuration do
     end
 
     it 'raises error when :type is omitted' do
-      exception = -> { configuration.adapter(name: :sqlite3, uri: SQLITE_CONNECTION_STRING) }.must_raise(ArgumentError)
+      exception = -> { configuration.adapter(uri: SQLITE_CONNECTION_STRING) }.must_raise(ArgumentError)
       exception.message.must_equal 'missing keyword: type'
     end
 
     it 'raises error when :uri is omitted' do
-      exception = -> { configuration.adapter(name: :app, type: :memory) }.must_raise(ArgumentError)
+      exception = -> { configuration.adapter(type: :memory) }.must_raise(ArgumentError)
       exception.message.must_equal 'missing keyword: uri'
     end
   end
@@ -46,7 +46,7 @@ describe Lotus::Model::Configuration do
         end
       end
 
-      configuration.adapter(name: :cache, type: :memory, uri: 'memory://localhost')
+      configuration.adapter(type: :memory, uri: 'memory://localhost')
       configuration.load!
 
       adapter = configuration.instance_variable_get(:@adapter)
