@@ -129,4 +129,14 @@ describe Lotus::Entity do
       @book1.wont_equal @car
     end
   end
+
+  describe '#to_h' do
+    before do
+      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë')
+    end
+
+    it 'returns an attributes hash' do
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë'})
+    end
+  end
 end
