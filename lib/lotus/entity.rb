@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/utils/hash'
 
 module Lotus
   # An object that is defined by its identity.
@@ -110,19 +111,18 @@ module Lotus
       #     self.attributes = :name
       #   end
       def attributes=(*attributes)
-        @attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
+        include Lotus::Utils::ClassAttribute
+        class_attribute :attributes
+        self.attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
 
         class_eval <<-END_EVAL, __FILE__, __LINE__
-          def initialize(attributes = {})
-            #{ @attributes.map {|a| "@#{a} = attributes[:#{a}]" }.join("\n") }
-          end
+          #{
+            @attributes.map do |a|
+              "def #{a}; @attributes[:#{a}]; end;" +
+              "def #{a}=(value); @attributes[:#{a}] = value; end;"
+            end.join("\n")
+          }
         END_EVAL
-
-        attr_accessor *@attributes
-      end
-
-      def attributes
-        @attributes
       end
     end
 
@@ -138,8 +138,14 @@ module Lotus
     #
     # @see .attributes
     def initialize(attributes = {})
-      attributes.each do |k, v|
-        public_send("#{ k }=", v)
+      @attributes = Lotus::Utils::Hash.new
+
+      attributes.each do |key, value|
+        if respond_to?("#{key}=")
+          public_send("#{key}=", value)
+        elsif !defined_attributes
+          raise NoMethodError.new("undefined method `#{key}=`")
+        end
       end
     end
 
@@ -152,6 +158,35 @@ module Lotus
     def ==(other)
       self.class == other.class &&
          self.id == other.id
+    end
+
+    # Return the hash of attributes
+    #
+    # @since 0.2.0
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     self.attributes = :name
+    #   end
+    #
+    #   user = User.new(id: 23, name: 'Luca')
+    #   user.to_h # => {:id => 23, :name => "Luca"}
+    def to_h
+      @attributes.deep_dup
+    end
+
+    private
+
+    # The set of user defined attributes.
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Entity::ClassMethods#attributes
+    def defined_attributes
+      self.class.attributes
     end
   end
 end

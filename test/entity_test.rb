@@ -40,21 +40,25 @@ describe Lotus::Entity do
       it 'accepts given attributes' do
         book = Book.new(title: "A Lover's Discourse: Fragments", author: 'Roland Barthes')
 
-        book.instance_variable_get(:@title).must_equal  "A Lover's Discourse: Fragments"
-        book.instance_variable_get(:@author).must_equal 'Roland Barthes'
+        attributes = book.instance_variable_get(:@attributes)
+        attributes.fetch(:title).must_equal  "A Lover's Discourse: Fragments"
+        attributes.fetch(:author).must_equal 'Roland Barthes'
       end
 
       it 'ignores unknown attributes' do
         book = Book.new(unknown: 'x')
 
-        book.instance_variable_get(:@unknown).must_be_nil
+        attributes = book.instance_variable_get(:@attributes)
+        attributes[:unknown].must_be_nil
       end
 
       it 'accepts given attributes for subclass' do
         book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')
 
-        book.instance_variable_get(:@title).must_equal  'Refactoring'
-        book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+        attributes = book.instance_variable_get(:@attributes)
+
+        attributes.fetch(:title).must_equal  'Refactoring'
+        attributes.fetch(:author).must_equal 'Martin Fowler'
       end
     end
 
@@ -68,6 +72,7 @@ describe Lotus::Entity do
       it 'is able to initialize an entity without given attributes' do
         camera = Camera.new
         camera.analog.must_be_nil
+        camera.must_respond_to :analog=
       end
 
       it 'is able to initialize an entity if it has the right accessors' do
@@ -91,8 +96,6 @@ describe Lotus::Entity do
     it 'exposes setters for attributes' do
       book = Book.new
       book.title = 'A Man'
-
-      book.instance_variable_get(:@title).must_equal 'A Man'
       book.title.must_equal 'A Man'
     end
 
@@ -129,4 +132,20 @@ describe Lotus::Entity do
       @book1.wont_equal @car
     end
   end
+
+  describe '#to_h' do
+    before do
+      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë')
+    end
+
+    it 'returns a Hash of the internal attributes' do
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë'})
+    end
+
+    it 'prevents information escape' do
+      @book.to_h[:title].reverse!
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë'})
+    end
+  end
+
 end
