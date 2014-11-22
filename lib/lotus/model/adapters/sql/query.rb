@@ -356,6 +356,16 @@ module Lotus
             self
           end
 
+          def join(collection)
+            # FIXME This is a poor man's singularization, implement in Lotus::Utils
+            foreign_key = "#{ collection.to_s.sub(/s\z/, '') }_id".to_sym
+
+            conditions.push([:select_all])
+            conditions.push([:join_table, :inner, collection, :id => foreign_key])
+
+            self
+          end
+
           # Returns the sum of the values for the given column.
           #
           # @param column [Symbol] the column name

@@ -60,6 +60,12 @@ DB.create_table :devices do
   primary_key :id
 end
 
+DB.create_table :orders do
+  primary_key :id
+  Integer :user_id
+  Integer :total
+end
+
 # DB.dataset_class = Class.new(Sequel::Dataset)
 
 #FIXME this should be passed by the framework internals.

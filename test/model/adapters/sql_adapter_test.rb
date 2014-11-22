@@ -10,6 +10,10 @@ describe Lotus::Model::Adapters::SqlAdapter do
       include Lotus::Entity
     end
 
+    TestOrder = Struct.new(:id, :user_id, :total) do
+      include Lotus::Entity
+    end
+
     @mapper = Lotus::Model::Mapper.new do
       collection :users do
         entity TestUser
@@ -24,6 +28,14 @@ describe Lotus::Model::Adapters::SqlAdapter do
 
         attribute :id, Integer
       end
+
+      collection :orders do
+        entity TestOrder
+
+        attribute :id,      Integer
+        attribute :user_id, Integer
+        attribute :total,   Integer
+      end
     end.load!
 
     @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
@@ -33,6 +45,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
   after do
     Object.send(:remove_const, :TestUser)
     Object.send(:remove_const, :TestDevice)
+    Object.send(:remove_const, :TestOrder)
   end
 
   let(:collection) { :users }
@@ -1130,6 +1143,48 @@ describe Lotus::Model::Adapters::SqlAdapter do
 
           result = @adapter.query(collection, &query).range(:age)
           result.must_equal 31..31
+        end
+      end
+    end
+
+    describe 'join' do
+      before do
+        @adapter.clear(:orders)
+      end
+
+      describe 'inner' do
+        describe 'with an empty collection' do
+          it 'returns an empty result set' do
+            result = @adapter.query(:orders) do
+              join(:users)
+            end.all
+
+            result.must_be_empty
+          end
+        end
+
+        describe 'with a filled collection' do
+          before do
+            @adapter.create(collection, user1)
+            @adapter.create(collection, user2)
+
+            @order1 = TestOrder.new(user_id: user1.id, total: 100)
+            @order2 = TestOrder.new(user_id: user1.id, total: 200)
+            @order3 = TestOrder.new(user_id: nil,      total: 300)
+
+            @adapter.create(:orders, @order1)
+            @adapter.create(:orders, @order2)
+            @adapter.create(:orders, @order3)
+          end
+
+          it 'returns records' do
+            query = Proc.new {
+              join(:users)
+            }
+
+            result = @adapter.query(:orders, &query).all
+            result.must_equal [@order1, @order2]
+          end
         end
       end
     end
