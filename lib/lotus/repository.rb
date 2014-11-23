@@ -415,20 +415,19 @@ module Lotus
       #
       # @param id [Object] the identity of the entity
       #
-      # @return [Object] the result of the query
+      # @return [Object,NilClass] the result of the query, if present
       #
-      # @return nil if the entity cannot be found.
+      # @since 0.1.0
       #
-      # @since 0.2.0
-      #
-      # @example With a persisted entity
+      # @example
       #   require 'lotus/model'
       #
       #   class ArticleRepository
       #     include Lotus::Repository
       #   end
       #
-      #   ArticleRepository.find(9) # => nil
+      #   ArticleRepository.find(23)   # => #<Article:0x007f9b19a60098>
+      #   ArticleRepository.find(9999) # => nil
       def find(id)
         @adapter.find(collection, id)
       end
