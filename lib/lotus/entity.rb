@@ -168,7 +168,7 @@ module Lotus
     #   user = User.new(id: 23, name: 'Luca')
     #   user.to_h # => { :id => 23, :name => "Luca" }
     def to_h
-      Hash[self.class.attributes.map { |a| [a, instance_variable_get(:"@#{a}")] }]
+      Hash[self.class.attributes.map { |a| [a, public_send(a)] }]
     end
   end
 end
