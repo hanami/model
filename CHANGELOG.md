@@ -1,3 +1,8 @@
+## v0.2.0
+### Dec 23, 2014
+
+2aeeab0 2014-11-23 **Trung Lê** Repository#find returns nil instead of raising exception if no record is found
+
 ## v0.1.2
 ### Jun 26, 2014
 
