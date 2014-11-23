@@ -153,6 +153,23 @@ module Lotus
       self.class == other.class &&
          self.id == other.id
     end
+
+    # Return the hash of attributes
+    #
+    # @since 0.2.0
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     self.attributes = :name
+    #   end
+    #
+    #   user = User.new(id: 23, name: 'Luca')
+    #   user.to_h # => { :id => 23, :name => "Luca" }
+    def to_h
+      Hash[self.class.attributes.map { |a| [a, instance_variable_get(:"@#{a}")] }]
+    end
   end
 end
 
