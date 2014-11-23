@@ -2,11 +2,11 @@ require 'test_helper'
 
 describe Lotus::Model::Adapters::SqlAdapter do
   before do
-    TestUser = Struct.new(:id, :name, :age) do
+    TestUser = Struct.new(:id, :country_id, :name, :age) do
       include Lotus::Entity
     end
 
-    TestDevice = Struct.new(:id) do
+    TestDevice = Struct.new(:id, :u_id) do
       include Lotus::Entity
     end
 
@@ -14,19 +14,29 @@ describe Lotus::Model::Adapters::SqlAdapter do
       include Lotus::Entity
     end
 
+    TestAge = Struct.new(:id, :value, :label) do
+      include Lotus::Entity
+    end
+
+    TestCountry = Struct.new(:id, :code) do
+      include Lotus::Entity
+    end
+
     @mapper = Lotus::Model::Mapper.new do
       collection :users do
         entity TestUser
 
-        attribute :id,   Integer
-        attribute :name, String
-        attribute :age,  Integer
+        attribute :id,         Integer
+        attribute :country_id, Integer
+        attribute :name,       String
+        attribute :age,        Integer
       end
 
       collection :devices do
         entity TestDevice
 
-        attribute :id, Integer
+        attribute :id,   Integer
+        attribute :u_id, Integer
       end
 
       collection :orders do
@@ -35,6 +45,21 @@ describe Lotus::Model::Adapters::SqlAdapter do
         attribute :id,      Integer
         attribute :user_id, Integer
         attribute :total,   Integer
+      end
+
+      collection :ages do
+        entity TestAge
+
+        attribute :id,    Integer
+        attribute :value, Integer
+        attribute :label, String
+      end
+
+      collection :countries do
+        entity TestAge
+
+        attribute :id,   Integer, as: :country_id
+        attribute :code, String
       end
     end.load!
 
@@ -46,11 +71,17 @@ describe Lotus::Model::Adapters::SqlAdapter do
     Object.send(:remove_const, :TestUser)
     Object.send(:remove_const, :TestDevice)
     Object.send(:remove_const, :TestOrder)
+    Object.send(:remove_const, :TestAge)
+    Object.send(:remove_const, :TestCountry)
   end
 
   let(:collection) { :users }
 
   describe 'multiple collections' do
+    before do
+      @adapter.clear(:devices)
+    end
+
     it 'create records' do
       user   = TestUser.new
       device = TestDevice.new
@@ -272,7 +303,8 @@ describe Lotus::Model::Adapters::SqlAdapter do
     end
 
     let(:user1) { TestUser.new(name: 'L',  age: '32') }
-    let(:user2) { TestUser.new(name: 'MG', age: 31) }
+    let(:user2) { TestUser.new(name: 'MG', age: 31)   }
+    let(:user3) { TestUser.new(name: 'S',  age: 2)    }
 
     describe 'where' do
       describe 'with an empty collection' do
@@ -363,8 +395,6 @@ describe Lotus::Model::Adapters::SqlAdapter do
           @adapter.create(collection, user2)
           @adapter.create(collection, user3)
         end
-
-        let(:user3) { TestUser.new(name: 'S', age: 2) }
 
         it 'returns selected records' do
           id = user1.id
@@ -1164,26 +1194,97 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
 
         describe 'with a filled collection' do
-          before do
-            @adapter.create(collection, user1)
-            @adapter.create(collection, user2)
+          describe 'and default options' do
+            before do
+              @adapter.create(collection, user1)
 
-            @order1 = TestOrder.new(user_id: user1.id, total: 100)
-            @order2 = TestOrder.new(user_id: user1.id, total: 200)
-            @order3 = TestOrder.new(user_id: nil,      total: 300)
+              @order1 = TestOrder.new(user_id: user1.id, total: 100)
+              @order2 = TestOrder.new(user_id: user1.id, total: 200)
+              @order3 = TestOrder.new(user_id: nil,      total: 300)
 
-            @adapter.create(:orders, @order1)
-            @adapter.create(:orders, @order2)
-            @adapter.create(:orders, @order3)
+              @adapter.create(:orders, @order1)
+              @adapter.create(:orders, @order2)
+              @adapter.create(:orders, @order3)
+            end
+
+            it 'returns records' do
+              query = Proc.new {
+                join(:users)
+              }
+
+              result = @adapter.query(:orders, &query).all
+              result.must_equal [@order1, @order2]
+            end
           end
 
-          it 'returns records' do
-            query = Proc.new {
-              join(:users)
-            }
+          describe 'and explicit key' do
+            before do
+              @country1 = TestCountry.new(code: 'IT')
+              @country2 = TestCountry.new(code: 'US')
 
-            result = @adapter.query(:orders, &query).all
-            result.must_equal [@order1, @order2]
+              @adapter.create(:countries, @country1)
+              @adapter.create(:countries, @country2)
+
+              @user = TestUser.new(country_id: @country2.id)
+              @adapter.create(collection, @user)
+            end
+
+            it 'returns records' do
+              query = Proc.new {
+                join(:countries, key: :country_id)
+              }
+
+              result = @adapter.query(:users, &query).all
+              result.must_equal [@user]
+            end
+          end
+
+          describe 'and explicit foreign key' do
+            before do
+              @adapter.create(collection, user1)
+
+              @device1 = TestDevice.new(u_id: user1.id)
+              @device2 = TestDevice.new(u_id: user1.id)
+              @device3 = TestDevice.new(u_id: nil)
+
+              @adapter.create(:devices, @device1)
+              @adapter.create(:devices, @device2)
+              @adapter.create(:devices, @device3)
+            end
+
+            it 'returns records' do
+              query = Proc.new {
+                join(:users, foreign_key: :u_id)
+              }
+
+              result = @adapter.query(:devices, &query).all
+              result.must_equal [@device1, @device2]
+            end
+          end
+
+          describe 'and explicit key and foreign key' do
+            before do
+              @adapter.clear(collection)
+
+              @adapter.create(collection, user1)
+              @adapter.create(collection, user2)
+              @adapter.create(collection, user3)
+
+              @age1 = TestAge.new(value: user1.age, label: 'Adulthood')
+              @age2 = TestAge.new(value: user3.age, label: 'Childhood')
+
+              @adapter.create(:ages, @age1)
+              @adapter.create(:ages, @age2)
+            end
+
+            it 'returns records' do
+              query = Proc.new {
+                join(:ages, key: :value, foreign_key: :age)
+              }
+
+              result = @adapter.query(:users, &query).all
+              result.must_equal [user1, user3]
+            end
           end
         end
       end
