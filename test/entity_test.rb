@@ -44,6 +44,13 @@ describe Lotus::Entity do
         book.instance_variable_get(:@author).must_equal 'Roland Barthes'
       end
 
+      it 'accepts given attributes as string keys' do
+        book = Book.new('title' => "A Lover's Discourse: Fragments", 'author' => 'Roland Barthes')
+
+        book.instance_variable_get(:@title).must_equal  "A Lover's Discourse: Fragments"
+        book.instance_variable_get(:@author).must_equal 'Roland Barthes'
+      end
+
       it 'ignores unknown attributes' do
         book = Book.new(unknown: 'x')
 
