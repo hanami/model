@@ -417,11 +417,9 @@ module Lotus
       #
       # @return [Object] the result of the query
       #
-      # @raise [Lotus::Model::EntityNotFound] if the entity cannot be found.
+      # @return nil if the entity cannot be found.
       #
-      # @since 0.1.0
-      #
-      # @see Lotus::Model::EntityNotFound
+      # @since 0.2.0
       #
       # @example With a persisted entity
       #   require 'lotus/model'
@@ -430,11 +428,9 @@ module Lotus
       #     include Lotus::Repository
       #   end
       #
-      #   ArticleRepository.find(9) # => raises Lotus::Model::EntityNotFound
+      #   ArticleRepository.find(9) # => nil
       def find(id)
-        @adapter.find(collection, id).tap do |record|
-          raise Lotus::Model::EntityNotFound.new unless record
-        end
+        @adapter.find(collection, id)
       end
 
       # Returns the first entity in the database.

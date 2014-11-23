@@ -162,8 +162,8 @@ describe Lotus::Repository do
 
       describe '.find' do
         describe 'without data' do
-          it 'raises error' do
-            -> { UserRepository.find(1) }.must_raise(Lotus::Model::EntityNotFound)
+          it 'returns nil' do
+            UserRepository.find(1).must_be_nil
           end
         end
 
@@ -207,8 +207,8 @@ describe Lotus::Repository do
             ArticleRepository.find(article1.id).unmapped_attribute.must_be_nil
           end
 
-          it "raises error when the given id isn't associated with any entity" do
-            -> { UserRepository.find(1_000_000) }.must_raise(Lotus::Model::EntityNotFound)
+          it "returns nil when the given id isn't associated with any entity" do
+            UserRepository.find(1_000_000).must_be_nil
           end
         end
       end
