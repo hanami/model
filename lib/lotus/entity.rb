@@ -114,9 +114,9 @@ module Lotus
 
         class_eval <<-END_EVAL, __FILE__, __LINE__
           def initialize(attributes = {})
-            attributes = Hash[attributes.map{|a| [a.first.to_sym, a.last]}]
-
-            #{ @attributes.map { |a| "@#{a} = attributes[:#{a}]" }.join("\n") }
+            #{ @attributes.map do |a|
+                "@#{a} = attributes[:#{a}] || attributes['#{a}']"
+               end.join("\n") }
           end
         END_EVAL
 
