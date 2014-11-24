@@ -97,28 +97,49 @@ module Lotus
         # The entity can be any kind of object as long as it implements the
         # following interface: `#initialize(attributes = {})`.
         #
-        # @param klass [Class] the entity persisted with this collection.
+        # @param klass [Class, String] the entity persisted with this collection.
         #
         # @since 0.1.0
         #
         # @see Lotus::Entity
+        #
+        # @example Set entity with class name
+        #   require 'lotus/model'
+        #
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity Article
+        #     end
+        #   end
+        #
+        #   mapper.entity #=> Article
+        #
+        # @example Set entity with class name string
+        #   require 'lotus/model'
+        #
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity 'Article'
+        #     end
+        #   end
+        #
+        #   mapper.entity #=> Article
+        #
         def entity(klass = nil)
-          if klass
-            @entity = klass
-          else
-            @entity
-          end
+          @entity = klass if klass
+
+          Utils::Class.load!(@entity) if @entity
         end
 
         # Defines the repository that interacts with this collection.
         #
-        # @param klass [Class] the repository that interacts with this collection.
+        # @param klass [Class, String] the repository that interacts with this collection.
         #
         # @since 0.2.0
         #
         # @see Lotus::Repository
         #
-        # @example
+        # @example Set repository with class name
         #   require 'lotus/model'
         #
         #   mapper = Lotus::Model::Mapper.new do
@@ -128,12 +149,29 @@ module Lotus
         #       repository RemoteArticleRepository
         #     end
         #   end
+        #
+        #   mapper.repository #=> RemoteArticleRepository
+        #
+        # @example Set repository with class name string
+        #   require 'lotus/model'
+        #
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity Article
+        #
+        #       repository 'RemoteArticleRepository'
+        #     end
+        #   end
+        #
+        #   mapper.repository #=> RemoteArticleRepository
         def repository(klass = nil)
           if klass
             @repository = klass
           else
             @repository ||= default_repository_klass
           end
+
+          Utils::Class.load!(@repository)
         end
 
         # Defines the identity for a collection.
@@ -372,8 +410,9 @@ module Lotus
         # @api private
         # @since 0.2.0
         def default_repository_klass
-          Object.const_get("#{ entity.name }#{ REPOSITORY_SUFFIX }")
+          "#{ entity }#{ REPOSITORY_SUFFIX }"
         end
+
       end
     end
   end
