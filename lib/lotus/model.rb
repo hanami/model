@@ -83,5 +83,66 @@ module Lotus
       configuration.unload!
     end
 
+    # Duplicate Lotus::Model in order to create a new separated instance
+    # of the framework.
+    #
+    # The new instance of the framework will be completely decoupled from the
+    # original. It will inherit the configuration, but all the changes that
+    # happen after the duplication, won't be reflected on the other copies.
+    #
+    # @return [Module] a copy of Lotus::Model
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @example Basic usage
+    #   require 'lotus/model'
+    #
+    #   module MyApp
+    #     Model = Lotus::Model.dupe
+    #   end
+    #
+    #   MyApp::Model == Lotus::Model # => false
+    #
+    #   MyApp::Model.configuration ==
+    #     Lotus::Model.configuration # => false
+    #
+    # @example Inheriting configuration
+    #   require 'lotus/model'
+    #
+    #   Lotus::Model.configure do
+    #     adapter type: :sql, uri: 'sqlite3://uri'
+    #   end
+    #
+    #   module MyApp
+    #     Model = Lotus::Model.dupe
+    #   end
+    #
+    #   module MyApi
+    #     Model = Lotus::Model.dupe
+    #     Model.configure do
+    #       adapter type: :sql, uri: 'postgresql://uri'
+    #     end
+    #   end
+    #
+    #   Lotus::Model.configuration.adapter_config.uri # => 'sqlite3://uri'
+    #   MyApp::Model.configuration.adapter_config.uri # => 'sqlite3://uri'
+    #   MyApi::Model.configuration.adapter_config.uri # => 'postgresql://uri'
+    def self.dupe
+      dup.tap do |duplicated|
+        duplicated.configuration = configuration.duplicate
+      end
+    end
+
+    # Duplicate the framework and generate modules for the target application
+    #
+    # @since x.x.x
+    def self.duplicate(mod, models = 'Models', &blk)
+      dupe.tap do |duplicated|
+        mod.module_eval %{ module #{ models }; end } if models
+        duplicated.configure(&blk) if block_given?
+      end
+    end
+
   end
 end
