@@ -104,5 +104,4 @@ describe Lotus::Model::Configuration do
       configuration.mapper.must_equal nil
     end
   end
-
 end
