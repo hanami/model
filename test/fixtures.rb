@@ -16,6 +16,10 @@ class UserRepository
   include Lotus::Repository
 end
 
+class UnmappedRepository
+  include Lotus::Repository
+end
+
 class ArticleRepository
   include Lotus::Repository
 
