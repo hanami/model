@@ -1,4 +1,5 @@
 require 'lotus/utils/class_attribute'
+require 'lotus/model/adapters/null_adapter'
 
 module Lotus
   # Mediates between the entities and the persistence layer, by offering an API
@@ -134,6 +135,7 @@ module Lotus
         include Lotus::Utils::ClassAttribute
 
         class_attribute :collection
+        self.adapter = Lotus::Model::Adapters::NullAdapter.new
       end
     end
 
