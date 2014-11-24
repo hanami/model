@@ -11,7 +11,8 @@ describe Lotus::Entity do
       self.attributes = :title, :author
     end
 
-    class NonFinctionBook < Book
+    class NonFictionBook < Book
+      self.attributes = :price
     end
 
     class Camera
@@ -21,7 +22,7 @@ describe Lotus::Entity do
   end
 
   after do
-    [:Car, :Book, :NonFinctionBook, :Camera].each do |const|
+    [:Car, :Book, :NonFictionBook, :Camera].each do |const|
       Object.send(:remove_const, const)
     end
   end
@@ -58,10 +59,11 @@ describe Lotus::Entity do
       end
 
       it 'accepts given attributes for subclass' do
-        book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')
+        book = NonFictionBook.new(title: 'Refactoring', author: 'Martin Fowler', price: 50)
 
         book.instance_variable_get(:@title).must_equal  'Refactoring'
         book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+        book.instance_variable_get(:@price).must_equal 50
       end
     end
 
