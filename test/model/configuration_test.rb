@@ -78,4 +78,31 @@ describe Lotus::Model::Configuration do
       end
     end
   end
+
+  describe '#reset!' do
+    before do
+      configuration.adapter(type: :sql, uri: SQLITE_CONNECTION_STRING)
+      configuration.mapping do
+        collection :users do
+          entity User
+
+          attribute :id, Integer
+          attribute :name, String
+        end
+      end
+
+      configuration.load!
+      configuration.reset!
+    end
+
+    it 'resets adapter' do
+      configuration.adapter_config.must_equal nil
+      configuration.instance_variable_get(:@adapter).must_equal nil
+    end
+
+    it 'resets mapper' do
+      configuration.mapper.must_equal nil
+    end
+  end
+
 end
