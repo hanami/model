@@ -72,7 +72,7 @@ module Lotus
           #
           # @since 0.1.0
           def all
-            Lotus::Utils::Kernel.Array(run)
+            run.to_a
           end
 
           # Adds a SQL `WHERE` condition.
@@ -352,6 +352,30 @@ module Lotus
             Array(columns).each do |column|
               conditions.push([_order_operator, Sequel.desc(column)])
             end
+
+            self
+          end
+
+          def sql
+            scoped.sql
+          end
+
+          def join(collection, options = {})
+            # FIXME This is a poor man's singularization, implement in Lotus::Utils
+            collection_name = collection.to_s
+            collection_name = case collection_name
+            when ->(s) { s.match(/ies\z/) }
+              collection_name.sub(/ies\z/, 'y')
+            else
+              collection_name.sub(/s\z/, '')
+            end
+
+            foreign_key = options.fetch(:foreign_key) { "#{ @collection.table_name }__#{ collection_name }_id".to_sym }
+            # FIXME this should correspond to the table's primary key
+            key         = options.fetch(:key) { "#{ collection }__id".to_sym }
+
+            conditions.push([:select_all])
+            conditions.push([:join_table, :inner, collection, key => foreign_key])
 
             self
           end
