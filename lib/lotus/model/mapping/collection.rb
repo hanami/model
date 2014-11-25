@@ -88,7 +88,9 @@ module Lotus
         #
         # @see Lotus::Model::Mapper#collection
         def initialize(name, coercer_class, &blk)
-          @name, @coercer_class, @attributes = name, coercer_class, {}
+          @name = name
+          @coercer_class = coercer_class
+          @attributes = {}
           instance_eval(&blk) if block_given?
         end
 
@@ -126,9 +128,11 @@ module Lotus
         #   mapper.entity #=> Article
         #
         def entity(klass = nil)
-          @entity = klass if klass
-
-          Utils::Class.load!(@entity) if @entity
+          if klass
+            @entity = klass
+          else
+            @entity
+          end
         end
 
         # Defines the repository that interacts with this collection.
@@ -170,8 +174,6 @@ module Lotus
           else
             @repository ||= default_repository_klass
           end
-
-          Utils::Class.load!(@repository)
         end
 
         # Defines the identity for a collection.
@@ -386,21 +388,52 @@ module Lotus
         # @api private
         # @since 0.1.0
         def load!
-          @coercer = coercer_class.new(self)
-          configure_repository!
+          _load_entity!
+          _load_repository!
+          _load_coercer!
+
+          _configure_repository!
         end
 
         private
+
         # Assigns a repository to an entity
         #
         # @see Lotus::Repository
         #
         # @api private
         # @since 0.1.0
-        def configure_repository!
+        def _configure_repository!
           repository.collection = name
-          repository.adapter = adapter
-          rescue NameError
+          repository.adapter = adapter if adapter
+        end
+
+        # Convert repository string to repository class
+        #
+        # @api private
+        # @since 0.2.0
+        def _load_repository!
+          @repository = Utils::Class.load!(repository)
+        rescue NameError
+          raise Lotus::Model::Mapping::RepositoryNotFound.new(repository.to_s)
+        end
+
+        # Convert entity string to entity class
+        #
+        # @api private
+        # @since 0.2.0
+        def _load_entity!
+          @entity = Utils::Class.load!(entity)
+        rescue NameError
+          raise Lotus::Model::Mapping::EntityNotFound.new(entity.to_s)
+        end
+
+        # Load coercer
+        #
+        # @api private
+        # @since 0.1.0
+        def _load_coercer!
+          @coercer = coercer_class.new(self)
         end
 
         # Retrieves the default repository class
