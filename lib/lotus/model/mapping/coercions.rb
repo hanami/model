@@ -7,6 +7,16 @@ module Lotus
       #
       # @since 0.1.1
       module Coercions
+        def self.coerce(type, arg)
+          unless arg.nil?
+            if Utils::Kernel.respond_to?(type.to_s)
+              Utils::Kernel.__send__(type.to_s, arg)
+            else
+              type.new(id: arg)
+            end
+          end
+        end
+
         # Coerce into an Array, unless the argument is nil
         #
         # @param arg [Object] the object to coerce

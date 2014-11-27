@@ -43,6 +43,7 @@ module Lotus
         def initialize(mapper, uri)
           super
           @connection = Sequel.connect(@uri)
+          @connection.extension(:graph_each)
         rescue Sequel::AdapterNotFound => e
           raise DatabaseAdapterNotFound.new(e.message)
         end
@@ -146,7 +147,8 @@ module Lotus
         # @api private
         # @since 0.1.0
         def _collection(name)
-          Sql::Collection.new(@connection[name], _mapped_collection(name))
+          # Sql::Collection.new(@connection[name], _mapped_collection(name))
+          Sql::Collection.new(@connection[name], @mapper)
         end
       end
     end

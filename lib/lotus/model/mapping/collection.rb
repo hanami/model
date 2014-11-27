@@ -87,8 +87,13 @@ module Lotus
         # @since 0.1.0
         #
         # @see Lotus::Model::Mapper#collection
-        def initialize(name, coercer_class, &blk)
-          @name, @coercer_class, @attributes = name, coercer_class, {}
+        def initialize(mapper, name, coercer_class, &blk)
+          @mapper        = mapper
+          @name          = name
+          @coercer_class = coercer_class
+          @attributes    = {}
+          @associations  = {}
+
           instance_eval(&blk) if block_given?
         end
 
@@ -348,6 +353,36 @@ module Lotus
           @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
         end
 
+        # FIXME Associations must have a specific type
+        class Association
+          attr_accessor :collection
+          attr_reader   :name, :entity, :key, :foreign_key
+
+          def initialize(name, entity, type, key, foreign_key)
+            @name        = name
+            @entity      = entity
+            @type        = type
+            @key         = key
+            @foreign_key = foreign_key
+          end
+
+          def singular?
+            # FIXME it depends on @type or on the class type (ManyToOne, OneToMany)
+            true
+          end
+        end
+
+        def many_to_one(name, entity, options = {})
+          key =         options.fetch(:key)         { :id }
+          foreign_key = options.fetch(:foreign_key) { "#{ name }_id".to_sym }
+
+          @associations[name.to_sym] = Association.new(name, entity, :many_to_one, key, foreign_key)
+        end
+
+        def association(name)
+          @associations.fetch(name.to_sym) { @associations.find {|_,a| a.collection == name }.last } or raise 'missing association'
+        end
+
         # Serializes an entity to be persisted in the database.
         #
         # @param entity [Object] an entity
@@ -388,6 +423,7 @@ module Lotus
         def load!
           @coercer = coercer_class.new(self)
           configure_repository!
+          configure_associations!
         end
 
         private
@@ -401,6 +437,14 @@ module Lotus
           repository.collection = name
           repository.adapter = adapter
           rescue NameError
+        end
+
+        def configure_associations!
+          @associations.each do |_, (association)|
+            association.collection = @mapper.collection_for_entity(association.entity)
+          end
+
+          @mapper = nil
         end
 
         # Retrieves the default repository class

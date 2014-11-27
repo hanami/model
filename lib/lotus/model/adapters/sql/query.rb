@@ -72,7 +72,7 @@ module Lotus
           #
           # @since 0.1.0
           def all
-            Lotus::Utils::Kernel.Array(run)
+            run.to_a
           end
 
           # Adds a SQL `WHERE` condition.
@@ -525,6 +525,26 @@ module Lotus
             conditions.map! do |(operator, condition)|
               [OPERATORS_MAPPING.fetch(operator) { operator }, condition]
             end
+          end
+
+          def preload(*associations)
+            associations.each do |association|
+              association = @collection.association(association)
+              conditions.push([:qualify, table_name])
+              conditions.push([:graph, association.collection,
+                               _qualify(association.key, association.collection) =>
+                               _qualify(association.foreign_key)])
+            end
+
+            self
+          end
+
+          def table_name
+            @collection.mapped
+          end
+
+          def _qualify(column, table = table_name)
+            :"#{ table }__#{ column }"
           end
 
           # Apply all the conditions and returns a filtered collection.

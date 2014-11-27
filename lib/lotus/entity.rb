@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/utils/class_attribute'
 
 module Lotus
   # An object that is defined by its identity.
@@ -78,8 +79,14 @@ module Lotus
     #     include Lotus::Entity
     #   end
     def self.included(base)
-      base.extend ClassMethods
-      base.send :attr_accessor, :id
+      base.class_eval do
+        include Utils::ClassAttribute
+        class_attribute :_attributes
+        self._attributes = [] # FIXME use Set
+
+        extend ClassMethods
+        attr_accessor :id
+      end
     end
 
     module ClassMethods
@@ -110,21 +117,14 @@ module Lotus
       #     self.attributes = :name
       #   end
       def attributes=(*attributes)
-        @attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
+        attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
 
-        class_eval <<-END_EVAL, __FILE__, __LINE__
-          def initialize(attributes = {})
-            #{ @attributes.map do |a|
-                "@#{a} = attributes[:#{a}] || attributes['#{a}']"
-               end.join("\n") }
-          end
-        END_EVAL
-
-        attr_accessor *@attributes
+        self._attributes.push(*attributes)
+        attr_accessor(*attributes)
       end
 
       def attributes
-        @attributes
+        _attributes
       end
     end
 
@@ -141,7 +141,7 @@ module Lotus
     # @see .attributes
     def initialize(attributes = {})
       attributes.each do |k, v|
-        public_send("#{ k }=", v)
+        public_send(:"#{ k }=", v)
       end
     end
 

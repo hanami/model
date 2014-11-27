@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Lotus::Model::Mapping::Coercer do
   let(:entity) { User.new(name: 'Tyrion Lannister') }
-  let(:collection) { Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer) }
+  let(:collection) { Lotus::Model::Mapping::Collection.new(Object.new, :users, Lotus::Model::Mapping::Coercer) }
   let(:coercer) { Lotus::Model::Mapping::Coercer.new(collection) }
 
   before do

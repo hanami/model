@@ -28,6 +28,19 @@ module Lotus
         # @api private
         # @since 0.1.0
         def to_record(entity)
+          if entity.id
+            Hash[
+              @collection.attributes.map {|name,(_,mapped)|
+                [mapped, entity.__send__(name)]
+              }
+            ]
+          else
+            Hash[
+              @collection.attributes.reject {|name,_| name == @collection.identity }.map{|name,(_,mapped)|
+                [mapped, entity.__send__(name)]
+              }
+            ]
+          end
         end
 
         # Translates the given record into a Ruby object.
@@ -39,6 +52,13 @@ module Lotus
         # @api private
         # @since 0.1.0
         def from_record(record)
+          @collection.entity.new(
+            Hash[
+              @collection.attributes.map { |name, (klass,mapped)|
+                [name, Lotus::Model::Mapping::Coercions.coerce(klass, record[mapped])]
+              }
+            ]
+          )
         end
 
         private
@@ -47,31 +67,15 @@ module Lotus
         # @api private
         # @since 0.1.0
         def _compile!
-          code = @collection.attributes.map do |_,(klass,mapped)|
-            %{
-            def deserialize_#{ mapped }(value)
-              Lotus::Model::Mapping::Coercions.#{klass}(value)
-            end
-            }
-          end.join("\n")
-
-          instance_eval %{
-            def to_record(entity)
-              if entity.id
-                Hash[#{ @collection.attributes.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]
-              else
-                Hash[#{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]
+          instance_eval(
+            @collection.attributes.map do |_,(klass,mapped)|
+              %{
+              def deserialize_#{ mapped }(value)
+                Lotus::Model::Mapping::Coercions.#{klass}(value)
               end
-            end
-
-            def from_record(record)
-              #{ @collection.entity }.new(
-                Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Model::Mapping::Coercions.#{klass}(record[:#{mapped}])"}.join(',') }]
-              )
-            end
-
-            #{ code }
-          }
+              }
+            end.join("\n")
+          )
         end
       end
     end

@@ -6,14 +6,6 @@ describe Lotus::Entity do
       include Lotus::Entity
     end
 
-    class Book
-      include Lotus::Entity
-      self.attributes = :title, :author
-    end
-
-    class NonFinctionBook < Book
-    end
-
     class Camera
       include Lotus::Entity
       attr_accessor :analog
@@ -21,7 +13,7 @@ describe Lotus::Entity do
   end
 
   after do
-    [:Car, :Book, :NonFinctionBook, :Camera].each do |const|
+    [:Car, :Camera].each do |const|
       Object.send(:remove_const, const)
     end
   end
@@ -51,11 +43,12 @@ describe Lotus::Entity do
         book.instance_variable_get(:@author).must_equal 'Roland Barthes'
       end
 
-      it 'ignores unknown attributes' do
-        book = Book.new(unknown: 'x')
+      it 'ignores unknown attributes'
+      # it 'ignores unknown attributes' do
+      #   book = Book.new(unknown: 'x')
 
-        book.instance_variable_get(:@unknown).must_be_nil
-      end
+      #   book.instance_variable_get(:@unknown).must_be_nil
+      # end
 
       it 'accepts given attributes for subclass' do
         book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')

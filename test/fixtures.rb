@@ -8,6 +8,30 @@ class Article
   self.attributes = :user_id, :unmapped_attribute, :title, :comments_count
 end
 
+class Book
+  include Lotus::Entity
+  self.attributes = :title, :author
+end
+
+class Review
+  include Lotus::Entity
+  self.attributes = :book, :user, :title, :text, :vote
+end
+
+class ReviewRepository
+  include Lotus::Repository
+
+  def self.by_id(id)
+    query do
+      where(id: id).
+        preload(:book, :user)
+    end.first
+  end
+end
+
+class NonFinctionBook < Book
+end
+
 class CustomUserRepository
   include Lotus::Repository
 end
@@ -17,6 +41,10 @@ class UserRepository
 end
 
 class UnmappedRepository
+  include Lotus::Repository
+end
+
+class BookRepository
   include Lotus::Repository
 end
 
@@ -45,6 +73,7 @@ class ArticleRepository
 end
 
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
+DB.extension(:graph_each)
 
 DB.create_table :users do
   primary_key :id
@@ -62,6 +91,20 @@ end
 
 DB.create_table :devices do
   primary_key :id
+end
+
+DB.create_table :books do
+  primary_key :id
+  String :title
+end
+
+DB.create_table :reviews do
+  primary_key :id
+  Integer :book_id
+  Integer :user_id
+  String  :title
+  String  :text
+  Integer :vote
 end
 
 # DB.dataset_class = Class.new(Sequel::Dataset)
