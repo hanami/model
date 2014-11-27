@@ -6,8 +6,16 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       include Lotus::Entity
     end
 
+    class TestUserRepository
+      include Lotus::Repository
+    end
+
     TestDevice = Struct.new(:id) do
       include Lotus::Entity
+    end
+
+    class TestDeviceRepository
+      include Lotus::Repository
     end
 
     @mapper = Lotus::Model::Mapper.new do
@@ -31,7 +39,9 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
   after do
     Object.send(:remove_const, :TestUser)
+    Object.send(:remove_const, :TestUserRepository)
     Object.send(:remove_const, :TestDevice)
+    Object.send(:remove_const, :TestDeviceRepository)
   end
 
   let(:collection) { :users }

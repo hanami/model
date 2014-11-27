@@ -131,9 +131,11 @@ module Lotus
         #   mapper.entity #=> Article
         #
         def entity(klass = nil)
-          @entity = klass if klass
-
-          Utils::Class.load!(@entity) if @entity
+          if klass
+            @entity = klass
+          else
+            @entity
+          end
         end
 
         # Defines the repository that interacts with this collection.
@@ -175,8 +177,6 @@ module Lotus
           else
             @repository ||= default_repository_klass
           end
-
-          Utils::Class.load!(@repository)
         end
 
         # Defines the identity for a collection.
@@ -421,25 +421,56 @@ module Lotus
         # @api private
         # @since 0.1.0
         def load!
-          @coercer = coercer_class.new(self)
-          configure_repository!
-          configure_associations!
+          _load_entity!
+          _load_repository!
+          _load_coercer!
+
+          _configure_repository!
+          _configure_associations!
         end
 
         private
+
         # Assigns a repository to an entity
         #
         # @see Lotus::Repository
         #
         # @api private
         # @since 0.1.0
-        def configure_repository!
+        def _configure_repository!
           repository.collection = name
-          repository.adapter = adapter
-          rescue NameError
+          repository.adapter = adapter if adapter
         end
 
-        def configure_associations!
+        # Convert repository string to repository class
+        #
+        # @api private
+        # @since 0.2.0
+        def _load_repository!
+          @repository = Utils::Class.load!(repository)
+        rescue NameError
+          raise Lotus::Model::Mapping::RepositoryNotFound.new(repository.to_s)
+        end
+
+        # Convert entity string to entity class
+        #
+        # @api private
+        # @since 0.2.0
+        def _load_entity!
+          @entity = Utils::Class.load!(entity)
+        rescue NameError
+          raise Lotus::Model::Mapping::EntityNotFound.new(entity.to_s)
+        end
+
+        # Load coercer
+        #
+        # @api private
+        # @since 0.1.0
+        def _load_coercer!
+          @coercer = coercer_class.new(self)
+        end
+
+        def _configure_associations!
           @associations.each do |_, (association)|
             association.collection = @mapper.collection_for_entity(association.entity)
           end
@@ -456,7 +487,6 @@ module Lotus
         def default_repository_klass
           "#{ entity }#{ REPOSITORY_SUFFIX }"
         end
-
       end
     end
   end
