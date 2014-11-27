@@ -46,8 +46,8 @@ describe Lotus::Model::Mapping::Collection do
           @collection.entity('User')
         end
 
-        it 'sets the value and classify the value' do
-          @collection.entity.must_equal User
+        it 'sets the value' do
+          @collection.entity.must_equal 'User'
         end
       end
     end
@@ -80,26 +80,15 @@ describe Lotus::Model::Mapping::Collection do
           @collection.repository('CustomUserRepository')
         end
 
-        it 'sets the value and classify the value' do
-          @collection.repository.must_equal CustomUserRepository
+        it 'sets the value' do
+          @collection.repository.must_equal 'CustomUserRepository'
         end
       end
     end
 
     describe 'when a value is not given' do
       it 'returns the default value' do
-        @collection.repository.must_equal UserRepository
-      end
-
-      describe 'when repository class is not found' do
-        before do
-          class KlassWithoutRepository; end
-          @collection.entity KlassWithoutRepository
-        end
-
-        it 'raises NameError' do
-          -> { @collection.repository }.must_raise NameError
-        end
+        @collection.repository.must_equal 'UserRepository'
       end
     end
   end
@@ -140,9 +129,18 @@ describe Lotus::Model::Mapping::Collection do
   describe '#load!' do
     before do
       @adapter = Lotus::Model::Adapters::SqlAdapter.new(nil, SQLITE_CONNECTION_STRING)
-      @collection.entity(User)
+      @collection.entity('User')
+      @collection.repository('UserRepository')
       @collection.adapter = @adapter
       @collection.load!
+    end
+
+    it 'converts entity to class' do
+      @collection.entity.must_equal User
+    end
+
+    it 'converts repository to class' do
+      @collection.repository.must_equal UserRepository
     end
 
     it 'sets up repository' do
@@ -152,6 +150,30 @@ describe Lotus::Model::Mapping::Collection do
 
     it 'instantiates coercer' do
       @collection.instance_variable_get(:@coercer).must_be_instance_of Lotus::Model::Mapping::Coercer
+    end
+
+    describe 'when entity class does not exist' do
+      before do
+        @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer)
+        @collection.entity('NonExistingUser')
+        @collection.repository('UserRepository')
+      end
+
+      it 'raises error' do
+        -> { @collection.load! }.must_raise(Lotus::Model::Mapping::EntityNotFound)
+      end
+    end
+
+    describe 'when repository class does not exist' do
+      before do
+        @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer)
+        @collection.entity('User')
+        @collection.repository('NonExistingUserRepository')
+      end
+
+      it 'raises error' do
+        -> { @collection.load! }.must_raise(Lotus::Model::Mapping::RepositoryNotFound)
+      end
     end
   end
 end
