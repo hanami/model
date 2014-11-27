@@ -105,27 +105,6 @@ module Lotus
         self.collection(collection_name).serialize(entity)
       end
 
-      def deserialize(collection_name, query, result)
-        collection = self.collection(collection_name)
-
-        if query.complex?
-          result.map do |record|
-            entity = collection.deserialize([record.delete(collection_name)]).first
-            record.each do |association_name, records|
-              association = collection.association(association_name)
-              records     = collection(association_name).deserialize([records])
-              records     = records.first if association.singular?
-
-              entity.__send__(:"#{ association.name }=", records)
-            end
-
-            entity
-          end
-        else
-          collection.deserialize(query)
-        end
-      end
-
       def collection_for_entity(entity)
         @collections.find {|_, collection| collection.entity.to_s == entity.to_s }.first
       end

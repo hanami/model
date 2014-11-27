@@ -40,7 +40,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def exclude(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Creates a record for the given entity and assigns an id.
@@ -69,7 +69,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def limit(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Filters the current scope with an `offset` directive.
@@ -84,7 +84,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def offset(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Filters the current scope with an `or` directive.
@@ -99,7 +99,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def or(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Filters the current scope with an `order` directive.
@@ -114,7 +114,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def order(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Filters the current scope with an `order` directive.
@@ -129,7 +129,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def order_more(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Filters the current scope with a `select` directive.
@@ -145,11 +145,11 @@ module Lotus
           # @since 0.1.0
           if RUBY_VERSION >= '2.1'
             def select(*args)
-              Collection.new(super, @mapper)
+              self.class.new(super, @mapper)
             end
           else
             def select(*args)
-              Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @mapper)
+              self.class.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @mapper)
             end
           end
 
@@ -165,11 +165,11 @@ module Lotus
           # @api private
           # @since 0.1.0
           def where(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           def qualify(*args)
-            Collection.new(super, @mapper)
+            self.class.new(super, @mapper)
           end
 
           # Updates the record corresponding to the given entity.
@@ -184,8 +184,8 @@ module Lotus
             super _serialize(entity)
           end
 
-          def graph(*args)
-            Collection.new(super, @mapper)
+          def preload(*args)
+            AssociationCollection.new(__getobj__.graph(*args), @mapper)
           end
 
           # Resolves self by fetching the records from the database and
@@ -196,19 +196,15 @@ module Lotus
           # @api private
           # @since 0.1.0
           def to_a
-            @mapper.deserialize(mapped, self, super)
+            _mapped_collection.deserialize(self)
           end
 
           def association(name)
-            @mapper.collection(mapped).association(name)
+            _mapped_collection.association(name)
           end
 
           def mapped
             first_source_table
-          end
-
-          def complex?
-            joined_dataset?
           end
 
           private
@@ -220,6 +216,43 @@ module Lotus
           # @since 0.1.0
           def _serialize(entity)
             @mapper.serialize(mapped, entity)
+          end
+
+          def _mapped_collection
+            @mapper.collection(mapped)
+          end
+        end
+
+        # @since x.x.x
+        # @api private
+        class AssociationCollection < Collection
+          def to_a
+            __getobj__.map do |record|
+              _deserialize_associations(_entity(record), record)
+            end
+          end
+
+          private
+          def _entity(record)
+            __deserialize(record.delete(mapped)).first
+          end
+
+          def _deserialize_associations(entity, record)
+            record.each do |table_name, records|
+              association = _mapped_collection.association(table_name)
+              collection  = @mapper.collection(table_name)
+
+              entities = __deserialize(records, collection)
+              entities = entities.first if association.singular?
+
+              entity.__send__(:"#{ association.name }=", entities)
+            end
+
+            entity
+          end
+
+          def __deserialize(records, collection = _mapped_collection)
+            collection.deserialize([records])
           end
         end
       end

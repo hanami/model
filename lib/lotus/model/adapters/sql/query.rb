@@ -531,7 +531,7 @@ module Lotus
             associations.each do |association|
               association = @collection.association(association)
               conditions.push([:qualify, table_name])
-              conditions.push([:graph, association.collection,
+              conditions.push([:preload, association.collection,
                                _qualify(association.key, association.collection) =>
                                _qualify(association.foreign_key)])
             end

@@ -147,7 +147,6 @@ module Lotus
         # @api private
         # @since 0.1.0
         def _collection(name)
-          # Sql::Collection.new(@connection[name], _mapped_collection(name))
           Sql::Collection.new(@connection[name], @mapper)
         end
       end
