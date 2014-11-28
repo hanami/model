@@ -65,6 +65,7 @@ module Lotus
     # The above example has name :sql, thus derived class will be `Lotus::Model::Adapters::SqlAdapter`
     def self.configure(&block)
       configuration.instance_eval(&block)
+      self
     end
 
     # Load the framework

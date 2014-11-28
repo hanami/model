@@ -84,15 +84,20 @@ describe Lotus::Model do
   end
 
   describe '.configure' do
+    after do
+      Lotus::Model.unload!
+    end
+
+    it 'returns self' do
+      returning = Lotus::Model.configure { }
+      returning.must_equal(Lotus::Model)
+    end
+
     describe '.adapter' do
       before do
         Lotus::Model.configure do
           adapter type: :sql, uri: 'postgres://localhost/database'
         end
-      end
-
-      after do
-        Lotus::Model.configuration.reset!
       end
 
       it 'allows to register SQL adapter configuration' do
@@ -114,10 +119,6 @@ describe Lotus::Model do
             end
           end
         end
-      end
-
-      after do
-        Lotus::Model.configuration.reset!
       end
 
       it 'configures the global persistence mapper' do
