@@ -285,7 +285,7 @@ module Lotus
           #
           #   query.offset(10)
           def offset(number)
-            modifiers.unshift(Proc.new{ replace(flatten.last(number)) })
+            modifiers.unshift(Proc.new{ replace(flatten.drop(number)) })
             self
           end
 
