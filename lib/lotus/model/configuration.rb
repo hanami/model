@@ -42,7 +42,7 @@ module Lotus
       def reset!
         @adapter = nil
         @adapter_config = nil
-        @mapper = nil
+        @mapper = NullMapper.new
       end
 
       alias_method :unload!, :reset!

@@ -101,7 +101,7 @@ describe Lotus::Model::Configuration do
     end
 
     it 'resets mapper' do
-      configuration.mapper.must_equal nil
+      configuration.mapper.must_be_instance_of Lotus::Model::NullMapper
     end
   end
 end

@@ -2,6 +2,26 @@ require 'lotus/model/mapping'
 
 module Lotus
   module Model
+    # Error for missing mapper
+    # It's raised when loading model without mapper
+    #
+    # @since 0.2.0
+    #
+    # @see Lotus::Model::Configuration#mapping
+    class NoMappingError < ::StandardError
+      def initialize
+        super("Mapping is missing. Please check your framework configuration.")
+      end
+    end
+
+    # @since 0.2.0
+    # @api private
+    class NullMapper
+      def method_missing(m, *args)
+        raise NoMappingError.new
+      end
+    end
+
     # A persistence mapper that keeps entities independent from database details.
     #
     # This is database independent. It can work with SQL, document, and even
