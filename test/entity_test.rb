@@ -178,4 +178,24 @@ describe Lotus::Entity do
       @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false})
     end
   end
+
+  describe '#update' do
+    let(:book) { Book.new(id: nil, title: 'Wuthering Meadow', author: 'J. K. Rowling') }
+    let(:attributes) { Hash[title: 'Wuthering Heights', author: 'Emily Brontë'] }
+
+    it 'updates the attributes' do
+      book.update(attributes)
+      book.title.must_equal 'Wuthering Heights'
+      book.author.must_equal 'Emily Brontë'
+    end
+
+    describe 'when update non-existing attribute' do
+      let(:attributes) { Hash[rating: '5.0'] }
+
+      it 'raises error' do
+        exception = -> { book.update(attributes) }.must_raise(NoMethodError)
+        exception.message.must_include "undefined method `rating=' for"
+      end
+    end
+  end
 end

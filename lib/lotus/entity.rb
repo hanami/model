@@ -193,6 +193,27 @@ module Lotus
     def to_h
       Hash[self.class.attributes.map { |a| [a, public_send(a)] }]
     end
+
+    # Set attributes for entity
+    #
+    # @since 0.2.0
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     self.attributes = :name
+    #   end
+    #
+    #   user = User.new(name: 'Lucca')
+    #   user.update(name: 'Luca')
+    #   user.name # => 'Luca'
+    def update(attributes={})
+      attributes.each do |attribute, value|
+        public_send("#{attribute}=", value)
+      end
+    end
+
   end
 end
 
