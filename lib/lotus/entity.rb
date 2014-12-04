@@ -95,9 +95,9 @@ module Lotus
       # Please notice that the required `id` attribute is automatically defined
       # and can be omitted in the arguments.
       #
-      # @param attributes [Array<Symbol>] a set of arbitrary attribute names
+      # @param attributes [Set<Symbol>] a set of arbitrary attribute names
       #
-      # @since 0.1.0
+      # @since 0.2.0
       #
       # @see Lotus::Repository
       # @see Lotus::Model::Mapper
@@ -107,10 +107,21 @@ module Lotus
       #
       #   class User
       #     include Lotus::Entity
-      #     self.attributes = :name
+      #     self.attributes = :name, :age
       #   end
-      def attributes=(*attributes)
-        @attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
+      #   User.attributes => #<Set: {:id, :name, :age}>
+      #
+      # @example Given params is array of attributes
+      #   require 'lotus/model'
+      #
+      #   class User
+      #     include Lotus::Entity
+      #     self.attributes = [:name, :age]
+      #   end
+      #   User.attributes => #<Set: {:id, :name, :age}>
+      #
+      def attributes=(*attrs)
+        self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
 
         class_eval <<-END_EVAL, __FILE__, __LINE__
           def initialize(attributes = {})
@@ -124,7 +135,15 @@ module Lotus
       end
 
       def attributes
-        @attributes
+        @attributes ||= Set.new([:id])
+      end
+
+      protected
+
+      # @see Class#inherited
+      def inherited(subclass)
+        subclass.attributes = *attributes
+        super
       end
     end
 
