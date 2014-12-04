@@ -83,6 +83,15 @@ describe Lotus::Entity do
         book.instance_variable_get(:@price).must_equal 50
         book.instance_variable_get(:@coolness).must_equal 'awesome'
       end
+
+      it "doesn't interfer with superclass attributes" do
+        book = Book.new(title: "Good Math", author: "Mark C. Chu-Carroll", price: 34, coolness: true)
+
+        book.instance_variable_get(:@title).must_equal  'Good Math'
+        book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
+        book.instance_variable_get(:@price).must_be_nil
+        book.instance_variable_get(:@coolness).must_be_nil
+      end
     end
 
     describe 'with undefined attributes' do
