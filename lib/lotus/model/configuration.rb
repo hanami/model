@@ -1,4 +1,5 @@
 require 'lotus/model/config/adapter'
+require 'lotus/model/config/mapper'
 
 module Lotus
   module Model
@@ -92,6 +93,14 @@ module Lotus
 
       # Set global persistence mapper
       #
+      # @overload mapping(blk)
+      #   Specify a set of mapping in the given block
+      #   @param blk [Proc] the mapping definitions
+      #
+      # @overload mapping(path)
+      #   Specify a relative path where to find the mapping file
+      #   @param path [String] the relative path
+      #
       # @return void
       #
       # @see Lotus::Model.configure
@@ -111,12 +120,15 @@ module Lotus
       #     end
       #   end
       #
-      # @since x.x.x
-      def mapping(&blk)
+      # @since 0.2.0
+      def mapping(path=nil, &blk)
         if block_given?
           @mapper = Lotus::Model::Mapper.new(&blk)
+        elsif path
+          _mapping = Lotus::Model::Config::Mapper.new(path)
+          @mapper = Lotus::Model::Mapper.new(&_mapping)
         else
-          raise Lotus::Model::InvalidMappingError
+          raise Lotus::Model::InvalidMappingError.new('You must specify a block or a file.')
         end
       end
 
