@@ -11,7 +11,12 @@ describe Lotus::Entity do
       self.attributes = :title, :author
     end
 
-    class NonFinctionBook < Book
+    class NonFictionBook < Book
+      self.attributes = :price
+    end
+
+    class CoolNonFictionBook < NonFictionBook
+      self.attributes = :coolness
     end
 
     class Camera
@@ -21,17 +26,22 @@ describe Lotus::Entity do
   end
 
   after do
-    [:Car, :Book, :NonFinctionBook, :Camera].each do |const|
+    [:Car, :Book, :NonFictionBook, :CoolNonFictionBook, :Camera].each do |const|
       Object.send(:remove_const, const)
     end
   end
 
   describe 'attributes' do
-    let(:attributes) { [:id, :model] }
-
     it 'defines attributes' do
-      Car.send(:attributes=, attributes)
-      Car.send(:attributes).must_equal attributes
+      Car.attributes = :model
+      Car.attributes.must_equal Set.new([:id, :model])
+    end
+
+    describe 'params is array' do
+      it 'defines attributes' do
+        Car.attributes = [:model]
+        Car.attributes.must_equal Set.new([:id, :model])
+      end
     end
   end
 
@@ -57,11 +67,21 @@ describe Lotus::Entity do
         book.instance_variable_get(:@unknown).must_be_nil
       end
 
-      it 'accepts given attributes for subclass' do
-        book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')
+      it 'accepts given attributes for subclasses' do
+        book = NonFictionBook.new(title: 'Refactoring', author: 'Martin Fowler', price: 50)
 
         book.instance_variable_get(:@title).must_equal  'Refactoring'
         book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+        book.instance_variable_get(:@price).must_equal 50
+      end
+
+      it 'accepts given attributes for subclass of subclass' do
+        book = CoolNonFictionBook.new(title: 'Refactoring', author: 'Martin Fowler', price: 50, coolness: 'awesome')
+
+        book.instance_variable_get(:@title).must_equal  'Refactoring'
+        book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+        book.instance_variable_get(:@price).must_equal 50
+        book.instance_variable_get(:@coolness).must_equal 'awesome'
       end
     end
 
