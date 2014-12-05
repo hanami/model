@@ -8,7 +8,7 @@ describe Lotus::Entity do
 
     class Book
       include Lotus::Entity
-      self.attributes = :title, :author
+      self.attributes = :title, :author, :published
     end
 
     class NonFinctionBook < Book
@@ -38,17 +38,19 @@ describe Lotus::Entity do
   describe '#initialize' do
     describe 'with defined attributes' do
       it 'accepts given attributes' do
-        book = Book.new(title: "A Lover's Discourse: Fragments", author: 'Roland Barthes')
+        book = Book.new(title: "A Lover's Discourse: Fragments", author: 'Roland Barthes', published: false)
 
         book.instance_variable_get(:@title).must_equal  "A Lover's Discourse: Fragments"
         book.instance_variable_get(:@author).must_equal 'Roland Barthes'
+        book.instance_variable_get(:@published).must_equal false
       end
 
       it 'accepts given attributes as string keys' do
-        book = Book.new('title' => "A Lover's Discourse: Fragments", 'author' => 'Roland Barthes')
+        book = Book.new('title' => "A Lover's Discourse: Fragments", 'author' => 'Roland Barthes', 'published' => false)
 
         book.instance_variable_get(:@title).must_equal  "A Lover's Discourse: Fragments"
         book.instance_variable_get(:@author).must_equal 'Roland Barthes'
+        book.instance_variable_get(:@published).must_equal false
       end
 
       it 'ignores unknown attributes' do
@@ -58,10 +60,11 @@ describe Lotus::Entity do
       end
 
       it 'accepts given attributes for subclass' do
-        book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler')
+        book = NonFinctionBook.new(title: 'Refactoring', author: 'Martin Fowler', published: false)
 
         book.instance_variable_get(:@title).must_equal  'Refactoring'
         book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+        book.instance_variable_get(:@published).must_equal false
       end
     end
 
@@ -139,11 +142,11 @@ describe Lotus::Entity do
 
   describe '#to_h' do
     before do
-      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë')
+      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false)
     end
 
     it 'returns an attributes hash' do
-      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë'})
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false})
     end
   end
 end
