@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/utils/attributes'
 
 module Lotus
   # An object that is defined by its identity.
@@ -125,8 +126,9 @@ module Lotus
 
         class_eval <<-END_EVAL, __FILE__, __LINE__
           def initialize(attributes = {})
-            #{ @attributes.map do |a|
-                "@#{a} = attributes[:#{a}] || attributes['#{a}']"
+            attributes = Lotus::Utils::Attributes.new(attributes)
+            #{@attributes.map do |a|
+                "@#{a} = attributes.get(:#{a})"
                end.join("\n") }
           end
         END_EVAL
