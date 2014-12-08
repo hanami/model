@@ -67,6 +67,14 @@ describe Lotus::Model do
       assert defined?(Duplicated::Models), 'Duplicated::Models expected'
     end
 
+    it 'duplicates a namespace for entity' do
+      assert defined?(Duplicated::Entity), 'Duplicated::Entity expected'
+    end
+
+    it 'duplicates a namespace for repository' do
+      assert defined?(Duplicated::Repository), 'Duplicated::Repository expected'
+    end
+
     it 'generates a custom namespace for models' do
       assert defined?(DuplicatedCustom::SuperModels), 'DuplicatedCustom::SuperModel expected'
     end
