@@ -138,8 +138,6 @@ module Lotus
     # Duplicate the framework and generate modules for the target application
     #
     # @param mod [Module] the Ruby namespace of the application
-    # @param models [String] the optional namespace where the application's
-    #   models will live
     # @param blk [Proc] an optional block to configure the framework
     #
     # @return [Module] a copy of Lotus::Model
@@ -161,39 +159,9 @@ module Lotus
     #   # 1. Generate MyApp::Model
     #   # 2. Generate MyApp::Entity
     #   # 3. Generate MyApp::Repository
-    #   # 4. Generate MyApp::Models
     #
-    #   MyApp::Model == Lotus::Model # => false
+    #   MyApp::Model      == Lotus::Model # => false
     #   MyApp::Repository == Lotus::Repository # => false
-    #
-    # @example Custom models module
-    #   require 'lotus/model'
-    #
-    #   module MyApp
-    #     Model = Lotus::Model.duplicate(self, 'SuperModels')
-    #   end
-    #
-    #   defined?(MyApp::Models) # => nil
-    #   defined?(MyApp::SuperModels) # => "constant"
-    #
-    #   # Developers can namespace models under SuperModels
-    #   module MyApp::SuperModels
-    #     # ...
-    #   end
-    #
-    # @example Nil models module
-    #   require 'lotus/model'
-    #
-    #   module MyApp
-    #     Model = Lotus::Model.duplicate(self, nil)
-    #   end
-    #
-    #   defined?(MyApp::Models) # => nil
-    #
-    #   # Developers can namespace models under MyApp
-    #   module MyApp
-    #     # ...
-    #   end
     #
     # @example Block usage
     #   require 'lotus/model'
@@ -206,9 +174,8 @@ module Lotus
     #
     #   Lotus::Model.configuration.adapter_config # => nil
     #   MyApp::Model.configuration.adapter_config # => #<Lotus::Model::Config::Adapter:0x007ff0ff0244f8 @type=:memory, @uri="memory://localhost", @class_name="MemoryAdapter">
-    def self.duplicate(mod, models = 'Models', &blk)
+    def self.duplicate(mod, &blk)
       dupe.tap do |duplicated|
-        mod.module_eval %{ module #{ models }; end } if models
         mod.module_eval %{
           Entity = Lotus::Entity.dup
           Repository = Lotus::Repository.dup
