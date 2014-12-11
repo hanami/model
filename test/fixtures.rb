@@ -1,11 +1,11 @@
 class User
   include Lotus::Entity
-  self.attributes = :name, :age
+  attributes :name, :age
 end
 
 class Article
   include Lotus::Entity
-  self.attributes = :user_id, :unmapped_attribute, :title, :comments_count
+  attributes :user_id, :unmapped_attribute, :title, :comments_count
 end
 
 class CustomUserRepository

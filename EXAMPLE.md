@@ -64,7 +64,7 @@ end
 
 class Article
   include Lotus::Entity
-  self.attributes = :author_id, :title, :comments_count, :published # id is implicit
+  attributes :author_id, :title, :comments_count, :published # id is implicit
 
   def published?
     !!published

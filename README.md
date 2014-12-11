@@ -75,7 +75,7 @@ require 'lotus/model'
 
 class Person
   include Lotus::Entity
-  self.attributes = :name, :age
+  attributes :name, :age
 end
 ```
 
@@ -85,7 +85,7 @@ When a class includes `Lotus::Entity` it receives the following interface:
   * `#id=`
   * `#initialize(attributes = {})`
 
-`Lotus::Entity` also provides the `.attributes=` for defining attribute accessors for the given names.
+`Lotus::Entity` also provides the `.attributes` for defining attribute accessors for the given names.
 
 If we expand the code above in **pure Ruby**, it would be:
 
@@ -281,9 +281,9 @@ mapper = Lotus::Model::Mapper.new do
 end
 ```
 
-For simplicity sake, imagine that the mapper above is used with a SQL database.
+For simplicity's sake, imagine that the mapper above is used with a SQL database.
 We use `#collection` to indicate the name of the table that we want to map, `#entity` to indicate the class that we want to associate.
-In the end, each `#attribute` call, is to associate the column with a Ruby type.
+In the end, each call to `#attribute` associates the specified column with a corresponding Ruby type.
 
 For advanced mapping and legacy databases, please have a look at the API doc.
 
@@ -317,7 +317,7 @@ In the example above, we reuse the adapter because the target tables (`people` a
 
 ### Query
 
-An object that implements an interface for quering the database.
+An object that implements an interface for querying the database.
 This interface may vary, according to the adapter's specifications.
 Think of an adapter for Redis, it will probably employ different strategies to filter records than an SQL query object.
 
