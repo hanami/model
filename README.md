@@ -75,7 +75,7 @@ require 'lotus/model'
 
 class Person
   include Lotus::Entity
-  self.attributes = :name, :age
+  attributes :name, :age
 end
 ```
 
@@ -85,7 +85,7 @@ When a class includes `Lotus::Entity` it receives the following interface:
   * `#id=`
   * `#initialize(attributes = {})`
 
-`Lotus::Entity` also provides the `.attributes=` for defining attribute accessors for the given names.
+`Lotus::Entity` also provides the `.attributes` for defining attribute accessors for the given names.
 
 If we expand the code above in **pure Ruby**, it would be:
 

@@ -284,7 +284,7 @@ module Lotus
         #   #
         #   # class User
         #   #   include Lotus::Entity
-        #   #   self.attributes = :name
+        #   #   attributes :name
         #   # end
         #
         #   mapper = Lotus::Model::Mapper.new do
@@ -321,7 +321,7 @@ module Lotus
         #   #
         #   # class Article
         #   #   include Lotus::Entity
-        #   #   self.attributes = :user_id, :title, :comments_count
+        #   #   attributes :user_id, :title, :comments_count
         #   # end
         #
         #   mapper = Lotus::Model::Mapper.new do

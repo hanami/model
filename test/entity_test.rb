@@ -8,15 +8,15 @@ describe Lotus::Entity do
 
     class Book
       include Lotus::Entity
-      self.attributes = :title, :author, :published
+      attributes :title, :author, :published
     end
 
     class NonFictionBook < Book
-      self.attributes = :price
+      attributes :price
     end
 
     class CoolNonFictionBook < NonFictionBook
-      self.attributes = :coolness
+      attributes :coolness
     end
 
     class Camera
@@ -31,15 +31,15 @@ describe Lotus::Entity do
     end
   end
 
-  describe 'attributes' do
+  describe '.attributes' do
     it 'defines attributes' do
-      Car.attributes = :model
+      Car.attributes :model
       Car.attributes.must_equal Set.new([:id, :model])
     end
 
     describe 'params is array' do
       it 'defines attributes' do
-        Car.attributes = [:model]
+        Car.attributes [:model]
         Car.attributes.must_equal Set.new([:id, :model])
       end
     end
