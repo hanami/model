@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/utils/attributes'
 
 module Lotus
   # An object that is defined by its identity.
@@ -95,9 +96,9 @@ module Lotus
       # Please notice that the required `id` attribute is automatically defined
       # and can be omitted in the arguments.
       #
-      # @param attributes [Array<Symbol>] a set of arbitrary attribute names
+      # @param attributes [Set<Symbol>] a set of arbitrary attribute names
       #
-      # @since 0.1.0
+      # @since 0.2.0
       #
       # @see Lotus::Repository
       # @see Lotus::Model::Mapper
@@ -107,15 +108,27 @@ module Lotus
       #
       #   class User
       #     include Lotus::Entity
-      #     self.attributes = :name
+      #     self.attributes = :name, :age
       #   end
-      def attributes=(*attributes)
-        @attributes = Lotus::Utils::Kernel.Array(attributes.unshift(:id))
+      #   User.attributes => #<Set: {:id, :name, :age}>
+      #
+      # @example Given params is array of attributes
+      #   require 'lotus/model'
+      #
+      #   class User
+      #     include Lotus::Entity
+      #     self.attributes = [:name, :age]
+      #   end
+      #   User.attributes => #<Set: {:id, :name, :age}>
+      #
+      def attributes=(*attrs)
+        self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
 
         class_eval <<-END_EVAL, __FILE__, __LINE__
           def initialize(attributes = {})
-            #{ @attributes.map do |a|
-                "@#{a} = attributes[:#{a}] || attributes['#{a}']"
+            attributes = Lotus::Utils::Attributes.new(attributes)
+            #{@attributes.map do |a|
+                "@#{a} = attributes.get(:#{a})"
                end.join("\n") }
           end
         END_EVAL
@@ -124,7 +137,15 @@ module Lotus
       end
 
       def attributes
-        @attributes
+        @attributes ||= Set.new([:id])
+      end
+
+      protected
+
+      # @see Class#inherited
+      def inherited(subclass)
+        subclass.attributes = *attributes
+        super
       end
     end
 
@@ -172,6 +193,27 @@ module Lotus
     def to_h
       Hash[self.class.attributes.map { |a| [a, public_send(a)] }]
     end
+
+    # Set attributes for entity
+    #
+    # @since 0.2.0
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     self.attributes = :name
+    #   end
+    #
+    #   user = User.new(name: 'Lucca')
+    #   user.update(name: 'Luca')
+    #   user.name # => 'Luca'
+    def update(attributes={})
+      attributes.each do |attribute, value|
+        public_send("#{attribute}=", value)
+      end
+    end
+
   end
 end
 

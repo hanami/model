@@ -65,6 +65,7 @@ module Lotus
     # The above example has name :sql, thus derived class will be `Lotus::Model::Adapters::SqlAdapter`
     def self.configure(&block)
       configuration.instance_eval(&block)
+      self
     end
 
     # Load the framework
@@ -92,7 +93,7 @@ module Lotus
     #
     # @return [Module] a copy of Lotus::Model
     #
-    # @since x.x.x
+    # @since x.x.x
     # @api private
     #
     # @example Basic usage
@@ -136,10 +137,50 @@ module Lotus
 
     # Duplicate the framework and generate modules for the target application
     #
-    # @since x.x.x
-    def self.duplicate(mod, models = 'Models', &blk)
+    # @param mod [Module] the Ruby namespace of the application
+    # @param blk [Proc] an optional block to configure the framework
+    #
+    # @return [Module] a copy of Lotus::Model
+    #
+    # @since 0.2.0
+    #
+    # @see Lotus::Model#dupe
+    # @see Lotus::Model::Configuration
+    #
+    # @example Basic usage
+    #   require 'lotus/model'
+    #
+    #   module MyApp
+    #     Model = Lotus::Model.dupe
+    #   end
+    #
+    #   # It will:
+    #   #
+    #   # 1. Generate MyApp::Model
+    #   # 2. Generate MyApp::Entity
+    #   # 3. Generate MyApp::Repository
+    #
+    #   MyApp::Model      == Lotus::Model # => false
+    #   MyApp::Repository == Lotus::Repository # => false
+    #
+    # @example Block usage
+    #   require 'lotus/model'
+    #
+    #   module MyApp
+    #     Model = Lotus::Model.duplicate(self) do
+    #       adapter type: :memory, uri: 'memory://localhost'
+    #     end
+    #   end
+    #
+    #   Lotus::Model.configuration.adapter_config # => nil
+    #   MyApp::Model.configuration.adapter_config # => #<Lotus::Model::Config::Adapter:0x007ff0ff0244f8 @type=:memory, @uri="memory://localhost", @class_name="MemoryAdapter">
+    def self.duplicate(mod, &blk)
       dupe.tap do |duplicated|
-        mod.module_eval %{ module #{ models }; end } if models
+        mod.module_eval %{
+          Entity = Lotus::Entity.dup
+          Repository = Lotus::Repository.dup
+        }
+
         duplicated.configure(&blk) if block_given?
       end
     end

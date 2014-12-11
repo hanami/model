@@ -625,19 +625,21 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           @adapter.create(collection, user1)
           @adapter.create(collection, user2)
           @adapter.create(collection, user3)
+          @adapter.create(collection, user4)
         end
 
-        let(:user3) { TestUser.new(name: user2.name) }
+        let(:user3) { TestUser.new(name: user2.name, age: 31) }
+        let(:user4) { TestUser.new(name: user2.name, age: 32) }
 
         it 'returns only the number of requested records' do
           name = user2.name
 
           query = Proc.new {
-            where(name: name).limit(1).offset(1)
+            where(name: name).limit(2).offset(1)
           }
 
           result = @adapter.query(collection, &query).all
-          result.must_equal [user3]
+          result.must_equal [user3, user4]
         end
       end
     end

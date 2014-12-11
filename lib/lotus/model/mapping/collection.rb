@@ -1,3 +1,5 @@
+require 'lotus/utils/class'
+
 module Lotus
   module Model
     module Mapping

@@ -45,4 +45,19 @@ describe 'Configuration DSL' do
       exception.message.must_equal("Cannot invoke `find' without selecting an adapter. Please check your framework configuration.")
     end
   end
+
+  describe 'when mapping is not set' do
+    before do
+      Lotus::Model.unload!
+
+      Lotus::Model.configure do
+        adapter type: :memory, uri: 'memory://localhost'
+      end
+    end
+
+    it 'raises an error when try to use it' do
+      exception = -> { Lotus::Model.load! }.must_raise(Lotus::Model::NoMappingError)
+      exception.message.must_equal("Mapping is missing. Please check your framework configuration.")
+    end
+  end
 end

@@ -72,9 +72,20 @@ describe Lotus::Model::Configuration do
       end
     end
 
-    describe "when a block isn't given" do
-      it 'defaults to the null' do
-        -> { configuration.mapping }.must_raise Lotus::Model::InvalidMappingError
+    describe "when a path is given" do
+      it 'configures the global persistence mapper through block' do
+        configuration.mapping 'test/fixtures/mapping'
+
+        collection = configuration.mapper.collection(:users)
+        collection.must_be_instance_of Lotus::Model::Mapping::Collection
+        collection.name.must_equal :users
+      end
+    end
+
+    describe "when block and path are not given" do
+      it 'raise error' do
+        exception = -> { configuration.mapping }.must_raise Lotus::Model::InvalidMappingError
+        exception.message.must_equal 'You must specify a block or a file.'
       end
     end
   end
@@ -101,7 +112,7 @@ describe Lotus::Model::Configuration do
     end
 
     it 'resets mapper' do
-      configuration.mapper.must_equal nil
+      configuration.mapper.must_be_instance_of Lotus::Model::NullMapper
     end
   end
 end
