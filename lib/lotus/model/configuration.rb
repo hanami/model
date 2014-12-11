@@ -62,12 +62,17 @@ module Lotus
       #
       # There could only 1 adapter can be registered per application
       #
-      # @param @options [Hash] A set of options to register an adapter
-      # @option options [Symbol] :type The adapter type. Eg. :sql, :memory
-      #   (mandatory)
-      # @option options [String] :uri The database uri string (mandatory)
-      # @option options [TrueClass, FalseClass] :default Set if the current adapter is the
-      #   default one for the application scope.
+      # @overload adapter
+      #   Retrieves the configured adapter
+      #   @return [Lotus::Model::Config::Adapter,NilClass] the adapter, if
+      #     present
+      #
+      # @overload adapter
+      #   Register the adapter
+      #     @param @options [Hash] A set of options to register an adapter
+      #     @option options [Symbol] :type The adapter type. Eg. :sql, :memory
+      #       (mandatory)
+      #     @option options [String] :uri The database uri string (mandatory)
       #
       # @return void
       #
@@ -76,7 +81,7 @@ module Lotus
       # @see Lotus::Model.configure
       # @see Lotus::Model::Config::Adapter
       #
-      # @example Register an adapter
+      # @example Register the adapter
       #   require 'lotus/model'
       #
       #   Lotus::Model.configure do
@@ -86,9 +91,13 @@ module Lotus
       #   Lotus::Model.adapter_config
       #
       # @since x.x.x
-      def adapter(options)
-        _check_adapter_options!(options)
-        @adapter_config ||= Lotus::Model::Config::Adapter.new(options)
+      def adapter(options = nil)
+        if options.nil?
+          @adapter_config
+        else
+          _check_adapter_options!(options)
+          @adapter_config ||= Lotus::Model::Config::Adapter.new(options)
+        end
       end
 
       # Set global persistence mapper
