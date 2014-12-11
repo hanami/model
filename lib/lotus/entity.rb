@@ -22,7 +22,7 @@ module Lotus
   #
   #   class Person
   #     include Lotus::Entity
-  #     self.attributes = :name, :age
+  #     attributes :name, :age
   #   end
   #
   # When a class includes `Lotus::Entity` it receives the following interface:
@@ -108,7 +108,7 @@ module Lotus
       #
       #   class User
       #     include Lotus::Entity
-      #     self.attributes = :name, :age
+      #     attributes :name, :age
       #   end
       #   User.attributes => #<Set: {:id, :name, :age}>
       #
@@ -117,34 +117,34 @@ module Lotus
       #
       #   class User
       #     include Lotus::Entity
-      #     self.attributes = [:name, :age]
+      #     attributes [:name, :age]
       #   end
       #   User.attributes => #<Set: {:id, :name, :age}>
       #
-      def attributes=(*attrs)
-        self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
+      def attributes(*attrs)
+        if attrs.any?
+          self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
 
-        class_eval <<-END_EVAL, __FILE__, __LINE__
-          def initialize(attributes = {})
-            attributes = Lotus::Utils::Attributes.new(attributes)
-            #{@attributes.map do |a|
-                "@#{a} = attributes.get(:#{a})"
-               end.join("\n") }
-          end
-        END_EVAL
+          class_eval <<-END_EVAL, __FILE__, __LINE__
+            def initialize(attributes = {})
+              attributes = Lotus::Utils::Attributes.new(attributes)
+              #{@attributes.map do |a|
+                  "@#{a} = attributes.get(:#{a})"
+                 end.join("\n") }
+            end
+          END_EVAL
 
-        attr_accessor *@attributes
-      end
-
-      def attributes
-        @attributes ||= Set.new([:id])
+          attr_accessor *@attributes
+        else
+          @attributes ||= Set.new([:id])
+        end
       end
 
       protected
 
       # @see Class#inherited
       def inherited(subclass)
-        subclass.attributes = *attributes
+        subclass.attributes *attributes
         super
       end
     end
@@ -185,7 +185,7 @@ module Lotus
     #   require 'lotus/model'
     #   class User
     #     include Lotus::Entity
-    #     self.attributes = :name
+    #     attributes :name
     #   end
     #
     #   user = User.new(id: 23, name: 'Luca')
@@ -202,7 +202,7 @@ module Lotus
     #   require 'lotus/model'
     #   class User
     #     include Lotus::Entity
-    #     self.attributes = :name
+    #     attributes :name
     #   end
     #
     #   user = User.new(name: 'Lucca')
