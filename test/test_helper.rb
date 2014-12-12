@@ -20,11 +20,19 @@ require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus-model'
 require 'lotus/model/adapters/memory_adapter'
+require 'lotus/model/adapters/file_system_adapter'
 require 'lotus/model/adapters/sql_adapter'
 
-db = Pathname.new(__dir__).join('../tmp/test.db')
-db.dirname.mkpath      # create directory if not exist
-db.delete if db.exist? # delete file if exist
+db = Pathname.new(__dir__).join('../tmp/db')
+db.dirname.mkpath        # create directory if not exist
 
-SQLITE_CONNECTION_STRING = "sqlite://#{ db }"
+sql = db.join('sql.db')
+sql.delete if sql.exist? # delete file if exist
+
+filesystem = db.join('filesystem')
+filesystem.rmtree if filesystem.exist?
+filesystem.dirname.mkpath # recreate directory
+
+SQLITE_CONNECTION_STRING      = "sqlite://#{ sql }"
+FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
 require 'fixtures'

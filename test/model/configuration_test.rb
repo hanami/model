@@ -36,7 +36,7 @@ describe Lotus::Model::Configuration do
   end
 
   describe '#load!' do
-    it 'instantiates all registered adapters' do
+    before do
       configuration.mapping do
         collection :users do
           entity User
@@ -45,12 +45,30 @@ describe Lotus::Model::Configuration do
           attribute :name, String
         end
       end
+    end
 
+    it 'instantiates the registered adapter (memory)' do
       configuration.adapter(type: :memory, uri: 'memory://localhost')
       configuration.load!
 
       adapter = configuration.instance_variable_get(:@adapter)
       adapter.must_be_instance_of Lotus::Model::Adapters::MemoryAdapter
+    end
+
+    it 'instantiates the registered adapter (file system)' do
+      configuration.adapter(type: :file_system, uri: FILE_SYSTEM_CONNECTION_STRING)
+      configuration.load!
+
+      adapter = configuration.instance_variable_get(:@adapter)
+      adapter.must_be_instance_of Lotus::Model::Adapters::FileSystemAdapter
+    end
+
+    it 'instantiates the registered adapter (sql)' do
+      configuration.adapter(type: :sql, uri: SQLITE_CONNECTION_STRING)
+      configuration.load!
+
+      adapter = configuration.instance_variable_get(:@adapter)
+      adapter.must_be_instance_of Lotus::Model::Adapters::SqlAdapter
     end
   end
 

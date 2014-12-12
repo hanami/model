@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::MemoryAdapter do
+describe Lotus::Model::Adapters::FileSystemAdapter do
   before do
     TestUser = Struct.new(:id, :name, :age) do
       include Lotus::Entity
@@ -34,7 +34,10 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
     end.load!
 
-    @adapter = Lotus::Model::Adapters::MemoryAdapter.new(@mapper)
+    @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+    @adapter.clear(collection)
+
+    @verifier = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
   end
 
   after do
@@ -54,8 +57,8 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       @adapter.create(:users, user)
       @adapter.create(:devices, device)
 
-      @adapter.all(:users).must_equal   [user]
-      @adapter.all(:devices).must_equal [device]
+      @verifier.all(:users).must_equal   [user]
+      @verifier.all(:devices).must_equal [device]
     end
   end
 
@@ -67,7 +70,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         @adapter.persist(collection, entity)
 
         entity.id.wont_be_nil
-        @adapter.find(collection, entity.id).must_equal entity
+        @verifier.find(collection, entity.id).must_equal entity
       end
     end
 
@@ -86,7 +89,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         @adapter.persist(collection, entity)
 
         entity.id.must_equal(id)
-        @adapter.find(collection, entity.id).name.must_equal entity.name
+        @verifier.find(collection, entity.id).name.must_equal entity.name
       end
     end
   end
@@ -98,7 +101,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       @adapter.create(collection, entity)
 
       entity.id.wont_be_nil
-      @adapter.find(collection, entity.id).must_equal entity
+      @verifier.find(collection, entity.id).must_equal entity
     end
   end
 
@@ -116,7 +119,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       @adapter.update(collection, entity)
 
       entity.id.must_equal id
-      @adapter.find(collection, entity.id).name.must_equal entity.name
+      @verifier.find(collection, entity.id).name.must_equal entity.name
     end
   end
 
@@ -129,7 +132,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
     it 'removes the given identity' do
       @adapter.delete(collection, entity)
-      @adapter.find(collection, entity.id).must_be_nil
+      @verifier.find(collection, entity.id).must_be_nil
     end
   end
 
@@ -140,7 +143,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
 
       it 'returns an empty collection' do
-        @adapter.all(collection).must_be_empty
+        @verifier.all(collection).must_be_empty
       end
     end
 
@@ -152,7 +155,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       let(:entity) { TestUser.new }
 
       it 'returns all of them' do
-        @adapter.all(collection).must_equal [entity]
+        @verifier.all(collection).must_equal [entity]
       end
     end
   end
@@ -167,15 +170,15 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     let(:nil_entity)  { {id: 0} }
 
     it 'returns the record by id' do
-      @adapter.find(collection, entity.id).must_equal entity
+      @verifier.find(collection, entity.id).must_equal entity
     end
 
     it 'returns nil when the record cannot be found' do
-      @adapter.find(collection, 1_000_000).must_be_nil
+      @verifier.find(collection, 1_000_000).must_be_nil
     end
 
     it 'returns nil when the given id is nil' do
-      @adapter.find(collection, nil).must_be_nil
+      @verifier.find(collection, nil).must_be_nil
     end
   end
 
@@ -186,7 +189,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
 
       it 'returns nil' do
-        @adapter.first(collection).must_be_nil
+        @verifier.first(collection).must_be_nil
       end
     end
 
@@ -200,7 +203,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       let(:entity2) { TestUser.new }
 
       it 'returns the first record' do
-        @adapter.first(collection).must_equal entity1
+        @verifier.first(collection).must_equal entity1
       end
     end
   end
@@ -212,7 +215,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
 
       it 'returns nil' do
-        @adapter.last(collection).must_be_nil
+        @verifier.last(collection).must_be_nil
       end
     end
 
@@ -226,7 +229,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       let(:entity2) { TestUser.new }
 
       it 'returns the last record' do
-        @adapter.last(collection).must_equal entity2
+        @verifier.last(collection).must_equal entity2
       end
     end
   end
@@ -240,7 +243,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
     it 'removes all the records' do
       @adapter.clear(collection)
-      @adapter.all(collection).must_be_empty
+      @verifier.all(collection).must_be_empty
     end
 
     it 'resets the id counter' do
@@ -263,7 +266,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'where' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             where(id: 23)
           end.all
 
@@ -285,7 +288,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -297,7 +300,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id).where(name: name)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -309,7 +312,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id).and(name: name)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user1]
         end
 
@@ -321,7 +324,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(age: age).where(name: name)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user3]
         end
       end
@@ -330,7 +333,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'exclude' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             exclude(id: 23)
           end.all
 
@@ -354,7 +357,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             exclude(id: id)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user2, user3]
         end
 
@@ -366,7 +369,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             exclude(id: id).exclude(name: name)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user3]
         end
 
@@ -378,7 +381,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             self.not(id: id).not(name: name)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user3]
         end
       end
@@ -387,7 +390,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'or' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             where(name: 'L').or(name: 'MG')
           end.all
 
@@ -409,7 +412,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name1).or(name: name2)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user1, user2]
         end
 
@@ -420,7 +423,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: 'unknown').or(name: name2)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user2]
         end
       end
@@ -429,7 +432,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'select' do
       describe 'with an empty collection' do
         it 'returns an empty result' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             select(:age)
           end.all
 
@@ -453,7 +456,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             select(:age)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
 
           users.each do |user|
             record = result.find {|r| r.age == user.age }
@@ -469,7 +472,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name).select(:age)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
 
           record = result.first
           record.age.must_equal(user2.age)
@@ -483,7 +486,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name).select(:name, :age)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
 
           record = result.first
           record.name.must_equal(user2.name)
@@ -496,7 +499,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'order' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             order(:id)
           end.all
 
@@ -515,7 +518,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             order(:id)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user1, user2]
         end
       end
@@ -524,7 +527,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'asc' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             asc(:id)
           end.all
 
@@ -543,7 +546,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             asc(:id)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user1, user2]
         end
       end
@@ -552,7 +555,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'desc' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             desc(:id)
           end.all
 
@@ -571,7 +574,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             desc(:id)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user2, user1]
         end
       end
@@ -580,7 +583,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'limit' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             limit(1)
           end.all
 
@@ -602,7 +605,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name).limit(1)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user2]
         end
       end
@@ -611,7 +614,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'offset' do
       describe 'with an empty collection' do
         it 'returns an empty result set' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             limit(1).offset(1)
           end.all
 
@@ -637,7 +640,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name).limit(2).offset(1)
           }
 
-          result = @adapter.query(collection, &query).all
+          result = @verifier.query(collection, &query).all
           result.must_equal [user3, user4]
         end
       end
@@ -646,7 +649,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'exist?' do
       describe 'with an empty collection' do
         it 'returns false' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             where(id: 23)
           end.exist?
 
@@ -667,7 +670,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: id)
           }
 
-          result = @adapter.query(collection, &query).exist?
+          result = @verifier.query(collection, &query).exist?
           result.must_equal true
         end
 
@@ -676,7 +679,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(id: 'unknown')
           }
 
-          result = @adapter.query(collection, &query).exist?
+          result = @verifier.query(collection, &query).exist?
           result.must_equal false
         end
       end
@@ -685,7 +688,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'count' do
       describe 'with an empty collection' do
         it 'returns 0' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.count
 
@@ -704,7 +707,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).count
+          result = @verifier.query(collection, &query).count
           result.must_equal 2
         end
 
@@ -712,7 +715,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).count
+          result = @verifier.query(collection, &query).count
           result.must_equal 2
         end
 
@@ -723,7 +726,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).count
+          result = @verifier.query(collection, &query).count
           result.must_equal 1
         end
       end
@@ -732,7 +735,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'sum' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.sum(:age)
 
@@ -752,7 +755,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).sum(:age)
+          result = @verifier.query(collection, &query).sum(:age)
           result.must_equal 63
         end
 
@@ -760,7 +763,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).sum(:age)
+          result = @verifier.query(collection, &query).sum(:age)
           result.must_equal 63
         end
 
@@ -771,7 +774,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).sum(:age)
+          result = @verifier.query(collection, &query).sum(:age)
           result.must_equal 31
         end
       end
@@ -780,7 +783,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'average' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.average(:age)
 
@@ -800,7 +803,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).average(:age)
+          result = @verifier.query(collection, &query).average(:age)
           result.must_equal 31.5
         end
 
@@ -808,7 +811,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).average(:age)
+          result = @verifier.query(collection, &query).average(:age)
           result.must_equal 31.5
         end
 
@@ -819,7 +822,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).average(:age)
+          result = @verifier.query(collection, &query).average(:age)
           result.must_equal 31.0
         end
       end
@@ -828,7 +831,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'avg' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.avg(:age)
 
@@ -848,7 +851,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).avg(:age)
+          result = @verifier.query(collection, &query).avg(:age)
           result.must_equal 31.5
         end
 
@@ -856,7 +859,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).avg(:age)
+          result = @verifier.query(collection, &query).avg(:age)
           result.must_equal 31.5
         end
 
@@ -867,7 +870,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).avg(:age)
+          result = @verifier.query(collection, &query).avg(:age)
           result.must_equal 31.0
         end
       end
@@ -876,7 +879,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'max' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.max(:age)
 
@@ -896,7 +899,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).max(:age)
+          result = @verifier.query(collection, &query).max(:age)
           result.must_equal 32
         end
 
@@ -904,7 +907,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).max(:age)
+          result = @verifier.query(collection, &query).max(:age)
           result.must_equal 32
         end
 
@@ -915,7 +918,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).max(:age)
+          result = @verifier.query(collection, &query).max(:age)
           result.must_equal 31
         end
       end
@@ -924,7 +927,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'min' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.min(:age)
 
@@ -944,7 +947,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).min(:age)
+          result = @verifier.query(collection, &query).min(:age)
           result.must_equal 31
         end
 
@@ -952,7 +955,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).min(:age)
+          result = @verifier.query(collection, &query).min(:age)
           result.must_equal 31
         end
 
@@ -963,7 +966,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).min(:age)
+          result = @verifier.query(collection, &query).min(:age)
           result.must_equal 32
         end
       end
@@ -972,7 +975,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'interval' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.interval(:age)
 
@@ -992,7 +995,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).interval(:age)
+          result = @verifier.query(collection, &query).interval(:age)
           result.must_equal 1
         end
 
@@ -1000,7 +1003,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).interval(:age)
+          result = @verifier.query(collection, &query).interval(:age)
           result.must_equal 1
         end
 
@@ -1011,7 +1014,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).interval(:age)
+          result = @verifier.query(collection, &query).interval(:age)
           result.must_equal 0
         end
       end
@@ -1020,7 +1023,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     describe 'range' do
       describe 'with an empty collection' do
         it 'returns nil' do
-          result = @adapter.query(collection) do
+          result = @verifier.query(collection) do
             all
           end.range(:age)
 
@@ -1040,7 +1043,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             all
           }
 
-          result = @adapter.query(collection, &query).range(:age)
+          result = @verifier.query(collection, &query).range(:age)
           result.must_equal 31..32
         end
 
@@ -1048,7 +1051,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           query = Proc.new {
           }
 
-          result = @adapter.query(collection, &query).range(:age)
+          result = @verifier.query(collection, &query).range(:age)
           result.must_equal 31..32
         end
 
@@ -1059,7 +1062,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
             where(name: name)
           }
 
-          result = @adapter.query(collection, &query).range(:age)
+          result = @verifier.query(collection, &query).range(:age)
           result.must_equal 31..31
         end
       end

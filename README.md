@@ -55,6 +55,48 @@ Or install it yourself as:
 
 ## Usage
 
+This class provides a DSL to configure adapter, mapping and collection.
+
+```ruby
+require 'lotus/model'
+
+class User
+  include Lotus::Entity
+  attributes :name, :age
+end
+
+class UserRepository
+  include Lotus::Repository
+end
+
+Lotus::Model.configure do
+  adapter type: :sql, uri: 'postgres://localhost/database'
+
+  mapping do
+    collection :users do
+      entity      User
+      respository UserRepository
+
+      attribute :id,   Integer
+      attribute :name, String
+      attribute :age,  Integer
+    end
+  end
+end
+
+Lotus::Model.load!
+
+user = User.new(name: 'Luca', age: 32)
+user = UserRepository.create(user)
+
+puts user.id # => 1
+
+u = UserRepository.find(user.id)
+u == user # => true
+```
+
+## Concepts
+
 ### Entities
 
 An object that is defined by its identity.
@@ -290,10 +332,11 @@ For advanced mapping and legacy databases, please have a look at the API doc.
 ### Adapter
 
 An adapter is a concrete implementation of persistence logic for a specific database.
-**Lotus::Model** is shipped with two adapters:
+**Lotus::Model** is shipped with three adapters:
 
   * SqlAdapter
   * MemoryAdapter
+  * FileSystemAdapter
 
 An adapter can be associated with one or multiple repositories.
 
@@ -340,30 +383,6 @@ Think of an adapter for Redis, it will probably employ different strategies to f
   end
   ```
 
-## Lotus::Model
-
-This class provides a DSL to configure adapter, mapping and collection.
-
-```ruby
-require 'lotus/model'
-
-Lotus::Model.configure do
-  adapter type: :sql, uri: 'postgres://localhost/database'
-
-  mapping do
-    collection :users do
-      entity User
-      respository UserRepository
-
-      attribute :id,   Integer
-      attribute :name, String
-    end
-  end
-end
-
-Lotus::Model.load!
-```
-
 ### Thread safety
 
 **Lotus::Model**'s is thread safe during the runtime, but it isn't during the loading process.
@@ -371,7 +390,7 @@ The mapper compiles some code internally, be sure to safely load it before your 
 
 ```ruby
 Mutex.new.synchronize do
-  mapper.load!
+  Lotus::Model.load!
 end
 ```
 
