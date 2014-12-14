@@ -16,6 +16,10 @@ describe Lotus::Model::Mapping::Collection do
       @collection.name.must_equal :users
     end
 
+    it 'assigns the table name' do
+      @collection.table_name.must_equal :users
+    end
+
     it 'assigns the coercer class' do
       @collection.coercer_class.must_equal Lotus::Model::Mapping::Coercer
     end
@@ -26,6 +30,14 @@ describe Lotus::Model::Mapping::Collection do
       end
 
       collection.entity.must_equal User
+    end
+
+    describe 'when option :as is provided' do
+      let(:collection) { Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer, as: :clients) }
+
+      it 'assigns the table name' do
+        collection.table_name.must_equal :clients
+      end
     end
   end
 

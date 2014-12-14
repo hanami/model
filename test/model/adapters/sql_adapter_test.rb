@@ -19,7 +19,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
     end
 
     @mapper = Lotus::Model::Mapper.new do
-      collection :users do
+      collection :clients, as: :users do
         entity TestUser
 
         attribute :id,   Integer
@@ -45,17 +45,17 @@ describe Lotus::Model::Adapters::SqlAdapter do
     Object.send(:remove_const, :TestDeviceRepository)
   end
 
-  let(:collection) { :users }
+  let(:collection) { :clients }
 
   describe 'multiple collections' do
     it 'create records' do
       user   = TestUser.new
       device = TestDevice.new
 
-      @adapter.create(:users, user)
+      @adapter.create(:clients, user)
       @adapter.create(:devices, device)
 
-      @adapter.all(:users).must_equal   [user]
+      @adapter.all(:clients).must_equal [user]
       @adapter.all(:devices).must_equal [device]
     end
   end

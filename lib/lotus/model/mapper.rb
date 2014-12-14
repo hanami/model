@@ -90,17 +90,42 @@ module Lotus
       # A collection is a set of homogeneous records. Think of a table of a SQL
       # database or about collection of MongoDB.
       #
-      # @param name [Symbol] the name of the mapped collection. If used with a
-      #   SQL database it's the table name.
+      # @param name [Symbol] the identifier of the mapped collection. If used with a
+      #   SQL database and :as option is not explicitly given, it's the table name
+      #
+      # @param options [Hash] the options ofthe mapped collection. The :as => :table_name
+      #   option sets the table name
       #
       # @param blk [Proc] the block that maps the attributes of that collection.
       #
       # @since 0.1.0
       #
       # @see Lotus::Model::Mapping::Collection
-      def collection(name, &blk)
+      #
+      # @example Collection with default derived table name
+      #   require 'lotus/model'
+      #
+      #   mapper = Lotus::Model::Mapper.new do
+      #     collection :clients do
+      #     # ...
+      #     end
+      #   end
+      #
+      #   # This sets :clients as the table name
+      #
+      # @example Collection with custom table name
+      #   require 'lotus/model'
+      #
+      #   mapper = Lotus::Model::Mapper.new do
+      #     collection :clients, as: :users do
+      #     # ...
+      #     end
+      #   end
+      #
+      #   # This sets :users as the table name
+      def collection(name, options={}, &blk)
         if block_given?
-          @collections[name] = Mapping::Collection.new(name, @coercer, &blk)
+          @collections[name] = Mapping::Collection.new(name, @coercer, options, &blk)
         else
           @collections[name] or raise Mapping::UnmappedCollectionError.new(name)
         end

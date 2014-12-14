@@ -146,7 +146,22 @@ module Lotus
         # @api private
         # @since 0.1.0
         def _collection(name)
-          Sql::Collection.new(@connection[name], _mapped_collection(name))
+          Sql::Collection.new(_dataset(name), _mapped_collection(name))
+        end
+
+        # Returns the dataset for Sql::Collection
+        #
+        # @param name [Symbol] a name of the collection
+        #
+        # @return [Sequel::Dataset]
+        #
+        # @see Lotus::Model::Adapters::Sql::Collection
+        #
+        # @api private
+        # @since 0.2.0
+        def _dataset(name)
+          _table_name = _mapped_collection(name).table_name
+          @connection[_table_name]
         end
       end
     end
