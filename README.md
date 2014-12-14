@@ -150,6 +150,24 @@ However, we suggest to implement this interface by including `Lotus::Entity`, in
 
 See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
 
+When a class extend an entity class, it will also *inherit* its mother's attributes.
+
+```ruby
+require 'lotus/model'
+
+class Article
+  include Lotus::Entity
+  attributes :name
+end
+
+class RareArticle < Article
+  attributes :price
+end
+```
+
+That is, `RareArticle`'s attributes carry over `:name` attribute from `Article`,
+thus is `:id, :name, :price`.
+
 ### Repositories
 
 An object that mediates between entities and the persistence layer.
@@ -328,6 +346,42 @@ We use `#collection` to indicate the name of the table that we want to map, `#en
 In the end, each call to `#attribute` associates the specified column with a corresponding Ruby type.
 
 For advanced mapping and legacy databases, please have a look at the API doc.
+
+**Known limitations**
+
+Please be noted there are limitations with inherited entities:
+
+```ruby
+require 'lotus/model'
+
+class Article
+  include Lotus::Entity
+  attributes :name
+end
+
+class RareArticle < Article
+  attributes :price
+end
+
+mapper = Lotus::Model::Mapper.new do
+  collection :articles do
+    entity Article
+
+    attribute :id,    Integer
+    attribute :name,  String
+    attribute :price, Integer
+  end
+end
+```
+
+In the example above, there are few problems:
+
+* `Article` could not be fetched because mapping could not map `price`.
+* Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
+the result is an `Article` not `RareArticle`.
+
+That workaround is to allow mapping multiple times the same database table and
+we are currently working on this.
 
 ### Adapter
 

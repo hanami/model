@@ -121,6 +121,21 @@ module Lotus
       #   end
       #   User.attributes => #<Set: {:id, :name, :age}>
       #
+      # @example Extend entity
+      #   require 'lotus/model'
+      #
+      #   class User
+      #     include Lotus::Entity
+      #     attributes :name
+      #   end
+      #
+      #   class DeletedUser < User
+      #     include Lotus::Entity
+      #     attributes :deleted_at
+      #   end
+      #
+      #   User.attributes => #<Set: {:id, :name}>
+      #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
       def attributes(*attrs)
         if attrs.any?
           self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
