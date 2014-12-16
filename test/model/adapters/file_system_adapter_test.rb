@@ -62,6 +62,28 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
     end
   end
 
+  describe '#initialize' do
+    before do
+      @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, uri)
+    end
+
+    describe 'absolute path' do
+      let(:uri) { "file:///#{ Pathname.new(__dir__).join('../../../tmp/db/filesystem').realpath }" }
+
+      it 'connects to the database' do
+        @adapter.info.must_be_kind_of(Hash)
+      end
+    end
+
+    describe 'relative path' do
+      let(:uri) { 'file:///./tmp/db/filesystem' }
+
+      it 'connects to the database' do
+        @adapter.info.must_be_kind_of(Hash)
+      end
+    end
+  end
+
   describe '#persist' do
     describe 'when the given entity is not persisted' do
       let(:entity) { TestUser.new }
@@ -1066,6 +1088,16 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
           result.must_equal 31..31
         end
       end
+    end
+  end
+
+  describe '#info' do
+    before do
+      @adapter.create(collection, TestUser.new)
+    end
+
+    it 'returns infos per each collection' do
+      @adapter.info.fetch(collection).must_equal 1
     end
   end
 end

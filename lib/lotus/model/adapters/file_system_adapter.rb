@@ -1,4 +1,3 @@
-require 'uri'
 require 'thread'
 require 'pathname'
 require 'lotus/model/adapters/memory_adapter'
@@ -47,6 +46,14 @@ module Lotus
         # @since x.x.x
         # @api private
         CHMOD        = 0644
+
+        # File scheme
+        #
+        # @see https://tools.ietf.org/html/rfc3986
+        #
+        # @since x.x.x
+        # @api private
+        FILE_SCHEME  = 'file:///'.freeze
 
         # Initialize the adapter.
         #
@@ -208,11 +215,23 @@ module Lotus
           # end
         end
 
+        # Database informations
+        #
+        # @return [Hash] per collection informations
+        #
+        # @api private
+        # @since x.x.x
+        def info
+          @collections.each_with_object({}) do |(collection,_), result|
+            result[collection] = query(collection).count
+          end
+        end
+
         private
         # @api private
         # @since x.x.x
         def prepare(uri)
-          @root = Pathname.new(URI.parse(uri).path)
+          @root = Pathname.new(uri.sub(FILE_SCHEME, ''))
           @root.mkpath
         end
 
