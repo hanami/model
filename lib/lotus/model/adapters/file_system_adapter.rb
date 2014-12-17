@@ -252,7 +252,7 @@ module Lotus
         # @since x.x.x
         def read(collection)
           path = @root.join("#{ collection }")
-          @collections[collection] = _load(path.read)
+          @collections[collection] = _load(path.read) if path.exist?
         end
 
         # @api private

@@ -84,6 +84,17 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
     end
   end
 
+  describe 'when new database' do
+    before do
+      data = Pathname.new(FILE_SYSTEM_CONNECTION_STRING)
+      data.rmtree if data.exist?
+    end
+
+    it 'returns an empty collection' do
+      @adapter.all(collection).must_be_empty
+    end
+  end
+
   describe '#persist' do
     describe 'when the given entity is not persisted' do
       let(:entity) { TestUser.new }
