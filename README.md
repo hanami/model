@@ -380,9 +380,6 @@ In the example above, there are few problems:
 * Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
 the result is an `Article` not `RareArticle`.
 
-That workaround is to allow mapping multiple times the same database table and
-we are currently working on this.
-
 ### Adapter
 
 An adapter is a concrete implementation of persistence logic for a specific database.
