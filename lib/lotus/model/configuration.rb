@@ -44,6 +44,7 @@ module Lotus
         @adapter = nil
         @adapter_config = nil
         @mapper = NullMapper.new
+        @mapper_config = nil
       end
 
       alias_method :unload!, :reset!
@@ -54,7 +55,9 @@ module Lotus
       #
       # @since x.x.x
       def load!
-        @adapter = adapter_config.build(mapper)
+        _build_mapper
+        _build_adapter
+
         mapper.load!(@adapter)
       end
 
@@ -100,7 +103,7 @@ module Lotus
         end
       end
 
-      # Set global persistence mapper
+      # Set global persistence mapping
       #
       # @overload mapping(blk)
       #   Specify a set of mapping in the given block
@@ -131,14 +134,7 @@ module Lotus
       #
       # @since 0.2.0
       def mapping(path=nil, &blk)
-        if block_given?
-          @mapper = Lotus::Model::Mapper.new(&blk)
-        elsif path
-          _mapping = Lotus::Model::Config::Mapper.new(path)
-          @mapper = Lotus::Model::Mapper.new(&_mapping)
-        else
-          raise Lotus::Model::InvalidMappingError.new('You must specify a block or a file.')
-        end
+        @mapper_config = Lotus::Model::Config::Mapper.new(path, &blk)
       end
 
       # Duplicate by copying the settings in a new instance.
@@ -155,6 +151,22 @@ module Lotus
       end
 
       private
+
+      # Instantiate mapper from mapping block
+      #
+      # @see Lotus::Model::Configuration#mapping
+      #
+      # @api private
+      # @since 0.2.0
+      def _build_mapper
+        @mapper = Lotus::Model::Mapper.new(&@mapper_config.to_proc) if @mapper_config
+      end
+
+      # @api private
+      # @since 0.1.0
+      def _build_adapter
+        @adapter = adapter_config.build(mapper)
+      end
 
       # @api private
       # @since x.x.x

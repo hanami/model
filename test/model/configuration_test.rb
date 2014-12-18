@@ -70,6 +70,15 @@ describe Lotus::Model::Configuration do
       adapter = configuration.instance_variable_get(:@adapter)
       adapter.must_be_instance_of Lotus::Model::Adapters::SqlAdapter
     end
+
+    it 'builds collections from mapping' do
+      configuration.adapter(type: :memory, uri: 'memory://localhost')
+      configuration.load!
+
+      collection = configuration.mapper.collection(:users)
+      collection.must_be_kind_of Lotus::Model::Mapping::Collection
+      collection.name.must_equal :users
+    end
   end
 
   describe '#mapping' do
@@ -84,9 +93,8 @@ describe Lotus::Model::Configuration do
           end
         end
 
-        collection = configuration.mapper.collection(:users)
-        collection.must_be_instance_of Lotus::Model::Mapping::Collection
-        collection.name.must_equal :users
+        mapper_config = configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
       end
     end
 
@@ -94,9 +102,8 @@ describe Lotus::Model::Configuration do
       it 'configures the global persistence mapper through block' do
         configuration.mapping 'test/fixtures/mapping'
 
-        collection = configuration.mapper.collection(:users)
-        collection.must_be_instance_of Lotus::Model::Mapping::Collection
-        collection.name.must_equal :users
+        mapper_config = configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
       end
     end
 
@@ -125,11 +132,12 @@ describe Lotus::Model::Configuration do
     end
 
     it 'resets adapter' do
-      configuration.adapter_config.must_equal nil
-      configuration.instance_variable_get(:@adapter).must_equal nil
+      configuration.adapter_config.must_be_nil
+      configuration.instance_variable_get(:@adapter).must_be_nil
     end
 
     it 'resets mapper' do
+      configuration.instance_variable_get(:@mapper_config).must_be_nil
       configuration.mapper.must_be_instance_of Lotus::Model::NullMapper
     end
   end

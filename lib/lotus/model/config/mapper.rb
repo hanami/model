@@ -10,24 +10,30 @@ module Lotus
       class Mapper
         EXTNAME = '.rb'
 
-        def initialize(path)
-          @path = root.join(path)
+        def initialize(path=nil, &blk)
+          if block_given?
+            @blk = blk
+          elsif path
+            @path = root.join(path)
+          else
+            raise Lotus::Model::InvalidMappingError.new('You must specify a block or a file.')
+          end
         end
 
         def to_proc
-          code = realpath.read
-          Proc.new { eval(code) }
+          unless @blk
+            code = realpath.read
+            @blk = Proc.new { eval(code) }
+          end
+
+          @blk
         end
 
         private
         def realpath
           Utils::Kernel.Pathname("#{ @path }#{ EXTNAME }").realpath
         rescue Errno::ENOENT
-          raise ArgumentError, error_message
-        end
-
-        def error_message
-          'You must specify a file.'
+          raise ArgumentError, 'You must specify a valid filepath.'
         end
 
         def root
