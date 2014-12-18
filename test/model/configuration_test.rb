@@ -93,7 +93,8 @@ describe Lotus::Model::Configuration do
           end
         end
 
-        assert configuration.instance_variable_get(:@mapping).is_a?(Proc)
+        mapper_config = configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
       end
     end
 
@@ -101,8 +102,8 @@ describe Lotus::Model::Configuration do
       it 'configures the global persistence mapper through block' do
         configuration.mapping 'test/fixtures/mapping'
 
-        mapping = configuration.instance_variable_get(:@mapping)
-        assert mapping.is_a?(Proc)
+        mapper_config = configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
       end
     end
 

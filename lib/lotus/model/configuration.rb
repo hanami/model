@@ -44,7 +44,7 @@ module Lotus
         @adapter = nil
         @adapter_config = nil
         @mapper = NullMapper.new
-        @mapping = nil
+        @mapper_config = nil
       end
 
       alias_method :unload!, :reset!
@@ -134,13 +134,7 @@ module Lotus
       #
       # @since 0.2.0
       def mapping(path=nil, &blk)
-        if block_given?
-          @mapping = blk
-        elsif path
-          @mapping = Lotus::Model::Config::Mapper.new(path).to_proc
-        else
-          raise Lotus::Model::InvalidMappingError.new('You must specify a block or a file.')
-        end
+        @mapper_config = Lotus::Model::Config::Mapper.new(path, &blk)
       end
 
       # Duplicate by copying the settings in a new instance.
@@ -165,7 +159,7 @@ module Lotus
       # @api private
       # @since 0.2.0
       def _build_mapper
-        @mapper = Lotus::Model::Mapper.new(&@mapping) if @mapping
+        @mapper = Lotus::Model::Mapper.new(&@mapper_config.to_proc) if @mapper_config
       end
 
       # @api private

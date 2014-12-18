@@ -108,8 +108,8 @@ describe Lotus::Model do
       end
 
       it 'configures the global persistence mapper' do
-        mapping = Lotus::Model.configuration.instance_variable_get(:@mapping)
-        assert mapping.is_a?(Proc)
+        mapper_config = Lotus::Model.configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
       end
     end
   end
