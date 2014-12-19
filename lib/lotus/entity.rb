@@ -96,7 +96,7 @@ module Lotus
       # Please notice that the required `id` attribute is automatically defined
       # and can be omitted in the arguments.
       #
-      # @param attributes [Set<Symbol>] a set of arbitrary attribute names
+      # @param attrs [Array<Symbol>] a set of arbitrary attribute names
       #
       # @since 0.2.0
       #

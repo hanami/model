@@ -150,9 +150,7 @@ Lotus::Model.configure do
       attribute :published,      Boolean
     end
   end
-end
-
-Lotus::Model.load!
+end.load!
 ```
 
 ## Persist

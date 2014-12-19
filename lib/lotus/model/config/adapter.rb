@@ -36,25 +36,26 @@ module Lotus
       #
       # @since 0.2.0
       class Adapter
-        # @return type [Symbol] the adapter name
+        # @return [Symbol] the adapter name
         #
         # @since 0.2.0
         attr_reader :type
 
-        # @return uri [String] the adapter URI
+        # @return [String] the adapter URI
         #
         # @since 0.2.0
         attr_reader :uri
 
-        # @return uri [String] the adapter class name
+        # @return [String] the adapter class name
         #
         # @since 0.2.0
         attr_reader :class_name
 
         # Initialize an adapter configuration instance
         #
-        # @param type [Symbol] adapter type name
-        # @param uri  [String] adapter URI
+        # @param options [Hash] configuration options
+        # @option options [Symbol] :type adapter type name
+        # @option options [String] :uri adapter URI
         #
         # @return [Lotus::Model::Config::Adapter] a new apdapter configuration's
         #   instance
