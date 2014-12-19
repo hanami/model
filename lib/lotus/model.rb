@@ -63,8 +63,8 @@ module Lotus
     #
     # Adapter MUST follow the convention in which adapter class is inflection of adapter name
     # The above example has name :sql, thus derived class will be `Lotus::Model::Adapters::SqlAdapter`
-    def self.configure(&block)
-      configuration.instance_eval(&block)
+    def self.configure(&blk)
+      configuration.instance_eval(&blk)
       self
     end
 
