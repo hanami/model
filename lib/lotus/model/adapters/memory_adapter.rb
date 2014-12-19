@@ -147,7 +147,7 @@ module Lotus
         # Executes the given block within a critical section.
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def synchronize
           @mutex.synchronize { yield }
         end

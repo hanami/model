@@ -8,21 +8,21 @@ module Lotus
     # Lotus::Model has its own global configuration that can be manipulated
     # via `Lotus::Model.configure`.
     #
-    # @since x.x.x
+    # @since 0.2.0
     class Configuration
 
       # The persistence mapper
       #
       # @return [Lotus::Model::Mapper]
       #
-      # @since x.x.x
+      # @since 0.2.0
       attr_reader :mapper
 
       # An adapter configuration template
       #
       # @return [Lotus::Model::Config::Adapter]
       #
-      # @since x.x.x
+      # @since 0.2.0
       attr_reader :adapter_config
 
       # Initialize a configuration instance
@@ -30,7 +30,7 @@ module Lotus
       # @return [Lotus::Model::Configuration] a new configuration's
       #   instance
       #
-      # @since x.x.x
+      # @since 0.2.0
       def initialize
         reset!
       end
@@ -39,7 +39,7 @@ module Lotus
       #
       # @return void
       #
-      # @since x.x.x
+      # @since 0.2.0
       def reset!
         @adapter = nil
         @adapter_config = nil
@@ -53,7 +53,7 @@ module Lotus
       #
       # @return void
       #
-      # @since x.x.x
+      # @since 0.2.0
       def load!
         _build_mapper
         _build_adapter
@@ -93,7 +93,7 @@ module Lotus
       #
       #   Lotus::Model.adapter_config
       #
-      # @since x.x.x
+      # @since 0.2.0
       def adapter(options = nil)
         if options.nil?
           @adapter_config
@@ -141,7 +141,7 @@ module Lotus
       #
       # @return [Lotus::Model::Configuration] a copy of the configuration
       #
-      # @since x.x.x
+      # @since 0.2.0
       # @api private
       def duplicate
         Configuration.new.tap do |c|
@@ -169,7 +169,7 @@ module Lotus
       end
 
       # @api private
-      # @since x.x.x
+      # @since 0.2.0
       #
       # NOTE Drop this manual check when Ruby 2.0 will not be supported anymore.
       #   Use keyword arguments instead.

@@ -27,7 +27,7 @@ module Lotus
       # @see http://www.ruby-doc.org/core/Marshal.html
       #
       # @api private
-      # @since x.x.x
+      # @since 0.2.0
       class FileSystemAdapter < MemoryAdapter
         # Default writing mode
         #
@@ -35,7 +35,7 @@ module Lotus
         #
         # @see http://ruby-doc.org/core/File/Constants.html
         #
-        # @since x.x.x
+        # @since 0.2.0
         # @api private
         WRITING_MODE = File::WRONLY|File::BINARY|File::CREAT
 
@@ -43,7 +43,7 @@ module Lotus
         #
         # @see http://en.wikipedia.org/wiki/Chmod
         #
-        # @since x.x.x
+        # @since 0.2.0
         # @api private
         CHMOD        = 0644
 
@@ -51,7 +51,7 @@ module Lotus
         #
         # @see https://tools.ietf.org/html/rfc3986
         #
-        # @since x.x.x
+        # @since 0.2.0
         # @api private
         FILE_SCHEME  = 'file:///'.freeze
 
@@ -65,7 +65,7 @@ module Lotus
         # @see Lotus::Model::Mapper
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def initialize(mapper, uri)
           super
           prepare(uri)
@@ -80,7 +80,7 @@ module Lotus
         # @return [Array] all the records
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def all(collection)
           _synchronize do
             read(collection)
@@ -97,7 +97,7 @@ module Lotus
         # @return [Object] the entity
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def find(collection, id)
           _synchronize do
             read(collection)
@@ -112,7 +112,7 @@ module Lotus
         # @return [Object] the first entity
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def first(collection)
           _synchronize do
             read(collection)
@@ -127,7 +127,7 @@ module Lotus
         # @return [Object] the last entity
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def last(collection)
           _synchronize do
             read(collection)
@@ -144,7 +144,7 @@ module Lotus
         # @return [Object] the entity
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def create(collection, entity)
           _synchronize do
             super
@@ -160,7 +160,7 @@ module Lotus
         # @return [Object] the entity
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def update(collection, entity)
           _synchronize do
             super
@@ -174,7 +174,7 @@ module Lotus
         # @param entity [#id] the entity to delete
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def delete(collection, entity)
           _synchronize do
             super
@@ -188,7 +188,7 @@ module Lotus
         # @param collection [Symbol] the target collection (it must be mapped).
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def clear(collection)
           _synchronize do
             super
@@ -207,7 +207,7 @@ module Lotus
         # @see Lotus::Model::Adapters::Memory::Query
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def query(collection, context = nil, &blk)
           # _synchronize do
             read(collection)
@@ -220,7 +220,7 @@ module Lotus
         # @return [Hash] per collection informations
         #
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def info
           @collections.each_with_object({}) do |(collection,_), result|
             result[collection] = query(collection).count
@@ -229,40 +229,40 @@ module Lotus
 
         private
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def prepare(uri)
           @root = Pathname.new(uri.sub(FILE_SCHEME, ''))
           @root.mkpath
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def _synchronize
           @_mutex.synchronize { yield }
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def write(collection)
           path = @root.join("#{ collection }")
           path.open(WRITING_MODE, CHMOD) {|f| f.write _dump( @collections.fetch(collection) ) }
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def read(collection)
           path = @root.join("#{ collection }")
           @collections[collection] = _load(path.read) if path.exist?
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def _dump(contents)
           Marshal.dump(contents)
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.2.0
         def _load(contents)
           Marshal.load(contents)
         end
