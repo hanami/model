@@ -76,13 +76,13 @@ module Lotus
         #
         # @since x.x.x
         def build(mapper)
-          load_dependency
+          load_adapter
           instantiate_adapter(mapper)
         end
 
         private
 
-        def load_dependency
+        def load_adapter
           begin
             require "lotus/model/adapters/#{type}_adapter"
           rescue LoadError => e
