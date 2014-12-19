@@ -108,9 +108,8 @@ describe Lotus::Model do
       end
 
       it 'configures the global persistence mapper' do
-        collection = Lotus::Model.configuration.mapper.collection(:users)
-        collection.must_be_kind_of Lotus::Model::Mapping::Collection
-        collection.name.must_equal :users
+        mapper_config = Lotus::Model.configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
       end
     end
   end

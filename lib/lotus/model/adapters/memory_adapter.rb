@@ -49,7 +49,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def create(collection, entity)
-          @mutex.synchronize do
+          synchronize do
             entity.id = command(collection).create(entity)
             entity
           end
@@ -65,7 +65,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def update(collection, entity)
-          @mutex.synchronize do
+          synchronize do
             command(collection).update(entity)
           end
         end
@@ -78,7 +78,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def delete(collection, entity)
-          @mutex.synchronize do
+          synchronize do
             command(collection).delete(entity)
           end
         end
@@ -91,7 +91,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def clear(collection)
-          @mutex.synchronize do
+          synchronize do
             command(collection).clear
           end
         end
@@ -123,7 +123,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def query(collection, context = nil, &blk)
-          @mutex.synchronize do
+          synchronize do
             Memory::Query.new(_collection(collection), _mapped_collection(collection), &blk)
           end
         end
@@ -142,6 +142,14 @@ module Lotus
         # @since 0.1.0
         def _collection(name)
           @collections[name] ||= Memory::Collection.new(name, _identity(name))
+        end
+
+        # Executes the given block within a critical section.
+        #
+        # @api private
+        # @since 0.2.0
+        def synchronize
+          @mutex.synchronize { yield }
         end
       end
     end

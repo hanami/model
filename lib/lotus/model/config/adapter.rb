@@ -5,7 +5,7 @@ module Lotus
     module Config
       # Raised when an adapter class does not exist
       #
-      # @since x.x.x
+      # @since 0.2.0
       class AdapterNotFound < ::StandardError
         def initialize(adapter_name)
           super "Cannot find Lotus::Model adapter #{adapter_name}"
@@ -34,21 +34,21 @@ module Lotus
       # By convention, Lotus inflects type to find the adapter class
       # For example, if type is :sql, derived class will be `Lotus::Model::Adapters::SqlAdapter`
       #
-      # @since x.x.x
+      # @since 0.2.0
       class Adapter
         # @return type [Symbol] the adapter name
         #
-        # @since x.x.x
+        # @since 0.2.0
         attr_reader :type
 
         # @return uri [String] the adapter URI
         #
-        # @since x.x.x
+        # @since 0.2.0
         attr_reader :uri
 
         # @return uri [String] the adapter class name
         #
-        # @since x.x.x
+        # @since 0.2.0
         attr_reader :class_name
 
         # Initialize an adapter configuration instance
@@ -59,7 +59,7 @@ module Lotus
         # @return [Lotus::Model::Config::Adapter] a new apdapter configuration's
         #   instance
         #
-        # @since x.x.x
+        # @since 0.2.0
         def initialize(**options)
           @type = options[:type]
           @uri  = options[:uri]
@@ -74,7 +74,7 @@ module Lotus
         #
         # @see Lotus::Model::Adapters
         #
-        # @since x.x.x
+        # @since 0.2.0
         def build(mapper)
           load_dependency
           instantiate_adapter(mapper)

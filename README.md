@@ -55,6 +55,48 @@ Or install it yourself as:
 
 ## Usage
 
+This class provides a DSL to configure adapter, mapping and collection.
+
+```ruby
+require 'lotus/model'
+
+class User
+  include Lotus::Entity
+  attributes :name, :age
+end
+
+class UserRepository
+  include Lotus::Repository
+end
+
+Lotus::Model.configure do
+  adapter type: :sql, uri: 'postgres://localhost/database'
+
+  mapping do
+    collection :users do
+      entity      User
+      respository UserRepository
+
+      attribute :id,   Integer
+      attribute :name, String
+      attribute :age,  Integer
+    end
+  end
+end
+
+Lotus::Model.load!
+
+user = User.new(name: 'Luca', age: 32)
+user = UserRepository.create(user)
+
+puts user.id # => 1
+
+u = UserRepository.find(user.id)
+u == user # => true
+```
+
+## Concepts
+
 ### Entities
 
 An object that is defined by its identity.
@@ -107,6 +149,24 @@ If your object implements that interface then that object can be used as an Enti
 However, we suggest to implement this interface by including `Lotus::Entity`, in case that future versions of the framework will expand it.
 
 See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
+
+When a class extend an entity class, it will also *inherit* its mother's attributes.
+
+```ruby
+require 'lotus/model'
+
+class Article
+  include Lotus::Entity
+  attributes :name
+end
+
+class RareArticle < Article
+  attributes :price
+end
+```
+
+That is, `RareArticle`'s attributes carry over `:name` attribute from `Article`,
+thus is `:id, :name, :price`.
 
 ### Repositories
 
@@ -287,13 +347,47 @@ In the end, each call to `#attribute` associates the specified column with a cor
 
 For advanced mapping and legacy databases, please have a look at the API doc.
 
+**Known limitations**
+
+Please be noted there are limitations with inherited entities:
+
+```ruby
+require 'lotus/model'
+
+class Article
+  include Lotus::Entity
+  attributes :name
+end
+
+class RareArticle < Article
+  attributes :price
+end
+
+mapper = Lotus::Model::Mapper.new do
+  collection :articles do
+    entity Article
+
+    attribute :id,    Integer
+    attribute :name,  String
+    attribute :price, Integer
+  end
+end
+```
+
+In the example above, there are few problems:
+
+* `Article` could not be fetched because mapping could not map `price`.
+* Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
+the result is an `Article` not `RareArticle`.
+
 ### Adapter
 
 An adapter is a concrete implementation of persistence logic for a specific database.
-**Lotus::Model** is shipped with two adapters:
+**Lotus::Model** is shipped with three adapters:
 
   * SqlAdapter
   * MemoryAdapter
+  * FileSystemAdapter
 
 An adapter can be associated with one or multiple repositories.
 
@@ -340,30 +434,6 @@ Think of an adapter for Redis, it will probably employ different strategies to f
   end
   ```
 
-## Lotus::Model
-
-This class provides a DSL to configure adapter, mapping and collection.
-
-```ruby
-require 'lotus/model'
-
-Lotus::Model.configure do
-  adapter type: :sql, uri: 'postgres://localhost/database'
-
-  mapping do
-    collection :users do
-      entity User
-      respository UserRepository
-
-      attribute :id,   Integer
-      attribute :name, String
-    end
-  end
-end
-
-Lotus::Model.load!
-```
-
 ### Thread safety
 
 **Lotus::Model**'s is thread safe during the runtime, but it isn't during the loading process.
@@ -371,7 +441,7 @@ The mapper compiles some code internally, be sure to safely load it before your 
 
 ```ruby
 Mutex.new.synchronize do
-  mapper.load!
+  Lotus::Model.load!
 end
 ```
 

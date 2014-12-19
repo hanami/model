@@ -21,7 +21,7 @@ module Lotus
     # Error for invalid mapper configuration
     # It's raised when mapping is not configured correctly
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see Lotus::Configuration#mapping
     class InvalidMappingError < ::StandardError
@@ -70,7 +70,7 @@ module Lotus
 
     # Load the framework
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def self.load!
       configuration.load!
@@ -78,7 +78,7 @@ module Lotus
 
     # Unload the framework
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def self.unload!
       configuration.unload!
@@ -93,7 +93,7 @@ module Lotus
     #
     # @return [Module] a copy of Lotus::Model
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     #
     # @example Basic usage

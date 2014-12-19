@@ -120,7 +120,7 @@ module Lotus
         #
         # @raise [TypeError] if the argument can't be coerced
         #
-        # @since x.x.x
+        # @since 0.2.0
         #
         # @see http://rdoc.info/gems/lotus-utils/Lotus/Utils/Kernel#BigDecimal-class_method
         def self.BigDecimal(arg)
@@ -165,7 +165,7 @@ module Lotus
         #
         # @raise [TypeError] if the argument can't be coerced
         #
-        # @since x.x.x
+        # @since 0.2.0
         #
         # @see http://rdoc.info/gems/lotus-utils/Lotus/Utils/Kernel#Symbol-class_method
         def self.Symbol(arg)
