@@ -36,7 +36,7 @@ describe Lotus::Model::Config::Adapter do
       let(:config) { Lotus::Model::Config::Adapter.new(type: :redis, uri: SQLITE_CONNECTION_STRING) }
 
       it 'raises an error' do
-        config.stub(:load_dependency, nil) do
+        config.stub(:load_adapter, nil) do
           -> { config.build(mapper) }.must_raise(Lotus::Model::Config::AdapterNotFound)
         end
       end
