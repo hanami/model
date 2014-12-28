@@ -140,16 +140,22 @@ module Lotus
         if attrs.any?
           self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
 
+          attr_accessor *@attributes
+
           class_eval <<-END_EVAL, __FILE__, __LINE__
             def initialize(attributes = {})
-              attributes = Lotus::Utils::Attributes.new(attributes)
+              _attributes = Lotus::Utils::Attributes.new(attributes)
+
               #{@attributes.map do |a|
-                  "@#{a} = attributes.get(:#{a})"
-                 end.join("\n") }
+                "self.#{a} = _attributes.get(:#{a})"
+              end.join("\n") }
+
+              _attributes.to_h.each do |k, v|
+                public_send("\#{ k }=", v)
+              end
             end
           END_EVAL
 
-          attr_accessor *@attributes
         else
           @attributes ||= Set.new([:id])
         end
