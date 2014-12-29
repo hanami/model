@@ -8,7 +8,12 @@ describe Lotus::Entity do
 
     class Book
       include Lotus::Entity
-      attributes :title, :author, :published
+      attributes :title, :author
+      attr_writer :published
+
+      def published
+        @published || false
+      end
     end
 
     class NonFictionBook < Book
@@ -18,16 +23,10 @@ describe Lotus::Entity do
     class CoolNonFictionBook < NonFictionBook
       attributes :coolness
     end
-
-    class Camera
-      include Lotus::Entity
-      attributes :aperture
-      attr_accessor :analog
-    end
   end
 
   after do
-    [:Car, :Book, :NonFictionBook, :CoolNonFictionBook, :Camera].each do |const|
+    [:Car, :Book, :NonFictionBook, :CoolNonFictionBook].each do |const|
       Object.send(:remove_const, const)
     end
   end
@@ -82,27 +81,37 @@ describe Lotus::Entity do
         book.instance_variable_get(:@price).must_equal 50
         book.instance_variable_get(:@coolness).must_equal 'awesome'
       end
+
+      it "doesn't interfer with superclass attributes" do
+        book = Book.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: true, price: 34, coolness: true)
+
+        book.instance_variable_get(:@title).must_equal  'Good Math'
+        book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
+        book.instance_variable_get(:@published).must_equal true
+        book.instance_variable_get(:@price).must_be_nil
+        book.instance_variable_get(:@coolness).must_be_nil
+      end
     end
 
     describe 'with undefined attributes' do
       it 'has default accessor for id' do
-        camera = Camera.new
-        camera.must_respond_to :id
-        camera.must_respond_to :id=
+        book = Book.new
+        book.must_respond_to :id
+        book.must_respond_to :id=
       end
 
       it 'is able to initialize an entity without given attributes' do
-        camera = Camera.new
-        camera.analog.must_be_nil
+        book = Book.new
+        book.published.must_equal(false)
       end
 
       it 'is able to initialize an entity if it has the right accessors' do
-        camera = Camera.new(analog: true)
-        camera.analog.must_equal(true)
+        book = Book.new(published: true)
+        book.published.must_equal(true)
       end
 
       it "raises an error when the given attributes don't correspond to a known accessor" do
-        -> { Camera.new(digital: true) }.must_raise(NoMethodError)
+        -> { Book.new(signed: true) }.must_raise(NoMethodError)
       end
     end
   end
@@ -162,7 +171,7 @@ describe Lotus::Entity do
     end
 
     it 'returns an attributes hash' do
-      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false})
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë'})
     end
   end
 
