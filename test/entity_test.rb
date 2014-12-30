@@ -8,25 +8,25 @@ describe Lotus::Entity do
 
     class Book
       include Lotus::Entity
-      attributes :title, :author, :published
+      attributes :title, :author
+      attr_writer :published
+
+      def published
+        @published || false
+      end
     end
 
     class NonFictionBook < Book
-      attributes :price
+      attributes :price, :published
     end
 
     class CoolNonFictionBook < NonFictionBook
       attributes :coolness
     end
-
-    class Camera
-      include Lotus::Entity
-      attr_accessor :analog
-    end
   end
 
   after do
-    [:Car, :Book, :NonFictionBook, :CoolNonFictionBook, :Camera].each do |const|
+    [:Car, :Book, :NonFictionBook, :CoolNonFictionBook].each do |const|
       Object.send(:remove_const, const)
     end
   end
@@ -63,12 +63,6 @@ describe Lotus::Entity do
         book.instance_variable_get(:@published).must_equal false
       end
 
-      it 'ignores unknown attributes' do
-        book = Book.new(unknown: 'x')
-
-        book.instance_variable_get(:@unknown).must_be_nil
-      end
-
       it 'accepts given attributes for subclass' do
         book = NonFictionBook.new(title: 'Refactoring', author: 'Martin Fowler', published: false, price: 50)
 
@@ -88,36 +82,37 @@ describe Lotus::Entity do
         book.instance_variable_get(:@coolness).must_equal 'awesome'
       end
 
-      it "doesn't interfer with superclass attributes" do
-        book = Book.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: false, price: 34, coolness: true)
+      it "doesn't override custom getter/writer of superclass" do
+        book = NonFictionBook.new
+        book.published.must_equal false
+      end
 
-        book.instance_variable_get(:@title).must_equal  'Good Math'
-        book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
-        book.instance_variable_get(:@published).must_equal false
-        book.instance_variable_get(:@price).must_be_nil
-        book.instance_variable_get(:@coolness).must_be_nil
+      it 'raises an error when the given superclass attributes does not correspond' do
+        exception = -> { CoolNonFictionBook.new(signed: true) }.must_raise(NoMethodError)
+        exception.message.must_include "undefined method `signed=' for #<CoolNonFictionBook:"
       end
     end
 
     describe 'with undefined attributes' do
       it 'has default accessor for id' do
-        camera = Camera.new
-        camera.must_respond_to :id
-        camera.must_respond_to :id=
+        book = Book.new
+        book.must_respond_to :id
+        book.must_respond_to :id=
       end
 
       it 'is able to initialize an entity without given attributes' do
-        camera = Camera.new
-        camera.analog.must_be_nil
+        book = Book.new
+        book.published.must_equal(false)
       end
 
       it 'is able to initialize an entity if it has the right accessors' do
-        camera = Camera.new(analog: true)
-        camera.analog.must_equal(true)
+        book = Book.new(published: true)
+        book.published.must_equal(true)
       end
 
-      it "raises an error when the given attributes don't correspond to a known accessor" do
-        -> { Camera.new(digital: true) }.must_raise(NoMethodError)
+      it 'raises an error when the given attributes do not correspond to a known accessor' do
+        exception = -> { Book.new(signed: true) }.must_raise(NoMethodError)
+        exception.message.must_include "undefined method `signed=' for #<Book:"
       end
     end
   end
@@ -177,7 +172,7 @@ describe Lotus::Entity do
     end
 
     it 'returns an attributes hash' do
-      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false})
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë'})
     end
   end
 
