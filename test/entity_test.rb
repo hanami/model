@@ -17,7 +17,7 @@ describe Lotus::Entity do
     end
 
     class NonFictionBook < Book
-      attributes :price
+      attributes :price, :published
     end
 
     class CoolNonFictionBook < NonFictionBook
@@ -82,14 +82,14 @@ describe Lotus::Entity do
         book.instance_variable_get(:@coolness).must_equal 'awesome'
       end
 
-      it "doesn't interfer with superclass attributes" do
-        book = Book.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: true, price: 34, coolness: true)
+      it "doesn't override custom getter/writer of superclass" do
+        book = NonFictionBook.new
+        book.published.must_equal false
+      end
 
-        book.instance_variable_get(:@title).must_equal  'Good Math'
-        book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
-        book.instance_variable_get(:@published).must_equal true
-        book.instance_variable_get(:@price).must_be_nil
-        book.instance_variable_get(:@coolness).must_be_nil
+      it 'raises an error when the given superclass attributes does not correspond' do
+        exception = -> { CoolNonFictionBook.new(signed: true) }.must_raise(NoMethodError)
+        exception.message.must_include "undefined method `signed=' for #<CoolNonFictionBook:"
       end
     end
 
@@ -110,8 +110,9 @@ describe Lotus::Entity do
         book.published.must_equal(true)
       end
 
-      it "raises an error when the given attributes don't correspond to a known accessor" do
-        -> { Book.new(signed: true) }.must_raise(NoMethodError)
+      it 'raises an error when the given attributes do not correspond to a known accessor' do
+        exception = -> { Book.new(signed: true) }.must_raise(NoMethodError)
+        exception.message.must_include "undefined method `signed=' for #<Book:"
       end
     end
   end
