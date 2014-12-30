@@ -143,21 +143,6 @@ module Lotus
           self.attributes.merge(attrs)
 
           attr_accessor *self.attributes
-
-          class_eval <<-END_EVAL, __FILE__, __LINE__
-            def initialize(attributes = {})
-              _attributes = Lotus::Utils::Attributes.new(attributes)
-
-              #{self.attributes.map do |a|
-                "self.#{a} = _attributes.get(:#{a})"
-              end.join("\n") }
-
-              # TODO: remove `to_h` once lotus/utils/issues/48 is resolved
-              _attributes.to_h.to_h.each do |k, v|
-                public_send("\#{ k }=", v)
-              end
-            end
-          END_EVAL
         else
           @attributes ||= Set.new([:id])
         end
