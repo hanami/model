@@ -63,12 +63,6 @@ describe Lotus::Entity do
         book.instance_variable_get(:@published).must_equal false
       end
 
-      it 'ignores unknown attributes' do
-        book = Book.new(unknown: 'x')
-
-        book.instance_variable_get(:@unknown).must_be_nil
-      end
-
       it 'accepts given attributes for subclass' do
         book = NonFictionBook.new(title: 'Refactoring', author: 'Martin Fowler', published: false, price: 50)
 
@@ -89,13 +83,12 @@ describe Lotus::Entity do
       end
 
       it "doesn't interfer with superclass attributes" do
-        book = Book.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: false, price: 34, coolness: true)
+        book = CoolNonFictionBook.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: false, coolness: true)
 
         book.instance_variable_get(:@title).must_equal  'Good Math'
         book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
         book.instance_variable_get(:@published).must_equal false
-        book.instance_variable_get(:@price).must_be_nil
-        book.instance_variable_get(:@coolness).must_be_nil
+        book.instance_variable_get(:@coolness).must_equal true
       end
     end
 
