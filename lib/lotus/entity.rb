@@ -167,7 +167,8 @@ module Lotus
     # @see .attributes
     def initialize(attributes = {})
       attributes.each do |k, v|
-        public_send("#{ k }=", v)
+        setter = "#{ k }="
+        public_send(setter, v) if respond_to?(setter)
       end
     end
 

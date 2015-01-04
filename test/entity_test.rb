@@ -63,6 +63,11 @@ describe Lotus::Entity do
         book.instance_variable_get(:@published).must_equal false
       end
 
+      it 'ignores unknown attributes' do
+        book = Book.new(unknown: 'x')
+        book.instance_variable_get(:@unknown).must_be_nil
+      end
+
       it 'accepts given attributes for subclass' do
         book = NonFictionBook.new(title: 'Refactoring', author: 'Martin Fowler', published: false, price: 50)
 
@@ -110,8 +115,10 @@ describe Lotus::Entity do
         camera.analog.must_equal(true)
       end
 
-      it "raises an error when the given attributes don't correspond to a known accessor" do
-        -> { Camera.new(digital: true) }.must_raise(NoMethodError)
+      it "ignores given attributes that don't correspond to known accessors" do
+        camera = Camera.new(digital: true)
+        camera.wont_respond_to :digital
+        camera.wont_respond_to :digital=
       end
     end
   end
