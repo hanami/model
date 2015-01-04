@@ -87,15 +87,14 @@ describe Lotus::Entity do
         book.instance_variable_get(:@coolness).must_equal 'awesome'
       end
 
-      # TODO: this test does not test the correct behaviour - need to get it fixed
-      # it "doesn't interfer with superclass attributes" do
-      #   book = CoolNonFictionBook.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: false, coolness: true)
+      it "doesn't interfer with superclass attributes" do
+        book = CoolNonFictionBook.new(title: "Good Math", author: "Mark C. Chu-Carroll", published: false, coolness: true)
 
-      #   book.instance_variable_get(:@title).must_equal  'Good Math'
-      #   book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
-      #   book.instance_variable_get(:@published).must_equal false
-      #   book.instance_variable_get(:@coolness).must_equal true
-      # end
+        book.instance_variable_get(:@title).must_equal  'Good Math'
+        book.instance_variable_get(:@author).must_equal 'Mark C. Chu-Carroll'
+        book.instance_variable_get(:@published).must_equal false
+        book.instance_variable_get(:@coolness).must_equal true
+      end
     end
 
     describe 'with undefined attributes' do
