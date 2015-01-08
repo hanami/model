@@ -11,6 +11,9 @@ module Lotus
       # This is database independent. It can work with SQL, document, and even
       # with key/value stores.
       #
+      # The table name is derived for the identifier if no table name is
+      # explictly given by using option :as => :table_name
+      #
       # @since 0.1.0
       #
       # @see Lotus::Model::Mapper
@@ -18,14 +21,26 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   mapper = Lotus::Model::Mapper.new do
-      #     collection :users do
-      #       entity User
+      #   collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer) do
+      #     entity User
       #
-      #       attribute :id,   Integer
-      #       attribute :name, String
-      #     end
+      #     attribute :id,   Integer
+      #     attribute :name, String
       #   end
+      #
+      #   collection.table_name #=> :users
+      #
+      # @example Custom table name
+      #   require 'lotus/model'
+      #
+      #   collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::Coercer, as: :clients) do
+      #     entity User
+      #
+      #     attribute :id,   Integer
+      #     attribute :name, String
+      #   end
+      #
+      #   collection.table_name #=> :clients
       class Collection
         # Repository name suffix
         #
@@ -60,6 +75,12 @@ module Lotus
         # @api private
         attr_reader :name
 
+        # @attr_reader table_name [Symbol] the name of the database table
+        #
+        # @since 0.2.0
+        # @api private
+        attr_reader :table_name
+
         # @attr_reader coercer_class [Class] the coercer class
         #
         # @since 0.1.0
@@ -80,17 +101,22 @@ module Lotus
 
         # Instantiate a new collection
         #
-        # @param name [Symbol] the name of the mapped collection. If used with a
-        #   SQL database it's the table name.
+        # @param name [Symbol] the identifier of the mapped collection. If used with a
+        #   SQL database and :as option is not explicitly given, it's the table name
         #
         # @param coercer_class [Class] the coercer class
+        #
+        # @param options [Hash] the options ofthe mapped collection. The :as => :table_name
+        #   option sets the table name
+        #
         # @param blk [Proc] the block that maps the attributes of that collection.
         #
         # @since 0.1.0
         #
         # @see Lotus::Model::Mapper#collection
-        def initialize(name, coercer_class, &blk)
+        def initialize(name, coercer_class, options={}, &blk)
           @name = name
+          @table_name = options.fetch(:as) { @name }
           @coercer_class = coercer_class
           @attributes = {}
           instance_eval(&blk) if block_given?
