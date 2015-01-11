@@ -162,6 +162,18 @@ module Lotus
         def query(collection, &blk)
           raise NotImplementedError
         end
+
+        # Create a transaction
+        # Only supported by SqlAdapter
+        #
+        # @param options [Hash] options for transaction
+        #
+        # @see Lotus::Model::Adapters::SqlAdapter#transaction
+        #
+        # @since x.x.x
+        def transaction(options = {})
+          yield
+        end
       end
     end
   end

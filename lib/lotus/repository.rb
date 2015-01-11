@@ -510,6 +510,75 @@ module Lotus
         @adapter.clear(collection)
       end
 
+      # Create a transaction
+      #
+      # @param options [Hash] options for transaction
+      #
+      # @see Lotus::Model::Adapters::SqlAdapter#transaction
+      #
+      # @since x.x.x
+      #
+      # @example
+      #   require 'lotus/model'
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #   end
+      #
+      #   article = Article.new title: 'Introducing transactions', body: 'lorem ipsum'
+      #
+      #   ArticleRepository.transaction do
+      #     ArticleRepository.create(article)
+      #   end
+      #
+      # @example
+      #   require 'lotus/model'
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #   end
+      #
+      #   article = Article.new title: 'Introducing transactions', body: 'lorem ipsum'
+      #
+      #   ArticleRepository.transaction(rollback: :always) do
+      #     ArticleRepository.create(article)
+      #   end # ROLLBACK
+      #   # no exception raised
+      #
+      # @example
+      #   require 'lotus/model'
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #   end
+      #
+      #   article = Article.new title: 'Introducing transactions', body: 'lorem ipsum'
+      #
+      #   ArticleRepository.transaction(rollback: :reraise) do
+      #     raise Exception
+      #   end # ROLLBACK
+      #   # Exception raised
+      def transaction(options = {})
+        @adapter.transaction(options) do
+          yield
+        end
+      end
+
       private
       # Fabricates a query and yields the given block to access the low level
       # APIs exposed by the query itself.
