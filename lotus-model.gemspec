@@ -6,8 +6,8 @@ require 'lotus/model/version'
 Gem::Specification.new do |spec|
   spec.name          = 'lotus-model'
   spec.version       = Lotus::Model::VERSION
-  spec.authors       = ['Luca Guidi']
-  spec.email         = ['me@lucaguidi.com']
+  spec.authors       = ['Luca Guidi', 'Trung Lê']
+  spec.email         = ['me@lucaguidi.com', 'trung.le@ruby-journal.com']
   spec.summary       = %q{A persistence layer for Lotus}
   spec.description   = %q{A persistence framework with entities, repositories, data mapper and query objects}
   spec.homepage      = 'http://lotusrb.org'
