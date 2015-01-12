@@ -7,7 +7,8 @@ if !ENV['TRAVIS']
 else
 end
 
-gem 'lotus-utils', require: false, github: 'lotus/utils', branch: '0.3.x'
+gem 'lotus-utils',       require: false, github: 'lotus/utils',       branch: '0.3.x'
+gem 'lotus-validations', require: false, github: 'lotus/validations', branch: '0.2.x'
 
 gem 'sqlite3',   require: false
 gem 'simplecov', require: false
