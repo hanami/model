@@ -1,6 +1,10 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.2.1 - 2015-01-12
+### Added
+- [Luca Guidi] Compatibility between Lotus::Entity and Lotus::Validations
+
 ## v0.2.0 - 2014-12-23
 ### Added
 - [Luca Guidi] Introduced file system adapter

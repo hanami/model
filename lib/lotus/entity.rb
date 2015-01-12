@@ -79,8 +79,10 @@ module Lotus
     #     include Lotus::Entity
     #   end
     def self.included(base)
-      base.extend ClassMethods
-      base.send :attr_accessor, :id
+      base.class_eval do
+        extend ClassMethods
+        attributes :id
+      end
     end
 
     module ClassMethods
@@ -138,28 +140,31 @@ module Lotus
       #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
       def attributes(*attrs)
         if attrs.any?
-          self.attributes.merge Lotus::Utils::Kernel.Array(attrs)
+          attrs = Lotus::Utils::Kernel.Array(attrs)
+          self.attributes.merge attrs
 
-          class_eval <<-END_EVAL, __FILE__, __LINE__
-            def initialize(attributes = {})
-              attributes = Lotus::Utils::Attributes.new(attributes)
-              #{@attributes.map do |a|
-                  "@#{a} = attributes.get(:#{a})"
-                 end.join("\n") }
-            end
-          END_EVAL
-
-          attr_accessor *@attributes
+          attrs.each do |attr|
+            attr_accessor(attr) if define_attribute?(attr)
+          end
         else
-          @attributes ||= Set.new([:id])
+          @attributes ||= Set.new
         end
+      end
+
+      # Check if attr_reader define the given attribute
+      #
+      # @since x.x.x
+      # @api private
+      def define_attribute?(name)
+        name == :id ||
+          !instance_methods.include?(name)
       end
 
       protected
 
       # @see Class#inherited
       def inherited(subclass)
-        subclass.attributes *attributes
+        subclass.attributes(*attributes)
         super
       end
     end
@@ -177,7 +182,8 @@ module Lotus
     # @see .attributes
     def initialize(attributes = {})
       attributes.each do |k, v|
-        public_send("#{ k }=", v)
+        setter = "#{ k }="
+        public_send(setter, v) if respond_to?(setter)
       end
     end
 
