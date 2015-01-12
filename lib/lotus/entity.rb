@@ -81,8 +81,7 @@ module Lotus
     def self.included(base)
       base.class_eval do
         extend ClassMethods
-        # attr_accessor :id
-        attributes    :id
+        attributes :id
       end
     end
 
