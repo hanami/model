@@ -253,7 +253,6 @@ module Lotus
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
         @adapter.persist(collection, entity)
-        entity
       end
 
       # Creates a record in the database for the given entity.
@@ -287,8 +286,6 @@ module Lotus
         unless entity.id
           @adapter.create(collection, entity)
         end
-
-        entity
       end
 
       # Updates a record in the database corresponding to the given entity.
@@ -339,8 +336,6 @@ module Lotus
         else
           raise Lotus::Model::NonPersistedEntityError
         end
-
-        entity
       end
 
       # Deletes a record in the database corresponding to the given entity.

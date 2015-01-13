@@ -33,9 +33,10 @@ module Lotus
           # @api private
           # @since 0.1.0
           def create(entity)
-            @dataset.create(
-              _serialize(entity)
-            )
+            serialized_entity            = _serialize(entity)
+            serialized_entity[_identity] = @dataset.create(serialized_entity)
+
+            _deserialize(serialized_entity)
           end
 
           # Updates the corresponding record for the given entity.
@@ -47,9 +48,10 @@ module Lotus
           # @api private
           # @since 0.1.0
           def update(entity)
-            @dataset.update(
-              _serialize(entity)
-            )
+            serialized_entity = _serialize(entity)
+            @dataset.update(serialized_entity)
+
+            _deserialize(serialized_entity)
           end
 
           # Deletes the corresponding record for the given entity.
@@ -83,6 +85,26 @@ module Lotus
           # @since 0.1.0
           def _serialize(entity)
             @collection.serialize(entity)
+          end
+
+          # Deserialize the given entity after it was persisted in the database.
+          #
+          # @return [Lotus::Entity] the deserialized entity
+          #
+          # @api private
+          # @since x.x.x
+          def _deserialize(entity)
+            @collection.deserialize([entity]).first
+          end
+
+          # Name of the identity column in database
+          #
+          # @return [Symbol] the identity name
+          #
+          # @api private
+          # @since x.x.x
+          def _identity
+            @collection.identity
           end
         end
       end
