@@ -147,8 +147,7 @@ module Lotus
         # @since 0.2.0
         def create(collection, entity)
           _synchronize do
-            super
-            write(collection)
+            super.tap { write(collection) }
           end
         end
 
@@ -163,8 +162,7 @@ module Lotus
         # @since 0.2.0
         def update(collection, entity)
           _synchronize do
-            super
-            write(collection)
+            super.tap { write(collection) }
           end
         end
 

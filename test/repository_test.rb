@@ -10,8 +10,9 @@ describe Lotus::Repository do
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
   {
-    memory: [Lotus::Model::Adapters::MemoryAdapter, nil, MAPPER],
-    sql:    [Lotus::Model::Adapters::SqlAdapter, SQLITE_CONNECTION_STRING, MAPPER]
+    memory:      [Lotus::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
+    file_system: [Lotus::Model::Adapters::FileSystemAdapter, FILE_SYSTEM_CONNECTION_STRING, MAPPER],
+    sql:         [Lotus::Model::Adapters::SqlAdapter,        SQLITE_CONNECTION_STRING,      MAPPER]
   }.each do |adapter_name, (adapter,uri,mapper)|
     describe "with #{ adapter_name } adapter" do
       before do
@@ -34,64 +35,78 @@ describe Lotus::Repository do
 
       describe '.persist' do
         describe 'when passed a non-persisted entity' do
-          let(:user) { User.new(name: 'S') }
+          let(:user) { User.new(name: 'S', age: '3') }
 
           it 'should return that entity' do
-            UserRepository.persist(user).must_equal(user)
+            persisted_user = UserRepository.persist(user)
+
+            persisted_user.id.wont_be_nil
+            persisted_user.name.must_equal(user.name)
+            persisted_user.age.must_equal(user.age.to_i)
+          end
+
+          it 'should coerce attributes' do
+            persisted_user = UserRepository.persist(user)
+            persisted_user.age.must_equal(3)
           end
         end
 
         describe 'when passed a persisted entity' do
-          let(:user) { User.new(name: 'S') }
-          let(:persisted_user) { UserRepository.persist(user) }
+          let(:user)                   { UserRepository.create(User.new(name: 'S')) }
+          let(:already_persisted_user) { UserRepository.persist(user) }
 
           it 'should return that entity' do
-            UserRepository.persist(persisted_user).must_equal(user)
+            UserRepository.persist(already_persisted_user).must_equal(user)
           end
         end
 
         describe 'when non persisted' do
           before do
-            UserRepository.persist(user)
+            @user = UserRepository.persist(user)
           end
 
-          let(:user) { User.new(name: 'S') }
+          let(:user) { User.new(name: 'S', age: '3') }
 
           it 'is created' do
             id = UserRepository.last.id
-            UserRepository.find(id).must_equal(user)
+            UserRepository.find(id).must_equal(@user)
+          end
+
+          it 'should coerce attributes' do
+            persisted_user = UserRepository.persist(user)
+            persisted_user.age.must_equal(3)
           end
         end
 
         describe 'when already persisted' do
           before do
-            UserRepository.create(user1)
+            @user1 = UserRepository.create(user1)
 
-            user1.name = 'Luke'
-            UserRepository.persist(user1)
+            @user1.name = 'Luke'
+            UserRepository.persist(@user1)
           end
 
-          let(:id) { user1.id }
-
           it 'is updated' do
-            UserRepository.find(id).must_equal(user1)
+            UserRepository.find(@user1.id).must_equal(@user1)
           end
         end
       end
 
       describe '.create' do
         before do
-          UserRepository.create(user1)
-          UserRepository.create(user2)
+          @users = [
+            UserRepository.create(user1),
+            UserRepository.create(user2)
+          ]
         end
 
         it 'persist entities' do
-          UserRepository.all.must_equal(users)
+          UserRepository.all.must_equal(@users)
         end
 
         it 'creates different kind of entities' do
-          ArticleRepository.create(article1)
-          ArticleRepository.all.must_equal([article1])
+          result = ArticleRepository.create(article1)
+          ArticleRepository.all.must_equal([result])
         end
 
         it 'does nothing when already persisted' do
@@ -104,18 +119,16 @@ describe Lotus::Repository do
 
       describe '.update' do
         before do
-          UserRepository.create(user1)
+          @user1 = UserRepository.create(user1)
         end
-
-        let(:id) { user1.id }
 
         it 'updates entities' do
           user = User.new(name: 'Luca')
-          user.id = id
+          user.id = @user1.id
 
           UserRepository.update(user)
 
-          u = UserRepository.find(id)
+          u = UserRepository.find(@user1.id)
           u.name.must_equal('Luca')
         end
 
@@ -126,14 +139,14 @@ describe Lotus::Repository do
 
       describe '.delete' do
         before do
-          UserRepository.create(user)
-          UserRepository.delete(user)
+          @user = UserRepository.create(user)
+          UserRepository.delete(@user)
         end
 
         let(:user) { User.new(name: 'D') }
 
         it 'delete entity' do
-          UserRepository.all.wont_include(user)
+          UserRepository.all.wont_include(@user)
         end
 
         it 'raises error when the given entity is not persisted' do
@@ -150,12 +163,14 @@ describe Lotus::Repository do
 
         describe 'with data' do
           before do
-            UserRepository.create(user1)
-            UserRepository.create(user2)
+            @users = [
+              UserRepository.create(user1),
+              UserRepository.create(user2)
+            ]
           end
 
           it 'returns all the entities' do
-            UserRepository.all.must_equal(users)
+            UserRepository.all.must_equal(@users)
           end
         end
       end
@@ -175,10 +190,10 @@ describe Lotus::Repository do
               end
             end
 
-            UserRepository.create(user1)
-            UserRepository.create(user2)
+            @user1 = UserRepository.create(user1)
+            @user2 = UserRepository.create(user2)
 
-            ArticleRepository.create(article1)
+            @article1 = ArticleRepository.create(article1)
           end
 
           after do
@@ -186,25 +201,25 @@ describe Lotus::Repository do
           end
 
           it 'returns the entity associated with the given id' do
-            UserRepository.find(user1.id).must_equal(user1)
+            UserRepository.find(@user1.id).must_equal(@user1)
           end
 
           it 'accepts a string as argument' do
-            UserRepository.find(user2.id.to_s).must_equal(user2)
+            UserRepository.find(@user2.id.to_s).must_equal(@user2)
           end
 
           it 'accepts an object that can be coerced to integer' do
-            id = TestPrimaryKey.new(user2.id)
-            UserRepository.find(id).must_equal(user2)
+            id = TestPrimaryKey.new(@user2.id)
+            UserRepository.find(id).must_equal(@user2)
           end
 
           it 'coerces attributes as indicated by the mapper' do
-            result = ArticleRepository.find(article1.id)
+            result = ArticleRepository.find(@article1.id)
             result.comments_count.must_be_kind_of(Integer)
           end
 
           it "doesn't assign a value to unmapped attributes" do
-            ArticleRepository.find(article1.id).unmapped_attribute.must_be_nil
+            ArticleRepository.find(@article1.id).unmapped_attribute.must_be_nil
           end
 
           it "returns nil when the given id isn't associated with any entity" do
@@ -222,12 +237,12 @@ describe Lotus::Repository do
 
         describe 'with data' do
           before do
-            UserRepository.create(user1)
+            @user1 = UserRepository.create(user1)
             UserRepository.create(user2)
           end
 
           it 'returns first record' do
-            UserRepository.first.must_equal(user1)
+            UserRepository.first.must_equal(@user1)
           end
         end
       end
@@ -242,11 +257,11 @@ describe Lotus::Repository do
         describe 'with data' do
           before do
             UserRepository.create(user1)
-            UserRepository.create(user2)
+            @user2 = UserRepository.create(user2)
           end
 
           it 'returns last record' do
-            UserRepository.last.must_equal(user2)
+            UserRepository.last.must_equal(@user2)
           end
         end
       end
@@ -274,25 +289,27 @@ describe Lotus::Repository do
 
       describe 'querying' do
         before do
-          UserRepository.create(user1)
-          ArticleRepository.create(article1)
-          ArticleRepository.create(article2)
+          @user1    = UserRepository.create(user1)
+          article1.user_id = article2.user_id = @user1.id
+
+          @article1 = ArticleRepository.create(article1)
+          @article2 = ArticleRepository.create(article2)
           ArticleRepository.create(article3)
         end
 
         it 'defines custom finders' do
-          actual = ArticleRepository.by_user(user1)
-          actual.all.must_equal [article1, article2]
+          actual = ArticleRepository.by_user(@user1)
+          actual.all.must_equal [@article1, @article2]
         end
 
         if adapter_name == :sql
           it 'combines queries' do
-            actual = ArticleRepository.rank_by_user(user1)
-            actual.all.must_equal [article2, article1]
+            actual = ArticleRepository.rank_by_user(@user1)
+            actual.all.must_equal [@article2, @article1]
           end
 
           it 'negates a query' do
-            actual = ArticleRepository.not_by_user(user1)
+            actual = ArticleRepository.not_by_user(@user1)
             actual.all.must_equal []
           end
         end
