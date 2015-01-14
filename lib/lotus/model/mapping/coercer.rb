@@ -65,9 +65,6 @@ module Lotus
             end
 
             def from_record(record)
-            if $debug == true
-                raise Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Model::Mapping::Coercions.#{klass}(record[:#{mapped}])"}.join(',') }].inspect
-                end
               #{ @collection.entity }.new(
                 Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Model::Mapping::Coercions.#{klass}(record[:#{mapped}])"}.join(',') }]
               )
