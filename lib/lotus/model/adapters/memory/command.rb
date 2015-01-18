@@ -92,7 +92,7 @@ module Lotus
           # @return [Lotus::Entity] the deserialized entity
           #
           # @api private
-          # @since x.x.x
+          # @since 0.2.2
           def _deserialize(entity)
             @collection.deserialize([entity]).first
           end
@@ -102,7 +102,7 @@ module Lotus
           # @return [Symbol] the identity name
           #
           # @api private
-          # @since x.x.x
+          # @since 0.2.2
           def _identity
             @collection.identity
           end
