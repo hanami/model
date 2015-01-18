@@ -58,9 +58,9 @@ module Lotus
           instance_eval %{
             def to_record(entity)
               if entity.id
-                Hash[#{ @collection.attributes.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]
+                Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
               else
-                Hash[#{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(_,mapped)| ":#{mapped},entity.#{name}"}.join(',') }]
+                Hash[#{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
               end
             end
 

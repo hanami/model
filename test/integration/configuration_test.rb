@@ -31,7 +31,7 @@ describe 'Configuration DSL' do
     it 'add the entity to repositories' do
       @user_counter = UserRepository.all.size
 
-      UserRepository.create(@user)
+      @user = UserRepository.create(@user)
 
       users = UserRepository.all
       users.size.must_equal(@user_counter + 1)

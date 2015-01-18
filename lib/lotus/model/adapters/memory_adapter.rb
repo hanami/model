@@ -50,8 +50,7 @@ module Lotus
         # @since 0.1.0
         def create(collection, entity)
           synchronize do
-            entity.id = command(collection).create(entity)
-            entity
+            command(collection).create(entity)
           end
         end
 

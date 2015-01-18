@@ -55,7 +55,10 @@ module Lotus
           # @api private
           # @since 0.1.0
           def insert(entity)
-            super _serialize(entity)
+            serialized_entity            = _serialize(entity)
+            serialized_entity[_identity] = super(serialized_entity)
+
+            _deserialize(serialized_entity)
           end
 
           # Filters the current scope with a `limit` directive.
@@ -178,7 +181,10 @@ module Lotus
           # @api private
           # @since 0.1.0
           def update(entity)
-            super _serialize(entity)
+            serialized_entity = _serialize(entity)
+            super(serialized_entity)
+
+            _deserialize(serialized_entity)
           end
 
           # Resolves self by fetching the records from the database and
@@ -201,6 +207,26 @@ module Lotus
           # @since 0.1.0
           def _serialize(entity)
             @mapped_collection.serialize(entity)
+          end
+
+          # Deserialize the given entity after it was persisted in the database.
+          #
+          # @return [Lotus::Entity] the deserialized entity
+          #
+          # @api private
+          # @since 0.2.2
+          def _deserialize(entity)
+            @mapped_collection.deserialize([entity]).first
+          end
+
+          # Name of the identity column in database
+          #
+          # @return [Symbol] the identity name
+          #
+          # @api private
+          # @since 0.2.2
+          def _identity
+            @mapped_collection.identity
           end
         end
       end

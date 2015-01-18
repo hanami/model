@@ -1,6 +1,10 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.2.2 - 2015-01-18
+### Added
+- [Luca Guidi] Coerce entities when persisted
+
 ## v0.2.1 - 2015-01-12
 ### Added
 - [Luca Guidi] Compatibility between Lotus::Entity and Lotus::Validations

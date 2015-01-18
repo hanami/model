@@ -58,10 +58,9 @@ module Lotus
         # @api private
         # @since 0.1.0
         def create(collection, entity)
-          entity.id = command(
-                        query(collection)
-                      ).create(entity)
-          entity
+          command(
+            query(collection)
+          ).create(entity)
         end
 
         # Updates a record in the database corresponding to the given entity.
