@@ -362,8 +362,10 @@ describe Lotus::Repository do
         it 'rollback: :reraise option' do
           ArticleRepository.all.size.must_equal 1
           -> { ArticleRepository.transaction(rollback: :reraise) do
+            ArticleRepository.create(article2)
             raise Exception
           end }.must_raise Exception
+          ArticleRepository.all.size.must_equal 1
         end
       end
     end

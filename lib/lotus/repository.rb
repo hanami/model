@@ -505,15 +505,25 @@ module Lotus
         @adapter.clear(collection)
       end
 
-      # Create a transaction
+      # Wraps the given block in a transaction.
+      #
+      # For performance reasons the block isn't in the signature of the method,
+      # but it's yielded at the lower level.
+      #
+      # Please note that it's only supported by some databases.
+      # For this reason, the accepted options may be different from adapter to
+      # adapter.
+      #
+      # For advanced scenarios, please check the documentation of each adapter.
       #
       # @param options [Hash] options for transaction
       #
       # @see Lotus::Model::Adapters::SqlAdapter#transaction
+      # @see Lotus::Model::Adapters::MemoryAdapter#transaction
       #
       # @since x.x.x
       #
-      # @example
+      # @example Basic usage with SQL adapter
       #   require 'lotus/model'
       #
       #   class Article
@@ -525,49 +535,13 @@ module Lotus
       #     include Lotus::Repository
       #   end
       #
-      #   article = Article.new title: 'Introducing transactions', body: 'lorem ipsum'
+      #   article = Article.new(title: 'Introducing transactions',
+      #     body: 'lorem ipsum')
       #
       #   ArticleRepository.transaction do
-      #     ArticleRepository.create(article)
+      #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
+      #     # !!! ROLLBACK !!!
       #   end
-      #
-      # @example
-      #   require 'lotus/model'
-      #
-      #   class Article
-      #     include Lotus::Entity
-      #     attributes :title, :body
-      #   end
-      #
-      #   class ArticleRepository
-      #     include Lotus::Repository
-      #   end
-      #
-      #   article = Article.new title: 'Introducing transactions', body: 'lorem ipsum'
-      #
-      #   ArticleRepository.transaction(rollback: :always) do
-      #     ArticleRepository.create(article)
-      #   end # ROLLBACK
-      #   # no exception raised
-      #
-      # @example
-      #   require 'lotus/model'
-      #
-      #   class Article
-      #     include Lotus::Entity
-      #     attributes :title, :body
-      #   end
-      #
-      #   class ArticleRepository
-      #     include Lotus::Repository
-      #   end
-      #
-      #   article = Article.new title: 'Introducing transactions', body: 'lorem ipsum'
-      #
-      #   ArticleRepository.transaction(rollback: :reraise) do
-      #     raise Exception
-      #   end # ROLLBACK
-      #   # Exception raised
       def transaction(options = {})
         @adapter.transaction(options) do
           yield
