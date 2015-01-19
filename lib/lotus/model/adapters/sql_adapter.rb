@@ -132,6 +132,20 @@ module Lotus
           Sql::Query.new(_collection(collection), context, &blk)
         end
 
+        # Create a transaction
+        #
+        # @param options [Hash] options for transaction
+        #
+        # @see http://sequel.jeremyevans.net/rdoc/files/doc/transactions_rdoc.html
+        #
+        # @api private
+        # @since x.x.x
+        def transaction(options = {})
+          @connection.transaction(options) do
+            yield
+          end
+        end
+
         private
 
         # Returns a collection from the given name.
