@@ -1,5 +1,6 @@
 require 'lotus/model/config/adapter'
 require 'lotus/model/config/mapper'
+require 'logger'
 
 module Lotus
   module Model
@@ -56,9 +57,17 @@ module Lotus
       # @since 0.2.0
       def load!
         _build_mapper
-        _build_adapter
+        build_adapter
 
         mapper.load!(@adapter)
+      end
+
+      # Instantiate adapter from adapter_config
+      #
+      # @api private
+      # @since 0.1.0
+      def build_adapter
+        @adapter = adapter_config.build(mapper)
       end
 
       # Register adapter
@@ -137,6 +146,98 @@ module Lotus
         @mapper_config = Lotus::Model::Config::Mapper.new(path, &blk)
       end
 
+      # Set the logger
+      #
+      # @param logger [Logger] the logger instance, default to ::Logger STDOUT
+      #
+      # @example Set custom logger and retrieve the set logger
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     logger ::Logger.new(STDOUT)
+      #   end
+      #
+      #   Lotus::Model.configuration.logger
+      #     # => #<Logger:0x007ffc45227920>
+      #
+      # @since 0.3.0
+      # @see Lotus::Model.configure
+      def logger(logger = nil)
+        if logger.nil?
+          @logger ||= _default_logger
+        else
+          @logger = logger
+        end
+      end
+
+      # Set directory where migration files should be migrated from
+      #
+      # @param directory [String] the migration directory filepath
+      #
+      # @example Set custom logger and retrieve the set logger
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configuration.migration_directory
+      #     # => 'db/migrations'
+      #
+      #   Lotus::Model.configure do
+      #     migration_directory 'my_custom/migrations'
+      #   end
+      #
+      #   Lotus::Model.configuration.migration_directory
+      #     # => 'my_custom/migrations'
+      #
+      # @since 0.3.0
+      # @see Lotus::Model.configure
+      def migration_directory(directory=nil)
+        if directory.nil?
+          @migration_directory ||= _default_migration_directory
+        else
+          @migration_directory = directory
+        end
+      end
+
+      # Return a copy of the configuration of the framework instance associated
+      # with the given class.
+      #
+      # When multiple instances of Lotus::Model are used in the same
+      # application, we want to make sure that a model or a migrator will
+      # receive the expected configuration.
+      #
+      # @param base [Class, Module] a model or a migrator
+      #
+      # @return [Lotus::Model::Configuration] the configuration associated
+      #   to the given class.
+      #
+      # @since 0.3.0
+      # @api private
+      #
+      # @example Direct usage of the framework
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model::Configuration.for(Migrator)
+      #     # => will duplicate from Lotus::Model
+      #
+      # @example Multiple instances of the framework
+      #   require 'lotus/model'
+      #
+      #   module MyApp
+      #     module Model
+      #       Migrator = ::Lotus::Model::Migrator.duplicate(self)
+      #     end
+      #   end
+      #
+      #   Lotus::Model::Configuration.for(Migrator)
+      #     # => will duplicate from Lotus::Model
+      #
+      #   Lotus::Model::Configuration.for(MyApp::Model::Migrator)
+      #     # => will duplicate from MyApp::Model
+      def self.for(base)
+        namespace = Utils::String.new(base).namespace
+        framework = Utils::Class.load_from_pattern!("(#{namespace}|Lotus)::Model")
+        framework.configuration.duplicate
+      end
+
       # Duplicate by copying the settings in a new instance.
       #
       # @return [Lotus::Model::Configuration] a copy of the configuration
@@ -146,7 +247,10 @@ module Lotus
       def duplicate
         Configuration.new.tap do |c|
           c.instance_variable_set(:@adapter_config, @adapter_config)
+          c.instance_variable_set(:@adapter, @adapter)
           c.instance_variable_set(:@mapper, @mapper)
+          c.instance_variable_set(:@logger, @logger)
+          c.instance_variable_set(:@migration_directory, @migration_directory)
         end
       end
 
@@ -163,12 +267,6 @@ module Lotus
       end
 
       # @api private
-      # @since 0.1.0
-      def _build_adapter
-        @adapter = adapter_config.build(mapper)
-      end
-
-      # @api private
       # @since 0.2.0
       #
       # NOTE Drop this manual check when Ruby 2.0 will not be supported anymore.
@@ -181,6 +279,22 @@ module Lotus
         [:type, :uri].each do |keyword|
           raise ArgumentError.new("missing keyword: #{keyword}") if !options.keys.include?(keyword)
         end
+      end
+
+      # Default directory that contains migration files
+      #
+      # @since 0.3.0
+      # @api private
+      def _default_migration_directory
+        Pathname.pwd.join('db', 'migrations')
+      end
+
+      # Default logger to stdlib logger
+      #
+      # @since 0.3.0
+      # @api private
+      def _default_logger
+        ::Logger.new(STDOUT)
       end
     end
   end

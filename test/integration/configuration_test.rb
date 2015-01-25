@@ -2,6 +2,8 @@ require 'test_helper'
 
 describe 'Configuration DSL' do
   before do
+    Lotus::Model.unload!
+
     Lotus::Model.configure do
       adapter type: :memory, uri: 'memory://localhost'
 
@@ -17,10 +19,6 @@ describe 'Configuration DSL' do
     end
 
     Lotus::Model.load!
-  end
-
-  after do
-    Lotus::Model.unload!
   end
 
   describe 'when creating new user' do
