@@ -17,11 +17,20 @@ describe Lotus::Model::Configuration do
       adapter_config.uri.must_equal SQLITE_CONNECTION_STRING
     end
 
-    it 'avoids duplication' do
-      configuration.adapter(type: :sql, uri: 'sqlite3://uri')
-      configuration.adapter(type: :memory, uri: 'memory://uri')
+    if Lotus::Utils.jruby?
+      it 'avoids duplication' do
+        configuration.adapter(type: :sql,    uri: 'jdbc:sqlite:uri')
+        configuration.adapter(type: :memory, uri: 'memory://uri')
 
-      configuration.adapter_config.type.must_equal :sql
+        configuration.adapter_config.type.must_equal :sql
+      end
+    else
+      it 'avoids duplication' do
+        configuration.adapter(type: :sql,    uri: 'sqlite3://uri')
+        configuration.adapter(type: :memory, uri: 'memory://uri')
+
+        configuration.adapter_config.type.must_equal :sql
+      end
     end
 
     it 'raises error when :type is omitted' do
