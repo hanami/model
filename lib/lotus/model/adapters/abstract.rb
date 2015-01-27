@@ -180,6 +180,16 @@ module Lotus
         def transaction(options = {})
           raise NotImplementedError
         end
+
+        # Returns a string which can be executed to start a console suitable
+        # for the configured database.
+        #
+        # @return [String]
+        #
+        # @since x.x.x
+        def connection_string
+          raise NotImplementedError
+        end
       end
     end
   end

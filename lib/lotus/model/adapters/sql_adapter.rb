@@ -215,6 +215,24 @@ module Lotus
           end
         end
 
+        # Returns a string which can be executed to start a console suitable
+        # for the configured database.
+        #
+        # @return [String]
+        #
+        # @since x.x.x
+        def connection_string
+          parsed_uri = URI.parse(@uri)
+          case parsed_uri.scheme
+          when 'sqlite'
+            "sqlite3 #{parsed_uri.host}#{parsed_uri.path}"
+          when 'postgres'
+            "psql -h #{parsed_uri.host} -d #{parsed_uri.path.sub(/^\//, '')}"
+          when 'mysql'
+            "mysql -h #{parsed_uri.host} -d #{parsed_uri.path.sub(/^\//, '')}"
+          end
+        end
+
         private
 
         # Returns a collection from the given name.
