@@ -3,6 +3,7 @@ require 'lotus/model/adapters/implementation'
 require 'lotus/model/adapters/sql/collection'
 require 'lotus/model/adapters/sql/command'
 require 'lotus/model/adapters/sql/query'
+require 'lotus/model/adapters/sql/console'
 require 'sequel'
 
 module Lotus
@@ -221,16 +222,8 @@ module Lotus
         # @return [String]
         #
         # @since x.x.x
-        def connection_string
-          parsed_uri = URI.parse(@uri)
-          case parsed_uri.scheme
-          when 'sqlite'
-            "sqlite3 #{parsed_uri.host}#{parsed_uri.path}"
-          when 'postgres'
-            "psql -h #{parsed_uri.host} -d #{parsed_uri.path.sub(/^\//, '')}"
-          when 'mysql'
-            "mysql -h #{parsed_uri.host} -d #{parsed_uri.path.sub(/^\//, '')}"
-          end
+        def connection_string(options = {})
+          Sql::Console.new(@uri, options).connection_string
         end
 
         private

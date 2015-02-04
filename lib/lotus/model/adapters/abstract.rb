@@ -12,6 +12,9 @@ module Lotus
       class DatabaseAdapterNotFound < ::StandardError
       end
 
+      class NotSupportedError < ::StandardError
+      end
+
       # Abstract adapter.
       #
       # An adapter is a concrete implementation that allows a repository to
@@ -188,7 +191,7 @@ module Lotus
         #
         # @since x.x.x
         def connection_string
-          raise NotImplementedError
+          raise NotSupportedError
         end
       end
     end
