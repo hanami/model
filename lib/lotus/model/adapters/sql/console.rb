@@ -28,7 +28,6 @@ module Lotus
               MysqlConsole.new(@uri, @options)
             end
           end
-
         end
       end
     end
