@@ -15,7 +15,7 @@ module Lotus
           private
 
           def host
-            @options.fetch(:host) { @uri.host }
+            @options.fetch('host') { @uri.host }
           end
 
           def database
