@@ -190,7 +190,7 @@ module Lotus
         # @return [String]
         #
         # @since x.x.x
-        def connection_string
+        def connection_string(options = {})
           raise NotSupportedError
         end
       end

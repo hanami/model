@@ -78,4 +78,10 @@ describe Lotus::Model::Adapters::Abstract do
       ->{ adapter.transaction({}) }.must_raise NotImplementedError
     end
   end
+
+  describe '#connection_string' do
+    it 'raises error' do
+      ->{ adapter.connection_string({}) }.must_raise Lotus::Model::Adapters::NotSupportedError
+    end
+  end
 end

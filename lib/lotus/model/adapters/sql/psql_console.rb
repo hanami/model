@@ -9,7 +9,11 @@ module Lotus
           end
 
           def connection_string
-            "psql -h #{host} -d #{database} #{port} #{username} #{password}"
+            str = "psql -h #{host} -d #{database}"
+            str << port if port
+            str << username if username
+            str << password if password
+            str
           end
 
           private
@@ -25,17 +29,17 @@ module Lotus
 
           def port
             port = @options.fetch('port', nil)
-            "-p #{port}" if port
+            " -p #{port}" if port
           end
 
           def username
             username = @options.fetch('username', nil)
-            "-U #{username}" if username
+            " -U #{username}" if username
           end
 
           def password
             password = @options.fetch('password', nil)
-            '-W' if password
+            ' -W' if password
           end
         end
       end
