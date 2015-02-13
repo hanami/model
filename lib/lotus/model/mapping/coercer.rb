@@ -55,7 +55,7 @@ module Lotus
             }
           end.join("\n")
 
-          instance_eval %{
+          instance_eval <<-EVAL, __FILE__, __LINE__
             def to_record(entity)
               if entity.id
                 Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
@@ -71,7 +71,7 @@ module Lotus
             end
 
             #{ code }
-          }
+          EVAL
         end
       end
     end

@@ -33,7 +33,12 @@ describe Lotus::Model do
       module DuplicatedConfigure
         Model = Lotus::Model.duplicate(self) do
           reset!
-          adapter type: :sql, uri: 'sqlite3://path/database.sqlite3'
+
+          if Lotus::Utils.jruby?
+            adapter type: :sql, uri: 'jdbc:sqlite:path/database.sqlite3'
+          else
+            adapter type: :sql, uri: 'sqlite3://path/database.sqlite3'
+          end
         end
       end
     end
@@ -61,11 +66,20 @@ describe Lotus::Model do
       assert defined?(Duplicated::Repository), 'Duplicated::Repository expected'
     end
 
-    it 'optionally accepts a block to configure the duplicated module' do
-      configuration = DuplicatedConfigure::Model.configuration
+    if Lotus::Utils.jruby?
+      it 'optionally accepts a block to configure the duplicated module' do
+        configuration = DuplicatedConfigure::Model.configuration
 
-      configuration.adapter_config.uri.wont_equal 'postgres://localhost/database'
-      configuration.adapter_config.uri.must_equal 'sqlite3://path/database.sqlite3'
+        configuration.adapter_config.uri.wont_equal 'postgres://localhost/database'
+        configuration.adapter_config.uri.must_equal 'jdbc:sqlite:path/database.sqlite3'
+      end
+    else
+      it 'optionally accepts a block to configure the duplicated module' do
+        configuration = DuplicatedConfigure::Model.configuration
+
+        configuration.adapter_config.uri.wont_equal 'postgres://localhost/database'
+        configuration.adapter_config.uri.must_equal 'sqlite3://path/database.sqlite3'
+      end
     end
   end
 

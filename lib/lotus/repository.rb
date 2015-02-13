@@ -505,6 +505,49 @@ module Lotus
         @adapter.clear(collection)
       end
 
+      # Wraps the given block in a transaction.
+      #
+      # For performance reasons the block isn't in the signature of the method,
+      # but it's yielded at the lower level.
+      #
+      # Please note that it's only supported by some databases.
+      # For this reason, the accepted options may be different from adapter to
+      # adapter.
+      #
+      # For advanced scenarios, please check the documentation of each adapter.
+      #
+      # @param options [Hash] options for transaction
+      #
+      # @see Lotus::Model::Adapters::SqlAdapter#transaction
+      # @see Lotus::Model::Adapters::MemoryAdapter#transaction
+      #
+      # @since 0.2.3
+      #
+      # @example Basic usage with SQL adapter
+      #   require 'lotus/model'
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #   end
+      #
+      #   article = Article.new(title: 'Introducing transactions',
+      #     body: 'lorem ipsum')
+      #
+      #   ArticleRepository.transaction do
+      #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
+      #     # !!! ROLLBACK !!!
+      #   end
+      def transaction(options = {})
+        @adapter.transaction(options) do
+          yield
+        end
+      end
+
       private
       # Fabricates a query and yields the given block to access the low level
       # APIs exposed by the query itself.

@@ -1,6 +1,13 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.2.3 - 2015-02-13
+### Added
+- [Alfonso Uceda Pompa] Added support for database transactions in repositories
+
+### Fixed
+- [Luca Guidi] Ensure file system adapter old data is read when a new process is started
+
 ## v0.2.2 - 2015-01-18
 ### Added
 - [Luca Guidi] Coerce entities when persisted

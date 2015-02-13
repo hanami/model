@@ -316,4 +316,79 @@ describe Lotus::Repository do
       end
     end
   end
+
+  describe "with sql adapter" do
+    before do
+      UserRepository.adapter    = Lotus::Model::Adapters::SqlAdapter.new(MAPPER, SQLITE_CONNECTION_STRING)
+      ArticleRepository.adapter = Lotus::Model::Adapters::SqlAdapter.new(MAPPER, SQLITE_CONNECTION_STRING)
+
+      UserRepository.collection    = :users
+      ArticleRepository.collection = :articles
+
+      UserRepository.clear
+      ArticleRepository.clear
+
+      ArticleRepository.create(article1)
+    end
+
+    describe '.transaction' do
+      it 'if an exception is raised the size of articles is equal to 1' do
+        ArticleRepository.all.size.must_equal 1
+        exception = -> { ArticleRepository.transaction do
+          ArticleRepository.create(article2)
+          raise Exception
+        end }
+        exception.must_raise Exception
+        ArticleRepository.all.size.must_equal 1
+      end
+
+      it "if an exception isn't raised the size of articles is equal to 2" do
+        ArticleRepository.all.size.must_equal 1
+        ArticleRepository.transaction do
+          ArticleRepository.create(article2)
+        end
+        ArticleRepository.all.size.must_equal 2
+      end
+
+      describe 'using options' do
+        it 'rollback: :always option' do
+          ArticleRepository.all.size.must_equal 1
+          ArticleRepository.transaction(rollback: :always) do
+            ArticleRepository.create(article2)
+          end
+          ArticleRepository.all.size.must_equal 1
+        end
+
+        it 'rollback: :reraise option' do
+          ArticleRepository.all.size.must_equal 1
+          -> { ArticleRepository.transaction(rollback: :reraise) do
+            ArticleRepository.create(article2)
+            raise Exception
+          end }.must_raise Exception
+          ArticleRepository.all.size.must_equal 1
+        end
+      end
+    end
+  end
+
+  describe "with memory adapter" do
+    before do
+      UserRepository.adapter    = Lotus::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
+      ArticleRepository.adapter = Lotus::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
+
+      UserRepository.collection    = :users
+      ArticleRepository.collection = :articles
+
+      UserRepository.clear
+      ArticleRepository.clear
+    end
+
+    describe '.transaction' do
+      it "an exception is raised because of memory adapter doesn't support transactions" do
+        -> { ArticleRepository.transaction do
+          raise "boom"
+        end }.must_raise RuntimeError
+      end
+    end
+  end
 end

@@ -127,6 +127,19 @@ module Lotus
           end
         end
 
+        # WARNING: this is a no-op. For "real" transactions please use
+        # `SqlAdapter` or another adapter that supports them
+        #
+        # @param options [Hash] options for transaction
+        #
+        # @see Lotus::Model::Adapters::SqlAdapter#transaction
+        # @see Lotus::Model::Adapters::Abstract#transaction
+        #
+        # @since 0.2.3
+        def transaction(options = {})
+          yield
+        end
+
         private
 
         # Returns a collection from the given name.

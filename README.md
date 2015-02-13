@@ -75,7 +75,7 @@ Lotus::Model.configure do
   mapping do
     collection :users do
       entity      User
-      respository UserRepository
+      repository UserRepository
 
       attribute :id,   Integer
       attribute :name, String
@@ -421,7 +421,7 @@ Think of an adapter for Redis, it will probably employ different strategies to f
 
 ### Configurations
 
-  * Non-standard respository can be configured for an entity, by setting `repository` on the collection.
+  * Non-standard repository can be configured for an entity, by setting `repository` on the collection.
 
   ```ruby
   require 'lotus/model'
@@ -467,4 +467,4 @@ __Lotus::Model__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
-Copyright 2014 Luca Guidi – Released under MIT License
+Copyright © 2014-2015 Luca Guidi – Released under MIT License

@@ -231,6 +231,12 @@ module Lotus
         def prepare(uri)
           @root = Pathname.new(uri.sub(FILE_SCHEME, ''))
           @root.mkpath
+
+          # Eager load previously persisted data.
+          @root.each_child do |collection|
+            collection = collection.basename.to_s.to_sym
+            read(collection)
+          end
         end
 
         # @api private

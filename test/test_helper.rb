@@ -18,6 +18,7 @@ end
 
 require 'minitest/autorun'
 $:.unshift 'lib'
+require 'lotus/utils'
 require 'lotus-model'
 require 'lotus/model/adapters/memory_adapter'
 require 'lotus/model/adapters/file_system_adapter'
@@ -33,6 +34,14 @@ filesystem = db.join('filesystem')
 filesystem.rmtree if filesystem.exist?
 filesystem.dirname.mkpath # recreate directory
 
-SQLITE_CONNECTION_STRING      = "sqlite://#{ sql }"
+if Lotus::Utils.jruby?
+  require 'jdbc/sqlite3'
+  Jdbc::SQLite3.load_driver
+  SQLITE_CONNECTION_STRING = "jdbc:sqlite:#{ sql }"
+else
+  require 'sqlite3'
+  SQLITE_CONNECTION_STRING = "sqlite://#{ sql }"
+end
+
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
 require 'fixtures'

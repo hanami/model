@@ -132,6 +132,89 @@ module Lotus
           Sql::Query.new(_collection(collection), context, &blk)
         end
 
+        # Wraps the given block in a transaction.
+        #
+        # For performance reasons the block isn't in the signature of the method,
+        # but it's yielded at the lower level.
+        #
+        # @param options [Hash] options for transaction
+        # @option rollback [Symbol] the optional rollback policy: `:always` or
+        #   `:reraise`.
+        #
+        # @see Lotus::Repository::ClassMethods#transaction
+        #
+        # @since 0.2.3
+        # @api private
+        #
+        # @example Basic usage
+        #   require 'lotus/model'
+        #
+        #   class Article
+        #     include Lotus::Entity
+        #     attributes :title, :body
+        #   end
+        #
+        #   class ArticleRepository
+        #     include Lotus::Repository
+        #   end
+        #
+        #   article = Article.new(title: 'Introducing transactions',
+        #     body: 'lorem ipsum')
+        #
+        #   ArticleRepository.transaction do
+        #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
+        #     # !!! ROLLBACK !!!
+        #   end
+        #
+        # @example Policy rollback always
+        #   require 'lotus/model'
+        #
+        #   class Article
+        #     include Lotus::Entity
+        #     attributes :title, :body
+        #   end
+        #
+        #   class ArticleRepository
+        #     include Lotus::Repository
+        #   end
+        #
+        #   article = Article.new(title: 'Introducing transactions',
+        #     body: 'lorem ipsum')
+        #
+        #   ArticleRepository.transaction(rollback: :always) do
+        #     ArticleRepository.create(article)
+        #     # !!! ROLLBACK !!!
+        #   end
+        #
+        #   # The operation is rolled back, even in no exceptions were raised.
+        #
+        # @example Policy rollback reraise
+        #   require 'lotus/model'
+        #
+        #   class Article
+        #     include Lotus::Entity
+        #     attributes :title, :body
+        #   end
+        #
+        #   class ArticleRepository
+        #     include Lotus::Repository
+        #   end
+        #
+        #   article = Article.new(title: 'Introducing transactions',
+        #     body: 'lorem ipsum')
+        #
+        #   ArticleRepository.transaction(rollback: :reraise) do
+        #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
+        #     # !!! ROLLBACK !!!
+        #   end # => RuntimeError
+        #
+        #   # The operation is rolled back, but RuntimeError is re-raised.
+        def transaction(options = {})
+          @connection.transaction(options) do
+            yield
+          end
+        end
+
         private
 
         # Returns a collection from the given name.

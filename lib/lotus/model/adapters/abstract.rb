@@ -162,6 +162,24 @@ module Lotus
         def query(collection, &blk)
           raise NotImplementedError
         end
+
+        # Wraps the given block in a transaction.
+        #
+        # For performance reasons the block isn't in the signature of the method,
+        # but it's yielded at the lower level.
+        #
+        # Please note that it's only supported by some databases.
+        # For this reason, the options may vary from adapter to adapter.
+        #
+        # @param options [Hash] options for transaction
+        #
+        # @see Lotus::Model::Adapters::SqlAdapter#transaction
+        # @see Lotus::Model::Adapters::MemoryAdapter#transaction
+        #
+        # @since 0.2.3
+        def transaction(options = {})
+          raise NotImplementedError
+        end
       end
     end
   end
