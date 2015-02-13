@@ -143,7 +143,7 @@ module Lotus
         #
         # @see Lotus::Repository::ClassMethods#transaction
         #
-        # @since x.x.x
+        # @since 0.2.3
         # @api private
         #
         # @example Basic usage

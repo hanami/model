@@ -135,7 +135,7 @@ module Lotus
         # @see Lotus::Model::Adapters::SqlAdapter#transaction
         # @see Lotus::Model::Adapters::Abstract#transaction
         #
-        # @since x.x.x
+        # @since 0.2.3
         def transaction(options = {})
           yield
         end
