@@ -217,7 +217,8 @@ module Lotus
         end
 
         # Returns a string which can be executed to start a console suitable
-        # for the configured database.
+        # for the configured database, adding the necessary CLI flags, such as
+        # url, password, port number etc.
         #
         # @return [String]
         #

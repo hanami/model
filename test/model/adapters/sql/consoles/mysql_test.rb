@@ -1,9 +1,10 @@
 require 'test_helper'
+require 'lotus/model/adapters/sql/consoles/mysql'
 
-describe Lotus::Model::Adapters::Sql::MysqlConsole do
+describe Lotus::Model::Adapters::Sql::Consoles::Mysql do
   before do
     @uri = URI.parse('mysql://localhost/foo_development')
-    @console = Lotus::Model::Adapters::Sql::MysqlConsole.new(@uri, options)
+    @console = Lotus::Model::Adapters::Sql::Consoles::Mysql.new(@uri, options)
   end
 
   describe '#connection_string' do

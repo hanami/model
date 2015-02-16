@@ -1,19 +1,15 @@
-require 'lotus/model/adapters/sql/sqlite_console'
-require 'lotus/model/adapters/sql/psql_console'
-require 'lotus/model/adapters/sql/mysql_console'
-
 module Lotus
   module Model
     module Adapters
       module Sql
         class Console
+          extend Forwardable
+
+          def_delegator :console, :connection_string
+
           def initialize(uri, options = {})
             @uri = URI.parse(uri)
             @options = options
-          end
-
-          def connection_string
-            console.connection_string
           end
 
           private
@@ -21,11 +17,14 @@ module Lotus
           def console
             case @uri.scheme
             when 'sqlite'
-              SqliteConsole.new(@uri, @options)
+              require 'lotus/model/adapters/sql/consoles/sqlite'
+              Consoles::Sqlite.new(@uri, @options)
             when 'postgres'
-              PsqlConsole.new(@uri, @options)
+              require 'lotus/model/adapters/sql/consoles/psql'
+              Consoles::Psql.new(@uri, @options)
             when 'mysql', 'mysql2'
-              MysqlConsole.new(@uri, @options)
+              require 'lotus/model/adapters/sql/consoles/mysql'
+              Consoles::Mysql.new(@uri, @options)
             end
           end
         end
