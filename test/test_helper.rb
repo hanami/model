@@ -45,3 +45,11 @@ end
 
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
 require 'fixtures'
+
+Lotus::Model::Configuration.class_eval do
+  def ==(other)
+    other.kind_of?(self.class) &&
+      other.adapter == adapter &&
+      other.mapper.kind_of?(mapper.class)
+  end
+end

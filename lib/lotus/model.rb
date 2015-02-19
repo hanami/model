@@ -131,7 +131,7 @@ module Lotus
     #   MyApi::Model.configuration.adapter_config.uri # => 'postgresql://uri'
     def self.dupe
       dup.tap do |duplicated|
-        duplicated.configuration = configuration.duplicate
+        duplicated.configuration = Configuration.new
       end
     end
 
