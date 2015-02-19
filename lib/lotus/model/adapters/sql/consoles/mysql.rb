@@ -1,12 +1,12 @@
+require 'shellwords'
 module Lotus
   module Model
     module Adapters
       module Sql
         module Consoles
           class Mysql
-            def initialize(uri, options = {})
+            def initialize(uri)
               @uri = uri
-              @options = options
             end
 
             def connection_string
@@ -22,28 +22,23 @@ module Lotus
             private
 
             def host
-              host = @options.fetch('host') { @uri.host }
-              " -h #{host}"
+              " -h #{Shellwords.escape(@uri.host)}"
             end
 
             def database
-              database = @options.fetch('database') { @uri.path }
-              " -D #{database.sub(/^\//, '')}"
+              " -D #{@uri.path.sub(/^\//, '')}"
             end
 
             def port
-              port = @options.fetch('port') { @uri.port }
-              " -P #{port}" if port
+              " -P #{@uri.port}" if @uri.port
             end
 
             def username
-              username = @options.fetch('username') { @uri.user }
-              " -u #{username}" if username
+              " -u #{@uri.user}" if @uri.user
             end
 
             def password
-              password = @options.fetch('password') { @uri.password }
-              " -p #{password}" if password
+              " -p #{@uri.password}" if @uri.password
             end
           end
         end

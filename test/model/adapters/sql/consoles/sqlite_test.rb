@@ -4,7 +4,7 @@ require 'lotus/model/adapters/sql/consoles/sqlite'
 describe Lotus::Model::Adapters::Sql::Consoles::Sqlite do
   before do
     @uri = URI.parse('sqlite://foo/bar.db')
-    @console = Lotus::Model::Adapters::Sql::Consoles::Sqlite.new(@uri, {})
+    @console = Lotus::Model::Adapters::Sql::Consoles::Sqlite.new(@uri)
   end
 
   describe '#connection_string' do

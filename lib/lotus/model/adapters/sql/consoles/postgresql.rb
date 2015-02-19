@@ -1,12 +1,12 @@
+require 'shellwords'
 module Lotus
   module Model
     module Adapters
       module Sql
         module Consoles
-          class Psql
-            def initialize(uri, options = {})
+          class Postgresql
+            def initialize(uri)
               @uri = uri
-              @options = options
             end
 
             def connection_string
@@ -22,28 +22,23 @@ module Lotus
             private
 
             def host
-              host = @options.fetch('host') { @uri.host }
-              " -h #{host}"
+              " -h #{@uri.host}"
             end
 
             def database
-              database = @options.fetch('database') { @uri.path }
-              " -d #{database.sub(/^\//, '')}"
+              " -d #{Shellwords.escape(@uri.path.sub(/^\//, ''))}"
             end
 
             def port
-              port = @options.fetch('port') { @uri.port }
-              " -p #{port}" if port
+              " -p #{@uri.port}" if @uri.port
             end
 
             def username
-              username = @options.fetch('username') { @uri.user }
-              " -U #{username}" if username
+              " -U #{@uri.user}" if @uri.user
             end
 
             def configure_password
-              password = @options.fetch('password') { @uri.password }
-              ENV['PGPASSWORD'] = password if password
+              ENV['PGPASSWORD'] = @uri.password if @uri.password
             end
           end
         end

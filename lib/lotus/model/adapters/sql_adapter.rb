@@ -223,8 +223,8 @@ module Lotus
         # @return [String]
         #
         # @since x.x.x
-        def connection_string(options = {})
-          Sql::Console.new(@uri, options).connection_string
+        def connection_string
+          Sql::Console.new(@uri).connection_string
         end
 
         private

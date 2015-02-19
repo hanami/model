@@ -7,9 +7,8 @@ module Lotus
 
           def_delegator :console, :connection_string
 
-          def initialize(uri, options = {})
+          def initialize(uri)
             @uri = URI.parse(uri)
-            @options = options
           end
 
           private
@@ -18,13 +17,13 @@ module Lotus
             case @uri.scheme
             when 'sqlite'
               require 'lotus/model/adapters/sql/consoles/sqlite'
-              Consoles::Sqlite.new(@uri, @options)
+              Consoles::Sqlite.new(@uri)
             when 'postgres'
-              require 'lotus/model/adapters/sql/consoles/psql'
-              Consoles::Psql.new(@uri, @options)
+              require 'lotus/model/adapters/sql/consoles/postgresql'
+              Consoles::Postgresql.new(@uri)
             when 'mysql', 'mysql2'
               require 'lotus/model/adapters/sql/consoles/mysql'
-              Consoles::Mysql.new(@uri, @options)
+              Consoles::Mysql.new(@uri)
             end
           end
         end

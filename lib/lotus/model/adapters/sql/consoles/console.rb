@@ -1,22 +1,25 @@
-require 'shellwords'
 module Lotus
   module Model
     module Adapters
       module Sql
         module Consoles
-          class Sqlite
+          class Console
             def initialize(uri)
               @uri = uri
             end
 
-            def connection_string
-              "sqlite3 #{@uri.host}#{database}"
+            protected
+
+            def host
+              Shellwords.escape(@uri.host)
             end
 
-            private
-
             def database
-              Shellwords.escape(@uri.path)
+              @uri.path
+            end
+
+            def port
+              @uri.port
             end
           end
         end

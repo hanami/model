@@ -187,10 +187,10 @@ module Lotus
         # Returns a string which can be executed to start a console suitable
         # for the configured database.
         #
-        # @return [String]
+        # @return [String] to be executed to start a database console
         #
         # @since x.x.x
-        def connection_string(options = {})
+        def connection_string
           raise NotSupportedError
         end
       end
