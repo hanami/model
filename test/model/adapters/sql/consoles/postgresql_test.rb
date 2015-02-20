@@ -15,6 +15,7 @@ describe Lotus::Model::Adapters::Sql::Consoles::Postgresql do
     it 'sets the PGPASSWORD environment variable' do
       @console.connection_string
       ENV['PGPASSWORD'].must_equal 'password'
+      ENV.delete('PGPASSWORD')
     end
   end
 end

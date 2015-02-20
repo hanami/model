@@ -12,6 +12,14 @@ module Lotus
       class DatabaseAdapterNotFound < ::StandardError
       end
 
+      # It's raised when an adapter does not support a feature.
+      #
+      # Example: When we try to get a connection string for the current database
+      # but the adapter has not implemented it.
+      #
+      # @see Lotus::Model::Adapters::Abstract#connection_string
+      #
+      # @since x.x.x
       class NotSupportedError < ::StandardError
       end
 
