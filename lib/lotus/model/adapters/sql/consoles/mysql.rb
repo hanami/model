@@ -22,11 +22,11 @@ module Lotus
             private
 
             def host
-              " -h #{Shellwords.escape(@uri.host)}"
+              " -h #{@uri.host}"
             end
 
             def database
-              " -D #{@uri.path.sub(/^\//, '')}"
+              " -D #{Shellwords.escape(@uri.path.sub(/^\//, ''))}"
             end
 
             def port
