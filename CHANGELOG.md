@@ -1,6 +1,10 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.2.4 - 2015-02-20
+### Fixed
+- [Luca Guidi] When duplicate the framework don't copy over the original `Lotus::Model` configuration.
+
 ## v0.2.3 - 2015-02-13
 ### Added
 - [Alfonso Uceda Pompa] Added support for database transactions in repositories
