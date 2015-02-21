@@ -32,6 +32,17 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
         attribute :id, Integer
       end
+
+      collection :articles do
+        entity Article
+
+        attribute :id,             Integer, as: :_id
+        attribute :user_id,        Integer
+        attribute :title,          String,  as: 's_title'
+        attribute :comments_count, Integer
+
+        identity :_id
+      end
     end.load!
 
     @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
@@ -92,6 +103,31 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
     it 'returns an empty collection' do
       @adapter.all(collection).must_be_empty
+    end
+  end
+
+  # BUG
+  # See: https://github.com/lotus/model/issues/151
+  describe 'when already present database' do
+    before do
+      data = Pathname.new(FILE_SYSTEM_CONNECTION_STRING)
+      data.rmtree if data.exist?
+
+      @user1   = TestUser.new(name: 'L')
+      @user2   = TestUser.new(name: 'MG')
+      old_data = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+      @user1   = old_data.persist(collection, @user1)
+
+      @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+    end
+
+    it 'reads the old data' do
+      @adapter.all(collection).must_equal [@user1]
+    end
+
+    it 'writes without erasing old data' do
+      @user2 = @adapter.persist(collection, @user2)
+      @adapter.all(collection).must_equal [@user1, @user2]
     end
   end
 

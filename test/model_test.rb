@@ -50,12 +50,11 @@ describe Lotus::Model do
       Object.send(:remove_const, :DuplicatedConfigure)
     end
 
+    # Bug
+    # See https://github.com/lotus/model/issues/154
     it 'duplicates the configuration of the framework' do
-      actual   = Duplicated::Model.configuration
-      expected = Lotus::Model.configuration
-
-      actual.adapter_config.must_equal expected.adapter_config
-      actual.mapper.must_equal expected.mapper
+      actual = Duplicated::Model.configuration
+      assert actual == Lotus::Model::Configuration.new
     end
 
     it 'duplicates a namespace for entity' do

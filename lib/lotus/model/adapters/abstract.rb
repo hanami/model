@@ -187,7 +187,7 @@ module Lotus
         # @see Lotus::Model::Adapters::SqlAdapter#transaction
         # @see Lotus::Model::Adapters::MemoryAdapter#transaction
         #
-        # @since x.x.x
+        # @since 0.2.3
         def transaction(options = {})
           raise NotImplementedError
         end
