@@ -24,4 +24,16 @@ describe Lotus::Model::Mapping::Coercer do
       end
     end
   end
+  
+  describe '#from_record' do
+    before do
+      collection.entity(::Repository)
+      collection.attribute :id,   Integer
+      collection.attribute :name, String
+    end
+    
+    it 'should use the correct entity class' do
+      coercer.from_record(name: 'production').class.must_equal(::Repository)
+    end
+  end
 end
