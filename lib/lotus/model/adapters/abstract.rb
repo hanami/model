@@ -12,6 +12,17 @@ module Lotus
       class DatabaseAdapterNotFound < ::StandardError
       end
 
+      # It's raised when an adapter does not support a feature.
+      #
+      # Example: When we try to get a connection string for the current database
+      # but the adapter has not implemented it.
+      #
+      # @see Lotus::Model::Adapters::Abstract#connection_string
+      #
+      # @since x.x.x
+      class NotSupportedError < ::StandardError
+      end
+
       # Abstract adapter.
       #
       # An adapter is a concrete implementation that allows a repository to
@@ -179,6 +190,16 @@ module Lotus
         # @since 0.2.3
         def transaction(options = {})
           raise NotImplementedError
+        end
+
+        # Returns a string which can be executed to start a console suitable
+        # for the configured database.
+        #
+        # @return [String] to be executed to start a database console
+        #
+        # @since x.x.x
+        def connection_string
+          raise NotSupportedError
         end
       end
     end

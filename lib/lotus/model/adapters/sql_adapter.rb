@@ -3,6 +3,7 @@ require 'lotus/model/adapters/implementation'
 require 'lotus/model/adapters/sql/collection'
 require 'lotus/model/adapters/sql/command'
 require 'lotus/model/adapters/sql/query'
+require 'lotus/model/adapters/sql/console'
 require 'sequel'
 
 module Lotus
@@ -213,6 +214,17 @@ module Lotus
           @connection.transaction(options) do
             yield
           end
+        end
+
+        # Returns a string which can be executed to start a console suitable
+        # for the configured database, adding the necessary CLI flags, such as
+        # url, password, port number etc.
+        #
+        # @return [String]
+        #
+        # @since x.x.x
+        def connection_string
+          Sql::Console.new(@uri).connection_string
         end
 
         private
