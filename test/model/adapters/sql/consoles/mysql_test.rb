@@ -5,20 +5,10 @@ describe Lotus::Model::Adapters::Sql::Consoles::Mysql do
   let(:console) { Lotus::Model::Adapters::Sql::Consoles::Mysql.new(uri) }
 
   describe '#connection_string' do
-    describe 'with shell ok database uri' do
-      let(:uri) { URI.parse('mysql://username:password@localhost:1234/foo_development') }
+    let(:uri) { URI.parse('mysql://username:password@localhost:1234/foo_development') }
 
-      it 'returns a connection string' do
-        console.connection_string.must_equal 'mysql -h localhost -D foo_development -P 1234 -u username -p password'
-      end
-    end
-
-    describe 'with non shell ok database uri' do
-      let(:uri) { URI.parse('mysql://username:password@localhost:1234/foo_development%20bar') }
-
-      it 'returns a connection string' do
-        console.connection_string.must_equal 'mysql -h localhost -D foo_development\\%20bar -P 1234 -u username -p password'
-      end
+    it 'returns a connection string' do
+      console.connection_string.must_equal 'mysql -h localhost -D foo_development -P 1234 -u username -p password'
     end
   end
 end

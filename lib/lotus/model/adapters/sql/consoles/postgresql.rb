@@ -26,7 +26,7 @@ module Lotus
             end
 
             def database
-              " -d #{Shellwords.escape(@uri.path.sub(/^\//, ''))}"
+              " -d #{@uri.path.sub(/^\//, '')}"
             end
 
             def port
