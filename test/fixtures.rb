@@ -8,6 +8,11 @@ class Article
   attributes :user_id, :unmapped_attribute, :title, :comments_count
 end
 
+class Repository
+  include Lotus::Entity
+  attributes :id, :name
+end
+
 class CustomUserRepository
   include Lotus::Repository
 end

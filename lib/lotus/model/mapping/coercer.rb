@@ -65,7 +65,7 @@ module Lotus
             end
 
             def from_record(record)
-              #{ @collection.entity }.new(
+              ::#{ @collection.entity }.new(
                 Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Model::Mapping::Coercions.#{klass}(record[:#{mapped}])"}.join(',') }]
               )
             end
@@ -77,4 +77,3 @@ module Lotus
     end
   end
 end
-
