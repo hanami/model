@@ -91,7 +91,7 @@ module Lotus
       #     adapter type: :sql, uri: 'sqlite3://localhost/database'
       #   end
       #
-      #   Lotus::Model.adapter_config
+      #   Lotus::Model.configuration.adapter_config
       #
       # @since 0.2.0
       def adapter(options = nil)

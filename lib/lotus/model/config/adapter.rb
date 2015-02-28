@@ -28,7 +28,7 @@ module Lotus
       #     adapter type: :sql, uri: 'postgres://localhost/database'
       #   end
       #
-      #   Lotus::Model.adapter_config
+      #   Lotus::Model.configuration.adapter_config
       #   # => Lotus::Model::Config::Adapter(type: :sql, uri: 'postgres://localhost/database')
       #
       # By convention, Lotus inflects type to find the adapter class
