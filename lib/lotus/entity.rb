@@ -1,5 +1,4 @@
 require 'lotus/utils/kernel'
-require 'lotus/utils/attributes'
 
 module Lotus
   # An object that is defined by its identity.
