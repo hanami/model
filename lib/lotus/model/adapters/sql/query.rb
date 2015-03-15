@@ -580,7 +580,7 @@ module Lotus
           # @example
           #   require 'lotus/model'
           #
-          #   class ArticleRepository
+          #   module ArticleRepository
           #     include Lotus::Repository
           #
           #     def self.by_author(author)

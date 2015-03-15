@@ -81,11 +81,11 @@ end
 In order to persist and query the entities above, we define two corresponding repositories:
 
 ```ruby
-class AuthorRepository
+module AuthorRepository
   include Lotus::Repository
 end
 
-class ArticleRepository
+module ArticleRepository
   include Lotus::Repository
 
   def self.most_recent_by_author(author, limit = 8)

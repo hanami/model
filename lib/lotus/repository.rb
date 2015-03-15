@@ -18,12 +18,12 @@ module Lotus
   #   end
   #
   #   # valid
-  #   class ArticleRepository
+  #   module ArticleRepository
   #     include Lotus::Repository
   #   end
   #
   #   # not valid for Article
-  #   class PostRepository
+  #   module PostRepository
   #     include Lotus::Repository
   #   end
   #
@@ -102,7 +102,7 @@ module Lotus
   #
   #   ArticleRepository.most_recent_by_author(author)
   #
-  #   class ArticleRepository
+  #   module ArticleRepository
   #     include Lotus::Repository
   #
   #     def self.most_recent_by_author(author, limit = 8)
@@ -126,7 +126,7 @@ module Lotus
     # @example
     #   require 'lotus/model'
     #
-    #   class UserRepository
+    #   module UserRepository
     #     include Lotus::Repository
     #   end
     def self.included(base)
@@ -165,7 +165,7 @@ module Lotus
       #
       #   adapter = Lotus::Model::Adapters::MemoryAdapter.new(mapper)
       #
-      #   class UserRepository
+      #   module UserRepository
       #     include Lotus::Repository
       #   end
       #
@@ -184,7 +184,7 @@ module Lotus
       #
       #   adapter = Lotus::Model::Adapters::SqlAdapter.new(mapper, 'sqlite://path/to/database.db')
       #
-      #   class UserRepository
+      #   module UserRepository
       #     include Lotus::Repository
       #   end
       #
@@ -203,7 +203,7 @@ module Lotus
       #
       #   adapter = Lotus::Model::Adapters::SqlAdapter.new(mapper, 'postgres://host:port/database')
       #
-      #   class UserRepository
+      #   module UserRepository
       #     include Lotus::Repository
       #   end
       #
@@ -226,7 +226,7 @@ module Lotus
       # @example With a non persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -239,7 +239,7 @@ module Lotus
       # @example With a persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -271,7 +271,7 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -307,7 +307,7 @@ module Lotus
       # @example With a persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -322,7 +322,7 @@ module Lotus
       # @example With a non persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -356,7 +356,7 @@ module Lotus
       # @example With a persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -370,7 +370,7 @@ module Lotus
       # @example With a non persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -397,7 +397,7 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -419,7 +419,7 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -440,7 +440,7 @@ module Lotus
       # @example With at least one persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -449,7 +449,7 @@ module Lotus
       # @example With an empty collection
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -469,7 +469,7 @@ module Lotus
       # @example With at least one persisted entity
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -478,7 +478,7 @@ module Lotus
       # @example With an empty collection
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -496,7 +496,7 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -531,7 +531,7 @@ module Lotus
       #     attributes :title, :body
       #   end
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #   end
       #
@@ -587,7 +587,7 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   class ArticleRepository
+      #   module ArticleRepository
       #     include Lotus::Repository
       #
       #     def self.most_recent_by_author(author, limit = 8)
@@ -644,7 +644,7 @@ module Lotus
       # @example
       #   require 'lotus/model'
       #
-      #   class ProjectRepository
+      #   module ProjectRepository
       #     include Lotus::Repository
       #
       #     def self.cool

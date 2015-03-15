@@ -155,7 +155,7 @@ module Lotus
         #     attributes :title, :body
         #   end
         #
-        #   class ArticleRepository
+        #   module ArticleRepository
         #     include Lotus::Repository
         #   end
         #
@@ -175,7 +175,7 @@ module Lotus
         #     attributes :title, :body
         #   end
         #
-        #   class ArticleRepository
+        #   module ArticleRepository
         #     include Lotus::Repository
         #   end
         #
@@ -197,7 +197,7 @@ module Lotus
         #     attributes :title, :body
         #   end
         #
-        #   class ArticleRepository
+        #   module ArticleRepository
         #     include Lotus::Repository
         #   end
         #
