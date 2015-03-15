@@ -65,7 +65,7 @@ class User
   attributes :name, :age
 end
 
-class UserRepository
+module UserRepository
   include Lotus::Repository
 end
 
@@ -190,7 +190,7 @@ This architecture has several advantages:
 
   * Multiple data sources can easily coexist in an application
 
-When a class includes `Lotus::Repository`, it will receive the following interface:
+When a module includes `Lotus::Repository`, it will receive the following interface:
 
   * `.persist(entity)` – Create or update an entity
   * `.create(entity)`  – Create a record for the given entity
@@ -232,7 +232,7 @@ There is a better way:
 ```ruby
 require 'lotus/model'
 
-class ArticleRepository
+module ArticleRepository
   include Lotus::Repository
 
   def self.most_recent_by_author(author, limit = 8)
@@ -259,7 +259,7 @@ This is a **huge improvement**, because:
 Here is an extended example of a repository that uses the SQL adapter.
 
 ```ruby
-class ArticleRepository
+module ArticleRepository
   include Lotus::Repository
 
   def self.most_recent_by_author(author, limit = 8)
@@ -308,13 +308,13 @@ class MyLotusApp::Model::User
 end
 
 # This repository will work...
-class MyLotusApp::Model::UserRepository
+module MyLotusApp::Model::UserRepository
   include Lotus::Repository
   # your code here
 end
 
 # ...this will not!
-class MyLotusApp::Repository::UserRepository
+module MyLotusApp::Repository::UserRepository
   include Lotus::Repository
   # your code here
 end

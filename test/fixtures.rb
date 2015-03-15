@@ -13,19 +13,19 @@ class Repository
   attributes :id, :name
 end
 
-class CustomUserRepository
+module CustomUserRepository
   include Lotus::Repository
 end
 
-class UserRepository
+module UserRepository
   include Lotus::Repository
 end
 
-class UnmappedRepository
+module UnmappedRepository
   include Lotus::Repository
 end
 
-class ArticleRepository
+module ArticleRepository
   include Lotus::Repository
 
   def self.rank

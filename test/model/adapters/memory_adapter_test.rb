@@ -6,7 +6,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       include Lotus::Entity
     end
 
-    class TestUserRepository
+    module TestUserRepository
       include Lotus::Repository
     end
 
@@ -14,7 +14,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       include Lotus::Entity
     end
 
-    class TestDeviceRepository
+    module TestDeviceRepository
       include Lotus::Repository
     end
 

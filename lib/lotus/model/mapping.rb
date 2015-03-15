@@ -40,7 +40,7 @@ module Lotus
       # @since 0.2.0
       class RepositoryNotFound < ::StandardError
         def initialize(name)
-          super("Cannot find class for repository: #{ name }")
+          super("Cannot find module for repository: #{ name }")
         end
       end
     end
