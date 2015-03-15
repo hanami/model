@@ -35,25 +35,6 @@ module Lotus
         # @see Lotus::Repository
         REPOSITORY_SUFFIX = 'Repository'.freeze
 
-        # Defines top level constant for attribute usage.
-        #
-        # @since 0.1.0
-        #
-        # @see Lotus::Model::Mapping::Collection#attribute
-        #
-        # @example
-        #   require 'lotus/model'
-        #
-        #   mapper = Lotus::Model::Mapper.new do
-        #     collection :articles do
-        #       entity Article
-        #
-        #       attribute :published, Boolean
-        #     end
-        #   end
-        class ::Boolean
-        end
-
         # @attr_reader name [Symbol] the name of the collection
         #
         # @since 0.1.0
