@@ -60,7 +60,9 @@ module Lotus
               if entity.id
                 Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
               else
-                Hash[#{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
+                Hash[].tap do |record|
+                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(klass,mapped)| "value = Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name}); record[:#{mapped}] = value unless value.nil?"}.join('; ') }
+                end
               end
             end
 

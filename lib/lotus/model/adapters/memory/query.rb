@@ -100,7 +100,7 @@ module Lotus
           #        .where(framework: 'lotus')
           def where(condition)
             column, value = _expand_condition(condition)
-            conditions.push([:where, Proc.new{ find_all{|r| r.fetch(column) == value} }])
+            conditions.push([:where, Proc.new{ find_all{|r| r.fetch(column, nil) == value} }])
             self
           end
 
