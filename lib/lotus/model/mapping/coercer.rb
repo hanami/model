@@ -61,7 +61,13 @@ module Lotus
                 Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
               else
                 Hash[].tap do |record|
-                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(klass,mapped)| "value = Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name}); record[:#{mapped}] = value unless value.nil?"}.join('; ') }
+                  #{ @collection.attributes.reject { |name, _| name == @collection.identity }.
+                     map { |name, (klass,mapped)|
+                      %{ value = Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})
+                         if entity.instance_variable_get(:@initialized_attributes).include?(:#{name})
+                           record[:#{mapped}] = value
+                         end } }.
+                     join('; ') }
                 end
               end
             end
