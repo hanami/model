@@ -144,7 +144,15 @@ module Lotus
           self.attributes.merge attrs
 
           attrs.each do |attr|
-            attr_accessor(attr) if define_attribute?(attr)
+            if define_attribute?(attr)
+              attr_reader(attr)
+              self.class_eval %Q{
+                def #{attr}=(val)
+                  @initialized_attributes << __callee__
+                  @#{attr} = val
+                end
+              }
+            end
           end
         else
           @attributes ||= Set.new
@@ -181,7 +189,9 @@ module Lotus
     #
     # @see .attributes
     def initialize(attributes = {})
+      @initialized_attributes = Set.new
       attributes.each do |k, v|
+        @initialized_attributes << k
         setter = "#{ k }="
         public_send(setter, v) if respond_to?(setter)
       end

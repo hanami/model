@@ -23,11 +23,12 @@ describe Lotus::Model::Mapping::Coercer do
       it 'ignores unset values' do
         entity = User.new(name: 'Daenerys Targaryen')
         coercer.to_record(entity).must_equal(name: 'Daenerys Targaryen')
+        coercer.to_record(entity).wont_equal(name: 'Daenerys Targaryen', age: nil)
       end
 
       it 'forces nil values' do
         entity = User.new(name: 'Daenerys Targaryen', age: nil)
-        coercer.to_record(entity).must_equal(name: 'Daenerys Targaryen')
+        coercer.to_record(entity).must_equal(name: 'Daenerys Targaryen', age: nil)
       end
     end
 
