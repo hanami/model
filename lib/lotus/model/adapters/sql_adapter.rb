@@ -222,7 +222,7 @@ module Lotus
         #
         # @return [String]
         #
-        # @since x.x.x
+        # @since 0.3.0
         def connection_string
           Sql::Console.new(@uri).connection_string
         end

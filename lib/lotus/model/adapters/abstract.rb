@@ -19,7 +19,7 @@ module Lotus
       #
       # @see Lotus::Model::Adapters::Abstract#connection_string
       #
-      # @since x.x.x
+      # @since 0.3.0
       class NotSupportedError < ::StandardError
       end
 
@@ -197,7 +197,7 @@ module Lotus
         #
         # @return [String] to be executed to start a database console
         #
-        # @since x.x.x
+        # @since 0.3.0
         def connection_string
           raise NotSupportedError
         end
