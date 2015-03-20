@@ -1,9 +1,19 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.3.0 - 2015-03-23
+### Added
+- [Linus Pettersson] Database console
+
+### Fixed
+- [Alfonso Uceda Pompa] Don't send unwanted null values to the database, while coercing entities
+- [Jan Lelis] Do not define top-level `Boolean`, because it is already defined by `lotus-utils`
+- [Vsevolod Romashov] Fix entity class resolving in `Coercer#from_record`
+- [Jason Harrelson] Add file and line to `instance_eval` in `Coercer` to make backtrace more usable
+
 ## v0.2.4 - 2015-02-20
 ### Fixed
-- [Luca Guidi] When duplicate the framework don't copy over the original `Lotus::Model` configuration.
+- [Luca Guidi] When duplicate the framework don't copy over the original `Lotus::Model` configuration
 
 ## v0.2.3 - 2015-02-13
 ### Added
