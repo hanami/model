@@ -327,7 +327,7 @@ module Lotus
           #
           # @return self
           #
-          # @since 0.1.0
+          # @since x.x.x
           #
           # @see Lotus::Model::Adapters::Sql::Query#order
           #
@@ -356,6 +356,23 @@ module Lotus
             self
           end
 
+          # Alias for reverse_order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
+          #
+          # @example Single column
+          #
+          #   query.desc(:name)
+          #
+          # @example Multiple columns
+          #
+          #   query.desc(:name, :year)
+          #
+          # @example Multiple invokations
+          #
+          #   query.desc(:name).desc(:year)
           alias_method :desc, :reverse_order
 
           # Returns the sum of the values for the given column.

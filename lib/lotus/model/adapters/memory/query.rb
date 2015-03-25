@@ -204,7 +204,7 @@ module Lotus
           #
           # @since 0.1.0
           #
-          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
+          # @see Lotus::Model::Adapters::Memory::Query#reverse_order
           #
           # @example Single column
           #
@@ -234,9 +234,9 @@ module Lotus
           #
           # @return self
           #
-          # @since 0.1.0
+          # @since x.x.x
           #
-          # @see Lotus::Model::Adapters::Sql::Query#order
+          # @see Lotus::Model::Adapters::Memory::Query#order
           #
           # @example Single column
           #
@@ -257,6 +257,23 @@ module Lotus
             self
           end
 
+          # Alias for reverse_order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Memory::Query#reverse_order
+          #
+          # @example Single column
+          #
+          #   query.desc(:name)
+          #
+          # @example Multiple columns
+          #
+          #   query.desc(:name, :year)
+          #
+          # @example Multiple invokations
+          #
+          #   query.desc(:name).desc(:year)
           alias_method :desc, :reverse_order
 
           # Limit the number of records to return.
