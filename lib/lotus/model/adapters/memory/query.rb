@@ -17,7 +17,7 @@ module Lotus
         #
         #   query.where(language: 'ruby')
         #        .and(framework: 'lotus')
-        #        .desc(:users_count).all
+        #        .reverse_order(:users_count).all
         #
         #   # the records are fetched only when we invoke #all
         #
@@ -204,7 +204,7 @@ module Lotus
           #
           # @since 0.1.0
           #
-          # @see Lotus::Model::Adapters::Sql::Query#desc
+          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
           #
           # @example Single column
           #
@@ -240,22 +240,24 @@ module Lotus
           #
           # @example Single column
           #
-          #   query.desc(:name)
+          #   query.reverse_order(:name)
           #
           # @example Multiple columns
           #
-          #   query.desc(:name, :year)
+          #   query.reverse_order(:name, :year)
           #
           # @example Multiple invokations
           #
-          #   query.desc(:name).desc(:year)
-          def desc(*columns)
+          #   query.reverse_order(:name).reverse_order(:year)
+          def reverse_order(*columns)
             Lotus::Utils::Kernel.Array(columns).each do |column|
               modifiers.push(Proc.new{ sort_by!{|r| r.fetch(column)}.reverse! })
             end
 
             self
           end
+
+          alias_method :desc, :reverse_order
 
           # Limit the number of records to return.
           #
