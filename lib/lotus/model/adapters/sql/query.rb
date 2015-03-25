@@ -17,7 +17,7 @@ module Lotus
         #
         #   query.where(language: 'ruby')
         #        .and(framework: 'lotus')
-        #        .desc(:users_count).all
+        #        .reverse_order(:users_count).all
         #
         #   # the records are fetched only when we invoke #all
         #
@@ -294,7 +294,7 @@ module Lotus
           #
           # @since 0.1.0
           #
-          # @see Lotus::Model::Adapters::Sql::Query#desc
+          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
           #
           # @example Single column
           #
@@ -318,6 +318,29 @@ module Lotus
             self
           end
 
+          # Alias for order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#order
+          #
+          # @example Single column
+          #
+          #   query.asc(:name)
+          #
+          #   # => SELECT * FROM `people` ORDER BY (`name`)
+          #
+          # @example Multiple columns
+          #
+          #   query.asc(:name, :year)
+          #
+          #   # => SELECT * FROM `people` ORDER BY `name`, `year`
+          #
+          # @example Multiple invokations
+          #
+          #   query.asc(:name).asc(:year)
+          #
+          #   # => SELECT * FROM `people` ORDER BY `name`, `year`
           alias_method :asc, :order
 
           # Specify the descending order of the records, sorted by the given
@@ -327,34 +350,53 @@ module Lotus
           #
           # @return self
           #
-          # @since 0.1.0
+          # @since x.x.x
           #
           # @see Lotus::Model::Adapters::Sql::Query#order
           #
           # @example Single column
           #
-          #   query.desc(:name)
+          #   query.reverse_order(:name)
           #
           #   # => SELECT * FROM `people` ORDER BY (`name`) DESC
           #
           # @example Multiple columns
           #
-          #   query.desc(:name, :year)
+          #   query.reverse_order(:name, :year)
           #
           #   # => SELECT * FROM `people` ORDER BY `name`, `year` DESC
           #
           # @example Multiple invokations
           #
-          #   query.desc(:name).desc(:year)
+          #   query.reverse_order(:name).reverse_order(:year)
           #
           #   # => SELECT * FROM `people` ORDER BY `name`, `year` DESC
-          def desc(*columns)
+          def reverse_order(*columns)
             Array(columns).each do |column|
               conditions.push([_order_operator, Sequel.desc(column)])
             end
 
             self
           end
+
+          # Alias for reverse_order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
+          #
+          # @example Single column
+          #
+          #   query.desc(:name)
+          #
+          # @example Multiple columns
+          #
+          #   query.desc(:name, :year)
+          #
+          # @example Multiple invokations
+          #
+          #   query.desc(:name).desc(:year)
+          alias_method :desc, :reverse_order
 
           # Returns the sum of the values for the given column.
           #
@@ -590,7 +632,7 @@ module Lotus
           #     end
           #
           #     def self.rank
-          #       query.desc(:comments_count)
+          #       query.reverse_order(:comments_count)
           #     end
           #
           #     def self.rank_by_author(author)
