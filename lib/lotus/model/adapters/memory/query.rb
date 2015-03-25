@@ -225,6 +225,23 @@ module Lotus
             self
           end
 
+          # Alias for order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Memory::Query#order
+          #
+          # @example Single column
+          #
+          #   query.asc(:name)
+          #
+          # @example Multiple columns
+          #
+          #   query.asc(:name, :year)
+          #
+          # @example Multiple invokations
+          #
+          #   query.asc(:name).asc(:year)
           alias_method :asc, :order
 
           # Specify the descending order of the records, sorted by the given
