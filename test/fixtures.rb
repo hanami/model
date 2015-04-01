@@ -6,7 +6,8 @@ end
 class Article
   include Lotus::Entity
   include Lotus::Entity::DirtyTracking
-  attributes :user_id, :unmapped_attribute, :title, :comments_count
+  attributes :user_id, :unmapped_attribute, :title, :comments_count,
+             :updated_at, :created_at
 end
 
 class Repository
@@ -28,6 +29,7 @@ end
 
 class ArticleRepository
   include Lotus::Repository
+  include Lotus::Repository::Timestamps
 
   def self.rank
     query do
@@ -66,6 +68,8 @@ DB.create_table :articles do
   String  :s_title
   String  :comments_count # Not an error: we're testing String => Integer coercion
   String  :umapped_column
+  DateTime :created_at
+  DateTime :updated_at
 end
 
 DB.create_table :devices do
@@ -93,6 +97,9 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
+
+    attribute :updated_at,     DateTime
+    attribute :created_at,     DateTime
 
     identity :_id
   end
