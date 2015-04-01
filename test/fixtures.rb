@@ -98,8 +98,7 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
 
-    attribute :updated_at,     DateTime
-    attribute :created_at,     DateTime
+    timestamps
 
     identity :_id
   end

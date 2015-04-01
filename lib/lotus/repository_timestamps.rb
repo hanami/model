@@ -2,12 +2,12 @@ module Lotus
   module Repository
     # Timestamps handling using an entity's @created_at and @updated_at.
     #
-    # @since 0.2.4
+    # @since 0.3.0
     module Timestamps
       # Override existing public API into hosting class to support @created_at
       # and @updated_at using Ruby implementations (database agnostic).
       #
-      # @since 0.2.4
+      # @since 0.3.0
       #
       # @example
       #   require 'lotus/model'
@@ -31,7 +31,7 @@ module Lotus
         #
         # @return [Object] the entity
         #
-        # @since 0.2.4
+        # @since 0.3.0
         #
         # @see Lotus::Repository#persist
         #
@@ -90,7 +90,7 @@ module Lotus
         #
         # @return [Object] the entity
         #
-        # @since 0.2.4
+        # @since 0.3.0
         #
         # @see Lotus::Repository#create
         #
@@ -131,7 +131,7 @@ module Lotus
         # @raise [Lotus::Model::NonPersistedEntityError] if the given entity
         #   wasn't already persisted.
         #
-        # @since 0.2.4
+        # @since 0.3.0
         #
         # @see Lotus::Repository#update
         # @see Lotus::Model::NonPersistedEntityError
@@ -184,7 +184,7 @@ module Lotus
         # @return [Object] the entity
         #
         # @api private
-        # @since 0.2.4
+        # @since 0.3.0
         def _update_timestamps(entity)
           entity.created_at ||= Time.now.utc
           entity.updated_at = Time.now.utc
