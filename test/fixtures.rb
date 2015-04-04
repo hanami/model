@@ -5,7 +5,7 @@ end
 
 class Article
   include Lotus::Entity
-  attributes :user_id, :unmapped_attribute, :title, :comments_count
+  attributes :user_id, :unmapped_attribute, :title, :comments_count, :create_at
 end
 
 class Repository
@@ -63,6 +63,7 @@ DB.create_table :articles do
   String  :s_title
   String  :comments_count # Not an error: we're testing String => Integer coercion
   String  :umapped_column
+  DateTime :created_at
 end
 
 DB.create_table :devices do
@@ -88,6 +89,7 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
+    attribute :created_at,     DateTime
 
     identity :_id
   end

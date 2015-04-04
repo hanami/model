@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'date'
 
 describe Lotus::Repository do
   let(:user1) { User.new(name: 'L') }
@@ -116,6 +117,34 @@ describe Lotus::Repository do
           user1.id.must_equal id
         end
       end
+
+      describe '.created_at' do
+
+      before do
+
+        @user = UserRepository.create(user1)
+        @timeago = DateTime.new(2015,4,1)
+      
+      end
+
+      let(:article4) { Article.new(user_id: @user.id, title: 'Love Relationships', comments_count: '4') }
+      let(:article5) { Article.new(user_id: @user.id, title: 'Love Relationships', comments_count: '4', created_at: @timeago) }
+
+      it 'persisted created_at which un assign time' do
+        result = ArticleRepository.create(article4)
+        timenow = result.created_at
+        result.instance_variable_get(:@created_at).must_equal timenow
+      end
+
+      it 'persisted created_at which assigned time' do
+        result = ArticleRepository.create(article5)
+        result.instance_variable_get(:@created_at).must_equal @timeago
+      end
+
+      it 'un persist created_at' do
+        @user.instance_variable_get(:@created_at).must_be_nil
+      end
+    end
 
       describe '.update' do
         before do
