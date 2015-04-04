@@ -5,7 +5,7 @@ end
 
 class Article
   include Lotus::Entity
-  attributes :user_id, :unmapped_attribute, :title, :comments_count, :create_at
+  attributes :user_id, :unmapped_attribute, :title, :comments_count, :created_at
 end
 
 class Repository

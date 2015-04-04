@@ -283,7 +283,7 @@ module Lotus
       #
       #   ArticleRepository.create(article) # no-op
       def create(entity)
-        unless 
+        unless persisted?(entity)
           if entity.methods.include?(:created_at)
             if entity.created_at.nil?
               entity.created_at = Time.now
