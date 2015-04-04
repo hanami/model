@@ -283,7 +283,12 @@ module Lotus
       #
       #   ArticleRepository.create(article) # no-op
       def create(entity)
-        unless entity.id
+        unless 
+          if entity.methods.include?(:created_at)
+            if entity.created_at.nil?
+              entity.created_at = Time.now
+            end
+          end
           @adapter.create(collection, entity)
         end
       end
@@ -379,7 +384,7 @@ module Lotus
       #
       #   ArticleRepository.delete(article) # raises Lotus::Model::NonPersistedEntityError
       def delete(entity)
-        if entity.id
+        if persisted?(entity)
           @adapter.delete(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
@@ -660,6 +665,16 @@ module Lotus
       def exclude(query)
         query.negate!
         query
+      end
+
+      # This is a method to check entity persited or not
+      # 
+      # @param entity
+      #
+      # @return true
+
+      def persisted?(entity)
+        return true if entity.id
       end
     end
   end
