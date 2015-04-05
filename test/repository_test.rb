@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'date'
 
 describe Lotus::Repository do
   let(:user1) { User.new(name: 'L') }
@@ -100,9 +99,8 @@ describe Lotus::Repository do
             UserRepository.create(user2)
           ]
           
-          @created_at       = DateTime.new(2015,4,1)
           @unpersisted_user = User.new(name: 'M', age: '23')
-          @persisted_user   = User.new(name: 'D', age: '25', created_at: @created_at)
+          
         end
 
         it 'persist entities' do
@@ -121,17 +119,22 @@ describe Lotus::Repository do
           user1.id.must_equal id
         end
 
-        describe 'when entity is already persisted' do
+        describe 'when entity is not persisted' do
           it 'assigns and persists created_at attribute' do
             result = UserRepository.create(@unpersisted_user)
             result.created_at.must_equal result.created_at
           end
         end
 
-        describe 'when entity is not persisted' do
+        describe 'when entity is already persisted' do
+          before do
+            user              = User.new(name: 'D', age: '25')
+            @user             = UserRepository.create(user)
+            @persisted_user   = UserRepository.persist(@user)
+            @created_at       = @persisted_user.created_at
+          end
           it 'does not touch created_at' do
-            result = UserRepository.persist(@persisted_user)
-            result.created_at.must_equal @created_at
+            @persisted_user.created_at.must_equal @created_at
           end
         end
       end
