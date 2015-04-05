@@ -284,11 +284,7 @@ module Lotus
       #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless persisted?(entity)
-          if entity.methods.include?(:created_at)
-            if entity.created_at.nil?
-              entity.created_at = Time.now
-            end
-          end
+          update_timestamps(entity)
           @adapter.create(collection, entity)
         end
       end
@@ -674,8 +670,17 @@ module Lotus
       # @return true
 
       def persisted?(entity)
-        return true if entity.id
+        !!entity.id
       end
+
+      def update_timestamps(entity)
+        if entity.class.attributes.include?(:created_at)
+          if entity.created_at.nil?
+            entity.created_at = Time.now
+          end
+        end
+      end
+
     end
   end
 end
