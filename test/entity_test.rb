@@ -201,4 +201,22 @@ describe Lotus::Entity do
       end
     end
   end
+
+  describe '#persisted?' do
+    describe 'when id is not assigned' do
+      let(:book) { Book.new }
+
+      it 'returns false' do
+        book.persisted?.must_equal false
+      end
+    end
+
+    describe 'when id is assigned' do
+      let(:book) { Book.new(id: 555) }
+
+      it 'returns true' do
+        book.persisted?.must_equal true
+      end
+    end
+  end
 end
