@@ -19,7 +19,7 @@ describe Lotus::Repository do
       before do
         UserRepository.adapter    = adapter.new(mapper, uri)
         ArticleRepository.adapter = adapter.new(mapper, uri)
-        
+
         UserRepository.collection    = :users
         ArticleRepository.collection = :articles
 
@@ -27,8 +27,8 @@ describe Lotus::Repository do
         ArticleRepository.clear
 
         unless adapter_name == :file_system
-          PhoneRepository.adapter   = adapter.new(mapper, uri)
-          PhoneRepository.collection   = :phones
+          PhoneRepository.adapter    = adapter.new(mapper, uri)
+          PhoneRepository.collection = :phones
           PhoneRepository.clear
         end
       end
@@ -37,7 +37,6 @@ describe Lotus::Repository do
         it 'returns the collection name' do
           UserRepository.collection.must_equal    :users
           ArticleRepository.collection.must_equal :articles
-          PhoneRepository.collection.must_equal :phones
         end
       end
 
@@ -108,8 +107,8 @@ describe Lotus::Repository do
           ]
 
           @created_at = DateTime.new(2015,4,1)
-          @phone_without_created_at = Phone.new(name: 'Iphone 5S', publisher: 'Apple')
-          @phone_with_created_at = Phone.new(name: 'Galaxy s5', publisher: 'Samsung', created_at: @created_at)
+          @unpersisted_phone = Phone.new(name: 'Iphone 5S', publisher: 'Apple')
+          @persisted_phone = Phone.new(name: 'Galaxy s5', publisher: 'Samsung', created_at: @created_at)
         end
 
         it 'persist entities' do
@@ -130,19 +129,14 @@ describe Lotus::Repository do
 
         describe 'when entity is already persisted' do
           it 'assigns and persists created_at attribute' do
-            result = PhoneRepository.create(@phone_without_created_at)
-            time_now = result.created_at
-            result.created_at.must_equal time_now
+            result = PhoneRepository.create(@unpersisted_phone)
+            result.created_at.must_equal result.created_at
           end
 
-          it 'assigned and persisted created_at' do
-            result = PhoneRepository.create(@phone_with_created_at)
+          it 'does not touch created_at' do
+            result = PhoneRepository.persist(@persisted_phone)
             result.created_at.must_equal @created_at
           end
-        end
-
-        it 'does not exist created_at' do
-          UserRepository.create(user1).instance_variable_get(:@created_at).must_be_nil
         end
       end
 
