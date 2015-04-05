@@ -25,12 +25,6 @@ describe Lotus::Repository do
 
         UserRepository.clear
         ArticleRepository.clear
-
-        unless adapter_name == :file_system
-          PhoneRepository.adapter    = adapter.new(mapper, uri)
-          PhoneRepository.collection = :phones
-          PhoneRepository.clear
-        end
       end
 
       describe '.collection' do
@@ -105,10 +99,10 @@ describe Lotus::Repository do
             UserRepository.create(user1),
             UserRepository.create(user2)
           ]
-
-          @created_at        = DateTime.new(2015,4,1)
-          @unpersisted_phone = Phone.new(name: 'Iphone 5S', publisher: 'Apple')
-          @persisted_phone   = Phone.new(name: 'Galaxy s5', publisher: 'Samsung', created_at: @created_at)
+          
+          @created_at       = DateTime.new(2015,4,1)
+          @unpersisted_user = User.new(name: 'M', age: '23')
+          @persisted_user   = User.new(name: 'D', age: '25', created_at: @created_at)
         end
 
         it 'persist entities' do
@@ -129,12 +123,14 @@ describe Lotus::Repository do
 
         describe 'when entity is already persisted' do
           it 'assigns and persists created_at attribute' do
-            result = PhoneRepository.create(@unpersisted_phone)
+            result = UserRepository.create(@unpersisted_user)
             result.created_at.must_equal result.created_at
           end
+        end
 
+        describe 'when entity is not persisted' do
           it 'does not touch created_at' do
-            result = PhoneRepository.persist(@persisted_phone)
+            result = UserRepository.persist(@persisted_user)
             result.created_at.must_equal @created_at
           end
         end
