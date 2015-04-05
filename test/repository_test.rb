@@ -19,18 +19,25 @@ describe Lotus::Repository do
       before do
         UserRepository.adapter    = adapter.new(mapper, uri)
         ArticleRepository.adapter = adapter.new(mapper, uri)
-
+        
         UserRepository.collection    = :users
         ArticleRepository.collection = :articles
 
         UserRepository.clear
         ArticleRepository.clear
+
+        unless adapter_name == :file_system
+          PhoneRepository.adapter   = adapter.new(mapper, uri)
+          PhoneRepository.collection   = :phones
+          PhoneRepository.clear
+        end
       end
 
       describe '.collection' do
         it 'returns the collection name' do
           UserRepository.collection.must_equal    :users
           ArticleRepository.collection.must_equal :articles
+          PhoneRepository.collection.must_equal :phones
         end
       end
 
@@ -99,6 +106,10 @@ describe Lotus::Repository do
             UserRepository.create(user1),
             UserRepository.create(user2)
           ]
+
+          @created_at = DateTime.new(2015,4,1)
+          @phone_without_created_at = Phone.new(name: 'Iphone 5S', publisher: 'Apple')
+          @phone_with_created_at = Phone.new(name: 'Galaxy s5', publisher: 'Samsung', created_at: @created_at)
         end
 
         it 'persist entities' do
@@ -116,33 +127,22 @@ describe Lotus::Repository do
           UserRepository.create(user1)
           user1.id.must_equal id
         end
-      end
 
-      describe '.created_at' do
+        describe 'when entity is already persisted' do
+          it 'assigns and persists created_at attribute' do
+            result = PhoneRepository.create(@phone_without_created_at)
+            time_now = result.created_at
+            result.created_at.must_equal time_now
+          end
 
-        before do
-
-          @user = UserRepository.create(user1)
-          @timeago = DateTime.new(2015,4,1)
-        
+          it 'assigned and persisted created_at' do
+            result = PhoneRepository.create(@phone_with_created_at)
+            result.created_at.must_equal @created_at
+          end
         end
 
-        let(:article4) { Article.new(user_id: @user.id, title: 'Love Relationships', comments_count: '4') }
-        let(:article5) { Article.new(user_id: @user.id, title: 'Love Relationships', comments_count: '4', created_at: @timeago) }
-
-        it 'persisted created_at which un assign time' do
-          result = ArticleRepository.create(article4)
-          timenow = result.created_at
-          result.instance_variable_get(:@created_at).must_equal timenow
-        end
-
-        it 'persisted created_at which assigned time' do
-          result = ArticleRepository.create(article5)
-          result.instance_variable_get(:@created_at).must_equal @timeago
-        end
-
-        it 'un persist created_at' do
-          @user.instance_variable_get(:@created_at).must_be_nil
+        it 'does not exist created_at' do
+          UserRepository.create(user1).instance_variable_get(:@created_at).must_be_nil
         end
       end
 
