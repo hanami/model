@@ -106,9 +106,9 @@ describe Lotus::Repository do
             UserRepository.create(user2)
           ]
 
-          @created_at = DateTime.new(2015,4,1)
+          @created_at        = DateTime.new(2015,4,1)
           @unpersisted_phone = Phone.new(name: 'Iphone 5S', publisher: 'Apple')
-          @persisted_phone = Phone.new(name: 'Galaxy s5', publisher: 'Samsung', created_at: @created_at)
+          @persisted_phone   = Phone.new(name: 'Galaxy s5', publisher: 'Samsung', created_at: @created_at)
         end
 
         it 'persist entities' do
