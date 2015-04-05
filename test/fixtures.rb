@@ -5,7 +5,12 @@ end
 
 class Article
   include Lotus::Entity
-  attributes :user_id, :unmapped_attribute, :title, :comments_count, :created_at
+  attributes :user_id, :unmapped_attribute, :title, :comments_count
+end
+
+class Phone
+  include Lotus::Entity
+  attributes :name, :publisher, :created_at
 end
 
 class Repository
@@ -49,6 +54,10 @@ class ArticleRepository
   end
 end
 
+class PhoneRepository
+  include Lotus::Repository
+end
+
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 
 DB.create_table :users do
@@ -63,11 +72,16 @@ DB.create_table :articles do
   String  :s_title
   String  :comments_count # Not an error: we're testing String => Integer coercion
   String  :umapped_column
-  DateTime :created_at
 end
 
 DB.create_table :devices do
   primary_key :id
+end
+
+DB.create_table :phones do
+  primary_key :id
+  String :publisher
+  DateTime :created_at
 end
 
 # DB.dataset_class = Class.new(Sequel::Dataset)
@@ -89,9 +103,16 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
-    attribute :created_at,     DateTime
 
     identity :_id
+  end
+
+  collection :phones do
+    entity Phone
+
+    attribute :id,         Integer
+    attribute :publisher,  String
+    attribute :created_at, DateTime
   end
 end
 
