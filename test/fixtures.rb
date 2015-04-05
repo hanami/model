@@ -1,16 +1,11 @@
 class User
   include Lotus::Entity
-  attributes :name, :age
+  attributes :name, :age, :created_at
 end
 
 class Article
   include Lotus::Entity
   attributes :user_id, :unmapped_attribute, :title, :comments_count
-end
-
-class Phone
-  include Lotus::Entity
-  attributes :name, :publisher, :created_at
 end
 
 class Repository
@@ -54,16 +49,13 @@ class ArticleRepository
   end
 end
 
-class PhoneRepository
-  include Lotus::Repository
-end
-
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 
 DB.create_table :users do
   primary_key :id
   String  :name
   Integer :age
+  DateTime :created_at
 end
 
 DB.create_table :articles do
@@ -78,12 +70,6 @@ DB.create_table :devices do
   primary_key :id
 end
 
-DB.create_table :phones do
-  primary_key :id
-  String :publisher
-  DateTime :created_at
-end
-
 # DB.dataset_class = Class.new(Sequel::Dataset)
 
 #FIXME this should be passed by the framework internals.
@@ -91,9 +77,10 @@ MAPPER = Lotus::Model::Mapper.new do
   collection :users do
     entity User
 
-    attribute :id,   Integer
-    attribute :name, String
-    attribute :age,  Integer
+    attribute :id,         Integer
+    attribute :name,       String
+    attribute :age,        Integer
+    attribute :created_at, DateTime
   end
 
   collection :articles do
@@ -107,13 +94,6 @@ MAPPER = Lotus::Model::Mapper.new do
     identity :_id
   end
 
-  collection :phones do
-    entity Phone
-
-    attribute :id,         Integer
-    attribute :publisher,  String
-    attribute :created_at, DateTime
-  end
 end
 
 MAPPER.load!
