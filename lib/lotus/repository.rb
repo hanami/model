@@ -664,9 +664,7 @@ module Lotus
       end
 
       # This is a method to check entity persited or not
-      # 
       # @param entity
-      #
       # @return true
 
       def persisted?(entity)
