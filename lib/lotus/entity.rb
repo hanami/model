@@ -235,6 +235,23 @@ module Lotus
       end
     end
 
+    # Check if entity has been persisted or not
+    #
+    # @since x.x.x
+    #
+    # @example Entity with assigned ID
+    #
+    #   user = UserRepository.find(1)
+    #   # => #<User:0x007fdd719ba428 @id=1>
+    #   user.persisted? # => true
+    #
+    # @example Entity with unassigned ID
+    #
+    #   user = User.new
+    #   # => #<User:0x007fdd719ba429 @id=nil>
+    #   user.persisted? # => false
+    def persisted?
+      !!id
+    end
   end
 end
-
