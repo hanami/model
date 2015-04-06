@@ -98,9 +98,6 @@ describe Lotus::Repository do
             UserRepository.create(user1),
             UserRepository.create(user2)
           ]
-          
-          @unpersisted_user = User.new(name: 'M', age: '23')
-          
         end
 
         it 'persist entities' do
@@ -120,6 +117,9 @@ describe Lotus::Repository do
         end
 
         describe 'when entity is not persisted' do
+          before do
+            @unpersisted_user = User.new(name: 'M', age: '23')
+          end
           it 'assigns and persists created_at attribute' do
             result = UserRepository.create(@unpersisted_user)
             result.created_at.must_equal result.created_at
