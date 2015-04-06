@@ -673,9 +673,7 @@ module Lotus
 
       def update_timestamps(entity)
         if entity.class.attributes.include?(:created_at)
-          if entity.created_at.nil?
-            entity.created_at = entity.created_at || Time.now.utc
-          end
+          entity.created_at ||= Time.now.utc
         end
       end
 
