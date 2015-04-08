@@ -128,12 +128,14 @@ describe Lotus::Repository do
 
         describe 'when entity is already persisted' do
           before do
-            user              = User.new(name: 'D', age: '25')
-            @user             = UserRepository.create(user)
-            @persisted_user   = UserRepository.persist(@user)
-            @created_at       = @persisted_user.created_at
+            @persisted_user = UserRepository.create(User.new(name: 'D', age: '25'))
+            @created_at     = @persisted_user.created_at
+          end
+          after do
+            UserRepository.delete(@persisted_user)
           end
           it 'does not touch created_at' do
+            UserRepository.create(@persisted_user)
             @persisted_user.created_at.must_equal @created_at
           end
         end
