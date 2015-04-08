@@ -666,8 +666,7 @@ module Lotus
 
       # This is a method to check entity persited or not
       # @param entity
-      # @return true
-
+      # @return a boolean value
       def _persisted?(entity)
         !!entity.id
       end
