@@ -90,6 +90,33 @@ describe Lotus::Repository do
             UserRepository.find(@user1.id).must_equal(@user1)
           end
         end
+
+        describe 'when entity is not persisted' do
+          before do
+            @unpersisted_user = User.new(name: 'My', age: '23')
+          end
+          after do
+            UserRepository.delete(@result)
+          end
+          it 'assigns and persist created_at attribute' do
+            @result = UserRepository.persist(@unpersisted_user)
+            @result.created_at.must_equal @result.created_at
+          end
+        end
+
+        describe 'when entity is already persisted' do
+          before do
+            @persisted_user = UserRepository.persist(User.new(name: 'Don', age: '25'))
+          end
+          after do
+            UserRepository.delete(@persisted_user)
+          end
+          it 'does not touch created_at' do
+            UserRepository.persist(@persisted_user)
+            @persisted_user.created_at.must_equal @persisted_user.created_at
+          end
+        end
+
       end
 
       describe '.create' do
@@ -120,9 +147,12 @@ describe Lotus::Repository do
           before do
             @unpersisted_user = User.new(name: 'M', age: '23')
           end
+          after do
+            UserRepository.delete(@result)
+          end
           it 'assigns and persists created_at attribute' do
-            result = UserRepository.create(@unpersisted_user)
-            result.created_at.must_equal result.created_at
+            @result = UserRepository.create(@unpersisted_user)
+            @result.created_at.must_equal @result.created_at
           end
         end
 
