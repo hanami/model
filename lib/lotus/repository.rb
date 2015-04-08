@@ -252,6 +252,7 @@ module Lotus
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
+        _update_timestamps(entity)
         @adapter.persist(collection, entity)
       end
 
@@ -284,7 +285,7 @@ module Lotus
       #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless entity.persisted?
-          update_timestamps(entity)
+          _update_timestamps(entity)
           @adapter.create(collection, entity)
         end
       end
@@ -663,7 +664,7 @@ module Lotus
         query
       end
 
-      def update_timestamps(entity)
+      def _update_timestamps(entity)
         if entity.class.attributes.include?(:created_at)
           entity.created_at ||= Time.now.utc
         end
