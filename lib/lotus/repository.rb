@@ -284,7 +284,7 @@ module Lotus
       #
       #   ArticleRepository.create(article) # no-op
       def create(entity)
-        unless entity.persisted?
+        unless _persisted?(entity)
           _update_timestamps(entity)
           @adapter.create(collection, entity)
         end
@@ -333,7 +333,7 @@ module Lotus
       #
       #   ArticleRepository.update(article) # raises Lotus::Model::NonPersistedEntityError
       def update(entity)
-        if entity.persisted?
+        if _persisted?(entity)
           @adapter.update(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
@@ -381,7 +381,7 @@ module Lotus
       #
       #   ArticleRepository.delete(article) # raises Lotus::Model::NonPersistedEntityError
       def delete(entity)
-        if entity.persisted?
+        if _persisted?(entity)
           @adapter.delete(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
@@ -662,6 +662,14 @@ module Lotus
       def exclude(query)
         query.negate!
         query
+      end
+
+      # This is a method to check entity persited or not
+      # @param entity
+      # @return true
+
+      def _persisted?(entity)
+        !!entity.id
       end
 
       def _update_timestamps(entity)
