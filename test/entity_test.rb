@@ -213,7 +213,7 @@ describe Lotus::Entity do
     it 'changes dirty state' do
       book1 = Book.new
       book1.changed?.must_equal false
-      book1.title = 'War and Peace'
+      book1.update(title: 'War and Peace')
       book1.changed?.must_equal true
       book1.changed_attributes.must_include :title
     end
