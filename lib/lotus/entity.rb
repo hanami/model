@@ -152,8 +152,7 @@ module Lotus
         end
       end
 
-      # Create special setter method for attributes.
-      # If value new or changed, set it in hash changed_attributes.
+      # Define setter/getter methods for attributes.
       #
       # @params attr [Symbol] an attribute name
       #
