@@ -44,10 +44,12 @@ module Lotus
         # @api private
         def define_attr_accessor(attr)
           attr_reader(attr)
-          define_method "#{attr}=" do |val|
-            _attribute_changed(attr) if val != __send__(attr)
-            instance_variable_set("@#{attr}", val)
-          end
+          class_eval %{
+            def #{ attr }=(value)
+              _attribute_changed(:#{ attr }) if value != @#{ attr }
+              @#{ attr } = value
+            end
+          }
         end
       end
 
