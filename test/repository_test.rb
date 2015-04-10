@@ -57,7 +57,7 @@ describe Lotus::Repository do
         end
 
         describe 'when passed a persisted entity' do
-          let(:user)           { UserRepository.create(User.new(name: 'Don', age: '25')) }
+          let(:user)           { UserRepository.create(User.new(name: 'Don')) }
           let(:persisted_user) { UserRepository.persist(user) }
 
           it 'should return that entity' do
