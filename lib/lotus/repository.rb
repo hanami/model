@@ -677,7 +677,11 @@ module Lotus
           entity.created_at ||= Time.now.utc
         end
         if entity.class.attributes.include?(:updated_at)
-          entity.updated_at = Time.now.utc
+          if entity.updated_at
+            entity.updated_at = Time.now.utc
+          else
+            entity.updated_at = entity.created_at
+          end
         end
       end
 
