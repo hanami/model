@@ -50,13 +50,17 @@ describe Lotus::Repository do
             persisted_user.age.must_equal(25)
           end
 
-          it 'assigns and persist created_at attribute' do
+          it 'assigns and persist created_at updated_at attribute' do
             persisted_user = UserRepository.persist(unpersisted_user)
             persisted_user.created_at.must_equal persisted_user.created_at
+            persisted_user.updated_at.must_equal persisted_user.created_at
           end
         end
 
         describe 'when passed a persisted entity' do
+          before do
+            @updated_at = user.updated_at
+          end
           let(:user)           { UserRepository.create(User.new(name: 'Don')) }
           let(:persisted_user) { UserRepository.persist(user) }
 
@@ -69,7 +73,7 @@ describe Lotus::Repository do
             persisted_user.created_at.must_equal persisted_user.created_at
           end
 
-          it 'update updated_at' do
+          it 'touch updated_at' do
             update_user = UserRepository.find(user.id)
             update_user.name = 'My'
 
@@ -77,6 +81,7 @@ describe Lotus::Repository do
 
             updated_user = UserRepository.find(user.id)
             updated_user.updated_at.must_equal updated_user.updated_at
+            updated_user.updated_at.wont_equal @updated_at
           end
         end
       end
@@ -108,9 +113,10 @@ describe Lotus::Repository do
         describe 'when entity is not persisted' do
           let(:unpersisted_user) { User.new(name: 'My', age: '23') }
 
-          it 'assigns and persists created_at attribute' do
+          it 'assigns and persists created_at, updated_at attribute' do
             result = UserRepository.create(unpersisted_user)
             result.created_at.must_equal result.created_at
+            result.updated_at.must_equal result.created_at
           end
         end
 
@@ -134,6 +140,7 @@ describe Lotus::Repository do
       describe '.update' do
         before do
           @user1 = UserRepository.create(user1)
+          @updated_at = @user1.updated_at
         end
 
         it 'updates entities' do
@@ -145,6 +152,7 @@ describe Lotus::Repository do
           updated_user = UserRepository.find(user.id)
           updated_user.name.must_equal('Luca')
           updated_user.updated_at.must_equal updated_user.updated_at
+          updated_user.updated_at.wont_equal @updated_at
         end
 
         it 'raises an error when not persisted' do
