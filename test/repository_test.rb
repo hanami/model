@@ -68,6 +68,16 @@ describe Lotus::Repository do
             UserRepository.persist(persisted_user)
             persisted_user.created_at.must_equal persisted_user.created_at
           end
+
+          it 'update updated_at' do
+            update_user = UserRepository.find(user.id)
+            update_user.name = 'My'
+
+            UserRepository.persist(update_user)
+
+            updated_user = UserRepository.find(user.id)
+            updated_user.updated_at.must_equal updated_user.updated_at
+          end
         end
       end
 
@@ -132,8 +142,9 @@ describe Lotus::Repository do
 
           UserRepository.update(user)
 
-          u = UserRepository.find(@user1.id)
-          u.name.must_equal('Luca')
+          updated_user = UserRepository.find(user.id)
+          updated_user.name.must_equal('Luca')
+          updated_user.updated_at.must_equal updated_user.updated_at
         end
 
         it 'raises an error when not persisted' do
