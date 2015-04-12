@@ -1,6 +1,6 @@
 class User
   include Lotus::Entity
-  attributes :name, :age, :created_at
+  attributes :name, :age, :created_at, :updated_at
 end
 
 class Article
@@ -56,6 +56,7 @@ DB.create_table :users do
   String  :name
   Integer :age
   DateTime :created_at
+  DateTime :updated_at
 end
 
 DB.create_table :articles do
@@ -81,6 +82,7 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :name,       String
     attribute :age,        Integer
     attribute :created_at, DateTime
+    attribute :updated_at, DateTime
   end
 
   collection :articles do
