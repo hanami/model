@@ -74,13 +74,11 @@ describe Lotus::Repository do
           end
 
           it 'touches updated_at' do
-            update_user = UserRepository.find(user.id)
-            update_user.name = 'My'
+            user.name = 'My'
 
-            updated_user = UserRepository.persist(update_user)
+            updated_user = UserRepository.persist(user)
 
             updated_user = UserRepository.find(user.id)
-            updated_user.updated_at.must_equal updated_user.updated_at
             updated_user.updated_at.wont_equal @updated_at
           end
         end
@@ -151,7 +149,6 @@ describe Lotus::Repository do
 
           updated_user = UserRepository.find(user.id)
           updated_user.name.must_equal('Luca')
-          updated_user.updated_at.must_equal updated_user.updated_at
           updated_user.updated_at.wont_equal @updated_at
         end
 
