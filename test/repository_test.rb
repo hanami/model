@@ -60,10 +60,7 @@ describe Lotus::Repository do
 
         describe 'when passed a persisted entity' do
           before do
-            created_at = DateTime.new(2015, 3, 5)
-            @persisted_user = user
-            @persisted_user.created_at = @persisted_user.updated_at = created_at
-            @updated_at = @persisted_user.updated_at
+            @updated_at = user.updated_at
           end
           let(:user)           { UserRepository.create(User.new(name: 'Don')) }
           let(:persisted_user) { UserRepository.persist(user) }
@@ -80,8 +77,7 @@ describe Lotus::Repository do
           it 'touches updated_at' do
             user.name = 'My'
             updated_user = UserRepository.persist(user)
-            updated_user = UserRepository.find(user.id)
-            assert (updated_user.updated_at > @updated_at)
+            assert updated_user.updated_at > @updated_at
           end
         end
       end
@@ -140,10 +136,7 @@ describe Lotus::Repository do
       describe '.update' do
         before do
           @user1 = UserRepository.create(user1)
-          created_at = DateTime.new(2015, 3, 12)
-          @persisted_user = @user1
-          @persisted_user.created_at = @persisted_user.updated_at = created_at
-          @updated_at = @persisted_user.updated_at
+          @updated_at = @user1.updated_at
         end
 
         it 'updates entities' do
@@ -152,9 +145,8 @@ describe Lotus::Repository do
 
           updated_user = UserRepository.update(user)
 
-          updated_user = UserRepository.find(user.id)
           updated_user.name.must_equal('Luca')
-          assert (updated_user.updated_at > @updated_at)
+          assert updated_user.updated_at > @updated_at
         end
 
         it 'raises an error when not persisted' do
