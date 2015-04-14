@@ -324,6 +324,39 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [@user3]
         end
+
+        it 'accepts an array as condition' do
+          names = [@user1.name, @user2.name]
+
+          query = Proc.new {
+            where(name: names)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1, @user2]
+        end
+
+        it 'accepts a set as condition' do
+          names = Set.new([@user1.name, @user2.name])
+
+          query = Proc.new {
+            where(name: names)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1, @user2]
+        end
+
+        it 'accepts a range as condition' do
+          ages = @user3.age..@user2.age
+
+          query = Proc.new {
+            where(age: ages)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user2, @user3]
+        end
       end
     end
 
