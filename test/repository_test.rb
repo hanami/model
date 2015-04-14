@@ -152,6 +152,11 @@ describe Lotus::Repository do
           updated_user = UserRepository.update(user)
 
           updated_user.name.must_equal('Luca')
+        end
+
+        it 'updates updated_at attribute' do
+          updated_user = UserRepository.update(@user1)
+
           assert updated_user.updated_at > @updated_at
         end
 
