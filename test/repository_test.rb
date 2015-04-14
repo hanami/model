@@ -56,6 +56,11 @@ describe Lotus::Repository do
             persisted_user.created_at.must_equal persisted_user.created_at
             persisted_user.updated_at.must_equal persisted_user.created_at
           end
+
+          it 'assigns and persist updated_at attribute' do
+            persisted_user = UserRepository.persist(unpersisted_user)
+            persisted_user.updated_at.must_equal persisted_user.created_at
+          end
         end
 
         describe 'when passed a persisted entity' do
@@ -71,7 +76,7 @@ describe Lotus::Repository do
 
           it 'does not touch created_at' do
             UserRepository.persist(persisted_user)
-            persisted_user.created_at.must_equal persisted_user.created_at
+            persisted_user.created_at.wont_be_nil
           end
 
           it 'touches updated_at' do
@@ -111,7 +116,11 @@ describe Lotus::Repository do
 
           it 'assigns and persists created_at, updated_at attribute' do
             result = UserRepository.create(unpersisted_user)
-            result.created_at.must_equal result.created_at
+            result.created_at.wont_be_nil
+          end
+
+          it 'assigns and persists updated_at attribute' do
+            result = UserRepository.create(unpersisted_user)
             result.updated_at.must_equal result.created_at
           end
         end
@@ -128,7 +137,7 @@ describe Lotus::Repository do
 
           it 'does not touch created_at' do
             UserRepository.create(@persisted_user)
-            @persisted_user.created_at.must_equal @created_at
+            @persisted_user.created_at.wont_be_nil
           end
         end
       end
