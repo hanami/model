@@ -17,9 +17,9 @@ module Lotus
         #
         # @since 0.1.1
         #
-        # @see http://rdoc.info/gems/lotus-utils/Lotus/Utils/Kernel#Array-class_method
+        # @see http://ruby-doc.org/core/Kernel.html#method-i-Array
         def self.Array(arg)
-          Utils::Kernel.Array(arg) unless arg.nil?
+          ::Kernel.Array(arg) unless arg.nil?
         end
 
         # Coerce into a Boolean, unless the argument is nil
