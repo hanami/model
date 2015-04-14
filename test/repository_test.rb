@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'date'
 
 describe Lotus::Repository do
   let(:user1) { User.new(name: 'L') }
