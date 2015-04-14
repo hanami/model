@@ -11,6 +11,11 @@ describe Lotus::Model::Mapping::Coercions do
       actual = Lotus::Model::Mapping::Coercions.Array(nil)
       actual.must_be_nil
     end
+
+    it 'preserves data structure' do
+      actual = Lotus::Model::Mapping::Coercions.Array(expected = [['lotus-controller', '~> 0.4'], ['lotus-view', '~> 0.4']])
+      actual.must_equal expected
+    end
   end
 
   describe '.Boolean' do
