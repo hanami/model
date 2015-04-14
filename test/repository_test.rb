@@ -51,10 +51,9 @@ describe Lotus::Repository do
             persisted_user.age.must_equal(25)
           end
 
-          it 'assigns and persist created_at updated_at attribute' do
+          it 'assigns and persist created_at attribute' do
             persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.created_at.must_equal persisted_user.created_at
-            persisted_user.updated_at.must_equal persisted_user.created_at
+            persisted_user.created_at.wont_be_nil
           end
 
           it 'assigns and persist updated_at attribute' do
@@ -113,7 +112,7 @@ describe Lotus::Repository do
         describe 'when entity is not persisted' do
           let(:unpersisted_user) { User.new(name: 'My', age: '23') }
 
-          it 'assigns and persists created_at, updated_at attribute' do
+          it 'assigns and persists created_at attribute' do
             result = UserRepository.create(unpersisted_user)
             result.created_at.wont_be_nil
           end
