@@ -80,7 +80,6 @@ describe Lotus::Repository do
           end
 
           it 'touches updated_at' do
-            user.name = 'My'
             updated_user = UserRepository.persist(user)
             assert updated_user.updated_at > @updated_at
           end
