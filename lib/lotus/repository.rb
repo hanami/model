@@ -334,6 +334,7 @@ module Lotus
       #   ArticleRepository.update(article) # raises Lotus::Model::NonPersistedEntityError
       def update(entity)
         if _persisted?(entity)
+          _update_timestamps(entity)
           @adapter.update(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
@@ -671,10 +672,28 @@ module Lotus
         !!entity.id
       end
 
-      def _update_timestamps(entity)
+      # Add time create an entity
+      def _update_created_at(entity)
         if entity.class.attributes.include?(:created_at)
           entity.created_at ||= Time.now.utc
         end
+      end
+
+      # Add time update an entity
+      def _update_updated_at(entity)
+        if entity.class.attributes.include?(:updated_at)
+          if entity.updated_at
+            entity.updated_at = Time.now.utc
+          else
+            entity.updated_at = entity.created_at
+          end
+        end
+      end
+
+      # Update timestamps
+      def _update_timestamps(entity)
+        _update_created_at(entity)
+        _update_updated_at(entity)
       end
 
     end
