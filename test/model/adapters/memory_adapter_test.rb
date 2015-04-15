@@ -357,6 +357,33 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [@user2, @user3]
         end
+
+        it 'accepts a block as condition' do
+          query  = Proc.new {
+            where{ age > 31 }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1]
+        end
+
+        it "accepts nested block conditions" do
+          query  = Proc.new {
+            where { age > 31 }.where { name == 'L' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1]
+        end
+
+        it "takes into account both hash and block conditions" do
+          query  = Proc.new {
+            where(age: 32).where { name == 'L' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1]
+        end
       end
     end
 

@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'ostruct'
 require 'lotus/utils/kernel'
 
 module Lotus
@@ -94,22 +95,42 @@ module Lotus
           #
           #   query.where(year: 1900..1982)
           #
+          # @example Using block
+          #
+          #   query.where { age > 31 }
+          #
           # @example Multiple conditions
           #
           #   query.where(language: 'ruby')
           #        .where(framework: 'lotus')
-          def where(condition)
-            column, value = _expand_condition(condition)
-            conditions.push([:where, Proc.new{
-              find_all{|r|
-                case value
-                when Array,Set,Range
-                  value.include?(r.fetch(column, nil))
-                else
-                  r.fetch(column, nil) == value
-                end
-              }
-            }])
+          #
+          # @example Multiple conditions with blocks
+          #
+          #   query.where { language == 'ruby' }
+          #        .where { framework == 'lotus' }
+          #
+          # @example Mixed hash and block conditions
+          #
+          #   query.where(language: 'ruby')
+          #        .where { framework == 'lotus' }
+          def where(condition = nil, &blk)
+            if condition
+              column, value = _expand_condition(condition)
+              conditions.push([:where, Proc.new{
+                find_all{|r|
+                  case value
+                  when Array,Set,Range
+                    value.include?(r.fetch(column, nil))
+                  else
+                    r.fetch(column, nil) == value
+                  end
+                }
+              }])
+            elsif blk
+              conditions.push([:where, Proc.new {
+                find_all { |r| OpenStruct.new(r).instance_eval(&blk) }
+              }])
+            end
 
             self
           end
@@ -141,7 +162,7 @@ module Lotus
           # @example Range
           #
           #   query.where(country: 'italy').or(year: 1900..1982)
-          def or(condition=nil, &blk)
+          def or(condition = nil, &blk)
             column, value = _expand_condition(condition)
             conditions.push([:or, Proc.new{ find_all{|r| r.fetch(column) == value} }])
             self
