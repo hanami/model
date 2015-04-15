@@ -23,7 +23,6 @@ module Lotus
       #   article.title = 'Master and Margarita'
       #   article.changed? # => true
       #   article.changed_attributes # => {:title => 'Generation P'}
-      #
       def self.included(base)
         base.class_eval do
           extend ClassMethods
@@ -62,7 +61,6 @@ module Lotus
       # @since x.x.x
       #
       # @see Lotus::Entity#initialize
-      #
       def initialize(attributes = {})
         @changed_attributes = {}
         super
@@ -91,7 +89,6 @@ module Lotus
       #   article.changed_attributes # => {}
       #   article.title = 'Master and Margarita'
       #   article.changed_attributes # => {:title => 'The crime and punishment'}
-      #
       def changed_attributes
         @changed_attributes.dup
       end
@@ -101,7 +98,6 @@ module Lotus
       # @return [TrueClass, FalseClass] the changed indicator
       #
       # @since x.x.x
-      #
       def changed?
         @changed_attributes.size > 0
       end
@@ -121,7 +117,6 @@ module Lotus
       # Clear all information about dirty data
       #
       # @since x.x.x
-      #
       def _clear_changes_information
         @changed_attributes = {}
       end
