@@ -55,6 +55,8 @@ DB.create_table :users do
   primary_key :id
   String  :name
   Integer :age
+  DateTime :created_at
+  DateTime :updated_at
 end
 
 DB.create_table :articles do
