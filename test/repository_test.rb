@@ -342,6 +342,28 @@ describe Lotus::Repository do
           end
         end
       end
+
+      describe 'dirty tracking' do
+        before do
+          @article = ArticleRepository.create(article1)
+        end
+
+        it "hasn't dirty state after creation" do
+          @article.changed?.must_equal false
+        end
+
+        it "hasn't dirty state after finding" do
+          found = ArticleRepository.find(@article.id)
+          found.changed?.must_equal false
+        end
+
+        it "hasn't dirty state after update" do
+          @article.title = 'Dirty tracking'
+          @article = ArticleRepository.update(@article)
+
+          @article.changed?.must_equal false
+        end
+      end
     end
   end
 

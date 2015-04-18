@@ -204,24 +204,102 @@ describe Lotus::Entity do
   end
 
   describe 'dirty tracking' do
+    describe "initialization" do
+      describe "without identity" do
+        describe "without attributes" do
+          it "hasn't dirty state" do
+            book = Book.new
 
-    it 'dirty state when created' do
-      book = Book.new(title: 'Crime and Punishment', author: 'F. Dostoevskiy')
-      book.changed?.must_equal true
+            book.changed?.must_equal false
+            book.changed_attributes.must_equal({})
+          end
+        end
+
+        describe "with attributes" do
+          it "has dirty state" do
+            book = Book.new({title: 'Crime and Punishment', author: 'Fyodor Dostoyevsky'})
+
+            book.changed?.must_equal false
+            book.changed_attributes.must_equal({})
+          end
+        end
+      end
+
+      describe "with identity" do
+        describe "with attributes" do
+          it "has't dirty state" do
+            book = Book.new(id: 1, title: 'Crime and Punishment', author: 'Fyodor Dostoyevsky')
+
+            book.changed?.must_equal false
+            book.changed_attributes.must_equal({})
+          end
+        end
+      end
     end
 
-    it 'changes dirty state' do
-      book1 = Book.new
-      book1.changed?.must_equal false
-      book1.update(title: 'War and Peace')
-      book1.changed?.must_equal true
-      book1.changed_attributes.must_include :title
+    describe "attr writer" do
+      it "tracks dirty state" do
+        book = Book.new
+        book.changed?.must_equal false
+
+        book.title  = 'War and Peace'
+        book.author = nil
+        book.changed?.must_equal true
+
+        book.changed_attributes.must_equal(title: 'War and Peace')
+      end
+
+      it "doesn't track dirty state for unchanged values" do
+        book = Book.new(title: "Fight Club", author: "Chuck Palahniuk")
+        book.title  = "Choke"
+        book.author = "Chuck Palahniuk"
+
+        book.changed?.must_equal true
+        book.changed_attributes.must_equal(title: "Choke")
+      end
     end
 
-    it '.changed_attribute is thread safe' do
-      book = Book.new(title: 'Crime and Punishment')
-      book.changed_attributes.delete(:title)
-      book.changed_attributes.wont_equal({})
+    describe "#update" do
+      it "tracks dirty state" do
+        book = Book.new
+        book.changed?.must_equal false
+
+        book.update(title: 'War and Peace')
+        book.changed?.must_equal true
+
+        book.changed_attributes.must_equal(title: 'War and Peace')
+      end
+
+      it "doesn't track dirty state for unchanged values" do
+        book = Book.new(title: "Fight Club", author: "Chuck Palahniuk")
+        book.update(title: "Choke", author: "Chuck Palahniuk")
+
+        book.changed?.must_equal true
+        book.changed_attributes.must_equal(title: "Choke")
+      end
+    end
+
+    describe "#changed_attributes" do
+      it "prevents data escape" do
+        book       = Book.new
+        book.title = 'Crime and Punishment'
+
+        book.changed_attributes.must_equal({title: 'Crime and Punishment'})
+        book.changed_attributes.delete(:title)
+        book.changed_attributes.must_equal({title: 'Crime and Punishment'})
+      end
+    end
+
+    describe "inheritance" do
+      it "make dirty tracking available to descendants" do
+        book = NonFictionBook.new
+        book.changed?.must_equal false
+      end
+
+      it "doesn't interfer with other classes" do
+        camera = Camera.new
+        camera.wont_respond_to(:changed?)
+      end
     end
   end
 end

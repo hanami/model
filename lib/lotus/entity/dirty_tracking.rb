@@ -20,9 +20,11 @@ module Lotus
       #
       #   article = Article.new(title: 'Generation P')
       #   article.changed? # => false
+      #
       #   article.title = 'Master and Margarita'
       #   article.changed? # => true
-      #   article.changed_attributes # => {:title => 'Generation P'}
+      #
+      #   article.changed_attributes # => {:title => "Generation P"}
       def self.included(base)
         base.class_eval do
           extend ClassMethods
@@ -37,15 +39,15 @@ module Lotus
         # @params attr [Symbol] an attribute name
         #
         # @since x.x.x
-        #
-        # @see Lotus::Entity
-        #
         # @api private
+        #
+        # @see Lotus::Entity::ClassMethods#define_attr_accessor
         def define_attr_accessor(attr)
           attr_reader(attr)
+
           class_eval %{
             def #{ attr }=(value)
-              _attribute_changed(:#{ attr }) if value != @#{ attr }
+              _attribute_changed(:#{ attr }, @#{ attr }, value)
               @#{ attr } = value
             end
           }
@@ -53,8 +55,6 @@ module Lotus
       end
 
       # Override initialize process.
-      # Init @changed_attributes and Clear dirty data if
-      # entity persisted.
       #
       # @param attributes [Hash] a set of attribute names and values
       #
@@ -62,9 +62,9 @@ module Lotus
       #
       # @see Lotus::Entity#initialize
       def initialize(attributes = {})
-        @changed_attributes = {}
+        _clear_changes_information
         super
-        _clear_changes_information if self.id
+        _clear_changes_information
       end
 
       # Getter for hash of changed attributes.
@@ -87,15 +87,16 @@ module Lotus
       #
       #   article = Article.new(title: 'The crime and punishment')
       #   article.changed_attributes # => {}
+      #
       #   article.title = 'Master and Margarita'
-      #   article.changed_attributes # => {:title => 'The crime and punishment'}
+      #   article.changed_attributes # => {:title => "The crime and punishment"}
       def changed_attributes
         @changed_attributes.dup
       end
 
-      # Return boolean of dirty state for model.
+      # Checks if the attributes were changed
       #
-      # @return [TrueClass, FalseClass] the changed indicator
+      # @return [TrueClass, FalseClass] the result of the check
       #
       # @since x.x.x
       def changed?
@@ -110,8 +111,8 @@ module Lotus
       #
       # @since x.x.x
       # @api private
-      def _attribute_changed(attr)
-        @changed_attributes[attr] = __send__(attr)
+      def _attribute_changed(attr, current_value, new_value)
+        @changed_attributes[attr] = new_value if current_value != new_value
       end
 
       # Clear all information about dirty data
@@ -120,7 +121,6 @@ module Lotus
       def _clear_changes_information
         @changed_attributes = {}
       end
-
     end
   end
 end

@@ -5,6 +5,7 @@ end
 
 class Article
   include Lotus::Entity
+  include Lotus::Entity::DirtyTracking
   attributes :user_id, :unmapped_attribute, :title, :comments_count
 end
 
