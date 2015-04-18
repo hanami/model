@@ -1,5 +1,6 @@
 require 'lotus/model/version'
 require 'lotus/entity'
+require 'lotus/entity/dirty_tracking'
 require 'lotus/repository'
 require 'lotus/model/mapper'
 require 'lotus/model/configuration'

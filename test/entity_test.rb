@@ -8,6 +8,7 @@ describe Lotus::Entity do
 
     class Book
       include Lotus::Entity
+      include Lotus::Entity::DirtyTracking
       attributes :title, :author, :published
     end
 
@@ -199,6 +200,28 @@ describe Lotus::Entity do
         exception = -> { book.update(attributes) }.must_raise(NoMethodError)
         exception.message.must_include "undefined method `rating=' for"
       end
+    end
+  end
+
+  describe 'dirty tracking' do
+
+    it 'dirty state when created' do
+      book = Book.new(title: 'Crime and Punishment', author: 'F. Dostoevskiy')
+      book.changed?.must_equal true
+    end
+
+    it 'changes dirty state' do
+      book1 = Book.new
+      book1.changed?.must_equal false
+      book1.update(title: 'War and Peace')
+      book1.changed?.must_equal true
+      book1.changed_attributes.must_include :title
+    end
+
+    it '.changed_attribute is thread safe' do
+      book = Book.new(title: 'Crime and Punishment')
+      book.changed_attributes.delete(:title)
+      book.changed_attributes.wont_equal({})
     end
   end
 end
