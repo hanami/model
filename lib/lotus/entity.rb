@@ -138,24 +138,35 @@ module Lotus
       #
       #   User.attributes => #<Set: {:id, :name}>
       #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
+      #
       def attributes(*attrs)
         if attrs.any?
           attrs = Lotus::Utils::Kernel.Array(attrs)
           self.attributes.merge attrs
 
           attrs.each do |attr|
-            attr_accessor(attr) if define_attribute?(attr)
+            define_attr_accessor(attr) if defined_attribute?(attr)
           end
         else
           @attributes ||= Set.new
         end
       end
 
+      # Define setter/getter methods for attributes.
+      #
+      # @params attr [Symbol] an attribute name
+      #
+      # @since x.x.x
+      # @api private
+      def define_attr_accessor(attr)
+        attr_accessor(attr)
+      end
+
       # Check if attr_reader define the given attribute
       #
       # @since 0.2.1
       # @api private
-      def define_attribute?(name)
+      def defined_attribute?(name)
         name == :id ||
           !instance_methods.include?(name)
       end
@@ -237,4 +248,3 @@ module Lotus
 
   end
 end
-
