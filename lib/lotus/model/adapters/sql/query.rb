@@ -208,7 +208,7 @@ module Lotus
           #
           #   # => SELECT * FROM `users` WHERE (`age` <= 31)
           def exclude(condition = nil, &blk)
-            _push_to_conditions(:exclude, condition || blk)
+            _push_to_conditions(:exclude, condition || blk).inspect
             self
           end
 
@@ -660,8 +660,20 @@ module Lotus
             end
           end
 
+          # Stores a query condition of a specified type in the conditions array.
+          #
+          # @param condition_type [Symbol] the condition type. (eg. `:where`, `:or`)
+          # @param condition [Hash, Proc] the query condition to be stored.
+          #
+          # @return [Array<Array>] the conditions array itself.
+          #
+          # @raise [ArgumentError] if condition is not specified.
+          #
+          # @api private
+          # @since 0.3.1
+          #
           def _push_to_conditions(condition_type, condition)
-            raise ArgumentError, 'You need to specify a condition.' unless condition
+            raise ArgumentError.new('You need to specify a condition.') if condition.nil?
             conditions.push([condition_type, condition])
           end
 
