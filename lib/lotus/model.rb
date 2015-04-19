@@ -27,6 +27,16 @@ module Lotus
     class InvalidMappingError < ::StandardError
     end
 
+    # Error for invalid query
+    # It's raised when a query is malformed
+    #
+    # @since 0.3.1
+    class InvalidQueryError < ::StandardError
+      def initialize(message = nil)
+        super(message || "There was an error with your query.")
+      end
+    end
+
     include Utils::ClassAttribute
 
     # Framework configuration
