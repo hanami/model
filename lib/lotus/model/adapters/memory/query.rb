@@ -114,22 +114,21 @@ module Lotus
           #   query.where(language: 'ruby')
           #        .where { framework == 'lotus' }
           def where(condition = nil, &blk)
-            if condition
-              column, value = _expand_condition(condition)
-              conditions.push([:where, Proc.new{
-                find_all{|r|
-                  case value
-                  when Array,Set,Range
-                    value.include?(r.fetch(column, nil))
-                  else
-                    r.fetch(column, nil) == value
-                  end
+            if blk
+              _push_evaluated_block_condition(:where, blk)
+            elsif condition
+              _push_to_expanded_condition(:where, condition) do |column, value|
+                Proc.new {
+                  find_all{ |r|
+                    case value
+                    when Array,Set,Range
+                      value.include?(r.fetch(column, nil))
+                    else
+                      r.fetch(column, nil) == value
+                    end
+                  }
                 }
-              }])
-            elsif blk
-              conditions.push([:where, Proc.new {
-                find_all { |r| OpenStruct.new(r).instance_eval(&blk) }
-              }])
+              end
             end
 
             self
@@ -163,8 +162,14 @@ module Lotus
           #
           #   query.where(country: 'italy').or(year: 1900..1982)
           def or(condition = nil, &blk)
-            column, value = _expand_condition(condition)
-            conditions.push([:or, Proc.new{ find_all{|r| r.fetch(column) == value} }])
+            if blk
+              _push_evaluated_block_condition(:or, blk)
+            elsif condition
+              _push_to_expanded_condition(:or, condition) do |column, value|
+                Proc.new { find_all{ |r| r.fetch(column) == value} }
+              end
+            end
+
             self
           end
 
@@ -196,9 +201,15 @@ module Lotus
           #
           #   query.exclude(language: 'java')
           #        .exclude(company: 'enterprise')
-          def exclude(condition)
-            column, value = _expand_condition(condition)
-            conditions.push([:where, Proc.new{ reject {|r| r.fetch(column) == value} }])
+          def exclude(condition = nil, &blk)
+            if blk
+              _push_evaluated_block_condition(:where, blk, :reject)
+            elsif condition
+              _push_to_expanded_condition(:where, condition) do |column, value|
+                Proc.new { reject { |r| r.fetch(column) == value} }
+              end
+            end
+
             self
           end
 
@@ -553,8 +564,21 @@ module Lotus
             all.map {|record| record.public_send(column) }.compact
           end
 
-          def _expand_condition(condition)
-            Array(condition).flatten(1)
+          def _push_to_expanded_condition(condition_type, condition)
+            proc = yield Array(condition).flatten(1)
+            conditions.push([condition_type, proc])
+          end
+
+          def _push_evaluated_block_condition(condition_type, blk, strategy = :find_all)
+            conditions.push([condition_type, Proc.new {
+              send(strategy) { |r|
+                begin
+                  OpenStruct.new(r).instance_eval(&blk)
+                rescue
+                  raise Lotus::Model::InvalidQueryError
+                end
+              }
+            }])
           end
         end
       end
