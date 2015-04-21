@@ -138,17 +138,6 @@ module Lotus
       #
       #   User.attributes => #<Set: {:id, :name}>
       #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
-      #
-      # @example Add timestamps
-      #   require 'lotus/model'
-      #
-      #   class User
-      #     include Lotus::Entity
-      #     attributes :timestamps
-      #   end
-      #
-      #   User.attributes => #<Set: {:id, :created_at, :updated_at}>
-      #
       def attributes(*attrs)
         if attrs.any?
           attrs = Lotus::Utils::Kernel.Array(attrs)
@@ -156,7 +145,6 @@ module Lotus
 
           attrs.each do |attr|
             define_attr_accessor(attr) if defined_attribute?(attr)
-            attr_accessor(:updated_at, :created_at) if attr == :timestamps
           end
         else
           @attributes ||= Set.new

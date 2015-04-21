@@ -6,8 +6,8 @@ end
 class Article
   include Lotus::Entity
   include Lotus::Entity::DirtyTracking
-  attributes :user_id, :unmapped_attribute, :title, :comments_count,
-             :updated_at, :created_at
+  include Lotus::Entity::Timestamps
+  attributes :user_id, :unmapped_attribute, :title, :comments_count
 end
 
 class Repository
@@ -86,8 +86,8 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :id,         Integer
     attribute :name,       String
     attribute :age,        Integer
-    attribute :created_at, DateTime
-    attribute :updated_at, DateTime
+
+    timestamps
   end
 
   collection :articles do
