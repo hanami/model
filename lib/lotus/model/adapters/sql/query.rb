@@ -670,8 +670,7 @@ module Lotus
           # @raise [ArgumentError] if condition is not specified.
           #
           # @api private
-          # @since 0.3.1
-          #
+          # @since x.x.x
           def _push_to_conditions(condition_type, condition)
             raise ArgumentError.new('You need to specify a condition.') if condition.nil?
             conditions.push([condition_type, condition])
