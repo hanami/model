@@ -117,9 +117,8 @@ module Lotus
           #   query.where{ age > 10 }
           #
           #   # => SELECT * FROM `users` WHERE (`age` > 31)
-          def where(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
-            conditions.push([:where, condition])
+          def where(condition = nil, &blk)
+            _push_to_conditions(:where, condition || blk)
             self
           end
 
@@ -162,9 +161,8 @@ module Lotus
           #   query.where(name: 'John').or{ age > 31 }
           #
           #   # => SELECT * FROM `users` WHERE ((`name` = 'John') OR (`age` < 32))
-          def or(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
-            conditions.push([:or, condition])
+          def or(condition = nil, &blk)
+            _push_to_conditions(:or, condition || blk)
             self
           end
 
@@ -209,9 +207,8 @@ module Lotus
           #   query.exclude{ age > 31 }
           #
           #   # => SELECT * FROM `users` WHERE (`age` <= 31)
-          def exclude(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
-            conditions.push([:exclude, condition])
+          def exclude(condition = nil, &blk)
+            _push_to_conditions(:exclude, condition || blk).inspect
             self
           end
 
@@ -661,6 +658,22 @@ module Lotus
             dup.tap do |result|
               result.conditions.push(*query.conditions)
             end
+          end
+
+          # Stores a query condition of a specified type in the conditions array.
+          #
+          # @param condition_type [Symbol] the condition type. (eg. `:where`, `:or`)
+          # @param condition [Hash, Proc] the query condition to be stored.
+          #
+          # @return [Array<Array>] the conditions array itself.
+          #
+          # @raise [ArgumentError] if condition is not specified.
+          #
+          # @api private
+          # @since x.x.x
+          def _push_to_conditions(condition_type, condition)
+            raise ArgumentError.new('You need to specify a condition.') if condition.nil?
+            conditions.push([condition_type, condition])
           end
 
           def _order_operator
