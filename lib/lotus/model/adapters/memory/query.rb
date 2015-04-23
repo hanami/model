@@ -119,7 +119,7 @@ module Lotus
             elsif condition
               _push_to_expanded_condition(:where, condition) do |column, value|
                 Proc.new {
-                  find_all{ |r|
+                  find_all { |r|
                     case value
                     when Array,Set,Range
                       value.include?(r.fetch(column, nil))
@@ -166,7 +166,7 @@ module Lotus
               _push_evaluated_block_condition(:or, blk)
             elsif condition
               _push_to_expanded_condition(:or, condition) do |column, value|
-                Proc.new { find_all{ |r| r.fetch(column) == value} }
+                Proc.new { find_all { |r| r.fetch(column) == value} }
               end
             end
 

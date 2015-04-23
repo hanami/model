@@ -360,7 +360,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
         it 'accepts a block as condition' do
           query  = Proc.new {
-            where{ age > 31 }
+            where { age > 31 }
           }
 
           result = @adapter.query(collection, &query).all
@@ -454,7 +454,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
         it 'accepts a block as condition' do
           query  = Proc.new {
-            exclude{ age > 31 }
+            exclude { age > 31 }
           }
 
           result = @adapter.query(collection, &query).all
