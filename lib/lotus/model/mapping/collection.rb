@@ -340,7 +340,7 @@ module Lotus
         # attribute :created_at, DateTime
         # attribute :updated_at, DateTime
         #
-        # @since 0.3.0
+        # @since x.x.x
         #
         # @example
         #   mapper = Lotus::Model::Mapper.new do
