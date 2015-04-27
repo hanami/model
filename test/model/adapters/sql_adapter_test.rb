@@ -333,12 +333,12 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
 
         it 'raises InvalidQueryError if you use wrong column names' do
-          -> {
-            query = Proc.new {
-              where { a > 31 }
-            }
+          exception = -> {
+            query = Proc.new { where { a > 31 } }
             @adapter.query(collection, &query).all
           }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.wont_be_nil
         end
 
         it 'raises an error if you dont specify condition or block' do
@@ -408,11 +408,12 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
 
         it 'raises InvalidQueryError if you use wrong column names' do
-          -> {
+          exception = -> {
             query = Proc.new { exclude{ a > 32 } }
-
             @adapter.query(collection, &query).all
           }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.wont_be_nil
         end
 
         it 'can use lambda to describe exclude conditions' do
@@ -487,16 +488,15 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
 
         it 'raises InvalidQueryError if you use wrong column names' do
-          -> {
+          exception = -> {
             name1 = @user1.name
             name2 = @user2.name
-
-            query = Proc.new {
-              where(name: name1).or(n: name2)
-            }
+            query = Proc.new { where(name: name1).or(n: name2) }
 
             @adapter.query(collection, &query).all
           }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.wont_be_nil
         end
       end
     end
