@@ -359,7 +359,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it 'accepts a block as condition' do
-          query  = Proc.new {
+          query = Proc.new {
             where { age > 31 }
           }
 
@@ -368,17 +368,16 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it "raises InvalidQueryError when columns are invalid in expression" do
-          query  = Proc.new {
-            where { a > 32 }
-          }
-
-          -> {
+          exception = -> {
+            query = Proc.new { where { a > 32 } }
             @adapter.query(collection, &query).all
           }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.must_equal "Invalid query"
         end
 
         it "accepts nested block conditions" do
-          query  = Proc.new {
+          query = Proc.new {
             where { age > 31 }.where { name == 'L' }
           }
 
@@ -387,7 +386,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it "takes into account both hash and block conditions" do
-          query  = Proc.new {
+          query = Proc.new {
             where(age: 32).where { name == 'L' }
           }
 
@@ -453,7 +452,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it 'accepts a block as condition' do
-          query  = Proc.new {
+          query = Proc.new {
             exclude { age > 31 }
           }
 
@@ -462,17 +461,16 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it "raises InvalidQueryError when columns are invalid in expression" do
-          query  = Proc.new {
-            exclude { a > 32 }
-          }
-
-          -> {
+          exception = -> {
+            query = Proc.new { exclude { a > 32 } }
             @adapter.query(collection, &query).all
           }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.must_equal "Invalid query"
         end
 
         it "accepts nested block conditions" do
-          query  = Proc.new {
+          query = Proc.new {
             exclude { age > 31 }.exclude { name == 'MG' }
           }
 
@@ -481,7 +479,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it "takes into account both hash and block conditions" do
-          query  = Proc.new {
+          query = Proc.new {
             exclude(age: 32).exclude { name == 'MG' }
           }
 
@@ -533,7 +531,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it 'accepts a block as condition' do
-          query  = Proc.new {
+          query = Proc.new {
             where(name: "MG").or { age > 31 }
           }
 
@@ -542,17 +540,16 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it "raises InvalidQueryError when columns are invalid in expression" do
-          query  = Proc.new {
-            where(name: "MG").or { a > 31 }
-          }
-
-          -> {
+          exception = -> {
+            query = Proc.new { where(name: "MG").or { a > 31 } }
             @adapter.query(collection, &query).all
           }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.must_equal "Invalid query"
         end
 
         it "accepts nested block conditions" do
-          query  = Proc.new {
+          query = Proc.new {
             where { name == "L" }.or { name == 'MG' }.or { name == "JS" }
           }
 
@@ -561,7 +558,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         end
 
         it "takes into account both hash and block conditions" do
-          query  = Proc.new {
+          query = Proc.new {
             where(age: 32).or { name == 'MG' }
           }
 
