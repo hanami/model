@@ -30,11 +30,8 @@ module Lotus
     # Error for invalid query
     # It's raised when a query is malformed
     #
-    # @since 0.3.1
+    # @since x.x.x
     class InvalidQueryError < ::StandardError
-      def initialize(message = nil)
-        super(message || "There was an error with your query.")
-      end
     end
 
     include Utils::ClassAttribute

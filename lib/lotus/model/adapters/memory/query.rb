@@ -575,7 +575,9 @@ module Lotus
                 begin
                   OpenStruct.new(r).instance_eval(&blk)
                 rescue
-                  raise Lotus::Model::InvalidQueryError
+                  # TODO improve this error message, informing which
+                  # attributes are invalid
+                  raise Lotus::Model::InvalidQueryError.new("Invalid query")
                 end
               }
             }])
