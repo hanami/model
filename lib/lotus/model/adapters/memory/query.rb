@@ -115,7 +115,7 @@ module Lotus
           #        .where { framework == 'lotus' }
           def where(condition = nil, &blk)
             if blk
-              _push_evaluated_block_condition(:where, blk)
+              _push_evaluated_block_condition(:where, blk, :find_all)
             elsif condition
               _push_to_expanded_condition(:where, condition) do |column, value|
                 Proc.new {
@@ -161,9 +161,18 @@ module Lotus
           # @example Range
           #
           #   query.where(country: 'italy').or(year: 1900..1982)
+          #
+          # @example Using block
+          #
+          #   query.where { age == 31 }.or { age == 32 }
+          #
+          # @example Mixed hash and block conditions
+          #
+          #   query.where(language: 'ruby')
+          #        .or { framework == 'lotus' }
           def or(condition = nil, &blk)
             if blk
-              _push_evaluated_block_condition(:or, blk)
+              _push_evaluated_block_condition(:or, blk, :find_all)
             elsif condition
               _push_to_expanded_condition(:or, condition) do |column, value|
                 Proc.new { find_all { |r| r.fetch(column) == value} }
@@ -201,6 +210,20 @@ module Lotus
           #
           #   query.exclude(language: 'java')
           #        .exclude(company: 'enterprise')
+          #
+          # @example Using block
+          #
+          #   query.exclude { age > 31 }
+          #
+          # @example Multiple conditions with blocks
+          #
+          #   query.exclude { language == 'java' }
+          #        .exclude { framework == 'spring' }
+          #
+          # @example Mixed hash and block conditions
+          #
+          #   query.exclude(language: 'java')
+          #        .exclude { framework == 'spring' }
           def exclude(condition = nil, &blk)
             if blk
               _push_evaluated_block_condition(:where, blk, :reject)
@@ -564,18 +587,46 @@ module Lotus
             all.map {|record| record.public_send(column) }.compact
           end
 
+          # Expands and yields keys and values of a query hash condition and
+          # stores the result and condition type in the conditions array.
+          #
+          # It yields condition's keys and values to allow the caller to create a proc
+          # object to be stored and executed later performing the actual query.
+          #
+          # @param condition_type [Symbol] the condition type. (eg. `:where`, `:or`)
+          # @param condition [Hash] the query condition to be expanded.
+          #
+          # @return [Array<Array>] the conditions array itself.
+          #
+          # @api private
+          # @since x.x.x
           def _push_to_expanded_condition(condition_type, condition)
             proc = yield Array(condition).flatten(1)
             conditions.push([condition_type, proc])
           end
 
-          def _push_evaluated_block_condition(condition_type, blk, strategy = :find_all)
+          # Evaluates a block condition of a specified type and stores it in the
+          # conditions array.
+          #
+          # @param condition_type [Symbol] the condition type. (eg. `:where`, `:or`)
+          # @param condition [Proc] the query condition to be evaluated and stored.
+          # @param strategy [Symbol] the iterator method to be executed.
+          #   (eg. `:find_all`, `:reject`)
+          #
+          # @return [Array<Array>] the conditions array itself.
+          #
+          # @raise [Lotus::Model::InvalidQueryError] if block raises error when
+          # evaluated.
+          #
+          # @api private
+          # @since x.x.x
+          def _push_evaluated_block_condition(condition_type, condition, strategy)
             conditions.push([condition_type, Proc.new {
               send(strategy) { |r|
                 begin
-                  OpenStruct.new(r).instance_eval(&blk)
+                  OpenStruct.new(r).instance_eval(&condition)
                 rescue
-                  # TODO improve this error message, informing which
+                  # TODO improve the error message, informing which
                   # attributes are invalid
                   raise Lotus::Model::InvalidQueryError.new("Invalid query")
                 end
