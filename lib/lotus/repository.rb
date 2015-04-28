@@ -672,20 +672,27 @@ module Lotus
         !!entity.id
       end
 
+      # This is a method to check timestamp
+      # @param entity, name
+      # @return a boolean value
+      def _has_timestamp?(entity, name)
+        entity.respond_to?(name) && entity.respond_to?("#{ name }=")
+      end
+
       # Add time create an entity
       def _update_created_at(entity)
-        if entity.class.attributes.include?(:created_at)
+        if _has_timestamp?(entity, :created_at)
           entity.created_at ||= Time.now.utc
         end
       end
 
       # Add time update an entity
       def _update_updated_at(entity)
-        if entity.class.attributes.include?(:updated_at)
-          if entity.updated_at
-            entity.updated_at = Time.now.utc
+        if _has_timestamp?(entity, :updated_at)
+          if entity.respond_to?(:created_at) && entity.created_at
+            entity.updated_at = entity.updated_at ? Time.now.utc : entity.created_at
           else
-            entity.updated_at = entity.created_at
+            entity.updated_at = Time.now.utc
           end
         end
       end
