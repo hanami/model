@@ -33,6 +33,9 @@ module Lotus
     #
     # @since x.x.x
     class InvalidQueryError < ::StandardError
+      def initialize(message = "Invalid query")
+        super
+      end
     end
 
     include Utils::ClassAttribute

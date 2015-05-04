@@ -625,10 +625,10 @@ module Lotus
               send(strategy) { |r|
                 begin
                   OpenStruct.new(r).instance_eval(&condition)
-                rescue
+                rescue NoMethodError
                   # TODO improve the error message, informing which
                   # attributes are invalid
-                  raise Lotus::Model::InvalidQueryError.new("Invalid query")
+                  raise Lotus::Model::InvalidQueryError.new
                 end
               }
             }])
