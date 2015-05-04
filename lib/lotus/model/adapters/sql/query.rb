@@ -70,9 +70,14 @@ module Lotus
           #
           # @return [Array] a collection of entities
           #
+          # @raise [Lotus::Model::InvalidQueryError] if there is some issue when
+          # hitting the database for fetching records
+          #
           # @since 0.1.0
           def all
             Lotus::Utils::Kernel.Array(run)
+          rescue Sequel::DatabaseError => e
+            raise Lotus::Model::InvalidQueryError.new(e.message)
           end
 
           # Adds a SQL `WHERE` condition.

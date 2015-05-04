@@ -28,6 +28,13 @@ module Lotus
     class InvalidMappingError < ::StandardError
     end
 
+    # Error for invalid query
+    # It's raised when a query is malformed
+    #
+    # @since x.x.x
+    class InvalidQueryError < ::StandardError
+    end
+
     include Utils::ClassAttribute
 
     # Framework configuration
