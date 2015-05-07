@@ -17,7 +17,7 @@ module Lotus
         #
         #   query.where(language: 'ruby')
         #        .and(framework: 'lotus')
-        #        .desc(:users_count).all
+        #        .reverse_order(:users_count).all
         #
         #   # the records are fetched only when we invoke #all
         #
@@ -70,9 +70,14 @@ module Lotus
           #
           # @return [Array] a collection of entities
           #
+          # @raise [Lotus::Model::InvalidQueryError] if there is some issue when
+          # hitting the database for fetching records
+          #
           # @since 0.1.0
           def all
             Lotus::Utils::Kernel.Array(run)
+          rescue Sequel::DatabaseError => e
+            raise Lotus::Model::InvalidQueryError.new(e.message)
           end
 
           # Adds a SQL `WHERE` condition.
@@ -117,9 +122,8 @@ module Lotus
           #   query.where{ age > 10 }
           #
           #   # => SELECT * FROM `users` WHERE (`age` > 31)
-          def where(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
-            conditions.push([:where, condition])
+          def where(condition = nil, &blk)
+            _push_to_conditions(:where, condition || blk)
             self
           end
 
@@ -162,9 +166,8 @@ module Lotus
           #   query.where(name: 'John').or{ age > 31 }
           #
           #   # => SELECT * FROM `users` WHERE ((`name` = 'John') OR (`age` < 32))
-          def or(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
-            conditions.push([:or, condition])
+          def or(condition = nil, &blk)
+            _push_to_conditions(:or, condition || blk)
             self
           end
 
@@ -209,9 +212,8 @@ module Lotus
           #   query.exclude{ age > 31 }
           #
           #   # => SELECT * FROM `users` WHERE (`age` <= 31)
-          def exclude(condition=nil, &blk)
-            condition = (condition or blk or raise ArgumentError.new('You need to specify a condition.'))
-            conditions.push([:exclude, condition])
+          def exclude(condition = nil, &blk)
+            _push_to_conditions(:exclude, condition || blk).inspect
             self
           end
 
@@ -294,7 +296,7 @@ module Lotus
           #
           # @since 0.1.0
           #
-          # @see Lotus::Model::Adapters::Sql::Query#desc
+          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
           #
           # @example Single column
           #
@@ -318,6 +320,29 @@ module Lotus
             self
           end
 
+          # Alias for order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#order
+          #
+          # @example Single column
+          #
+          #   query.asc(:name)
+          #
+          #   # => SELECT * FROM `people` ORDER BY (`name`)
+          #
+          # @example Multiple columns
+          #
+          #   query.asc(:name, :year)
+          #
+          #   # => SELECT * FROM `people` ORDER BY `name`, `year`
+          #
+          # @example Multiple invokations
+          #
+          #   query.asc(:name).asc(:year)
+          #
+          #   # => SELECT * FROM `people` ORDER BY `name`, `year`
           alias_method :asc, :order
 
           # Specify the descending order of the records, sorted by the given
@@ -327,34 +352,53 @@ module Lotus
           #
           # @return self
           #
-          # @since 0.1.0
+          # @since x.x.x
           #
           # @see Lotus::Model::Adapters::Sql::Query#order
           #
           # @example Single column
           #
-          #   query.desc(:name)
+          #   query.reverse_order(:name)
           #
           #   # => SELECT * FROM `people` ORDER BY (`name`) DESC
           #
           # @example Multiple columns
           #
-          #   query.desc(:name, :year)
+          #   query.reverse_order(:name, :year)
           #
           #   # => SELECT * FROM `people` ORDER BY `name`, `year` DESC
           #
           # @example Multiple invokations
           #
-          #   query.desc(:name).desc(:year)
+          #   query.reverse_order(:name).reverse_order(:year)
           #
           #   # => SELECT * FROM `people` ORDER BY `name`, `year` DESC
-          def desc(*columns)
+          def reverse_order(*columns)
             Array(columns).each do |column|
               conditions.push([_order_operator, Sequel.desc(column)])
             end
 
             self
           end
+
+          # Alias for reverse_order
+          #
+          # @since 0.1.0
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#reverse_order
+          #
+          # @example Single column
+          #
+          #   query.desc(:name)
+          #
+          # @example Multiple columns
+          #
+          #   query.desc(:name, :year)
+          #
+          # @example Multiple invokations
+          #
+          #   query.desc(:name).desc(:year)
+          alias_method :desc, :reverse_order
 
           # Returns the sum of the values for the given column.
           #
@@ -590,7 +634,7 @@ module Lotus
           #     end
           #
           #     def self.rank
-          #       query.desc(:comments_count)
+          #       query.reverse_order(:comments_count)
           #     end
           #
           #     def self.rank_by_author(author)
@@ -619,6 +663,22 @@ module Lotus
             dup.tap do |result|
               result.conditions.push(*query.conditions)
             end
+          end
+
+          # Stores a query condition of a specified type in the conditions array.
+          #
+          # @param condition_type [Symbol] the condition type. (eg. `:where`, `:or`)
+          # @param condition [Hash, Proc] the query condition to be stored.
+          #
+          # @return [Array<Array>] the conditions array itself.
+          #
+          # @raise [ArgumentError] if condition is not specified.
+          #
+          # @api private
+          # @since x.x.x
+          def _push_to_conditions(condition_type, condition)
+            raise ArgumentError.new('You need to specify a condition.') if condition.nil?
+            conditions.push([condition_type, condition])
           end
 
           def _order_operator

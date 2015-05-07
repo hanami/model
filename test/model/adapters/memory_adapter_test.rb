@@ -324,6 +324,75 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [@user3]
         end
+
+        it 'accepts an array as condition' do
+          names = [@user1.name, @user2.name]
+
+          query = Proc.new {
+            where(name: names)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1, @user2]
+        end
+
+        it 'accepts a set as condition' do
+          names = Set.new([@user1.name, @user2.name])
+
+          query = Proc.new {
+            where(name: names)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1, @user2]
+        end
+
+        it 'accepts a range as condition' do
+          ages = @user3.age..@user2.age
+
+          query = Proc.new {
+            where(age: ages)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user2, @user3]
+        end
+
+        it 'accepts a block as condition' do
+          query = Proc.new {
+            where { age > 31 }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1]
+        end
+
+        it "raises InvalidQueryError when columns are invalid in expression" do
+          exception = -> {
+            query = Proc.new { where { a > 32 } }
+            @adapter.query(collection, &query).all
+          }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.must_equal "Invalid query"
+        end
+
+        it "accepts nested block conditions" do
+          query = Proc.new {
+            where { age > 31 }.where { name == 'L' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1]
+        end
+
+        it "takes into account both hash and block conditions" do
+          query = Proc.new {
+            where(age: 32).where { name == 'L' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1]
+        end
       end
     end
 
@@ -381,6 +450,42 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           result = @adapter.query(collection, &query).all
           result.must_equal [@user3]
         end
+
+        it 'accepts a block as condition' do
+          query = Proc.new {
+            exclude { age > 31 }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user2, @user3]
+        end
+
+        it "raises InvalidQueryError when columns are invalid in expression" do
+          exception = -> {
+            query = Proc.new { exclude { a > 32 } }
+            @adapter.query(collection, &query).all
+          }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.must_equal "Invalid query"
+        end
+
+        it "accepts nested block conditions" do
+          query = Proc.new {
+            exclude { age > 31 }.exclude { name == 'MG' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user3]
+        end
+
+        it "takes into account both hash and block conditions" do
+          query = Proc.new {
+            exclude(age: 32).exclude { name == 'MG' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user3]
+        end
       end
     end
 
@@ -399,6 +504,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
         before do
           @user1 = @adapter.create(collection, user1)
           @user2 = @adapter.create(collection, user2)
+          @user3 = @adapter.create(collection, user3)
         end
 
         it 'returns selected records' do
@@ -422,6 +528,42 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
           result = @adapter.query(collection, &query).all
           result.must_equal [@user2]
+        end
+
+        it 'accepts a block as condition' do
+          query = Proc.new {
+            where(name: "MG").or { age > 31 }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user2, @user1]
+        end
+
+        it "raises InvalidQueryError when columns are invalid in expression" do
+          exception = -> {
+            query = Proc.new { where(name: "MG").or { a > 31 } }
+            @adapter.query(collection, &query).all
+          }.must_raise(Lotus::Model::InvalidQueryError)
+
+          exception.message.must_equal "Invalid query"
+        end
+
+        it "accepts nested block conditions" do
+          query = Proc.new {
+            where { name == "L" }.or { name == 'MG' }.or { name == "JS" }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1, @user2, @user3]
+        end
+
+        it "takes into account both hash and block conditions" do
+          query = Proc.new {
+            where(age: 32).or { name == 'MG' }
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.must_equal [@user1, @user2]
         end
       end
     end

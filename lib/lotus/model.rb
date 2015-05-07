@@ -1,5 +1,6 @@
 require 'lotus/model/version'
 require 'lotus/entity'
+require 'lotus/entity/dirty_tracking'
 require 'lotus/repository'
 require 'lotus/model/mapper'
 require 'lotus/model/configuration'
@@ -25,6 +26,16 @@ module Lotus
     #
     # @see Lotus::Configuration#mapping
     class InvalidMappingError < ::StandardError
+    end
+
+    # Error for invalid query
+    # It's raised when a query is malformed
+    #
+    # @since x.x.x
+    class InvalidQueryError < ::StandardError
+      def initialize(message = "Invalid query")
+        super
+      end
     end
 
     include Utils::ClassAttribute

@@ -1,10 +1,11 @@
 class User
   include Lotus::Entity
-  attributes :name, :age
+  attributes :name, :age, :created_at, :updated_at
 end
 
 class Article
   include Lotus::Entity
+  include Lotus::Entity::DirtyTracking
   attributes :user_id, :unmapped_attribute, :title, :comments_count
 end
 
@@ -55,6 +56,8 @@ DB.create_table :users do
   primary_key :id
   String  :name
   Integer :age
+  DateTime :created_at
+  DateTime :updated_at
 end
 
 DB.create_table :articles do
@@ -76,9 +79,11 @@ MAPPER = Lotus::Model::Mapper.new do
   collection :users do
     entity User
 
-    attribute :id,   Integer
-    attribute :name, String
-    attribute :age,  Integer
+    attribute :id,         Integer
+    attribute :name,       String
+    attribute :age,        Integer
+    attribute :created_at, DateTime
+    attribute :updated_at, DateTime
   end
 
   collection :articles do
@@ -91,6 +96,7 @@ MAPPER = Lotus::Model::Mapper.new do
 
     identity :_id
   end
+
 end
 
 MAPPER.load!

@@ -236,6 +236,7 @@ module Lotus
         #   * Float
         #   * Hash
         #   * Integer
+        #   * BigDecimal
         #   * Set
         #   * String
         #   * Symbol
