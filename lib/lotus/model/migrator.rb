@@ -22,13 +22,13 @@ module Lotus
     # Migrator reads the model configuration for SQL adapter connection,
     # migration files and optional logger (default to nil).
     # @see Lotus::Model::Configuration#adapter
-    # @see Lotus::Model::Configuration#migration_directory
+    # @see Lotus::Model::Configuration#migrations_directory
     # @see Lotus::Model::Configuration#logging
     #
     # @example Configure model framework
     #   Lotus::Model.configure do
     #     logging ::Logger.new(STDOUT)
-    #     migration_directory 'db/migrations'
+    #     migrations_directory 'db/migrations'
     #     adapter type: :sql, uri: 'sqlite3://localhost/database'
     #   end
     #
@@ -125,7 +125,7 @@ module Lotus
         @adapter = _get_adapter
         @db = adapter.instance_variable_get(:@connection)
         @logger = _get_logger
-        @directory = _get_migration_directory
+        @directory = _get_migrations_directory
         @allow_missing_migration_files = opts[:allow_missing_migration_files]
         @files = _get_migration_files
         @column = SCHEMA_COLUMN
@@ -534,8 +534,8 @@ module Lotus
       #
       # @since x.x.x
       # @api private
-      def _get_migration_directory
-        directory = configuration.migration_directory
+      def _get_migrations_directory
+        directory = configuration.migrations_directory
         raise(Error, "Must supply a valid migration path") unless File.directory?(directory)
         directory
       end

@@ -6,7 +6,7 @@ describe 'SQL adapter migration' do
   let(:migrator) do
     Lotus::Model.configuration.reset!
     Lotus::Model.configure do
-      migration_directory 'test/fixtures/migrations'
+      migrations_directory 'test/fixtures/migrations'
       adapter type: :sql, uri: SQLITE_CONNECTION_STRING
       logger ::Logger.new('/dev/null') # silence the output in test
     end
@@ -23,7 +23,7 @@ describe 'SQL adapter migration' do
 
   describe 'when there are migrations with duplicated versions' do
     it 'raises error' do
-      Lotus::Model.configuration.migration_directory('test/fixtures/duplicated_migrations')
+      Lotus::Model.configuration.migrations_directory('test/fixtures/duplicated_migrations')
       expected = ["Duplicated versions in following migrations:"]
       expected << "  * test/fixtures/duplicated_migrations/20150222124516_create_comments.rb, test/fixtures/duplicated_migrations/20150222124516_remove_comments.rb"
       expected = expected.join("\n")

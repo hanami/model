@@ -28,7 +28,7 @@ describe Lotus::Model::Migrator do
     let(:migrator) do
       Lotus::Model.configuration.reset!
       Lotus::Model.configure do
-        migration_directory 'test/fixtures/migrations'
+        migrations_directory 'test/fixtures/migrations'
         adapter type: :sql, uri: SQLITE_CONNECTION_STRING
         logger ::Logger.new('/dev/null')
       end

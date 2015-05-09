@@ -182,19 +182,19 @@ describe Lotus::Model::Configuration do
     end
   end
 
-  describe '#migration_directory' do
+  describe '#migrations_directory' do
     describe "when no migration directory has been pre-configured before" do
       it 'returns default directory' do
         configuration.reset!
-        configuration.migration_directory.must_equal configuration.send(:_default_migration_directory)
+        configuration.migrations_directory.must_equal configuration.send(:_default_migrations_directory)
       end
     end
 
     describe "when migration directory is provided" do
       it 'returns default directory' do
         directory = 'custom/db/migrations'
-        configuration.migration_directory directory
-        configuration.migration_directory.must_equal directory
+        configuration.migrations_directory directory
+        configuration.migrations_directory.must_equal directory
       end
     end
   end

@@ -177,23 +177,23 @@ module Lotus
       # @example Set custom logger and retrieve the set logger
       #   require 'lotus/model'
       #
-      #   Lotus::Model.configuration.migration_directory
+      #   Lotus::Model.configuration.migrations_directory
       #     # => 'db/migrations'
       #
       #   Lotus::Model.configure do
-      #     migration_directory 'my_custom/migrations'
+      #     migrations_directory 'my_custom/migrations'
       #   end
       #
-      #   Lotus::Model.configuration.migration_directory
+      #   Lotus::Model.configuration.migrations_directory
       #     # => 'my_custom/migrations'
       #
       # @since 0.3.0
       # @see Lotus::Model.configure
-      def migration_directory(directory=nil)
+      def migrations_directory(directory=nil)
         if directory.nil?
-          @migration_directory ||= _default_migration_directory
+          @migrations_directory ||= _default_migrations_directory
         else
-          @migration_directory = directory
+          @migrations_directory = directory
         end
       end
 
@@ -250,7 +250,7 @@ module Lotus
           c.instance_variable_set(:@adapter, @adapter)
           c.instance_variable_set(:@mapper, @mapper)
           c.instance_variable_set(:@logger, @logger)
-          c.instance_variable_set(:@migration_directory, @migration_directory)
+          c.instance_variable_set(:@migrations_directory, @migrations_directory)
         end
       end
 
@@ -285,7 +285,7 @@ module Lotus
       #
       # @since 0.3.0
       # @api private
-      def _default_migration_directory
+      def _default_migrations_directory
         Pathname.pwd.join('db', 'migrations')
       end
 
