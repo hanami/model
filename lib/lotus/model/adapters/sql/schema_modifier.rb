@@ -64,7 +64,7 @@ module Lotus
         # @api private
         class SchemaModifier
           def initialize(adapter, logger = nil)
-            @connection = adapter.instance_variable_get(:@connection)
+            @connection = adapter.connection
             @connection.logger = logger if logger
           end
 

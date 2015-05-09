@@ -123,13 +123,13 @@ module Lotus
         _check_if_adapter_support_migration
 
         @adapter = _get_adapter
-        @db = adapter.instance_variable_get(:@connection)
+        @db = adapter.connection
         @logger = _get_logger
         @directory = _get_migrations_directory
         @allow_missing_migration_files = opts[:allow_missing_migration_files]
         @files = _get_migration_files
         @column = SCHEMA_COLUMN
-        schema, table = @db.send(:schema_and_table, SCHEMA_TABLE)
+        schema, table = @db.schema_and_table(SCHEMA_TABLE)
         @table = schema ? Sequel::SQL::QualifiedIdentifier.new(schema, table) : table
         @ds = schema_dataset
         @use_transactions = opts[:use_transactions]

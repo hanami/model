@@ -187,7 +187,7 @@ module Lotus
       #   Lotus::Model.configuration.migrations_directory
       #     # => 'my_custom/migrations'
       #
-      # @since 0.3.0
+      # @since x.x.x
       # @see Lotus::Model.configure
       def migrations_directory(directory=nil)
         if directory.nil?
@@ -283,7 +283,7 @@ module Lotus
 
       # Default directory that contains migration files
       #
-      # @since 0.3.0
+      # @since x.x.x
       # @api private
       def _default_migrations_directory
         Pathname.pwd.join('db', 'migrations')
