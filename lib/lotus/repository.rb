@@ -666,20 +666,28 @@ module Lotus
       end
 
       # This is a method to check entity persited or not
+      #
       # @param entity
       # @return a boolean value
+      # @since x.x.x
       def _persisted?(entity)
         !!entity.id
       end
 
       # This is a method to check timestamp
+      #
       # @param entity, name
       # @return a boolean value
+      # @api private
+      # @since x.x.x
       def _has_timestamp?(entity, name)
         entity.respond_to?(name) && entity.respond_to?("#{ name }=")
       end
 
       # Add time create an entity
+      #
+      # @api private
+      # @since x.x.x
       def _update_created_at(entity)
         if _has_timestamp?(entity, :created_at)
           entity.created_at ||= Time.now.utc
@@ -687,6 +695,9 @@ module Lotus
       end
 
       # Add time update an entity
+      #
+      # @api private
+      # @since x.x.x
       def _update_updated_at(entity)
         if _has_timestamp?(entity, :updated_at)
           if entity.respond_to?(:created_at) && entity.created_at
@@ -698,6 +709,9 @@ module Lotus
       end
 
       # Update timestamps
+      #
+      # @api private
+      # @since x.x.x
       def _update_timestamps(entity)
         _update_created_at(entity)
         _update_updated_at(entity)
