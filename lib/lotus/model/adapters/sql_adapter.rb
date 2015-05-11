@@ -227,6 +227,20 @@ module Lotus
           Sql::Console.new(@uri).connection_string
         end
 
+        # Executes raw sql directly on the connection
+        #
+        # @param raw [String] the raw sql statement to execute on the connection
+        # @return [Object]
+        #
+        # @since x.x.x
+        def execute(raw)
+          begin
+            @connection.execute(raw)
+          rescue Sequel::DatabaseError => e
+            raise Lotus::Model::InvalidQueryError.new(e.message)
+          end
+        end
+
         private
 
         # Returns a collection from the given name.
