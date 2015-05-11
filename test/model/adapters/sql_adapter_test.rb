@@ -1186,7 +1186,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       it 'returns the ResultSet from the executes sql' do
         raw = "select * from users"
         result = @adapter.execute(raw)
-        result.class.name.must_equal "SQLite3::ResultSet"
+        result.must_be_kind_of SQLite3::ResultSet
         result.count.must_equal 3
       end
 

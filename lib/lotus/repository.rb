@@ -553,14 +553,19 @@ module Lotus
 
       # Executes the given raw statement on the adapter.
       #
-      # Please note that it's only supported by some databases, a `NotImplementedError` will be
-      # raised when the adapter does not responds to the `execute` method.
+      # Please note that it's only supported by some databases,
+      # a `NotImplementedError` will be raised when the adapter does not
+      # responds to the `execute` method.
       #
       # For advanced scenarios, please check the documentation of each adapter.
       #
       # @param raw [String] the raw statement to execute on the connection
-      # @return [Object]
+      # @return [Object] the raw result set from SQL adapter
       #
+      # @raise [NotImplementedError] if current Lotus::Model adapter doesn't
+      #   implement `execute`.
+      #
+      # @see Lotus::Model::Adapters::Abstract#execute
       # @see Lotus::Model::Adapters::SqlAdapter#execute
       #
       # @since x.x.x
@@ -580,10 +585,12 @@ module Lotus
       #   article = Article.new(title: 'Introducing transactions',
       #     body: 'lorem ipsum')
       #
-      #   resultset = ArticleRepository.execute("select * from articles")
-      #   resultset.each_hash do |result|
+      #   result_set = ArticleRepository.execute("SELECT * FROM articles")
+      #   result_set.each_hash do |result|
       #     result # -> { id: 123, title: "Introducing transactions", body: "lorem ipsum"}
       #   end
+      #
+      #   puts result_set.class # => SQLite3::ResultSet
       def execute(raw)
         @adapter.execute(raw)
       end
