@@ -551,6 +551,43 @@ module Lotus
         end
       end
 
+      # Executes the given raw statement on the adapter.
+      #
+      # Please note that it's only supported by some databases, a `NotImplementedError` will be
+      # raised when the adapter does not responds to the `execute` method.
+      #
+      # For advanced scenarios, please check the documentation of each adapter.
+      #
+      # @param raw [String] the raw statement to execute on the connection
+      # @return [Object]
+      #
+      # @see Lotus::Model::Adapters::SqlAdapter#execute
+      #
+      # @since x.x.x
+      #
+      # @example Basic usage with SQL adapter
+      #   require 'lotus/model'
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #   end
+      #
+      #   article = Article.new(title: 'Introducing transactions',
+      #     body: 'lorem ipsum')
+      #
+      #   resultset = ArticleRepository.execute("select * from articles")
+      #   resultset.each_hash do |result|
+      #     result # -> { id: 123, title: "Introducing transactions", body: "lorem ipsum"}
+      #   end
+      def execute(raw)
+        @adapter.execute(raw)
+      end
+
       private
       # Fabricates a query and yields the given block to access the low level
       # APIs exposed by the query itself.

@@ -201,6 +201,16 @@ module Lotus
         def connection_string
           raise NotSupportedError
         end
+
+        # Executes a raw statement directly on the connection
+        #
+        # @param raw [String] the raw statement to execute on the connection
+        # @return [Object]
+        #
+        # @since x.x.x
+        def execute(raw)
+          raise NotImplementedError
+        end
       end
     end
   end
