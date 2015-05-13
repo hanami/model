@@ -138,7 +138,6 @@ module Lotus
       #
       #   User.attributes => #<Set: {:id, :name}>
       #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
-      #
       def attributes(*attrs)
         if attrs.any?
           attrs = Lotus::Utils::Kernel.Array(attrs)
@@ -164,7 +163,7 @@ module Lotus
 
       # Check if attr_reader define the given attribute
       #
-      # @since x.x.x
+      # @since 0.2.1
       # @api private
       def defined_attribute?(name)
         name == :id ||

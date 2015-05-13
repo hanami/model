@@ -334,6 +334,28 @@ module Lotus
           @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
         end
 
+        # Define a timestamps for collection.
+        #
+        # `timestamps` helper is translated to:
+        # attribute :created_at, DateTime
+        # attribute :updated_at, DateTime
+        #
+        # @since x.x.x
+        #
+        # @example
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity Article
+        #
+        #       timestamps
+        #     end
+        #   end
+        def timestamps
+          %i(created_at updated_at).each do |name|
+            @attributes[name] = [DateTime, name]
+          end
+        end
+
         # Serializes an entity to be persisted in the database.
         #
         # @param entity [Object] an entity

@@ -6,6 +6,7 @@ end
 class Article
   include Lotus::Entity
   include Lotus::Entity::DirtyTracking
+  include Lotus::Entity::Timestamps
   attributes :user_id, :unmapped_attribute, :title, :comments_count
 end
 
@@ -66,6 +67,8 @@ DB.create_table :articles do
   String  :s_title
   String  :comments_count # Not an error: we're testing String => Integer coercion
   String  :umapped_column
+  DateTime :created_at
+  DateTime :updated_at
 end
 
 DB.create_table :devices do
@@ -82,8 +85,8 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :id,         Integer
     attribute :name,       String
     attribute :age,        Integer
-    attribute :created_at, DateTime
-    attribute :updated_at, DateTime
+
+    timestamps
   end
 
   collection :articles do
@@ -93,6 +96,8 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
+
+    timestamps
 
     identity :_id
   end
