@@ -150,7 +150,7 @@ However, we suggest to implement this interface by including `Lotus::Entity`, in
 
 See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
 
-When a class extend an entity class, it will also *inherit* its mother's attributes.
+When a class extends a `Lotus::Entity` class, it will also *inherit* its mother's attributes.
 
 ```ruby
 require 'lotus/model'
