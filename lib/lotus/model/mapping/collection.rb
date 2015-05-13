@@ -350,7 +350,6 @@ module Lotus
         #       timestamps
         #     end
         #   end
-
         def timestamps
           %i(created_at updated_at).each do |name|
             @attributes[name] = [DateTime, name]
