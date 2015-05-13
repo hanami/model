@@ -150,7 +150,7 @@ However, we suggest to implement this interface by including `Lotus::Entity`, in
 
 See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
 
-When a class extend an entity class, it will also *inherit* its mother's attributes.
+When a class extends a `Lotus::Entity` class, it will also *inherit* its mother's attributes.
 
 ```ruby
 require 'lotus/model'
@@ -349,7 +349,7 @@ For advanced mapping and legacy databases, please have a look at the API doc.
 
 **Known limitations**
 
-Please be noted there are limitations with inherited entities:
+Note there are limitations with inherited entities:
 
 ```ruby
 require 'lotus/model'
@@ -374,7 +374,7 @@ mapper = Lotus::Model::Mapper.new do
 end
 ```
 
-In the example above, there are few problems:
+In the example above, there are a few problems:
 
 * `Article` could not be fetched because mapping could not map `price`.
 * Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
