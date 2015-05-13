@@ -374,7 +374,7 @@ mapper = Lotus::Model::Mapper.new do
 end
 ```
 
-In the example above, there are few problems:
+In the example above, there are a few problems:
 
 * `Article` could not be fetched because mapping could not map `price`.
 * Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
