@@ -3,7 +3,6 @@ require 'lotus/entity'
 require 'lotus/entity/dirty_tracking'
 require 'lotus/entity/timestamps'
 require 'lotus/repository'
-require 'lotus/repository/timestamps'
 require 'lotus/model/mapper'
 require 'lotus/model/configuration'
 

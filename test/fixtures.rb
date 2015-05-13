@@ -29,7 +29,6 @@ end
 
 class ArticleRepository
   include Lotus::Repository
-  include Lotus::Repository::Timestamps
 
   def self.rank
     query do
