@@ -349,7 +349,7 @@ For advanced mapping and legacy databases, please have a look at the API doc.
 
 **Known limitations**
 
-Please be noted there are limitations with inherited entities:
+Note there are limitations with inherited entities:
 
 ```ruby
 require 'lotus/model'
