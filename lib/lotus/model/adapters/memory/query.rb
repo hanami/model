@@ -316,7 +316,7 @@ module Lotus
           #
           # @return self
           #
-          # @since x.x.x
+          # @since 0.3.1
           #
           # @see Lotus::Model::Adapters::Memory::Query#order
           #
@@ -599,7 +599,7 @@ module Lotus
           # @return [Array<Array>] the conditions array itself.
           #
           # @api private
-          # @since x.x.x
+          # @since 0.3.1
           def _push_to_expanded_condition(condition_type, condition)
             proc = yield Array(condition).flatten(1)
             conditions.push([condition_type, proc])
@@ -619,7 +619,7 @@ module Lotus
           # evaluated.
           #
           # @api private
-          # @since x.x.x
+          # @since 0.3.1
           def _push_evaluated_block_condition(condition_type, condition, strategy)
             conditions.push([condition_type, Proc.new {
               send(strategy) { |r|

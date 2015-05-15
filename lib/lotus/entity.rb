@@ -156,7 +156,7 @@ module Lotus
       #
       # @params attr [Symbol] an attribute name
       #
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def define_attr_accessor(attr)
         attr_accessor(attr)
@@ -164,7 +164,7 @@ module Lotus
 
       # Check if attr_reader define the given attribute
       #
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def defined_attribute?(name)
         name == :id ||

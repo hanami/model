@@ -568,7 +568,7 @@ module Lotus
       # @see Lotus::Model::Adapters::Abstract#execute
       # @see Lotus::Model::Adapters::SqlAdapter#execute
       #
-      # @since x.x.x
+      # @since 0.3.1
       #
       # @example Basic usage with SQL adapter
       #   require 'lotus/model'
@@ -713,7 +713,7 @@ module Lotus
       #
       # @param entity
       # @return a boolean value
-      # @since x.x.x
+      # @since 0.3.1
       def _persisted?(entity)
         !!entity.id
       end
@@ -723,7 +723,7 @@ module Lotus
       # @param entity [Object, Lotus::Entity] the entity
       #
       # @api private
-      # @since x.x.x
+      # @since 0.3.1
       def _touch(entity)
         now = Time.now.utc
 
@@ -744,7 +744,7 @@ module Lotus
       # @return [TrueClass,FalseClass]
       #
       # @api private
-      # @since x.x.x
+      # @since 0.3.1
       def _has_timestamp?(entity, timestamp)
         entity.respond_to?(timestamp) &&
           entity.respond_to?("#{ timestamp }=")

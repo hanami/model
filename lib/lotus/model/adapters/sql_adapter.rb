@@ -232,7 +232,7 @@ module Lotus
         # @param raw [String] the raw sql statement to execute on the connection
         # @return [Object]
         #
-        # @since x.x.x
+        # @since 0.3.1
         def execute(raw)
           begin
             @connection.execute(raw)

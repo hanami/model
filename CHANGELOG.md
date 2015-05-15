@@ -1,6 +1,16 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.3.1 - 2015-05-15
+### Added
+- [Dmitry Tymchuk] Dirty tracking for entities (via `Lotus::Entity::DirtyTracking` module to include)
+- [My Mai] Automatic update of timestamps when an entity is persisted.
+- [Peter Berkenbosch] Introduced `Lotus::Repository#execute`, to execute raw query/commands against database (eg. `BookRepository.execute "SELECT * FROM users"` or `BookRepository.execute "UPDATE users SET admin = 'f'"`)
+- [Guilherme Franco] Memory and File System adapters now accept a block for `where`, `or`, `and` conditions (eg `where { age > 33 }`).
+
+### Fixed
+- [Luca Guidi] Ensure Array coercion to preserve original data structure
+
 ## v0.3.0 - 2015-03-23
 ### Added
 - [Linus Pettersson] Database console

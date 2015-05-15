@@ -2,11 +2,11 @@ module Lotus
   module Entity
     # Dirty tracking for entities
     #
-    # @since x.x.x
+    # @since 0.3.1
     module DirtyTracking
       # Override setters for attributes to support dirty tracking
       #
-      # @since x.x.x
+      # @since 0.3.1
       #
       # @example Dirty tracking
       #   require 'lotus/model'
@@ -38,7 +38,7 @@ module Lotus
         #
         # @params attr [Symbol] an attribute name
         #
-        # @since x.x.x
+        # @since 0.3.1
         # @api private
         #
         # @see Lotus::Entity::ClassMethods#define_attr_accessor
@@ -58,7 +58,7 @@ module Lotus
       #
       # @param attributes [Hash] a set of attribute names and values
       #
-      # @since x.x.x
+      # @since 0.3.1
       #
       # @see Lotus::Entity#initialize
       def initialize(attributes = {})
@@ -73,7 +73,7 @@ module Lotus
       #
       # @return [::Hash] the changed attributes
       #
-      # @since x.x.x
+      # @since 0.3.1
       #
       # @example
       #   require 'lotus/model'
@@ -98,7 +98,7 @@ module Lotus
       #
       # @return [TrueClass, FalseClass] the result of the check
       #
-      # @since x.x.x
+      # @since 0.3.1
       def changed?
         @changed_attributes.size > 0
       end
@@ -109,7 +109,7 @@ module Lotus
       #
       # @params attrs [Symbol] an attribute name
       #
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def _attribute_changed(attr, current_value, new_value)
         @changed_attributes[attr] = new_value if current_value != new_value
@@ -117,7 +117,7 @@ module Lotus
 
       # Clear all information about dirty data
       #
-      # @since x.x.x
+      # @since 0.3.1
       def _clear_changes_information
         @changed_attributes = {}
       end

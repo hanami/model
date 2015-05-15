@@ -207,7 +207,7 @@ module Lotus
         # @param raw [String] the raw statement to execute on the connection
         # @return [Object]
         #
-        # @since x.x.x
+        # @since 0.3.1
         def execute(raw)
           raise NotImplementedError
         end
