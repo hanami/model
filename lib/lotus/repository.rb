@@ -252,7 +252,7 @@ module Lotus
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
-        _update_timestamps(entity)
+        _touch(entity)
         @adapter.persist(collection, entity)
       end
 
@@ -285,7 +285,7 @@ module Lotus
       #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless _persisted?(entity)
-          _update_timestamps(entity)
+          _touch(entity)
           @adapter.create(collection, entity)
         end
       end
@@ -334,7 +334,7 @@ module Lotus
       #   ArticleRepository.update(article) # raises Lotus::Model::NonPersistedEntityError
       def update(entity)
         if _persisted?(entity)
-          _update_timestamps(entity)
+          _touch(entity)
           @adapter.update(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
@@ -551,6 +551,50 @@ module Lotus
         end
       end
 
+      # Executes the given raw statement on the adapter.
+      #
+      # Please note that it's only supported by some databases,
+      # a `NotImplementedError` will be raised when the adapter does not
+      # responds to the `execute` method.
+      #
+      # For advanced scenarios, please check the documentation of each adapter.
+      #
+      # @param raw [String] the raw statement to execute on the connection
+      # @return [Object] the raw result set from SQL adapter
+      #
+      # @raise [NotImplementedError] if current Lotus::Model adapter doesn't
+      #   implement `execute`.
+      #
+      # @see Lotus::Model::Adapters::Abstract#execute
+      # @see Lotus::Model::Adapters::SqlAdapter#execute
+      #
+      # @since 0.3.1
+      #
+      # @example Basic usage with SQL adapter
+      #   require 'lotus/model'
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #   end
+      #
+      #   article = Article.new(title: 'Introducing transactions',
+      #     body: 'lorem ipsum')
+      #
+      #   result_set = ArticleRepository.execute("SELECT * FROM articles")
+      #   result_set.each_hash do |result|
+      #     result # -> { id: 123, title: "Introducing transactions", body: "lorem ipsum"}
+      #   end
+      #
+      #   puts result_set.class # => SQLite3::ResultSet
+      def execute(raw)
+        @adapter.execute(raw)
+      end
+
       private
       # Fabricates a query and yields the given block to access the low level
       # APIs exposed by the query itself.
@@ -666,36 +710,45 @@ module Lotus
       end
 
       # This is a method to check entity persited or not
+      #
       # @param entity
       # @return a boolean value
+      # @since 0.3.1
       def _persisted?(entity)
         !!entity.id
       end
 
-      # Add time create an entity
-      def _update_created_at(entity)
-        if entity.class.attributes.include?(:created_at)
-          entity.created_at ||= Time.now.utc
-        end
-      end
-
-      # Add time update an entity
-      def _update_updated_at(entity)
-        if entity.class.attributes.include?(:updated_at)
-          if entity.updated_at
-            entity.updated_at = Time.now.utc
-          else
-            entity.updated_at = entity.created_at
-          end
-        end
-      end
-
       # Update timestamps
-      def _update_timestamps(entity)
-        _update_created_at(entity)
-        _update_updated_at(entity)
+      #
+      # @param entity [Object, Lotus::Entity] the entity
+      #
+      # @api private
+      # @since 0.3.1
+      def _touch(entity)
+        now = Time.now.utc
+
+        if _has_timestamp?(entity, :created_at)
+          entity.created_at ||= now
+        end
+
+        if _has_timestamp?(entity, :updated_at)
+          entity.updated_at = now
+        end
       end
 
+      # Check if the given entity has the given timestamp
+      #
+      # @param entity [Object, Lotus::Entity] the entity
+      # @param timestamp [Symbol] the timestamp name
+      #
+      # @return [TrueClass,FalseClass]
+      #
+      # @api private
+      # @since 0.3.1
+      def _has_timestamp?(entity, timestamp)
+        entity.respond_to?(timestamp) &&
+          entity.respond_to?("#{ timestamp }=")
+      end
     end
   end
 end

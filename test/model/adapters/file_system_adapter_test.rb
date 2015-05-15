@@ -43,6 +43,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
         identity :_id
       end
+      
     end.load!
 
     @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)

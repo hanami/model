@@ -150,7 +150,7 @@ However, we suggest to implement this interface by including `Lotus::Entity`, in
 
 See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
 
-When a class extend an entity class, it will also *inherit* its mother's attributes.
+When a class extends a `Lotus::Entity` class, it will also *inherit* its mother's attributes.
 
 ```ruby
 require 'lotus/model'
@@ -349,7 +349,7 @@ For advanced mapping and legacy databases, please have a look at the API doc.
 
 **Known limitations**
 
-Please be noted there are limitations with inherited entities:
+Note there are limitations with inherited entities:
 
 ```ruby
 require 'lotus/model'
@@ -374,7 +374,7 @@ mapper = Lotus::Model::Mapper.new do
 end
 ```
 
-In the example above, there are few problems:
+In the example above, there are a few problems:
 
 * `Article` could not be fetched because mapping could not map `price`.
 * Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
@@ -446,6 +446,108 @@ end
 ```
 
 **This is not necessary, when Lotus::Model is used within a Lotus application.**
+
+## Features
+
+### Timestamps
+
+If an entity has the following accessors: `:created_at` and `:updated_at`, they will be automatically updated when the entity is persisted.
+
+```ruby
+require 'lotus/model'
+
+class User
+  include Lotus::Entity
+  attributes :name, :created_at, :updated_at
+end
+
+class UserRepository
+  include Lotus::Repository
+end
+
+Lotus::Model.configure do
+  adapter type: :memory, uri: 'memory://localhost/timestamps'
+
+  mapping do
+    collection :users do
+      entity     User
+      repository UserRepository
+
+      attribute :id,         Integer
+      attribute :name,       String
+      attribute :created_at, DateTime
+      attribute :updated_at, DateTime
+    end
+  end
+end.load!
+
+user = User.new(name: 'L')
+puts user.created_at # => nil
+puts user.updated_at # => nil
+
+user = UserRepository.create(user)
+puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
+puts user.updated_at.to_s # => "2015-05-15T10:12:20+00:00"
+
+sleep 3
+user.name = "Luca"
+user      = UserRepository.update(user)
+puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
+puts user.updated_at.to_s # => "2015-05-15T10:12:23+00:00"
+```
+
+### Dirty Tracking
+
+Entities are able to track changes of their data, if `Lotus::Entity::DirtyTracking` is included.
+
+```ruby
+require 'lotus/model'
+
+class User
+  include Lotus::Entity
+  include Lotus::Entity::DirtyTracking
+  attributes :name, :age
+end
+
+class UserRepository
+  include Lotus::Repository
+end
+
+Lotus::Model.configure do
+  adapter type: :memory, uri: 'memory://localhost/dirty_tracking'
+
+  mapping do
+    collection :users do
+      entity     User
+      repository UserRepository
+
+      attribute :id,   Integer
+      attribute :name, String
+      attribute :age,  String
+    end
+  end
+end.load!
+
+user = User.new(name: 'L')
+user.changed? # => false
+
+user.age = 33
+user.changed?           # => true
+user.changed_attributes # => {:age=>33}
+
+user = UserRepository.create(user)
+user.changed? # => false
+
+user.update(name: 'Luca')
+user.changed?           # => true
+user.changed_attributes # => {:name=>"Luca"}
+
+user = UserRepository.update(user)
+user.changed? # => false
+
+result = UserRepository.find(user.id)
+result.changed? # => false
+```
 
 ## Example
 

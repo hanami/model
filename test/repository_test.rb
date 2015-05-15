@@ -125,7 +125,6 @@ describe Lotus::Repository do
         describe 'when entity is already persisted' do
           before do
             @persisted_user = UserRepository.create(User.new(name: 'My', age: '23'))
-            @created_at     = @persisted_user.created_at
           end
 
           after do
@@ -364,6 +363,39 @@ describe Lotus::Repository do
           @article.changed?.must_equal false
         end
       end
+
+      describe 'missing timestamps attribute' do
+        describe '.persist' do
+          before do
+            @article = ArticleRepository.persist(Article.new(title: 'Lotus', comments_count: '4'))
+            @article.instance_eval do
+              def created_at
+                @created_at
+              end
+
+              def updated_at
+                @updated_at
+              end
+            end
+          end
+
+          after do
+            ArticleRepository.delete(@article)
+          end
+
+          describe 'when entity does not have created_at accessor' do
+            it 'does not touch created_at' do
+              @article.created_at.must_be_nil
+            end
+          end
+
+          describe 'when entity does not have updated_at accessor' do
+            it 'does not touch updated_at' do
+              @article.updated_at.must_be_nil
+            end
+          end
+        end
+      end
     end
   end
 
@@ -419,6 +451,16 @@ describe Lotus::Repository do
         end
       end
     end
+
+    describe '.execute' do
+      it 'returns the ResultSet from the executes sql' do
+        sql = "select * from articles"
+        result = ArticleRepository.execute(sql)
+        result.class.name.must_equal "SQLite3::ResultSet"
+        result.count.must_equal 1
+      end
+    end
+
   end
 
   describe "with memory adapter" do
@@ -440,5 +482,12 @@ describe Lotus::Repository do
         end }.must_raise RuntimeError
       end
     end
+
+    describe '.execute' do
+      it "an exception is raised because of memory adapter doesn't support execute" do
+        -> { ArticleRepository.execute("select * from users") }.must_raise NotImplementedError
+      end
+    end
+
   end
 end

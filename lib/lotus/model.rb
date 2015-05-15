@@ -31,7 +31,7 @@ module Lotus
     # Error for invalid query
     # It's raised when a query is malformed
     #
-    # @since x.x.x
+    # @since 0.3.1
     class InvalidQueryError < ::StandardError
       def initialize(message = "Invalid query")
         super

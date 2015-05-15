@@ -1175,5 +1175,25 @@ describe Lotus::Model::Adapters::SqlAdapter do
         end
       end
     end
+
+    describe 'execute' do
+      before do
+        @adapter.create(collection, user1)
+        @adapter.create(collection, user2)
+        @adapter.create(collection, TestUser.new(name: 'S'))
+      end
+
+      it 'returns the ResultSet from the executes sql' do
+        raw = "select * from users"
+        result = @adapter.execute(raw)
+        result.must_be_kind_of SQLite3::ResultSet
+        result.count.must_equal 3
+      end
+
+      it 'raises an exception when an invalid sql is provided' do
+        raw = "select foo from bar"
+        -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidQueryError
+      end
+    end
   end
 end

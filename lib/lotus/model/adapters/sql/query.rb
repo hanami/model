@@ -352,7 +352,7 @@ module Lotus
           #
           # @return self
           #
-          # @since x.x.x
+          # @since 0.3.1
           #
           # @see Lotus::Model::Adapters::Sql::Query#order
           #
@@ -675,7 +675,7 @@ module Lotus
           # @raise [ArgumentError] if condition is not specified.
           #
           # @api private
-          # @since x.x.x
+          # @since 0.3.1
           def _push_to_conditions(condition_type, condition)
             raise ArgumentError.new('You need to specify a condition.') if condition.nil?
             conditions.push([condition_type, condition])
