@@ -447,6 +447,53 @@ end
 
 **This is not necessary, when Lotus::Model is used within a Lotus application.**
 
+## Timestamps
+
+If an entity has the following accessors: `:created_at` and `:updated_at`, they will be automatically updated when the entity is persisted.
+
+```ruby
+require 'lotus/model'
+
+class User
+  include Lotus::Entity
+  attributes :name, :created_at, :updated_at
+end
+
+class UserRepository
+  include Lotus::Repository
+end
+
+Lotus::Model.configure do
+  adapter type: :memory, uri: 'memory://localhost/timestamps'
+
+  mapping do
+    collection :users do
+      entity     User
+      repository UserRepository
+
+      attribute :id,         Integer
+      attribute :name,       String
+      attribute :created_at, DateTime
+      attribute :updated_at, DateTime
+    end
+  end
+end.load!
+
+user = User.new(name: 'L')
+puts user.created_at # => nil
+puts user.updated_at # => nil
+
+user = UserRepository.create(user)
+puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
+puts user.updated_at.to_s # => "2015-05-15T10:12:20+00:00"
+
+sleep 3
+user.name = "Luca"
+user      = UserRepository.update(user)
+puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
+puts user.updated_at.to_s # => "2015-05-15T10:12:23+00:00"
+```
+
 ## Example
 
 For a full working example, have a look at [EXAMPLE.md](https://github.com/lotus/model/blob/master/EXAMPLE.md).

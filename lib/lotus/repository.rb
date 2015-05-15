@@ -252,7 +252,7 @@ module Lotus
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Lotus::Model"
       def persist(entity)
-        _update_timestamps(entity)
+        _touch(entity)
         @adapter.persist(collection, entity)
       end
 
@@ -285,7 +285,7 @@ module Lotus
       #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless _persisted?(entity)
-          _update_timestamps(entity)
+          _touch(entity)
           @adapter.create(collection, entity)
         end
       end
@@ -334,7 +334,7 @@ module Lotus
       #   ArticleRepository.update(article) # raises Lotus::Model::NonPersistedEntityError
       def update(entity)
         if _persisted?(entity)
-          _update_timestamps(entity)
+          _touch(entity)
           @adapter.update(collection, entity)
         else
           raise Lotus::Model::NonPersistedEntityError
@@ -718,49 +718,37 @@ module Lotus
         !!entity.id
       end
 
-      # This is a method to check timestamp
-      #
-      # @param entity, name
-      # @return a boolean value
-      # @api private
-      # @since x.x.x
-      def _has_timestamp?(entity, name)
-        entity.respond_to?(name) && entity.respond_to?("#{ name }=")
-      end
-
-      # Add time create an entity
-      #
-      # @api private
-      # @since x.x.x
-      def _update_created_at(entity)
-        if _has_timestamp?(entity, :created_at)
-          entity.created_at ||= Time.now.utc
-        end
-      end
-
-      # Add time update an entity
-      #
-      # @api private
-      # @since x.x.x
-      def _update_updated_at(entity)
-        if _has_timestamp?(entity, :updated_at)
-          if entity.respond_to?(:created_at) && entity.created_at
-            entity.updated_at = entity.updated_at ? Time.now.utc : entity.created_at
-          else
-            entity.updated_at = Time.now.utc
-          end
-        end
-      end
-
       # Update timestamps
       #
+      # @param entity [Object, Lotus::Entity] the entity
+      #
       # @api private
       # @since x.x.x
-      def _update_timestamps(entity)
-        _update_created_at(entity)
-        _update_updated_at(entity)
+      def _touch(entity)
+        now = Time.now.utc
+
+        if _has_timestamp?(entity, :created_at)
+          entity.created_at ||= now
+        end
+
+        if _has_timestamp?(entity, :updated_at)
+          entity.updated_at = now
+        end
       end
 
+      # Check if the given entity has the given timestamp
+      #
+      # @param entity [Object, Lotus::Entity] the entity
+      # @param timestamp [Symbol] the timestamp name
+      #
+      # @return [TrueClass,FalseClass]
+      #
+      # @api private
+      # @since x.x.x
+      def _has_timestamp?(entity, timestamp)
+        entity.respond_to?(timestamp) &&
+          entity.respond_to?("#{ timestamp }=")
+      end
     end
   end
 end
