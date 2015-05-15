@@ -447,7 +447,9 @@ end
 
 **This is not necessary, when Lotus::Model is used within a Lotus application.**
 
-## Timestamps
+## Features
+
+### Timestamps
 
 If an entity has the following accessors: `:created_at` and `:updated_at`, they will be automatically updated when the entity is persisted.
 
@@ -492,6 +494,59 @@ user.name = "Luca"
 user      = UserRepository.update(user)
 puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
 puts user.updated_at.to_s # => "2015-05-15T10:12:23+00:00"
+```
+
+### Dirty Tracking
+
+Entities are able to track changes of their data, if `Lotus::Entity::DirtyTracking` is included.
+
+```ruby
+require 'lotus/model'
+
+class User
+  include Lotus::Entity
+  include Lotus::Entity::DirtyTracking
+  attributes :name, :age
+end
+
+class UserRepository
+  include Lotus::Repository
+end
+
+Lotus::Model.configure do
+  adapter type: :memory, uri: 'memory://localhost/dirty_tracking'
+
+  mapping do
+    collection :users do
+      entity     User
+      repository UserRepository
+
+      attribute :id,   Integer
+      attribute :name, String
+      attribute :age,  String
+    end
+  end
+end.load!
+
+user = User.new(name: 'L')
+user.changed? # => false
+
+user.age = 33
+user.changed?           # => true
+user.changed_attributes # => {:age=>33}
+
+user = UserRepository.create(user)
+user.changed? # => false
+
+user.update(name: 'Luca')
+user.changed?           # => true
+user.changed_attributes # => {:name=>"Luca"}
+
+user = UserRepository.update(user)
+user.changed? # => false
+
+result = UserRepository.find(user.id)
+result.changed? # => false
 ```
 
 ## Example
