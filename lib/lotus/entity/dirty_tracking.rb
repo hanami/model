@@ -2,11 +2,11 @@ module Lotus
   module Entity
     # Dirty tracking for entities
     #
-    # @since 0.3.1
+    # @since x.x.x
     module DirtyTracking
-      # Override setters for attributes to support dirty tracking
+      # Support dirty tracking
       #
-      # @since 0.3.1
+      # @since x.x.x
       #
       # @example Dirty tracking
       #   require 'lotus/model'
@@ -25,46 +25,19 @@ module Lotus
       #   article.changed? # => true
       #
       #   article.changed_attributes # => {:title => "Generation P"}
-      def self.included(base)
-        base.class_eval do
-          extend ClassMethods
-        end
-      end
 
-      module ClassMethods
-        # Override attribute accessors function.
-        # Create setter methods with attribute values checking.
-        # If the new value or a changed, added to @changed_attributes.
-        #
-        # @params attr [Symbol] an attribute name
-        #
-        # @since 0.3.1
-        # @api private
-        #
-        # @see Lotus::Entity::ClassMethods#define_attr_accessor
-        def define_attr_accessor(attr)
-          attr_reader(attr)
-
-          class_eval %{
-            def #{ attr }=(value)
-              _attribute_changed(:#{ attr }, @#{ attr }, value)
-              @#{ attr } = value
-            end
-          }
-        end
-      end
+      attr_reader :init_state
 
       # Override initialize process.
       #
       # @param attributes [Hash] a set of attribute names and values
       #
-      # @since 0.3.1
+      # @since x.x.x
       #
       # @see Lotus::Entity#initialize
       def initialize(attributes = {})
-        _clear_changes_information
         super
-        _clear_changes_information
+        @init_state = _current_state
       end
 
       # Getter for hash of changed attributes.
@@ -73,12 +46,12 @@ module Lotus
       #
       # @return [::Hash] the changed attributes
       #
-      # @since 0.3.1
+      # @since x.x.x
       #
       # @example
       #   require 'lotus/model'
       #
-      #   class User
+      #   class Article
       #     include Lotus::Entity
       #     include Lotus::Entity::DirtyTracking
       #
@@ -91,35 +64,34 @@ module Lotus
       #   article.title = 'Master and Margarita'
       #   article.changed_attributes # => {:title => "The crime and punishment"}
       def changed_attributes
-        @changed_attributes.dup
+        diff = @init_state.to_a - _current_state.to_a
+        Hash[*diff[0]]
       end
 
       # Checks if the attributes were changed
       #
       # @return [TrueClass, FalseClass] the result of the check
       #
-      # @since 0.3.1
+      # @since x.x.x
       def changed?
-        @changed_attributes.size > 0
+        !@init_state.eql?(_current_state)
       end
 
       private
 
-      # Set changed attributes in Hash with their old values.
+      # Return current state of attributes for Entity
       #
-      # @params attrs [Symbol] an attribute name
+      # @return [::Hash] of attributes
       #
-      # @since 0.3.1
+      # @since x.x.x
+      #
       # @api private
-      def _attribute_changed(attr, current_value, new_value)
-        @changed_attributes[attr] = new_value if current_value != new_value
-      end
-
-      # Clear all information about dirty data
-      #
-      # @since 0.3.1
-      def _clear_changes_information
-        @changed_attributes = {}
+      def _current_state
+        state = {}
+        self.class.attributes.each do |attr|
+          state.merge!({attr => Marshal.load(Marshal.dump(__send__(attr)))})
+        end
+        state.freeze
       end
     end
   end
