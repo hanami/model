@@ -296,6 +296,16 @@ describe Lotus::Entity do
         book.changed?.must_equal true
         book.changed_attributes.must_equal({tags: ["rus", "classic"]})
       end
+      
+      it "show all inplace changes" do
+        book = Book.new title: 'Master and Margarita', tags: %w(rus classic), author: 'Dostoyevsky'
+        book.tags << "fantasy"
+
+        book.changed?.must_equal true
+        book.changed_attributes.must_equal({tags: %w(rus classic)})
+        book.author = 'Bulgakov'
+        book.changed_attributes.must_equal({tags: %w(rus classic), author: 'Dostoyevsky'})
+      end
     end
 
     describe "inheritance" do

@@ -65,7 +65,7 @@ module Lotus
       #   article.changed_attributes # => {:title => "The crime and punishment"}
       def changed_attributes
         diff = @init_state.to_a - _current_state.to_a
-        Hash[*diff[0]]
+        Hash[diff]
       end
 
       # Checks if the attributes were changed
