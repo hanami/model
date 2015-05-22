@@ -1,6 +1,10 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.3.2 - 2015-05-22
+### Added
+- [Dmitry Tymchuk & Luca Guidi] Fix for dirty tracking of attributes changed in place (eg. `book.tags << 'non-fiction'`)
+
 ## v0.3.1 - 2015-05-15
 ### Added
 - [Dmitry Tymchuk] Dirty tracking for entities (via `Lotus::Entity::DirtyTracking` module to include)
