@@ -9,7 +9,7 @@ describe Lotus::Entity do
     class Book
       include Lotus::Entity
       include Lotus::Entity::DirtyTracking
-      attributes :title, :author, :published
+      attributes :title, :author, :published, :tags
     end
 
     class NonFictionBook < Book
@@ -178,7 +178,7 @@ describe Lotus::Entity do
     end
 
     it 'returns an attributes hash' do
-      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false})
+      @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false, tags: nil})
     end
   end
 
@@ -246,7 +246,7 @@ describe Lotus::Entity do
         book.author = nil
         book.changed?.must_equal true
 
-        book.changed_attributes.must_equal(title: 'War and Peace')
+        book.changed_attributes.must_equal(title: nil)
       end
 
       it "doesn't track dirty state for unchanged values" do
@@ -255,7 +255,7 @@ describe Lotus::Entity do
         book.author = "Chuck Palahniuk"
 
         book.changed?.must_equal true
-        book.changed_attributes.must_equal(title: "Choke")
+        book.changed_attributes.must_equal(title: "Fight Club")
       end
     end
 
@@ -267,7 +267,7 @@ describe Lotus::Entity do
         book.update(title: 'War and Peace')
         book.changed?.must_equal true
 
-        book.changed_attributes.must_equal(title: 'War and Peace')
+        book.changed_attributes.must_equal(title: nil)
       end
 
       it "doesn't track dirty state for unchanged values" do
@@ -275,18 +275,36 @@ describe Lotus::Entity do
         book.update(title: "Choke", author: "Chuck Palahniuk")
 
         book.changed?.must_equal true
-        book.changed_attributes.must_equal(title: "Choke")
+        book.changed_attributes.must_equal(title: "Fight Club")
       end
     end
 
     describe "#changed_attributes" do
       it "prevents data escape" do
-        book       = Book.new
+        book       = Book.new title: 'Master and Margarita'
         book.title = 'Crime and Punishment'
 
-        book.changed_attributes.must_equal({title: 'Crime and Punishment'})
+        book.changed_attributes.must_equal({title: 'Master and Margarita'})
         book.changed_attributes.delete(:title)
-        book.changed_attributes.must_equal({title: 'Crime and Punishment'})
+        book.changed_attributes.must_equal({title: 'Master and Margarita'})
+      end
+
+      it "track changes after inplace modification" do
+        book = Book.new(title: "Master and margarita", tags: ["rus", "classic"])
+        book.tags << "fantasy"
+
+        book.changed?.must_equal true
+        book.changed_attributes.must_equal({tags: ["rus", "classic"]})
+      end
+      
+      it "show all inplace changes" do
+        book = Book.new title: 'Master and Margarita', tags: %w(rus classic), author: 'Dostoyevsky'
+        book.tags << "fantasy"
+
+        book.changed?.must_equal true
+        book.changed_attributes.must_equal({tags: %w(rus classic)})
+        book.author = 'Bulgakov'
+        book.changed_attributes.must_equal({tags: %w(rus classic), author: 'Dostoyevsky'})
       end
     end
 
