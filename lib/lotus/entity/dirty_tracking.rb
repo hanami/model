@@ -2,42 +2,36 @@ module Lotus
   module Entity
     # Dirty tracking for entities
     #
-    # @since x.x.x
+    # @since 0.3.1
+    #
+    # @example Dirty tracking
+    #   require 'lotus/model'
+    #
+    #   class User
+    #     include Lotus::Entity
+    #     include Lotus::Entity::DirtyTracking
+    #
+    #     attributes :name
+    #   end
+    #
+    #   article = Article.new(title: 'Generation P')
+    #   article.changed? # => false
+    #
+    #   article.title = 'Master and Margarita'
+    #   article.changed? # => true
+    #
+    #   article.changed_attributes # => {:title => "Generation P"}
     module DirtyTracking
-      # Support dirty tracking
-      #
-      # @since x.x.x
-      #
-      # @example Dirty tracking
-      #   require 'lotus/model'
-      #
-      #   class User
-      #     include Lotus::Entity
-      #     include Lotus::Entity::DirtyTracking
-      #
-      #     attributes :name
-      #   end
-      #
-      #   article = Article.new(title: 'Generation P')
-      #   article.changed? # => false
-      #
-      #   article.title = 'Master and Margarita'
-      #   article.changed? # => true
-      #
-      #   article.changed_attributes # => {:title => "Generation P"}
-
-      attr_reader :init_state
-
       # Override initialize process.
       #
       # @param attributes [Hash] a set of attribute names and values
       #
-      # @since x.x.x
+      # @since 0.3.1
       #
       # @see Lotus::Entity#initialize
       def initialize(attributes = {})
         super
-        @init_state = _current_state
+        @_initial_state = Utils::Hash.new(to_h).deep_dup
       end
 
       # Getter for hash of changed attributes.
@@ -46,7 +40,7 @@ module Lotus
       #
       # @return [::Hash] the changed attributes
       #
-      # @since x.x.x
+      # @since 0.3.1
       #
       # @example
       #   require 'lotus/model'
@@ -64,34 +58,16 @@ module Lotus
       #   article.title = 'Master and Margarita'
       #   article.changed_attributes # => {:title => "The crime and punishment"}
       def changed_attributes
-        diff = @init_state.to_a - _current_state.to_a
-        Hash[diff]
+        Hash[@_initial_state.to_a - to_h.to_a]
       end
 
       # Checks if the attributes were changed
       #
       # @return [TrueClass, FalseClass] the result of the check
       #
-      # @since x.x.x
+      # @since 0.3.1
       def changed?
-        !@init_state.eql?(_current_state)
-      end
-
-      private
-
-      # Return current state of attributes for Entity
-      #
-      # @return [::Hash] of attributes
-      #
-      # @since x.x.x
-      #
-      # @api private
-      def _current_state
-        state = {}
-        self.class.attributes.each do |attr|
-          state.merge!({attr => Marshal.load(Marshal.dump(__send__(attr)))})
-        end
-        state.freeze
+        changed_attributes.any?
       end
     end
   end
