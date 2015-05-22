@@ -154,7 +154,7 @@ module Lotus
 
       # Define setter/getter methods for attributes.
       #
-      # @params attr [Symbol] an attribute name
+      # @param attr [Symbol] an attribute name
       #
       # @since 0.3.1
       # @api private
