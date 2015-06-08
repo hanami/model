@@ -207,13 +207,14 @@ module Lotus
           #        .exclude(company: 'enterprise')
           #
           #   # => SELECT * FROM `projects` WHERE (`language` != 'java') AND (`company` != 'enterprise')
+          #
           # @example Expressions
           #
           #   query.exclude{ age > 31 }
           #
           #   # => SELECT * FROM `users` WHERE (`age` <= 31)
           def exclude(condition = nil, &blk)
-            _push_to_conditions(:exclude, condition || blk).inspect
+            _push_to_conditions(:exclude, condition || blk)
             self
           end
 
