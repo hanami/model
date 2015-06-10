@@ -452,15 +452,6 @@ describe Lotus::Repository do
       end
     end
 
-    describe '.execute' do
-      it 'returns the ResultSet from the executes sql' do
-        sql = "select * from articles"
-        result = ArticleRepository.execute(sql)
-        result.class.name.must_equal "SQLite3::ResultSet"
-        result.count.must_equal 1
-      end
-    end
-
   end
 
   describe "with memory adapter" do
@@ -480,12 +471,6 @@ describe Lotus::Repository do
         -> { ArticleRepository.transaction do
           raise "boom"
         end }.must_raise RuntimeError
-      end
-    end
-
-    describe '.execute' do
-      it "an exception is raised because of memory adapter doesn't support execute" do
-        -> { ArticleRepository.execute("select * from users") }.must_raise NotImplementedError
       end
     end
 
