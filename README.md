@@ -413,6 +413,29 @@ In the example above, we reuse the adapter because the target tables (`people` a
 
 An object that implements an interface for querying the database.
 This interface may vary, according to the adapter's specifications.
+
+Here is common interface for existing class:
+
+  * `.all`   - Resolves the query by fetching records from the database and translating them into entities
+  * `.where`, `.and`  - Adds a condition that behaves like SQL `WHERE`
+  * `.or` - Adds a condition that behaves like SQL `OR`ction
+  * `.exclude`, `.not`  - Logical negation of a #where condition
+  * `.select` - Select only the specified columns
+  * `.order`, `.asc` - Specify the ascending order of the records, sorted by the given columns
+  * `.reverse_order`, `.desc` - Specify the descending order of the records, sorted by the given columns
+  * `.limit` - Limit the number of records to return
+  * `.offset` - Specify an `OFFSET` clause. Due to SQL syntax restriction, offset MUST be used with `#limit`
+  * `.sum` - Returns the sum of the values for the given column
+  * `.average`, `.avg` - Returns the average of the values for the given column
+  * `.max` - Returns the maximum value for the given column
+  * `.min` - Returns the minimum value for the given column
+  * `.interval` - Returns the difference between the MAX and MIN for the given column
+  * `.range` - Returns a range of values between the MAX and the MIN for the given column
+  * `.exist?` - Checks if at least one record exists for the current conditions
+  * `.count` - Returns a count of the records for the current conditions
+
+If you need more information regarding those methods, you can use comments from [memory](https://github.com/lotus/model/blob/master/lib/lotus/model/adapters/memory/query.rb#L29) or [sql](https://github.com/lotus/model/blob/master/lib/lotus/model/adapters/sql/query.rb#L28) adapters interface.
+
 Think of an adapter for Redis, it will probably employ different strategies to filter records than an SQL query object.
 
 ### Conventions
