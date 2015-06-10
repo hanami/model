@@ -137,6 +137,14 @@ module Lotus
         @mapper_config = Lotus::Model::Config::Mapper.new(path, &blk)
       end
 
+      def migrations(path = nil)
+        if path.nil?
+          @migrations
+        else
+          @migrations = path
+        end
+      end
+
       # Duplicate by copying the settings in a new instance.
       #
       # @return [Lotus::Model::Configuration] a copy of the configuration
