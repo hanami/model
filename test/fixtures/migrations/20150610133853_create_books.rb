@@ -1,12 +1,12 @@
 Lotus::Model.migration do
   up do
-    create_table :users do
+    create_table :books do
       primary_key :id
-      column :name, :string, null: false
+      column :title, String, null: false
     end
   end
 
   down do
-    drop_table :users
+    drop_table :title
   end
 end

@@ -17,6 +17,9 @@ rvm:
   - rbx-2
   - jruby-head
 
+addons:
+  postgresql: "9.3"
+
 matrix:
   allow_failures:
     - rvm: rbx-2

@@ -12,6 +12,8 @@ gem 'lotus-validations', require: false, github: 'lotus/validations', branch: '0
 
 gem 'sqlite3',      require: false, platforms: :ruby
 gem 'jdbc-sqlite3', require: false, platforms: :jruby
+gem 'pg'
+gem 'mysql2'
 
 gem 'simplecov', require: false
 gem 'coveralls', require: false
