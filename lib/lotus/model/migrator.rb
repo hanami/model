@@ -23,7 +23,7 @@ module Lotus
       def self.migrate(version: nil)
         version = Integer(version) unless version.nil?
 
-        Sequel::Migrator.run(connection, migrations, target: version)
+        Sequel::Migrator.run(connection, migrations, target: version) if migrations?
       rescue Sequel::Migrator::Error => e
         raise MigrationError.new(e.message)
       end
@@ -56,6 +56,10 @@ module Lotus
 
       def self.migrations
         configuration.migrations
+      end
+
+      def self.migrations?
+        migrations.children.any?
       end
     end
   end

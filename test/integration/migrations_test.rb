@@ -50,15 +50,22 @@ describe "Database migrations" do
 
       describe "when no migrations" do
         before do
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
+          @migrations_root.mkpath
+          @migrations_root.each_child(&:delete)
+
           Lotus::Model.configure do
-            migrations __dir__ + '/../../tmp'
+            migrations migrations_root
           end
 
           Lotus::Model::Migrator.create
         end
 
-        it "it raises error" do
-          -> { Lotus::Model::Migrator.migrate }.must_raise Lotus::Model::MigrationError
+        it "it doesn't alter database" do
+          Lotus::Model::Migrator.migrate
+
+          connection = Sequel.connect(@uri)
+          connection.tables.must_be :empty?
         end
       end
     end
@@ -121,15 +128,22 @@ describe "Database migrations" do
 
       describe "when no migrations" do
         before do
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
+          @migrations_root.mkpath
+          @migrations_root.each_child(&:delete)
+
           Lotus::Model.configure do
-            migrations __dir__ + '/../../tmp'
+            migrations migrations_root
           end
 
           Lotus::Model::Migrator.create
         end
 
-        it "it raises error" do
-          -> { Lotus::Model::Migrator.migrate }.must_raise Lotus::Model::MigrationError
+        it "it doesn't alter database" do
+          Lotus::Model::Migrator.migrate
+
+          connection = Sequel.connect(@uri)
+          connection.tables.must_be :empty?
         end
       end
 
@@ -313,13 +327,20 @@ describe "Database migrations" do
 
       describe "when no migrations" do
         before do
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
+          @migrations_root.mkpath
+          @migrations_root.each_child(&:delete)
+
           Lotus::Model.configure do
-            migrations __dir__ + '/../../tmp'
+            migrations migrations_root
           end
         end
 
-        it "it raises error" do
-          -> { Lotus::Model::Migrator.migrate }.must_raise Lotus::Model::MigrationError
+        it "it doesn't alter database" do
+          Lotus::Model::Migrator.migrate
+
+          connection = Sequel.connect(@uri)
+          connection.tables.must_be :empty?
         end
       end
 
@@ -546,13 +567,20 @@ SQL
 
       describe "when no migrations" do
         before do
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
+          @migrations_root.mkpath
+          @migrations_root.each_child(&:delete)
+
           Lotus::Model.configure do
-            migrations __dir__ + '/../../tmp'
+            migrations migrations_root
           end
         end
 
-        it "it raises error" do
-          -> { Lotus::Model::Migrator.migrate }.must_raise Lotus::Model::MigrationError
+        it "it doesn't alter database" do
+          Lotus::Model::Migrator.migrate
+
+          connection = Sequel.connect(@uri)
+          connection.tables.must_be :empty?
         end
       end
 

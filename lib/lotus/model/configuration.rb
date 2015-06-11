@@ -141,7 +141,7 @@ module Lotus
         if path.nil?
           @migrations
         else
-          @migrations = path
+          @migrations = Pathname.new(path).realpath
         end
       end
 
