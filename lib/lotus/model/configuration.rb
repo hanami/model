@@ -1,5 +1,6 @@
 require 'lotus/model/config/adapter'
 require 'lotus/model/config/mapper'
+require 'lotus/utils/kernel'
 
 module Lotus
   module Model
@@ -10,6 +11,21 @@ module Lotus
     #
     # @since 0.2.0
     class Configuration
+      # Default migrations path
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @see Lotus::Model::Configuration#migrations
+      DEFAULT_MIGRATIONS_PATH = Pathname.new('db/migrations').freeze
+
+      # Default schema path
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @see Lotus::Model::Configuration#schema
+      DEFAULT_SCHEMA_PATH = Pathname.new('db/schema.sql').freeze
 
       # The persistence mapper
       #
@@ -45,6 +61,8 @@ module Lotus
         @adapter_config = nil
         @mapper = NullMapper.new
         @mapper_config = nil
+        @migrations = DEFAULT_MIGRATIONS_PATH
+        @schema = DEFAULT_SCHEMA_PATH
       end
 
       alias_method :unload!, :reset!
@@ -137,19 +155,67 @@ module Lotus
         @mapper_config = Lotus::Model::Config::Mapper.new(path, &blk)
       end
 
+      # Migrations directory
+      #
+      # It defaults to <tt>db/migrations</tt>.
+      #
+      # @overload migrations
+      #   Get migrations directory
+      #   @return [Pathname] migrations directory
+      #
+      # @overload migrations(path)
+      #   Set migrations directory
+      #   @param path [String,Pathname,#to_pathname] the path
+      #   @raise [Errno::ENOENT] if the given path doesn't exist
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Migrations::DEFAULT_MIGRATIONS_PATH
+      #
+      # @example Set Custom Path
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     # ...
+      #     migrations 'path/to/migrations'
+      #   end
       def migrations(path = nil)
         if path.nil?
           @migrations
         else
-          @migrations = Pathname.new(path).realpath
+          @migrations = Utils::Kernel.Pathname(path).realpath
         end
       end
 
+      # Schema
+      #
+      # It defaults to <tt>db/schema.sql</tt>.
+      #
+      # @overload schema
+      #   Get schema path
+      #   @return [Pathname] schema path
+      #
+      # @overload schema(path)
+      #   Set schema path
+      #   @param path [String,Pathname,#to_pathname] the path
+      #   @raise [Errno::ENOENT] if the given path doesn't exist
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Migrations::DEFAULT_SCHEMA_PATH
+      #
+      # @example Set Custom Path
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     # ...
+      #     schema 'path/to/schema.sql'
+      #   end
       def schema(path = nil)
         if path.nil?
           @schema
         else
-          @schema = path
+          @schema = Utils::Kernel.Pathname(path).realpath
         end
       end
 
