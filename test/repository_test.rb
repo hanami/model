@@ -452,6 +452,17 @@ describe Lotus::Repository do
       end
     end
 
+    describe '.execute' do
+      it 'is a private api' do
+        -> { ArticleRepository.execute("select * from users") }.must_raise NoMethodError
+      end
+      it 'returns the ResultSet from the executes sql' do
+        result = ArticleRepository.aggregate
+        result.class.name.must_equal "SQLite3::ResultSet"
+        result.count.must_equal 1
+      end
+    end
+
   end
 
   describe "with memory adapter" do
@@ -471,6 +482,15 @@ describe Lotus::Repository do
         -> { ArticleRepository.transaction do
           raise "boom"
         end }.must_raise RuntimeError
+      end
+    end
+
+    describe '.execute' do
+      it 'is a private api' do
+        -> { ArticleRepository.execute("select * from users") }.must_raise NoMethodError
+      end
+      it "raises an exception because memory adapter doesn't support execute" do
+        -> { ArticleRepository.aggregate }.must_raise NotImplementedError
       end
     end
 
