@@ -156,7 +156,7 @@ module Lotus
       def self.migrate(version: nil)
         version = Integer(version) unless version.nil?
 
-        Sequel::Migrator.run(connection, migrations, target: version) if migrations?
+        Sequel::Migrator.run(connection, migrations, target: version, allow_missing_migration_files: true) if migrations?
       rescue Sequel::Migrator::Error => e
         raise MigrationError.new(e.message)
       end
@@ -203,6 +203,51 @@ module Lotus
         migrate
         adapter(connection).dump
         delete_migrations
+      end
+
+      # Prepare database: create, load schema (if any), migrate.
+      #
+      # This is an experimental feature.
+      # It may change or be removed in the future.
+      #
+      # This is designed for development machines and testing mode.
+      # It works faster if used with <tt>apply</tt>.
+      #
+      # @raise [Lotus::Model::MigrationError] if an error occurs
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Migrator.apply
+      #
+      # @example Prepare Database
+      #   require 'lotus/model'
+      #   require 'lotus/model/migrator'
+      #
+      #   Lotus::Model.configure do
+      #     # ...
+      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     migrations 'db/migrations'
+      #   end
+      #
+      #   Lotus::Model::Migrator.prepare # => creates `foo' and run migrations
+      #
+      # @example Prepare Database (with schema dump)
+      #   require 'lotus/model'
+      #   require 'lotus/model/migrator'
+      #
+      #   Lotus::Model.configure do
+      #     # ...
+      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     migrations 'db/migrations'
+      #     schema     'db/schema.sql'
+      #   end
+      #
+      #   Lotus::Model::Migrator.apply   # => updates schema dump
+      #   Lotus::Model::Migrator.prepare # => creates `foo', load schema and run pending migrations (if any)
+      def self.prepare
+        create
+        adapter(connection).load
+        migrate
       end
 
       private

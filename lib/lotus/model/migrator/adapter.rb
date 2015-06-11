@@ -65,6 +65,17 @@ module Lotus
           raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support drop.")
         end
 
+        # Load database schema.
+        # It must be implemented by subclasses.
+        #
+        # @since x.x.x
+        # @api private
+        #
+        # @see Lotus::Model::Migrator.prepare
+        def load
+          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support load.")
+        end
+
         private
 
         # @since x.x.x
@@ -114,19 +125,19 @@ module Lotus
         # @since x.x.x
         # @api private
         def schema
-          escape Model.configuration.schema
+          Model.configuration.schema
+        end
+
+        # @since x.x.x
+        # @api private
+        def migrations_table
+          escape MIGRATIONS_TABLE
         end
 
         # @since x.x.x
         # @api private
         def options
           @connection.opts
-        end
-
-        # @since x.x.x
-        # @api private
-        def migrations_table
-          MIGRATIONS_TABLE
         end
 
         # @since x.x.x

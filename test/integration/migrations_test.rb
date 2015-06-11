@@ -63,9 +63,6 @@ describe "Database migrations" do
 
         it "it doesn't alter database" do
           Lotus::Model::Migrator.migrate
-
-          connection = Sequel.connect(@uri)
-          connection.tables.must_be :empty?
         end
       end
     end
@@ -279,6 +276,49 @@ describe "Database migrations" do
         @migrations_root.join('migrations').children.must_be :empty?
       end
     end
+
+    describe "prepare" do
+      before do
+        uri              = @uri
+        @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp')
+        @fixtures_root   = fixtures_root   = Pathname.new(__dir__ + '/../fixtures/migrations')
+
+        migrations_root.mkpath
+        FileUtils.cp_r(fixtures_root, migrations_root)
+
+        Lotus::Model.unload!
+        Lotus::Model.configure do
+          adapter type: :sql, uri: uri
+
+          migrations migrations_root.join('migrations')
+          schema     migrations_root.join('schema-sqlite.sql')
+        end
+      end
+
+      it "creates database, loads schema and migrate" do
+        # Simulate already existing schema.sql, without existing database and pending migrations
+        connection = Sequel.connect(@uri)
+        Lotus::Model::Migrator::Adapter.for(connection).dump
+
+        FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
+          @migrations_root.join('migrations/20150611165922_create_authors.rb')
+
+        Lotus::Model::Migrator.prepare
+
+        connection.tables.must_equal [:schema_migrations, :books, :authors]
+      end
+
+      it "works even if schema doesn't exist" do
+        # Simulate no database, no schema and pending migrations
+        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
+        @migrations_root.join('schema-sqlite.sql').delete                           rescue nil
+
+        Lotus::Model::Migrator.prepare
+
+        connection = Sequel.connect(@uri)
+        connection.tables.must_equal [:schema_migrations, :books]
+      end
+    end
   end
 
   describe "PostgreSQL" do
@@ -459,7 +499,7 @@ describe "Database migrations" do
 
       it "migrates to latest version" do
         connection = Sequel.connect(@uri)
-        migration  = connection[:schema_migrations].to_a.last
+        migration  = connection[:schema_migrations].to_a[1]
 
         migration.fetch(:filename).must_include("20150610141017")
       end
@@ -517,6 +557,51 @@ SQL
 
       it "deletes all the migrations" do
         @migrations_root.join('migrations').children.must_be :empty?
+      end
+    end
+
+    describe "prepare" do
+      before do
+        uri              = @uri
+        @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp')
+        @fixtures_root   = fixtures_root   = Pathname.new(__dir__ + '/../fixtures/migrations')
+
+        migrations_root.mkpath
+        FileUtils.cp_r(fixtures_root, migrations_root)
+
+        Lotus::Model.unload!
+        Lotus::Model.configure do
+          adapter type: :sql, uri: uri
+
+          migrations migrations_root.join('migrations')
+          schema     migrations_root.join('schema-postgres.sql')
+        end
+      end
+
+      it "creates database, loads schema and migrate" do
+        # Simulate already existing schema.sql, without existing database and pending migrations
+        connection = Sequel.connect(@uri)
+        Lotus::Model::Migrator::Adapter.for(connection).dump
+
+        FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
+          @migrations_root.join('migrations/20150611165922_create_authors.rb')
+
+        Lotus::Model::Migrator.prepare
+
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:books)
+        connection.tables.must_include(:authors)
+      end
+
+      it "works even if schema doesn't exist" do
+        # Simulate no database, no schema and pending migrations
+        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
+        @migrations_root.join('schema-postgres.sql').delete                         rescue nil
+
+        Lotus::Model::Migrator.prepare
+
+        connection = Sequel.connect(@uri)
+        connection.tables.must_equal [:schema_migrations, :books]
       end
     end
   end
@@ -749,6 +834,52 @@ SQL
 
       it "deletes all the migrations" do
         @migrations_root.join('migrations').children.must_be :empty?
+      end
+    end
+
+    describe "prepare" do
+      before do
+        uri              = @uri
+        @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp')
+        @fixtures_root   = fixtures_root   = Pathname.new(__dir__ + '/../fixtures/migrations')
+
+        migrations_root.mkpath
+        FileUtils.cp_r(fixtures_root, migrations_root)
+
+        Lotus::Model.unload!
+        Lotus::Model.configure do
+          adapter type: :sql, uri: uri
+
+          migrations migrations_root.join('migrations')
+          schema     migrations_root.join('schema-mysql.sql')
+        end
+      end
+
+      it "creates database, loads schema and migrate" do
+        # Simulate already existing schema.sql, without existing database and pending migrations
+        connection = Sequel.connect(@uri)
+        Lotus::Model::Migrator::Adapter.for(connection).dump
+
+        FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
+          @migrations_root.join('migrations/20150611165922_create_authors.rb')
+
+        Lotus::Model::Migrator.prepare
+
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:books)
+        connection.tables.must_include(:authors)
+      end
+
+      it "works even if schema doesn't exist" do
+        # Simulate no database, no schema and pending migrations
+        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
+        @migrations_root.join('schema-mysql.sql').delete                            rescue nil
+
+        Lotus::Model::Migrator.prepare
+
+        connection = Sequel.connect(@uri)
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:books)
       end
     end
   end

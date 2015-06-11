@@ -63,6 +63,12 @@ module Lotus
           dump_migrations_data
         end
 
+        # @since x.x.x
+        # @api private
+        def load
+          load_structure
+        end
+
         private
 
         # @since x.x.x
@@ -82,13 +88,19 @@ module Lotus
         # @since x.x.x
         # @api private
         def dump_structure
-          system "sqlite3 #{ path } .schema > #{ schema }"
+          system "sqlite3 #{ escape(path) } .schema > #{ escape(schema) }"
+        end
+
+        # @since x.x.x
+        # @api private
+        def load_structure
+          system "sqlite3 #{ escape(path) } < #{ escape(schema) }" if schema.exist?
         end
 
         # @since x.x.x
         # @api private
         def dump_migrations_data
-          system %(sqlite3 #{ path } .dump | grep '^INSERT INTO "#{ migrations_table }"' >> #{ schema })
+          system %(sqlite3 #{ escape(path) } .dump | grep '^INSERT INTO "#{ migrations_table }"' >> #{ escape(schema) })
         end
       end
     end

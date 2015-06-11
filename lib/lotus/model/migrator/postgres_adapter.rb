@@ -50,6 +50,13 @@ module Lotus
           dump_migrations_data
         end
 
+        # @since x.x.x
+        # @api private
+        def load
+          set_environment_variables
+          load_structure
+        end
+
         private
 
         # @since x.x.x
@@ -72,13 +79,19 @@ module Lotus
         # @since x.x.x
         # @api private
         def dump_structure
-          system "pg_dump -i -s -x -O -T #{ migrations_table } -f #{ schema } #{ database }"
+          system "pg_dump -i -s -x -O -T #{ migrations_table } -f #{ escape(schema) } #{ database }"
+        end
+
+        # @since x.x.x
+        # @api private
+        def load_structure
+          system "psql -X -q -f #{ escape(schema) } #{ database }" if schema.exist?
         end
 
         # @since x.x.x
         # @api private
         def dump_migrations_data
-          system "pg_dump -t #{ migrations_table } #{ database } >> #{ schema }"
+          system "pg_dump -t #{ migrations_table } #{ database } >> #{ escape(schema) }"
         end
       end
     end

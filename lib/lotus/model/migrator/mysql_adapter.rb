@@ -33,12 +33,24 @@ module Lotus
           dump_migrations_data
         end
 
+        # @since x.x.x
+        # @api private
+        def load
+          load_structure
+        end
+
         private
 
         # @since x.x.x
         # @api private
         def dump_structure
           system "mysqldump --user=#{ username } --password=#{ password } --no-data --skip-comments --ignore-table=#{ database }.#{ migrations_table } #{ database } > #{ schema }"
+        end
+
+        # @since x.x.x
+        # @api private
+        def load_structure
+          system "mysql --user=#{ username } --password=#{ password } #{ database } < #{ escape(schema) }" if schema.exist?
         end
 
         # @since x.x.x
