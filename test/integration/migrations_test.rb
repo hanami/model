@@ -185,6 +185,44 @@ describe "Database migrations" do
           connection.tables.must_equal [:schema_migrations, :books]
         end
       end
+
+      describe "migrate down" do
+        before do
+          Lotus::Model::Migrator.migrate
+        end
+
+        it "migrates the database" do
+          Lotus::Model::Migrator.migrate(version: "20150610133853")
+
+          connection = Sequel.connect(@uri)
+          connection.tables.wont_be :empty?
+
+          table = connection.schema(:books)
+
+          name, options = table[0] # id
+          name.must_equal :id
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :integer
+          options.fetch(:db_type).must_equal        "integer"
+          options.fetch(:primary_key).must_equal    true
+          options.fetch(:auto_increment).must_equal true
+
+          name, options = table[1] # title
+          name.must_equal :title
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :string
+          options.fetch(:db_type).must_equal        "varchar(255)"
+          options.fetch(:primary_key).must_equal    false
+
+          name, options = table[2] # price (rolled back second migration)
+          name.must_be_nil
+          options.must_be_nil
+        end
+      end
     end
   end
 
@@ -296,6 +334,44 @@ describe "Database migrations" do
           connection.tables.must_equal [:schema_migrations, :books]
         end
       end
+
+      describe "migrate down" do
+        before do
+          Lotus::Model::Migrator.migrate
+        end
+
+        it "migrates the database" do
+          Lotus::Model::Migrator.migrate(version: "20150610133853")
+
+          connection = Sequel.connect(@uri)
+          connection.tables.wont_be :empty?
+
+          table = connection.schema(:books)
+
+          name, options = table[0] # id
+          name.must_equal :id
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        "nextval('books_id_seq'::regclass)"
+          options.fetch(:type).must_equal           :integer
+          options.fetch(:db_type).must_equal        "integer"
+          options.fetch(:primary_key).must_equal    true
+          options.fetch(:auto_increment).must_equal true
+
+          name, options = table[1] # title
+          name.must_equal :title
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :string
+          options.fetch(:db_type).must_equal        "text"
+          options.fetch(:primary_key).must_equal    false
+
+          name, options = table[2] # price (rolled back second migration)
+          name.must_be_nil
+          options.must_be_nil
+        end
+      end
     end
   end
 
@@ -405,6 +481,44 @@ describe "Database migrations" do
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
           connection.tables.must_equal [:books, :schema_migrations]
+        end
+      end
+
+      describe "migrate down" do
+        before do
+          Lotus::Model::Migrator.migrate
+        end
+
+        it "migrates the database" do
+          Lotus::Model::Migrator.migrate(version: "20150610133853")
+
+          connection = Sequel.connect(@uri)
+          connection.tables.wont_be :empty?
+
+          table = connection.schema(:books)
+
+          name, options = table[0] # id
+          name.must_equal :id
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :integer
+          options.fetch(:db_type).must_equal        "int(11)"
+          options.fetch(:primary_key).must_equal    true
+          options.fetch(:auto_increment).must_equal true
+
+          name, options = table[1] # title
+          name.must_equal :title
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :string
+          options.fetch(:db_type).must_equal        "varchar(255)"
+          options.fetch(:primary_key).must_equal    false
+
+          name, options = table[2] # price (rolled back second migration)
+          name.must_be_nil
+          options.must_be_nil
         end
       end
     end

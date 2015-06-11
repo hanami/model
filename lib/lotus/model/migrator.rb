@@ -20,9 +20,11 @@ module Lotus
         Adapter.for(connection).drop
       end
 
-      def self.migrate
+      def self.migrate(version: nil)
         directory = configuration.migrations
-        Sequel::Migrator.apply(connection, directory)
+        version   = version.to_i unless version.nil?
+
+        Sequel::Migrator.run(connection, directory, target: version)
       rescue Sequel::Migrator::Error => e
         raise MigrationError.new(e.message)
       end
