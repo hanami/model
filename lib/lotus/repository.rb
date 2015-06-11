@@ -551,6 +551,7 @@ module Lotus
         end
       end
 
+      private
       # Executes the given raw statement on the adapter.
       #
       # Please note that it's only supported by some databases,
@@ -595,7 +596,6 @@ module Lotus
         @adapter.execute(raw)
       end
 
-      private
       # Fabricates a query and yields the given block to access the low level
       # APIs exposed by the query itself.
       #

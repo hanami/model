@@ -48,6 +48,10 @@ class ArticleRepository
   def self.rank_by_user(user)
     rank.by_user(user)
   end
+
+  def self.aggregate
+    execute("select * from articles")
+  end
 end
 
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
