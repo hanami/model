@@ -21,6 +21,23 @@ module Lotus
       class SqlAdapter < Abstract
         include Implementation
 
+        # Delegate all low level adapter command/queries
+        # to Sequel
+        #
+        # @see Lotus::Model::Adapters::SqlAdapter#connection
+        # @api private
+        # @since x.x.x
+        class Connection < SimpleDelegator
+          def initialize(uri)
+            @connection = Sequel.connect(uri)
+            super(@connection)
+          end
+
+          def schema_and_table(table)
+            @connection.send(:schema_and_table, table)
+          end
+        end
+
         # Initialize the adapter.
         #
         # Lotus::Model uses Sequel. For a complete reference of the connection
@@ -43,10 +60,15 @@ module Lotus
         # @since 0.1.0
         def initialize(mapper, uri)
           super
-          @connection = Sequel.connect(@uri)
+          @connection = Connection.new(@uri)
         rescue Sequel::AdapterNotFound => e
           raise DatabaseAdapterNotFound.new(e.message)
         end
+
+        # Connection interface to database
+        #
+        # @api private
+        attr_reader :connection
 
         # Creates a record in the database for the given entity.
         # It assigns the `id` attribute, in case of success.

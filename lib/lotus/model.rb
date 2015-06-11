@@ -72,8 +72,9 @@ module Lotus
     #     end
     #   end
     #
-    # Adapter MUST follow the convention in which adapter class is inflection of adapter name
-    # The above example has name :sql, thus derived class will be `Lotus::Model::Adapters::SqlAdapter`
+    # Adapter MUST follow the convention in which adapter class is inflection
+    # of adapter name. The above example has name :sql, thus derived class will
+    # be `Lotus::Model::Adapters::SqlAdapter`.
     def self.configure(&blk)
       configuration.instance_eval(&blk)
       self
@@ -184,7 +185,9 @@ module Lotus
     #   end
     #
     #   Lotus::Model.configuration.adapter_config # => nil
-    #   MyApp::Model.configuration.adapter_config # => #<Lotus::Model::Config::Adapter:0x007ff0ff0244f8 @type=:memory, @uri="memory://localhost", @class_name="MemoryAdapter">
+    #   MyApp::Model.configuration.adapter_config
+    #     => #<Lotus::Model::Config::Adapter:0x007ff0ff0244f8 @type=:memory,
+    #          @uri="memory://localhost", @class_name="MemoryAdapter">
     def self.duplicate(mod, &blk)
       dupe.tap do |duplicated|
         mod.module_eval %{
