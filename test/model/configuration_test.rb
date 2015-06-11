@@ -155,12 +155,6 @@ describe Lotus::Model::Configuration do
     end
 
     describe "set a value" do
-      describe "to unexisting file" do
-        it "raises error" do
-          -> { configuration.schema('path/to/unknown.sql') }.must_raise Errno::ENOENT
-        end
-      end
-
       describe "to existing directory" do
         it "sets value" do
           configuration.migrations 'test/fixtures/migrations'

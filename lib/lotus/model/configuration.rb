@@ -198,7 +198,6 @@ module Lotus
       # @overload schema(path)
       #   Set schema path
       #   @param path [String,Pathname,#to_pathname] the path
-      #   @raise [Errno::ENOENT] if the given path doesn't exist
       #
       # @since x.x.x
       #
@@ -215,7 +214,7 @@ module Lotus
         if path.nil?
           @schema
         else
-          @schema = Utils::Kernel.Pathname(path).realpath
+          @schema = Utils::Kernel.Pathname(path)
         end
       end
 
