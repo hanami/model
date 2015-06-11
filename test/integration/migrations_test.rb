@@ -85,13 +85,13 @@ describe "Database migrations" do
         before do
           Lotus::Model.unload!
           Lotus::Model.configure do
-            adapter type: :sql, uri: 'sqlite:///'
+            adapter type: :sql, uri: 'sqlite:///usr/bin/create.sqlite3'
           end
         end
 
         it "raises an error" do
           exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
-          exception.message.must_equal "Permission denied: /"
+          exception.message.must_equal "Permission denied: /usr/bin/create.sqlite3"
         end
       end
     end
