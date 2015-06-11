@@ -2,6 +2,11 @@ module Lotus
   module Model
     module Migrator
       class PostgresAdapter < Adapter
+        HOST     = 'PGHOST'.freeze
+        PORT     = 'PGPORT'.freeze
+        USER     = 'PGUSER'.freeze
+        PASSWORD = 'PGPASSWORD'.freeze
+
         def create
           new_connection.run %(CREATE DATABASE "#{ database }"#{ create_options })
         end
@@ -19,6 +24,7 @@ module Lotus
         end
 
         def dump
+          set_environment_variables
           dump_structure
           dump_migrations_data
         end
@@ -26,8 +32,15 @@ module Lotus
         private
         def create_options
           result  = ""
-          result += %( OWNER "#{ options.fetch(:user) }") if options.fetch(:user, nil)
+          result += %( OWNER "#{ username }") unless username.nil?
           result
+        end
+
+        def set_environment_variables
+          ENV[HOST]     = host      unless host.nil?
+          ENV[PORT]     = port.to_s unless port.nil?
+          ENV[PASSWORD] = password  unless password.nil?
+          ENV[USER]     = username  unless username.nil?
         end
 
         def dump_structure

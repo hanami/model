@@ -56,6 +56,14 @@ module Lotus
           options.fetch(:database)
         end
 
+        def host
+          options.fetch(:host)
+        end
+
+        def port
+          options.fetch(:port)
+        end
+
         def username
           options.fetch(:user)
         end

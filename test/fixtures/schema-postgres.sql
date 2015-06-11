@@ -96,7 +96,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: luca; Tablespace: 
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: lotus; Tablespace: 
 --
 
 CREATE TABLE schema_migrations (
@@ -104,10 +104,10 @@ CREATE TABLE schema_migrations (
 );
 
 
-ALTER TABLE schema_migrations OWNER TO luca;
+ALTER TABLE schema_migrations OWNER TO lotus;
 
 --
--- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: lotus
 --
 
 COPY schema_migrations (filename) FROM stdin;
@@ -117,7 +117,7 @@ COPY schema_migrations (filename) FROM stdin;
 
 
 --
--- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: luca; Tablespace: 
+-- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: lotus; Tablespace: 
 --
 
 ALTER TABLE ONLY schema_migrations
