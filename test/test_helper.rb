@@ -44,17 +44,14 @@ else
 end
 
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
-
-system %(psql --command="CREATE ROLE lotus LOGIN SUPERUSER")
-POSTGRES_USER = 'lotus'
-
 if ENV['TRAVIS'] == 'true'
   system "createdb" rescue nil
-  MYSQL_USER = 'travis'
+  POSTGRES_USER = 'postgres'
+  MYSQL_USER    = 'travis'
 else
-  MYSQL_USER = 'lotus'
+  POSTGRES_USER = `whoami`
+  MYSQL_USER    = 'lotus'
 end
-
 require 'fixtures'
 
 Lotus::Model::Configuration.class_eval do

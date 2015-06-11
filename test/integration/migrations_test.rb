@@ -253,10 +253,12 @@ describe "Database migrations" do
       end
 
       it "dumps database schema.sql" do
-        actual   = @migrations_root.join('schema-sqlite.sql').read
-        expected = @fixtures_root.join('../schema-sqlite.sql').read
+        schema = @migrations_root.join('schema-sqlite.sql').read
 
-        actual.must_equal expected
+        schema.must_include %(CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);)
+        schema.must_include %(CREATE TABLE `books` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `title` varchar(255) NOT NULL, `price` integer DEFAULT (100));)
+        schema.must_include %(INSERT INTO "schema_migrations" VALUES('20150610133853_create_books.rb');)
+        schema.must_include %(INSERT INTO "schema_migrations" VALUES('20150610141017_add_price_to_books.rb');)
       end
 
       it "deletes all the migrations" do
@@ -442,10 +444,54 @@ describe "Database migrations" do
       end
 
       it "dumps database schema.sql" do
-        actual   = @migrations_root.join('schema-postgres.sql').read
-        expected = @fixtures_root.join('../schema-postgres.sql').read
+        schema = @migrations_root.join('schema-postgres.sql').read
 
-        actual.must_equal expected
+        schema.must_include <<-SQL
+CREATE TABLE books (
+    id integer NOT NULL,
+    title text NOT NULL,
+    price integer DEFAULT 100
+);
+SQL
+
+        schema.must_include <<-SQL
+CREATE SEQUENCE books_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+SQL
+
+        schema.must_include <<-SQL
+ALTER SEQUENCE books_id_seq OWNED BY books.id;
+SQL
+
+        schema.must_include <<-SQL
+ALTER TABLE ONLY books ALTER COLUMN id SET DEFAULT nextval('books_id_seq'::regclass);
+SQL
+
+        schema.must_include <<-SQL
+ALTER TABLE ONLY books
+    ADD CONSTRAINT books_pkey PRIMARY KEY (id);
+SQL
+
+        schema.must_include <<-SQL
+CREATE TABLE schema_migrations (
+    filename text NOT NULL
+);
+SQL
+
+        schema.must_include <<-SQL
+COPY schema_migrations (filename) FROM stdin;
+20150610133853_create_books.rb
+20150610141017_add_price_to_books.rb
+SQL
+
+        schema.must_include <<-SQL
+ALTER TABLE ONLY schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
+SQL
       end
 
       it "deletes all the migrations" do
@@ -631,10 +677,46 @@ describe "Database migrations" do
       end
 
       it "dumps database schema.sql" do
-        actual   = @migrations_root.join('schema-mysql.sql').read
-        expected = @fixtures_root.join('../schema-mysql.sql').read
+        schema = @migrations_root.join('schema-mysql.sql').read
 
-        actual.must_equal expected
+        schema.must_include <<-SQL
+DROP TABLE IF EXISTS `books`;
+SQL
+
+        schema.must_include <<-SQL
+CREATE TABLE `books` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+SQL
+        schema.must_include %(`title` varchar(255))
+
+        schema.must_include <<-SQL
+  `price` int(11) DEFAULT '100',
+  PRIMARY KEY (`id`)
+SQL
+
+        schema.must_include <<-SQL
+DROP TABLE IF EXISTS `schema_migrations`;
+SQL
+
+        schema.must_include <<-SQL
+CREATE TABLE `schema_migrations` (
+SQL
+
+        schema.must_include %(`filename` varchar(255))
+        schema.must_include %(PRIMARY KEY (`filename`))
+
+        schema.must_include <<-SQL
+LOCK TABLES `schema_migrations` WRITE;
+SQL
+
+        schema.must_include <<-SQL
+INSERT INTO `schema_migrations` VALUES ('20150610133853_create_books.rb'),('20150610141017_add_price_to_books.rb');
+SQL
+
+        schema.must_include <<-SQL
+UNLOCK TABLES;
+SQL
+
       end
 
       it "deletes all the migrations" do
