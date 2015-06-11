@@ -13,23 +13,36 @@ module Lotus
 
     module Migrator
       def self.create
-        Adapter.for(connection).create
+        adapter(connection).create
       end
 
       def self.drop
-        Adapter.for(connection).drop
+        adapter(connection).drop
       end
 
       def self.migrate(version: nil)
-        directory = configuration.migrations
-        version   = version.to_i unless version.nil?
+        version = Integer(version) unless version.nil?
 
-        Sequel::Migrator.run(connection, directory, target: version)
+        Sequel::Migrator.run(connection, migrations, target: version)
       rescue Sequel::Migrator::Error => e
         raise MigrationError.new(e.message)
       end
 
+      def self.apply
+        migrate
+        adapter(connection).dump
+        delete_migrations
+      end
+
       private
+
+      def self.adapter(connection)
+        Adapter.for(connection)
+      end
+
+      def self.delete_migrations
+        migrations.each_child(&:delete)
+      end
 
       def self.connection
         Sequel.connect(
@@ -39,6 +52,10 @@ module Lotus
 
       def self.configuration
         Model.configuration
+      end
+
+      def self.migrations
+        configuration.migrations
       end
     end
   end

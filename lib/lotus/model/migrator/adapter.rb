@@ -4,6 +4,8 @@ module Lotus
   module Model
     module Migrator
       class Adapter
+        MIGRATIONS_TABLE = 'schema_migrations'.freeze
+
         def self.for(connection)
           case connection.database_type
           when :sqlite
@@ -25,11 +27,15 @@ module Lotus
         end
 
         def create
-          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support database creation.")
+          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support create.")
         end
 
         def drop
-          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support database drop.")
+          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support drop.")
+        end
+
+        def drop
+          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support dump.")
         end
 
         private
@@ -50,8 +56,24 @@ module Lotus
           options.fetch(:database)
         end
 
+        def username
+          options.fetch(:user)
+        end
+
+        def password
+          options.fetch(:password)
+        end
+
+        def schema
+          Model.configuration.schema
+        end
+
         def options
           @connection.opts
+        end
+
+        def migrations_table
+          MIGRATIONS_TABLE
         end
       end
     end

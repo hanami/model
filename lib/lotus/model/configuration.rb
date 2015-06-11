@@ -145,6 +145,14 @@ module Lotus
         end
       end
 
+      def schema(path = nil)
+        if path.nil?
+          @schema
+        else
+          @schema = path
+        end
+      end
+
       # Duplicate by copying the settings in a new instance.
       #
       # @return [Lotus::Model::Configuration] a copy of the configuration

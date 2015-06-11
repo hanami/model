@@ -224,6 +224,45 @@ describe "Database migrations" do
         end
       end
     end
+
+    describe "apply" do
+      before do
+        uri              = @uri
+        @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp')
+        @fixtures_root   = fixtures_root   = Pathname.new(__dir__ + '/../fixtures/migrations')
+
+        migrations_root.mkpath
+        FileUtils.cp_r(fixtures_root, migrations_root)
+
+        Lotus::Model.unload!
+        Lotus::Model.configure do
+          adapter type: :sql, uri: uri
+
+          migrations migrations_root.join('migrations')
+          schema     migrations_root.join('schema-sqlite.sql')
+        end
+
+        Lotus::Model::Migrator.apply
+      end
+
+      it "migrates to latest version" do
+        connection = Sequel.connect(@uri)
+        migration  = connection[:schema_migrations].to_a.last
+
+        migration.fetch(:filename).must_include("20150610141017")
+      end
+
+      it "dumps database schema.sql" do
+        actual   = @migrations_root.join('schema-sqlite.sql').read
+        expected = @fixtures_root.join('../schema-sqlite.sql').read
+
+        actual.must_equal expected
+      end
+
+      it "deletes all the migrations" do
+        @migrations_root.join('migrations').children.must_be :empty?
+      end
+    end
   end
 
   describe "PostgreSQL" do
@@ -373,6 +412,46 @@ describe "Database migrations" do
         end
       end
     end
+
+    describe "apply" do
+      before do
+        uri              = @uri
+        @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp')
+        @fixtures_root   = fixtures_root   = Pathname.new(__dir__ + '/../fixtures/migrations')
+
+        migrations_root.mkpath
+        FileUtils.cp_r(fixtures_root, migrations_root)
+
+        Lotus::Model.unload!
+        Lotus::Model.configure do
+          adapter type: :sql, uri: uri
+
+          migrations migrations_root.join('migrations')
+          schema     migrations_root.join('schema-postgres.sql')
+        end
+
+        Lotus::Model::Migrator.create
+        Lotus::Model::Migrator.apply
+      end
+
+      it "migrates to latest version" do
+        connection = Sequel.connect(@uri)
+        migration  = connection[:schema_migrations].to_a.last
+
+        migration.fetch(:filename).must_include("20150610141017")
+      end
+
+      it "dumps database schema.sql" do
+        actual   = @migrations_root.join('schema-postgres.sql').read
+        expected = @fixtures_root.join('../schema-postgres.sql').read
+
+        actual.must_equal expected
+      end
+
+      it "deletes all the migrations" do
+        @migrations_root.join('migrations').children.must_be :empty?
+      end
+    end
   end
 
   describe "MySQL" do
@@ -520,6 +599,46 @@ describe "Database migrations" do
           name.must_be_nil
           options.must_be_nil
         end
+      end
+    end
+
+    describe "apply" do
+      before do
+        uri              = @uri
+        @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp')
+        @fixtures_root   = fixtures_root   = Pathname.new(__dir__ + '/../fixtures/migrations')
+
+        migrations_root.mkpath
+        FileUtils.cp_r(fixtures_root, migrations_root)
+
+        Lotus::Model.unload!
+        Lotus::Model.configure do
+          adapter type: :sql, uri: uri
+
+          migrations migrations_root.join('migrations')
+          schema     migrations_root.join('schema-mysql.sql')
+        end
+
+        Lotus::Model::Migrator.create
+        Lotus::Model::Migrator.apply
+      end
+
+      it "migrates to latest version" do
+        connection = Sequel.connect(@uri)
+        migration  = connection[:schema_migrations].to_a.last
+
+        migration.fetch(:filename).must_include("20150610141017")
+      end
+
+      it "dumps database schema.sql" do
+        actual   = @migrations_root.join('schema-mysql.sql').read
+        expected = @fixtures_root.join('../schema-mysql.sql').read
+
+        actual.must_equal expected
+      end
+
+      it "deletes all the migrations" do
+        @migrations_root.join('migrations').children.must_be :empty?
       end
     end
   end

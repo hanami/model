@@ -32,6 +32,11 @@ module Lotus
           raise MigrationError.new("Cannot find database: #{ path.sub(/\A\/\//, '') }")
         end
 
+        def dump
+          dump_structure
+          dump_migrations_data
+        end
+
         private
         def path
           Pathname.new(@connection.uri.sub("#{ @connection.adapter_scheme }:", ''))
@@ -41,6 +46,14 @@ module Lotus
           uri = path.to_s
           uri == MEMORY_PATH ||
             uri.match(/\:memory\:/)
+        end
+
+        def dump_structure
+          system "sqlite3 #{ path } .schema > #{ schema }"
+        end
+
+        def dump_migrations_data
+          system %(sqlite3 #{ path } .dump | grep '^INSERT INTO "#{ migrations_table }"' >> #{ schema })
         end
       end
     end

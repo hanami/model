@@ -18,11 +18,24 @@ module Lotus
           raise MigrationError.new(message)
         end
 
+        def dump
+          dump_structure
+          dump_migrations_data
+        end
+
         private
         def create_options
           result  = ""
           result += %( OWNER "#{ options.fetch(:user) }") if options.fetch(:user, nil)
           result
+        end
+
+        def dump_structure
+          system "pg_dump -i -s -x -O -T #{ migrations_table } -f #{ schema } #{ database }"
+        end
+
+        def dump_migrations_data
+          system "pg_dump -t #{ migrations_table } #{ database } >> #{ schema }"
         end
       end
     end
