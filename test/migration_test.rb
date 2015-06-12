@@ -5,17 +5,20 @@ describe "Lotus::Model.migration" do
   describe "SQLite" do
     before do
       @database = Pathname.new("#{ __dir__ }/../tmp/migration.sqlite3").expand_path
+      @schema   = schema_path = Pathname.new("#{ __dir__ }/../tmp/schema.sql").expand_path
       @uri      = uri = "sqlite://#{ @database }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
         migrations __dir__ + '/fixtures/database_migrations'
+        schema     schema_path
       end
 
       Lotus::Model::Migrator.create
       Lotus::Model::Migrator.migrate
 
       @connection = Sequel.connect(@uri)
+      Lotus::Model::Migrator::Adapter.for(@connection).dump
     end
 
     describe "columns" do
@@ -383,6 +386,22 @@ describe "Lotus::Model.migration" do
         index[:columns].must_equal [:c]
       end
 
+      it "defines index via #index" do
+        indexes = @connection.indexes(:column_indexes)
+
+        index = indexes.fetch(:column_indexes_d_index)
+        index[:unique].must_equal true
+        index[:columns].must_equal [:d]
+
+        index = indexes.fetch(:column_indexes_b_c_index)
+        index[:unique].must_equal false
+        index[:columns].must_equal [:b, :c]
+
+        index = indexes.fetch(:column_indexes_coords_index)
+        index[:unique].must_equal false
+        index[:columns].must_equal [:lat, :lng]
+      end
+
       it "defines primary key (via #primary_key :id)" do
         table = @connection.schema(:primary_keys_1)
 
@@ -433,6 +452,30 @@ describe "Lotus::Model.migration" do
         options.fetch(:db_type).must_equal        "varchar(255)"
         options.fetch(:primary_key).must_equal    true
         options.fetch(:auto_increment).must_equal false
+      end
+
+      it "defines foreign key (via #foreign_key)" do
+        table = @connection.schema(:albums)
+
+        name, options = table[1]
+        name.must_equal :artist_id
+
+        options.fetch(:allow_null).must_equal     false
+        options.fetch(:default).must_equal        nil
+        options.fetch(:type).must_equal           :integer
+        options.fetch(:db_type).must_equal        "integer"
+        options.fetch(:primary_key).must_equal    false
+
+        foreign_key = @connection.foreign_key_list(:albums).first
+        foreign_key.fetch(:columns).must_equal   [:artist_id]
+        foreign_key.fetch(:table).must_equal     :artists
+        foreign_key.fetch(:key).must_equal       nil
+        foreign_key.fetch(:on_update).must_equal :no_action
+        foreign_key.fetch(:on_delete).must_equal :cascade
+      end
+
+      it "defines column constraint and check" do
+        @schema.read.must_include %(CREATE TABLE `table_constraints` (`age` integer, `role` varchar(255), CONSTRAINT `age_constraint` CHECK (`age` > 18), CHECK (role IN("contributor", "manager", "owner")));)
       end
     end
   end
