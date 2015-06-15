@@ -13,7 +13,13 @@ module Lotus
         #
         # @since x.x.x
         # @api private
-        MIGRATIONS_TABLE = 'schema_migrations'.freeze
+        MIGRATIONS_TABLE = :schema_migrations
+
+        # Migrations table version column
+        #
+        # @since x.x.x
+        # @api private
+        MIGRATIONS_TABLE_VERSION_COLUMN = :filename
 
         # Loads and returns a specific adapter for the given connection.
         #
@@ -74,6 +80,18 @@ module Lotus
         # @see Lotus::Model::Migrator.prepare
         def load
           raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support load.")
+        end
+
+        # Database version.
+        #
+        # @since x.x.x
+        # @api private
+        def version
+          return unless @connection.tables.include?(MIGRATIONS_TABLE)
+
+          if record = @connection[MIGRATIONS_TABLE].order(MIGRATIONS_TABLE_VERSION_COLUMN).last
+            record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_s
+          end
         end
 
         private

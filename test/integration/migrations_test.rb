@@ -319,6 +319,30 @@ describe "Database migrations" do
         connection.tables.must_equal [:schema_migrations, :books]
       end
     end
+
+    describe "version" do
+      before do
+        Lotus::Model::Migrator.create
+      end
+
+      describe "when no migrations were ran" do
+        it "returns nil" do
+          version = Lotus::Model::Migrator.version
+          version.must_be_nil
+        end
+      end
+
+      describe "with migrations" do
+        before do
+          Lotus::Model::Migrator.migrate
+        end
+
+        it "returns current database version" do
+          version = Lotus::Model::Migrator.version
+          version.must_equal "20150610141017"
+        end
+      end
+    end
   end
 
   describe "PostgreSQL" do
@@ -604,6 +628,30 @@ SQL
         connection.tables.must_equal [:schema_migrations, :books]
       end
     end
+
+    describe "version" do
+      before do
+        Lotus::Model::Migrator.create
+      end
+
+      describe "when no migrations were ran" do
+        it "returns nil" do
+          version = Lotus::Model::Migrator.version
+          version.must_be_nil
+        end
+      end
+
+      describe "with migrations" do
+        before do
+          Lotus::Model::Migrator.migrate
+        end
+
+        it "returns current database version" do
+          version = Lotus::Model::Migrator.version
+          version.must_equal "20150610141017"
+        end
+      end
+    end
   end
 
   describe "MySQL" do
@@ -880,6 +928,30 @@ SQL
         connection = Sequel.connect(@uri)
         connection.tables.must_include(:schema_migrations)
         connection.tables.must_include(:books)
+      end
+    end
+
+    describe "version" do
+      before do
+        Lotus::Model::Migrator.create
+      end
+
+      describe "when no migrations were ran" do
+        it "returns nil" do
+          version = Lotus::Model::Migrator.version
+          version.must_be_nil
+        end
+      end
+
+      describe "with migrations" do
+        before do
+          Lotus::Model::Migrator.migrate
+        end
+
+        it "returns current database version" do
+          version = Lotus::Model::Migrator.version
+          version.must_equal "20150610141017"
+        end
       end
     end
   end

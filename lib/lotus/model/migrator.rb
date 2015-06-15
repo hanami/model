@@ -250,6 +250,23 @@ module Lotus
         migrate
       end
 
+      # Return current database version timestamp
+      #
+      # If no migrations were ran, it returns <tt>nil</tt>.
+      #
+      # @return [String,NilClass] current version, if previously migrated
+      #
+      # @since x.x.x
+      #
+      # @example
+      #   # Given last migrations is:
+      #   #  20150610133853_create_books.rb
+      #
+      #   Lotus::Model::Migrator.version # => "20150610133853"
+      def self.version
+        adapter(connection).version
+      end
+
       private
 
       # Loads an adapter for the given connection
