@@ -1,6 +1,5 @@
 require 'lotus/model/config/adapter'
 require 'lotus/model/config/mapper'
-require 'lotus/utils/kernel'
 
 module Lotus
   module Model
@@ -165,7 +164,7 @@ module Lotus
       #
       # @overload migrations(path)
       #   Set migrations directory
-      #   @param path [String,Pathname,#to_pathname] the path
+      #   @param path [String,Pathname] the path
       #   @raise [Errno::ENOENT] if the given path doesn't exist
       #
       # @since x.x.x
@@ -183,7 +182,7 @@ module Lotus
         if path.nil?
           @migrations
         else
-          @migrations = Utils::Kernel.Pathname(path).realpath
+          @migrations = root.join(path).realpath
         end
       end
 
@@ -197,7 +196,7 @@ module Lotus
       #
       # @overload schema(path)
       #   Set schema path
-      #   @param path [String,Pathname,#to_pathname] the path
+      #   @param path [String,Pathname] the path
       #
       # @since x.x.x
       #
@@ -214,8 +213,16 @@ module Lotus
         if path.nil?
           @schema
         else
-          @schema = Utils::Kernel.Pathname(path)
+          @schema = root.join(path)
         end
+      end
+
+      # Root directory
+      #
+      # @since x.x.x
+      # @api private
+      def root
+        Lotus.respond_to?(:root) ? Lotus.root : Pathname.pwd
       end
 
       # Duplicate by copying the settings in a new instance.

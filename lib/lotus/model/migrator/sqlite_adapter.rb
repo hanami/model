@@ -8,12 +8,6 @@ module Lotus
       # @since x.x.x
       # @api private
       class SQLiteAdapter < Adapter
-        # Default memory path
-        #
-        # @since x.x.x
-        # @api private
-        MEMORY_PATH = '/'.freeze
-
         # No-op for in-memory databases
         #
         # @since x.x.x
@@ -74,14 +68,22 @@ module Lotus
         # @since x.x.x
         # @api private
         def path
-          Pathname.new(@connection.uri.sub("#{ @connection.adapter_scheme }:", ''))
+          root.join(
+            @connection.uri.sub(/#{ @connection.adapter_scheme }\:\/\//, '')
+          )
+        end
+
+        # @since x.x.x
+        # @api private
+        def root
+          Lotus::Model.configuration.root
         end
 
         # @since x.x.x
         # @api private
         def memory?
           uri = path.to_s
-          uri == MEMORY_PATH ||
+          uri.match(/sqlite\:\/\z/) ||
             uri.match(/\:memory\:/)
         end
 
