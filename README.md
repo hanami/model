@@ -303,7 +303,7 @@ You can also extract the common logic from your repository into a module to reus
 ```ruby
 module RepositoryHelpers
   module Pagination
-    def paginate(limit=10, offset = 0)
+    def paginate(limit: 10, offset: 0)
       query do
         limit(limit).offset(offset)
       end
@@ -446,11 +446,11 @@ This interface may vary, according to the adapter's specifications.
 
 Here is common interface for existing class:
 
-  * `.all`   - Resolves the query by fetching records from the database and translating them into entities
-  * `.where`, `.and`  - Adds a condition that behaves like SQL `WHERE`
-  * `.or` - Adds a condition that behaves like SQL `OR`ction
-  * `.exclude`, `.not`  - Logical negation of a #where condition
-  * `.select` - Select only the specified columns
+  * `.all` - Resolves the query by fetching records from the database and translating them into entities
+  * `.where`, `.and` - Adds a condition that behaves like SQL `WHERE`
+  * `.or` - Adds a condition that behaves like SQL `OR`
+  * `.exclude`, `.not` - Logical negation of a #where condition
+  * `.select` - Selects only the specified columns
   * `.order`, `.asc` - Specify the ascending order of the records, sorted by the given columns
   * `.reverse_order`, `.desc` - Specify the descending order of the records, sorted by the given columns
   * `.limit` - Limit the number of records to return
