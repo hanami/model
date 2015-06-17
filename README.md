@@ -298,7 +298,7 @@ class ArticleRepository
 end
 ```
 
-You can also extract the common logic from your repository into a module to reuse it in other repositories. Here is pagination example:
+You can also extract the common logic from your repository into a module to reuse it in other repositories. Here is a pagination example:
 
 ```ruby
 module RepositoryHelpers
