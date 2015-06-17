@@ -298,6 +298,36 @@ class ArticleRepository
 end
 ```
 
+You can also extract the common logic from your repository into a module to reuse it in other repositories. Here is pagination example:
+
+```ruby
+module RepositoryHelpers
+  module Pagination
+    def paginate(limit=10, offset = 0)
+      query do
+        limit(limit).offset(offset)
+      end
+    end
+  end
+end
+
+class ArticleRepository
+  include Lotus::Repository
+  extend RepositoryHelpers::Pagination
+
+  def self.published
+    query do
+      where(published: true)
+    end
+  end
+
+  # other repository-specific methods here
+end
+```
+
+That will allow `.paginate` usage on `ArticleRepository`, for example:
+`ArticleRepository.published.paginate(15, 0)`
+
 **Your models and repositories have to be in the same namespace.** Otherwise `Lotus::Model::Mapper#load!`
 will not initialize your repositories correctly.
 
