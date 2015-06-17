@@ -3,16 +3,16 @@ module Lotus
     module Migrator
       # MySQL adapter
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       class MySQLAdapter < Adapter
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def create
           new_connection.run %(CREATE DATABASE #{ database };)
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def drop
           new_connection.run %(DROP DATABASE #{ database };)
@@ -26,14 +26,14 @@ module Lotus
           raise MigrationError.new(message)
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump
           dump_structure
           dump_migrations_data
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def load
           load_structure
@@ -41,19 +41,19 @@ module Lotus
 
         private
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump_structure
           system "mysqldump --user=#{ username } --password=#{ password } --no-data --skip-comments --ignore-table=#{ database }.#{ migrations_table } #{ database } > #{ schema }"
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def load_structure
           system "mysql --user=#{ username } --password=#{ password } #{ database } < #{ escape(schema) }" if schema.exist?
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump_migrations_data
           system "mysqldump --user=#{ username } --password=#{ password } --skip-comments #{ database } #{ migrations_table } >> #{ schema }"

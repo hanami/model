@@ -3,32 +3,32 @@ module Lotus
     module Migrator
       # PostgreSQL adapter
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       class PostgresAdapter < Adapter
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         HOST     = 'PGHOST'.freeze
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         PORT     = 'PGPORT'.freeze
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         USER     = 'PGUSER'.freeze
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         PASSWORD = 'PGPASSWORD'.freeze
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def create
           new_connection.run %(CREATE DATABASE "#{ database }"#{ create_options })
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def drop
           new_connection.run %(DROP DATABASE "#{ database }")
@@ -42,7 +42,7 @@ module Lotus
           raise MigrationError.new(message)
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump
           set_environment_variables
@@ -50,7 +50,7 @@ module Lotus
           dump_migrations_data
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def load
           set_environment_variables
@@ -59,7 +59,7 @@ module Lotus
 
         private
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def create_options
           result  = ""
@@ -67,7 +67,7 @@ module Lotus
           result
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def set_environment_variables
           ENV[HOST]     = host      unless host.nil?
@@ -76,19 +76,19 @@ module Lotus
           ENV[USER]     = username  unless username.nil?
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump_structure
           system "pg_dump -i -s -x -O -T #{ migrations_table } -f #{ escape(schema) } #{ database }"
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def load_structure
           system "psql -X -q -f #{ escape(schema) } #{ database }" if schema.exist?
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump_migrations_data
           system "pg_dump -t #{ migrations_table } #{ database } >> #{ escape(schema) }"

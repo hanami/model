@@ -5,20 +5,20 @@ module Lotus
     module Migrator
       # SQLite3 Migrator
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       class SQLiteAdapter < Adapter
         # No-op for in-memory databases
         #
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         module Memory
-          # @since x.x.x
+          # @since 0.4.0
           # @api private
           def create
           end
 
-          # @since x.x.x
+          # @since 0.4.0
           # @api private
           def drop
           end
@@ -26,14 +26,14 @@ module Lotus
 
         # Initialize adapter
         #
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def initialize(connection)
           super
           extend Memory if memory?
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def create
           path.dirname.mkpath
@@ -42,7 +42,7 @@ module Lotus
           raise MigrationError.new("Permission denied: #{ path.sub(/\A\/\//, '') }")
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def drop
           path.delete
@@ -50,14 +50,14 @@ module Lotus
           raise MigrationError.new("Cannot find database: #{ path.sub(/\A\/\//, '') }")
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump
           dump_structure
           dump_migrations_data
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def load
           load_structure
@@ -65,7 +65,7 @@ module Lotus
 
         private
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def path
           root.join(
@@ -73,13 +73,13 @@ module Lotus
           )
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def root
           Lotus::Model.configuration.root
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def memory?
           uri = path.to_s
@@ -87,19 +87,19 @@ module Lotus
             uri.match(/\:memory\:/)
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump_structure
           system "sqlite3 #{ escape(path) } .schema > #{ escape(schema) }"
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def load_structure
           system "sqlite3 #{ escape(path) } < #{ escape(schema) }" if schema.exist?
         end
 
-        # @since x.x.x
+        # @since 0.4.0
         # @api private
         def dump_migrations_data
           system %(sqlite3 #{ escape(path) } .dump | grep '^INSERT INTO "#{ migrations_table }"' >> #{ escape(schema) })

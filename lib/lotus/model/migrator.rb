@@ -6,7 +6,7 @@ module Lotus
   module Model
     # Migration error
     #
-    # @since x.x.x
+    # @since 0.4.0
     class MigrationError < ::StandardError
     end
 
@@ -18,9 +18,9 @@ module Lotus
     # We can use <tt>up</tt> and <tt>down</tt> blocks for custom strategies, or
     # only one <tt>change</tt> block that automatically implements "down" strategy.
     #
-    # @param [Proc] a block that defines up/down or change database migration
+    # @param blk [Proc] a block that defines up/down or change database migration
     #
-    # @since x.x.x
+    # @since 0.4.0
     #
     # @example Use up/down blocks
     #   Lotus::Model.migration do
@@ -53,7 +53,7 @@ module Lotus
 
     # Database schema migrator
     #
-    # @since x.x.x
+    # @since 0.4.0
     module Migrator
       # Create database defined by current configuration.
       #
@@ -65,7 +65,7 @@ module Lotus
       #
       # @raise [Lotus::Model::MigrationError] if an error occurs
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Configuration#adapter
       #
@@ -93,7 +93,7 @@ module Lotus
       #
       # @raise [Lotus::Model::MigrationError] if an error occurs
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Configuration#adapter
       #
@@ -120,7 +120,7 @@ module Lotus
       #
       # @raise [Lotus::Model::MigrationError] if an error occurs
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Configuration#adapter
       # @see Lotus::Model::Configuration#migrations
@@ -180,7 +180,7 @@ module Lotus
       #
       # @raise [Lotus::Model::MigrationError] if an error occurs
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Configuration#adapter
       # @see Lotus::Model::Configuration#migrations
@@ -215,7 +215,7 @@ module Lotus
       #
       # @raise [Lotus::Model::MigrationError] if an error occurs
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Migrator.apply
       #
@@ -256,7 +256,7 @@ module Lotus
       #
       # @return [String,NilClass] current version, if previously migrated
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @example
       #   # Given last migrations is:
@@ -271,7 +271,7 @@ module Lotus
 
       # Loads an adapter for the given connection
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.adapter(connection)
         Adapter.for(connection)
@@ -279,7 +279,7 @@ module Lotus
 
       # Delete all the migrations
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.delete_migrations
         migrations.each_child(&:delete)
@@ -287,7 +287,7 @@ module Lotus
 
       # Database connection
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.connection
         Sequel.connect(
@@ -297,7 +297,7 @@ module Lotus
 
       # Lotus::Model configuration
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.configuration
         Model.configuration
@@ -305,7 +305,7 @@ module Lotus
 
       # Migrations directory
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.migrations
         configuration.migrations
@@ -313,7 +313,7 @@ module Lotus
 
       # Check if there are migrations
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.migrations?
         migrations.children.any?

@@ -1,6 +1,13 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.4.0 - 2015-06-23
+### Added
+- [Luca Guidi] Database migrations
+
+### Changed
+- [Matthew Bellantoni] Made `Repository.execute` not callable from the outside (private Ruby method, public API).
+
 ## v0.3.2 - 2015-05-22
 ### Added
 - [Dmitry Tymchuk & Luca Guidi] Fix for dirty tracking of attributes changed in place (eg. `book.tags << 'non-fiction'`)

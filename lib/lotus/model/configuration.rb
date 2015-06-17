@@ -12,7 +12,7 @@ module Lotus
     class Configuration
       # Default migrations path
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       #
       # @see Lotus::Model::Configuration#migrations
@@ -20,7 +20,7 @@ module Lotus
 
       # Default schema path
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       #
       # @see Lotus::Model::Configuration#schema
@@ -167,7 +167,7 @@ module Lotus
       #   @param path [String,Pathname] the path
       #   @raise [Errno::ENOENT] if the given path doesn't exist
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Migrations::DEFAULT_MIGRATIONS_PATH
       #
@@ -198,7 +198,7 @@ module Lotus
       #   Set schema path
       #   @param path [String,Pathname] the path
       #
-      # @since x.x.x
+      # @since 0.4.0
       #
       # @see Lotus::Model::Migrations::DEFAULT_SCHEMA_PATH
       #
@@ -219,7 +219,7 @@ module Lotus
 
       # Root directory
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def root
         Lotus.respond_to?(:root) ? Lotus.root : Pathname.pwd
