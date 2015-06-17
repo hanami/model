@@ -63,7 +63,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
   describe '#initialize' do
     it 'raises an error when the given URI refers to a non registered database adapter' do
       -> {
-        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'postgres://host')
+        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'oracle://host')
       }.must_raise(Lotus::Model::Adapters::DatabaseAdapterNotFound)
     end
 

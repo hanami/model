@@ -10,6 +10,21 @@ module Lotus
     #
     # @since 0.2.0
     class Configuration
+      # Default migrations path
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @see Lotus::Model::Configuration#migrations
+      DEFAULT_MIGRATIONS_PATH = Pathname.new('db/migrations').freeze
+
+      # Default schema path
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @see Lotus::Model::Configuration#schema
+      DEFAULT_SCHEMA_PATH = Pathname.new('db/schema.sql').freeze
 
       # The persistence mapper
       #
@@ -45,6 +60,8 @@ module Lotus
         @adapter_config = nil
         @mapper = NullMapper.new
         @mapper_config = nil
+        @migrations = DEFAULT_MIGRATIONS_PATH
+        @schema = DEFAULT_SCHEMA_PATH
       end
 
       alias_method :unload!, :reset!
@@ -135,6 +152,77 @@ module Lotus
       # @since 0.2.0
       def mapping(path=nil, &blk)
         @mapper_config = Lotus::Model::Config::Mapper.new(path, &blk)
+      end
+
+      # Migrations directory
+      #
+      # It defaults to <tt>db/migrations</tt>.
+      #
+      # @overload migrations
+      #   Get migrations directory
+      #   @return [Pathname] migrations directory
+      #
+      # @overload migrations(path)
+      #   Set migrations directory
+      #   @param path [String,Pathname] the path
+      #   @raise [Errno::ENOENT] if the given path doesn't exist
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Migrations::DEFAULT_MIGRATIONS_PATH
+      #
+      # @example Set Custom Path
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     # ...
+      #     migrations 'path/to/migrations'
+      #   end
+      def migrations(path = nil)
+        if path.nil?
+          @migrations
+        else
+          @migrations = root.join(path).realpath
+        end
+      end
+
+      # Schema
+      #
+      # It defaults to <tt>db/schema.sql</tt>.
+      #
+      # @overload schema
+      #   Get schema path
+      #   @return [Pathname] schema path
+      #
+      # @overload schema(path)
+      #   Set schema path
+      #   @param path [String,Pathname] the path
+      #
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Migrations::DEFAULT_SCHEMA_PATH
+      #
+      # @example Set Custom Path
+      #   require 'lotus/model'
+      #
+      #   Lotus::Model.configure do
+      #     # ...
+      #     schema 'path/to/schema.sql'
+      #   end
+      def schema(path = nil)
+        if path.nil?
+          @schema
+        else
+          @schema = root.join(path)
+        end
+      end
+
+      # Root directory
+      #
+      # @since x.x.x
+      # @api private
+      def root
+        Lotus.respond_to?(:root) ? Lotus.root : Pathname.pwd
       end
 
       # Duplicate by copying the settings in a new instance.

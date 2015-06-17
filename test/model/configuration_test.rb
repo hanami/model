@@ -124,6 +124,46 @@ describe Lotus::Model::Configuration do
     end
   end
 
+  describe "#migrations" do
+    describe "when no value was set" do
+      it "defaults to db/migrations" do
+        configuration.migrations.must_equal Pathname.new('db/migrations')
+      end
+    end
+
+    describe "set a value" do
+      describe "to unexisting directory" do
+        it "raises error" do
+          -> { configuration.migrations('path/to/unknown') }.must_raise Errno::ENOENT
+        end
+      end
+
+      describe "to existing directory" do
+        it "sets value" do
+          configuration.migrations 'test/fixtures/migrations'
+          configuration.migrations.must_equal Pathname.new('test/fixtures/migrations').realpath
+        end
+      end
+    end
+  end
+
+  describe "#schema" do
+    describe "when no value was set" do
+      it "defaults to db/schema.sql" do
+        configuration.schema.must_equal Pathname.new('db/schema.sql')
+      end
+    end
+
+    describe "set a value" do
+      describe "to existing directory" do
+        it "sets value" do
+          configuration.migrations 'test/fixtures/migrations'
+          configuration.migrations.must_equal Pathname.new('test/fixtures/migrations').realpath
+        end
+      end
+    end
+  end
+
   describe '#reset!' do
     before do
       configuration.adapter(type: :sql, uri: SQLITE_CONNECTION_STRING)
@@ -135,6 +175,8 @@ describe Lotus::Model::Configuration do
           attribute :name, String
         end
       end
+
+      configuration.migrations 'test/fixtures/migrations'
 
       configuration.load!
       configuration.reset!
@@ -148,6 +190,10 @@ describe Lotus::Model::Configuration do
     it 'resets mapper' do
       configuration.instance_variable_get(:@mapper_config).must_be_nil
       configuration.mapper.must_be_instance_of Lotus::Model::NullMapper
+    end
+
+    it 'resets migrations' do
+      configuration.migrations.must_equal Pathname.new('db/migrations')
     end
   end
 end

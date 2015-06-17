@@ -44,6 +44,14 @@ else
 end
 
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
+if ENV['TRAVIS'] == 'true'
+  system "createdb" rescue nil
+  POSTGRES_USER = 'postgres'
+  MYSQL_USER    = 'travis'
+else
+  POSTGRES_USER = `whoami`
+  MYSQL_USER    = 'lotus'
+end
 require 'fixtures'
 
 Lotus::Model::Configuration.class_eval do
