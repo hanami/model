@@ -205,10 +205,7 @@ module Lotus
         delete_migrations
       end
 
-      # Prepare database: create, load schema (if any), migrate.
-      #
-      # This is an experimental feature.
-      # It may change or be removed in the future.
+      # Prepare database: drop, create, load schema (if any), migrate.
       #
       # This is designed for development machines and testing mode.
       # It works faster if used with <tt>apply</tt>.
@@ -245,6 +242,7 @@ module Lotus
       #   Lotus::Model::Migrator.apply   # => updates schema dump
       #   Lotus::Model::Migrator.prepare # => creates `foo', load schema and run pending migrations (if any)
       def self.prepare
+        drop rescue nil
         create
         adapter(connection).load
         migrate
