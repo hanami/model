@@ -318,6 +318,15 @@ describe "Database migrations" do
         connection = Sequel.connect(@uri)
         connection.tables.must_equal [:schema_migrations, :books]
       end
+
+      it "drops the database and recreate it" do
+        Lotus::Model::Migrator.create
+        Lotus::Model::Migrator.prepare
+
+        connection = Sequel.connect(@uri)
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:books)
+      end
     end
 
     describe "version" do
@@ -627,6 +636,15 @@ SQL
         connection = Sequel.connect(@uri)
         connection.tables.must_equal [:schema_migrations, :books]
       end
+
+      it "drops the database and recreate it" do
+        Lotus::Model::Migrator.create
+        Lotus::Model::Migrator.prepare
+
+        connection = Sequel.connect(@uri)
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:books)
+      end
     end
 
     describe "version" do
@@ -923,6 +941,15 @@ SQL
         @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
         @migrations_root.join('schema-mysql.sql').delete                            rescue nil
 
+        Lotus::Model::Migrator.prepare
+
+        connection = Sequel.connect(@uri)
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:books)
+      end
+
+      it "drops the database and recreate it" do
+        Lotus::Model::Migrator.create
         Lotus::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
