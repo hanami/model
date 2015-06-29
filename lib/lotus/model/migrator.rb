@@ -242,7 +242,10 @@ module Lotus
       #   Lotus::Model::Migrator.apply   # => updates schema dump
       #   Lotus::Model::Migrator.prepare # => creates `foo', load schema and run pending migrations (if any)
       def self.prepare
-        drop rescue nil
+        begin
+          drop
+        rescue MigrationError
+        end
         create
         adapter(connection).load
         migrate
