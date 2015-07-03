@@ -25,7 +25,7 @@ module Lotus
         # @since 0.4.0
         # @api private
         def create
-          new_connection.run %(CREATE DATABASE "#{ database }"#{ create_options })
+          `createdb #{ database } #{ create_options }`
         end
 
         # @since 0.4.0
@@ -63,7 +63,7 @@ module Lotus
         # @api private
         def create_options
           result  = ""
-          result += %( OWNER "#{ username }") unless username.nil?
+          result += %( --owner=#{ username }) unless username.nil?
           result
         end
 
