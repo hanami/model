@@ -198,6 +198,18 @@ module Lotus
             @mapped_collection.deserialize(self)
           end
 
+          def select_all
+            Collection.new(super(table_name), @mapped_collection)
+          end
+
+          def join_table(*args)
+            Collection.new(super, @mapped_collection)
+          end
+
+          def table_name
+            @mapped_collection.name
+          end
+
           private
           # Serialize the given entity before to persist in the database.
           #

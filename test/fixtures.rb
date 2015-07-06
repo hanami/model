@@ -58,6 +58,7 @@ DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 
 DB.create_table :users do
   primary_key :id
+  Integer :country_id
   String  :name
   Integer :age
   DateTime :created_at
@@ -74,6 +75,24 @@ end
 
 DB.create_table :devices do
   primary_key :id
+  Integer     :u_id # user_id: legacy schema simulation
+end
+
+DB.create_table :orders do
+  primary_key :id
+  Integer :user_id
+  Integer :total
+end
+
+DB.create_table :ages do
+  primary_key :id
+  Integer :value
+  String  :label
+end
+
+DB.create_table :countries do
+  primary_key :country_id
+  String :code
 end
 
 # DB.dataset_class = Class.new(Sequel::Dataset)
