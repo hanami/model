@@ -74,29 +74,50 @@ class ArticleRepository
   end
 end
 
+
+def create_tables_per_database(database)
+  database.create_table? :users do
+    primary_key :id
+    Integer :country_id
+    String  :name
+    Integer :age
+    DateTime :created_at
+    DateTime :updated_at
+  end
+
+  database.create_table? :articles do
+    primary_key :_id
+    Integer :user_id
+    String  :s_title
+    String  :comments_count # Not an error: we're testing String => Integer coercion
+    String  :umapped_column
+  end
+
+  database.create_table? :devices do
+    primary_key :id
+    Integer     :u_id # user_id: legacy schema simulation
+  end
+
+  database.create_table? :orders do
+    primary_key :id
+    Integer :user_id
+    Integer :total
+  end
+
+  database.create_table? :ages do
+    primary_key :id
+    Integer :value
+    String  :label
+  end
+
+  database.create_table? :countries do
+    primary_key :country_id
+    String :code
+  end
+end
+
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
-
-DB.create_table :users do
-  primary_key :id
-  String  :name
-  Integer :age
-  DateTime :created_at
-  DateTime :updated_at
-end
-
-DB.create_table :articles do
-  primary_key :_id
-  Integer :user_id
-  String  :s_title
-  String  :comments_count # Not an error: we're testing String => Integer coercion
-  String  :umapped_column
-end
-
-DB.create_table :devices do
-  primary_key :id
-end
-
-# DB.dataset_class = Class.new(Sequel::Dataset)
+create_tables_per_database(DB)
 
 #FIXME this should be passed by the framework internals.
 MAPPER = Lotus::Model::Mapper.new do

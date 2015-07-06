@@ -2,19 +2,53 @@ require 'test_helper'
 
 describe Lotus::Model::Adapters::SqlAdapter do
   before do
-    TestUser = Struct.new(:id, :name, :age) do
+    class TestUser
       include Lotus::Entity
+
+      attributes :country_id, :name, :age
     end
 
     class TestUserRepository
       include Lotus::Repository
     end
 
-    TestDevice = Struct.new(:id) do
+    class TestDevice
       include Lotus::Entity
+
+      attributes :u_id
     end
 
     class TestDeviceRepository
+      include Lotus::Repository
+    end
+
+    class TestOrder
+      include Lotus::Entity
+
+      attributes :user_id, :total
+    end
+
+    class TestOrderRepository
+      include Lotus::Repository
+    end
+
+    class TestAge
+      include Lotus::Entity
+
+      attributes :value, :label
+    end
+
+    class TestAgeRepository
+      include Lotus::Repository
+    end
+
+    class TestCountry
+      include Lotus::Entity
+
+      attributes :code, :country_id
+    end
+
+    class TestCountryRepository
       include Lotus::Repository
     end
 
@@ -23,6 +57,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         entity TestUser
 
         attribute :id,   Integer
+        attribute :country_id, Integer
         attribute :name, String
         attribute :age,  Integer
       end
@@ -31,6 +66,31 @@ describe Lotus::Model::Adapters::SqlAdapter do
         entity TestDevice
 
         attribute :id, Integer
+        attribute :u_id, Integer
+      end
+
+      collection :orders do
+        entity TestOrder
+
+        attribute :id,      Integer
+        attribute :user_id, Integer
+        attribute :total,   Integer
+      end
+
+      collection :ages do
+        entity TestAge
+
+        attribute :id,    Integer
+        attribute :value, Integer
+        attribute :label, String
+      end
+
+      collection :countries do
+        entity TestCountry
+
+        identity :country_id
+        attribute :id,   Integer, as: :country_id
+        attribute :code, String
       end
     end.load!
 
@@ -43,11 +103,21 @@ describe Lotus::Model::Adapters::SqlAdapter do
     Object.send(:remove_const, :TestUserRepository)
     Object.send(:remove_const, :TestDevice)
     Object.send(:remove_const, :TestDeviceRepository)
+    Object.send(:remove_const, :TestOrder)
+    Object.send(:remove_const, :TestOrderRepository)
+    Object.send(:remove_const, :TestAge)
+    Object.send(:remove_const, :TestAgeRepository)
+    Object.send(:remove_const, :TestCountry)
+    Object.send(:remove_const, :TestCountryRepository)
   end
 
   let(:collection) { :users }
 
   describe 'multiple collections' do
+    before do
+      @adapter.clear(:devices)
+    end
+
     it 'create records' do
       user   = TestUser.new
       device = TestDevice.new
@@ -269,7 +339,8 @@ describe Lotus::Model::Adapters::SqlAdapter do
     end
 
     let(:user1) { TestUser.new(name: 'L',  age: '32') }
-    let(:user2) { TestUser.new(name: 'MG', age: 31) }
+    let(:user2) { TestUser.new(name: 'MG', age: 31)   }
+    let(:user3) { TestUser.new(name: 'S',  age: 2)    }
 
     describe 'where' do
       describe 'with an empty collection' do

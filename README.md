@@ -463,6 +463,8 @@ Here is common interface for existing class:
   * `.range` - Returns a range of values between the MAX and the MIN for the given column
   * `.exist?` - Checks if at least one record exists for the current conditions
   * `.count` - Returns a count of the records for the current conditions
+  * `.join` - Adds an inner join with a table (only SQL)
+  * `.left_join` - Adds a left join with a table (only SQL)
 
 If you need more information regarding those methods, you can use comments from [memory](https://github.com/lotus/model/blob/master/lib/lotus/model/adapters/memory/query.rb#L29) or [sql](https://github.com/lotus/model/blob/master/lib/lotus/model/adapters/sql/query.rb#L28) adapters interface.
 

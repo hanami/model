@@ -75,7 +75,7 @@ module Lotus
           #
           # @since 0.1.0
           def all
-            Lotus::Utils::Kernel.Array(run)
+            run.to_a
           rescue Sequel::DatabaseError => e
             raise Lotus::Model::InvalidQueryError.new(e.message)
           end
@@ -616,6 +616,50 @@ module Lotus
 
           alias_method :run, :scoped
 
+          # Specify an `INNER JOIN` clause.
+          #
+          # @param collection [String]
+          # @param options [Hash]
+          # @option key [Symbol] the key
+          # @option foreign_key [Symbol] the foreign key
+          #
+          # @return self
+          #
+          # @since x.x.x
+          #
+          # @example
+          #
+          #   query.join(:users)
+          #
+          #   # => SELECT * FROM `posts` INNER JOIN `users` ON `posts`.`user_id` = `users`.`id`
+          def join(collection, options = {})
+            _join(collection, options.merge(join: :inner))
+          end
+
+          alias_method :inner_join, :join
+
+          # Specify a `LEFT JOIN` clause.
+          #
+          # @param collection [String]
+          # @param options [Hash]
+          # @option key [Symbol] the key
+          # @option foreign_key [Symbol] the foreign key
+          #
+          # @return self
+          #
+          # @since x.x.x
+          #
+          # @example
+          #
+          #   query.left_join(:users)
+          #
+          #   # => SELECT * FROM `posts` LEFT JOIN `users` ON `posts`.`user_id` = `users`.`id`
+          def left_join(collection, options = {})
+            _join(collection, options.merge(join: :left))
+          end
+
+          alias_method :left_outer_join, :left_join
+
           protected
           # Handles missing methods for query combinations
           #
@@ -633,6 +677,30 @@ module Lotus
 
           private
 
+          # Specify a JOIN clause. (inner or left)
+          #
+          # @param collection [String]
+          # @param options [Hash]
+          # @option key [Symbol] the key
+          # @option foreign_key [Symbol] the foreign key
+          # @option join [Symbol] the join type
+          #
+          # @return self
+          #
+          # @api private
+          # @since x.x.x
+          def _join(collection, options = {})
+            collection_name = Utils::String.new(collection).singularize
+
+            foreign_key = options.fetch(:foreign_key) { "#{ @collection.table_name }__#{ collection_name }_id".to_sym }
+            key         = options.fetch(:key) { @collection.identity.to_sym }
+
+            conditions.push([:select_all])
+            conditions.push([:join_table, options.fetch(:join, :inner), collection, key => foreign_key])
+
+            self
+          end
+          
           # Returns a new query that is the result of the merge of the current
           # conditions with the ones of the given query.
           #
