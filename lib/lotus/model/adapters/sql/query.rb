@@ -616,11 +616,6 @@ module Lotus
 
           alias_method :rigth_outer_join, :right_join
 
-          def cross_join(collection)
-            conditions.push([:select_all])
-            conditions.push([:join_table, :cross, collection])
-          end
-
           protected
           # Handles missing methods for query combinations
           #
