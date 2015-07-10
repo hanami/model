@@ -566,6 +566,8 @@ module Lotus
       # @raise [NotImplementedError] if current Lotus::Model adapter doesn't
       #   implement `execute`.
       #
+      # @raise [Lotus::Model::InvalidQueryError] if raw statement is invalid
+      #
       # @see Lotus::Model::Adapters::Abstract#execute
       # @see Lotus::Model::Adapters::SqlAdapter#execute
       #
