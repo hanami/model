@@ -599,24 +599,26 @@ module Lotus
           end
 
           def join(collection, options = {})
-            # FIXME This is a poor man's singularization, implement in Lotus::Utils
-            # Lotus::Utils::String.collection
-            collection_name = collection.to_s
-            collection_name = case collection_name
-            when ->(s) { s.match(/ies\z/) }
-              collection_name.sub(/ies\z/, 'y')
-            else
-              collection_name.sub(/s\z/, '')
-            end
+            _join(collection, options.merge(join: :inner))
+          end
 
-            foreign_key = options.fetch(:foreign_key) { "#{ @collection.table_name }__#{ collection_name }_id".to_sym }
-            # FIXME this should correspond to the table's primary key
-            key         = options.fetch(:key) { "#{ collection }__id".to_sym }
+          alias_method :inner_join, :join
 
+          def left_join(collection, options = {})
+            _join(collection, options.merge(join: :left))
+          end
+
+          alias_method :left_outer_join, :left_join
+
+          def right_join(collection, options = {})
+            _join(collection, options.merge(join: :right))
+          end
+
+          alias_method :rigth_outer_join, :right_join
+
+          def cross_join(collection)
             conditions.push([:select_all])
-            conditions.push([:join_table, :inner, collection, key => foreign_key])
-
-            self
+            conditions.push([:join_table, :cross, collection])
           end
 
           protected
@@ -636,6 +638,17 @@ module Lotus
 
           private
 
+          def _join(collection, options = {})
+            collection_name = Utils::String.new(collection).singularize
+
+            foreign_key = options.fetch(:foreign_key) { "#{ @collection.table_name }__#{ collection_name }_id".to_sym }
+            key         = options.fetch(:key) { @collection.identity.to_sym }
+
+            conditions.push([:select_all])
+            conditions.push([:join_table, options.fetch(:join, :inner), collection, key => foreign_key])
+
+            self
+          end
           # Returns a new query that is the result of the merge of the current
           # conditions with the ones of the given query.
           #
