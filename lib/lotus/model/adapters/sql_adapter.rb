@@ -1,3 +1,4 @@
+require 'lotus/utils/hash'
 require 'lotus/model/adapters/abstract'
 require 'lotus/model/adapters/implementation'
 require 'lotus/model/adapters/sql/collection'
@@ -233,9 +234,21 @@ module Lotus
         # @return [Object]
         #
         # @since 0.3.1
-        def execute(raw)
+        def execute(raw, &blk)
           begin
-            @connection.execute(raw)
+            if block_given?
+              @connection.execute(raw) do |records|
+                columns = records.columns
+
+                records.each do |record|
+                  blk.call(
+                    Utils::Hash.new(columns.zip(record)).symbolize!
+                  )
+                end
+              end
+            else
+              @connection.execute(raw)
+            end
           rescue Sequel::DatabaseError => e
             raise Lotus::Model::InvalidQueryError.new(e.message)
           end

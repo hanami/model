@@ -453,6 +453,12 @@ describe Lotus::Repository do
     end
 
     describe '.execute' do
+      before do
+        ArticleRepository.clear
+        @article1 = ArticleRepository.create Article.new(title: "Oh! Darling")
+        @article2 = ArticleRepository.create Article.new(title: "Octopus's Garden")
+      end
+
       it 'is a private method' do
         -> { ArticleRepository.execute("select * from articles") }.must_raise NoMethodError
       end
@@ -460,10 +466,16 @@ describe Lotus::Repository do
       it 'returns the ResultSet from the executes sql' do
         result = ArticleRepository.aggregate
         result.class.name.must_equal "SQLite3::ResultSet"
-        result.count.must_equal 1
+        result.count.must_equal 2
+      end
+
+      describe "when block is given" do
+        it "iterates through collection" do
+          result = ArticleRepository.titles
+          result.must_equal [@article1.title, @article2.title]
+        end
       end
     end
-
   end
 
   describe "with memory adapter" do

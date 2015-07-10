@@ -52,6 +52,16 @@ class ArticleRepository
   def self.aggregate
     execute("select * from articles")
   end
+
+  def self.titles
+    result = []
+
+    execute("select * from articles") do |article|
+      result << article[:s_title]
+    end
+
+    result
+  end
 end
 
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
