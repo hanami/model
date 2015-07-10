@@ -28,8 +28,16 @@ module Lotus
     class InvalidMappingError < ::StandardError
     end
 
-    # Error for invalid query
-    # It's raised when a query is malformed
+    # Error for invalid raw command syntax
+    #
+    # @since x.x.x
+    class InvalidCommandError < ::StandardError
+      def initialize(message = "Invalid command")
+        super
+      end
+    end
+
+    # Error for invalid raw query syntax
     #
     # @since 0.3.1
     class InvalidQueryError < ::StandardError
