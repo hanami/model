@@ -230,7 +230,10 @@ module Lotus
         # Executes raw sql directly on the connection
         #
         # @param raw [String] the raw sql statement to execute on the connection
+        #
         # @return [Object]
+        #
+        # @raise [Lotus::Model::InvalidQueryError] if raw statement is invalid
         #
         # @since 0.3.1
         def execute(raw)

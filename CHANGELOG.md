@@ -1,6 +1,10 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.4.1 - 2015-07-10
+### Added
+- [Nick Coyne] Fixed database creation for PostgreSQL (now it uses `createdb`).
+
 ## v0.4.0 - 2015-06-23
 ### Added
 - [Luca Guidi] Database migrations
