@@ -314,7 +314,7 @@ module Lotus
       # @since 0.4.0
       # @api private
       def self.migrations?
-        migrations.children.any?
+        migrations.children.reject { |file| file.basename.to_s.start_with?('.') }.any?
       end
     end
   end
