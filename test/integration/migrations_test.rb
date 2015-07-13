@@ -2,6 +2,9 @@ require 'test_helper'
 require 'lotus/model/migrator'
 
 describe "Database migrations" do
+  let(:db_prefix)    { name.gsub(/[^\w]/, '_') }
+  let(:random_token) { SecureRandom.hex(4) }
+
   before do
     Lotus::Model.unload!
   end
@@ -356,7 +359,7 @@ describe "Database migrations" do
 
   describe "PostgreSQL" do
     before do
-      @database  = "migrations-#{ SecureRandom.hex }"
+      @database  = "#{ db_prefix }_#{ random_token }"
       @uri = uri = "postgres://localhost/#{ @database }?user=#{ POSTGRES_USER }"
 
       Lotus::Model.configure do
@@ -614,7 +617,6 @@ SQL
       it "creates database, loads schema and migrate" do
         # Simulate already existing schema.sql, without existing database and pending migrations
         connection = Sequel.connect(@uri)
-        Lotus::Model::Migrator::Adapter.for(connection).dump
 
         FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
           @migrations_root.join('migrations/20150611165922_create_authors.rb')
@@ -674,7 +676,7 @@ SQL
 
   describe "MySQL" do
     before do
-      @database  = "migrations#{ SecureRandom.hex }"
+      @database  = "#{ db_prefix }_#{ random_token }"
       @uri = uri = "mysql2://#{ MYSQL_USER }@localhost/#{ @database }"
 
       Lotus::Model.configure do
@@ -924,7 +926,6 @@ SQL
       it "creates database, loads schema and migrate" do
         # Simulate already existing schema.sql, without existing database and pending migrations
         connection = Sequel.connect(@uri)
-        Lotus::Model::Migrator::Adapter.for(connection).dump
 
         FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
           @migrations_root.join('migrations/20150611165922_create_authors.rb')
