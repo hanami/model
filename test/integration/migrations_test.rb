@@ -388,11 +388,8 @@ describe "Database migrations" do
         -> { Sequel.connect(@uri).tables }.must_raise Sequel::DatabaseConnectionError
       end
 
-      it "raises error if database doesn't exist" do
+      it "does not fail if database doesn't exist" do
         Lotus::Model::Migrator.drop # remove the first time
-
-        exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
-        exception.message.must_equal "Cannot find database: #{ @database }"
       end
     end
 
