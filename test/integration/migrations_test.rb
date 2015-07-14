@@ -266,6 +266,13 @@ describe "Database migrations" do
         migration.fetch(:filename).must_include("20150610141017")
       end
 
+      it "ignore files starting with . during migration" do
+        connection = Sequel.connect(@uri)
+        hidden_files = connection[:schema_migrations].to_a.select { |migration| migration.fetch(:filename).start_with?('.') }
+
+        hidden_files.must_be_empty
+      end
+
       it "dumps database schema.sql" do
         schema = @migrations_root.join('schema-sqlite.sql').read
 
@@ -538,6 +545,13 @@ describe "Database migrations" do
         migration  = connection[:schema_migrations].to_a[1]
 
         migration.fetch(:filename).must_include("20150610141017")
+      end
+
+      it "ignore files starting with . during migration" do
+        connection = Sequel.connect(@uri)
+        hidden_files = connection[:schema_migrations].to_a.select { |migration| migration.fetch(:filename).start_with?('.') }
+
+        hidden_files.must_be_empty
       end
 
       it "dumps database schema.sql" do
@@ -855,6 +869,13 @@ SQL
         migration  = connection[:schema_migrations].to_a.last
 
         migration.fetch(:filename).must_include("20150610141017")
+      end
+
+      it "ignore files starting with . during migration" do
+        connection = Sequel.connect(@uri)
+        hidden_files = connection[:schema_migrations].to_a.select { |migration| migration.fetch(:filename).start_with?('.') }
+
+        hidden_files.must_be_empty
       end
 
       it "dumps database schema.sql" do
