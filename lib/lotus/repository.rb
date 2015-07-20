@@ -284,7 +284,12 @@ module Lotus
       #   article.id # => nil
       #   created_article.id # => 23
       #
-      #   ArticleRepository.create(article) # no-op
+      #   created_article = ArticleRepository.create(article)
+      #   created_article.id # => 24
+      #
+      #   created_article = ArticleRepository.create(existing_article) # => no-op
+      #   created_article # => nil
+      #
       def create(entity)
         unless _persisted?(entity)
           _touch(entity)
