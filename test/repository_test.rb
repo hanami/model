@@ -45,6 +45,16 @@ describe Lotus::Repository do
             persisted_user.age.must_equal(unpersisted_user.age.to_i)
           end
 
+          it 'returns a copy of the entity passed as argument' do
+            persisted_user = UserRepository.persist(unpersisted_user)
+            refute_same persisted_user, unpersisted_user
+          end
+
+          it 'does not assign an id on the entity passed as argument' do
+            UserRepository.persist(unpersisted_user)
+            unpersisted_user.id.must_be_nil
+          end
+
           it 'should coerce attributes' do
             persisted_user = UserRepository.persist(unpersisted_user)
             persisted_user.age.must_equal(25)
