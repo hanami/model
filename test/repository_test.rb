@@ -118,6 +118,12 @@ describe Lotus::Repository do
           user1.id.must_equal id
         end
 
+        it 'returns nil when trying to create an already persisted entity' do
+          created_user = UserRepository.create(User.new(name: 'Pascal'))
+          value = UserRepository.create(created_user)
+          value.must_be_nil
+        end
+
         describe 'when entity is not persisted' do
           let(:unpersisted_user) { User.new(name: 'My', age: '23') }
 
