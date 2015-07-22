@@ -25,7 +25,8 @@ module Lotus
         # @since 0.4.0
         # @api private
         def create
-          `createdb #{ database } #{ create_options }`
+          set_environment_variables
+          `createdb #{ database }`
         end
 
         # @since 0.4.0
@@ -51,14 +52,6 @@ module Lotus
         end
 
         private
-
-        # @since 0.4.0
-        # @api private
-        def create_options
-          result  = ""
-          result += %( --owner=#{ username }) unless username.nil?
-          result
-        end
 
         # @since 0.4.0
         # @api private
