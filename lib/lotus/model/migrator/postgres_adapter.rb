@@ -33,7 +33,7 @@ module Lotus
         # @api private
         def drop
           set_environment_variables
-          system "dropdb #{ database }"
+          system "dropdb #{ database } --if-exists"
         end
 
         # @since 0.4.0
