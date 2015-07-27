@@ -71,12 +71,18 @@ module Lotus
         # @since x.x.x
         #
         # @see Lotus::Model::Mapping::Coercer
-        def coercer
+        def database_coercer
           if c = @options.fetch(:coercer) { nil }
             "#{ c }."
           else
-            "Lotus::Model::Mapping::Coercions.#{ @klass }"
+            ruby_coercer
           end
+        end
+
+        # @api private
+        # @since x.x.x
+        def ruby_coercer
+          "Lotus::Model::Mapping::Coercions.#{ @klass }"
         end
 
         # @api private

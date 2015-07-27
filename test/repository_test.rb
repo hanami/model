@@ -62,6 +62,7 @@ describe Lotus::Repository do
               article = ArticleRepository.persist(article)
 
               article.tags.must_equal tags
+              article.tags.class.must_equal ::Array
             end
           end
 

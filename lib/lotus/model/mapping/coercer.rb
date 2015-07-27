@@ -50,7 +50,7 @@ module Lotus
           code = @collection.attributes.map do |_,attr|
             %{
             def deserialize_#{ attr.mapped }(value)
-              #{ attr.coercer }(value)
+              #{ attr.ruby_coercer }(value)
             end
             }
           end.join("\n")
@@ -58,17 +58,17 @@ module Lotus
           instance_eval <<-EVAL, __FILE__, __LINE__
             def to_record(entity)
               if entity.id
-                Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.coercer }(entity.#{name})"}.join(',') }]
+                Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.database_coercer }(entity.#{name})"}.join(',') }]
               else
                 Hash[].tap do |record|
-                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,attr| "value = #{ attr.coercer }(entity.#{name}); record[:#{attr.mapped}] = value unless value.nil?"}.join('; ') }
+                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,attr| "value = #{ attr.database_coercer }(entity.#{name}); record[:#{attr.mapped}] = value unless value.nil?"}.join('; ') }
                 end
               end
             end
 
             def from_record(record)
               ::#{ @collection.entity }.new(
-                Hash[#{ @collection.attributes.map{|name,attr| ":#{name},#{attr.coercer}(record[:#{attr.mapped}])"}.join(',') }]
+                Hash[#{ @collection.attributes.map{|name,attr| ":#{name},#{attr.ruby_coercer}(record[:#{attr.mapped}])"}.join(',') }]
               )
             end
 
