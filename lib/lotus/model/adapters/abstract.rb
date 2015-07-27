@@ -1,3 +1,5 @@
+require 'lotus/utils/basic_object'
+
 module Lotus
   module Model
     module Adapters
@@ -21,6 +23,45 @@ module Lotus
       #
       # @since 0.3.0
       class NotSupportedError < ::StandardError
+      end
+
+      # It's raised when an operation is requested to an adapter after it was
+      # disconnected.
+      #
+      # @since x.x.x
+      class DisconnectedAdapterError < ::StandardError
+        def initialize
+          super "You have tried to perform an operation on a disconnected adapter"
+        end
+      end
+
+      # Represents a disconnected resource.
+      #
+      # When we use <tt>#disconnect</tt> for <tt>MemoryAdapter</tt> and
+      # </tt>FileSystemAdapter</tt>, we want to free underlying resources such
+      # as a mutex or a file descriptor.
+      #
+      # These adapters use to use anonymous descriptors that are destroyed by
+      # Ruby VM after each operation. Sometimes we need to clean the state and
+      # start fresh (eg. during a test suite or a deploy).
+      #
+      # Instead of assign <tt>nil</tt> to these instance variables, we assign this
+      # special type: <tt>DisconnectedResource</tt>.
+      #
+      # In case an operation is still performed after the adapter was disconnected,
+      # instead of see a generic <tt>NoMethodError</tt> for <tt>nil</tt>, a developer
+      # will face a specific message relative to the state of the adapter.
+      #
+      # @api private
+      # @since x.x.x
+      #
+      # @see Lotus::Model::Adapters::Abstract#disconnect
+      # @see Lotus::Model::Adapters::MemoryAdapter#disconnect
+      # @see Lotus::Model::Adapters::FileSystemAdapter#disconnect
+      class DisconnectedResource < Utils::BasicObject
+        def method_missing(method_name, *)
+          ::Kernel.raise DisconnectedAdapterError.new
+        end
       end
 
       # Abstract adapter.
@@ -209,6 +250,13 @@ module Lotus
         #
         # @since 0.3.1
         def execute(raw)
+          raise NotImplementedError
+        end
+
+        # Disconnects the connection by freeing low level resources
+        #
+        # @since x.x.x
+        def disconnect
           raise NotImplementedError
         end
       end

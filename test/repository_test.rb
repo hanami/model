@@ -26,6 +26,11 @@ describe Lotus::Repository do
         ArticleRepository.clear
       end
 
+      after do
+        UserRepository.adapter.disconnect
+        ArticleRepository.adapter.disconnect
+      end
+
       describe '.collection' do
         it 'returns the collection name' do
           UserRepository.collection.must_equal    :users
