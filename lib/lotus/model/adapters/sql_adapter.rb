@@ -244,6 +244,15 @@ module Lotus
           end
         end
 
+        # @api private
+        # @since x.x.x
+        #
+        # @see Lotus::Model::Adapters::Abstract#disconnect
+        def disconnect
+          @connection.disconnect
+          @connection = DisconnectedResource.new
+        end
+
         private
 
         # Returns a collection from the given name.

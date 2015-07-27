@@ -1195,5 +1195,16 @@ describe Lotus::Model::Adapters::SqlAdapter do
         -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidQueryError
       end
     end
+
+    describe '#disconnect' do
+      before do
+        @adapter.disconnect
+      end
+
+      it 'raises error' do
+        exception = -> { @adapter.create(collection, user1) }.must_raise Lotus::Model::Adapters::DisconnectedAdapterError
+        exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
+      end
+    end
   end
 end

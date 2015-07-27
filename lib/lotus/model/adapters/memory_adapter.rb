@@ -140,6 +140,15 @@ module Lotus
           yield
         end
 
+        # @api private
+        # @since x.x.x
+        #
+        # @see Lotus::Model::Adapters::Abstract#disconnect
+        def disconnect
+          @collections = DisconnectedResource.new
+          @mutex       = DisconnectedResource.new
+        end
+
         private
 
         # Returns a collection from the given name.

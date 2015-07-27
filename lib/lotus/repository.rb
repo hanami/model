@@ -212,6 +212,12 @@ module Lotus
         @adapter = adapter
       end
 
+      # @since x.x.x
+      # @api private
+      def adapter
+        @adapter
+      end
+
       # Creates or updates a record in the database for the given entity.
       #
       # @param entity [#id, #id=] the entity to persist
