@@ -34,16 +34,21 @@ filesystem = db.join('filesystem')
 filesystem.rmtree if filesystem.exist?
 filesystem.dirname.mkpath # recreate directory
 
+postgres_database = "lotus_model_test"
+
 if Lotus::Utils.jruby?
   require 'jdbc/sqlite3'
   Jdbc::SQLite3.load_driver
   SQLITE_CONNECTION_STRING = "jdbc:sqlite:#{ sql }"
 else
   require 'sqlite3'
-  SQLITE_CONNECTION_STRING = "sqlite://#{ sql }"
+  require 'pg'
+  SQLITE_CONNECTION_STRING   = "sqlite://#{ sql }"
+  POSTGRES_CONNECTION_STRING = "postgres://localhost/#{ postgres_database }"
 end
 
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
+
 if ENV['TRAVIS'] == 'true'
   system "createdb" rescue nil
   POSTGRES_USER = 'postgres'
@@ -52,6 +57,8 @@ else
   POSTGRES_USER = `whoami`
   MYSQL_USER    = 'lotus'
 end
+
+system "dropdb #{ postgres_database } && createdb #{ postgres_database }" rescue nil
 require 'fixtures'
 
 Lotus::Model::Configuration.class_eval do

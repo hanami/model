@@ -1,4 +1,5 @@
 require 'lotus/utils/class'
+require 'lotus/model/mapping/attribute'
 
 module Lotus
   module Model
@@ -249,6 +250,8 @@ module Lotus
         #
         # @param options [Hash] a set of options to customize the mapping
         # @option options [Symbol] :as the name of the original column
+        # @option options [Class] :coercer A custom coercer that implements
+        #   <tt>.call</tt>
         #
         # @since 0.1.0
         #
@@ -330,8 +333,52 @@ module Lotus
         #   #
         #   # For instance: we need to use it for translate `:s_title` to
         #   # `:title`, but not for `:comments_count`.
+        #
+        # @example Custom coercer
+        #   require 'lotus/model'
+        #
+        #   # Given the following schema:
+        #   #
+        #   # CREATE TABLE articles (
+        #   #   id     integer NOT NULL,
+        #   #   title  varchar(128),
+        #   #   tags   text[],
+        #   # );
+        #   #
+        #   # The following entity:
+        #   #
+        #   # class Article
+        #   #   include Lotus::Entity
+        #   #   attributes :title, :tags
+        #   # end
+        #   #
+        #   # And the following custom coercer:
+        #   #
+        #   # require 'sequel/extensions/pg_array'
+        #   #
+        #   # class PGArray
+        #   #   def self.call(value)
+        #   #     ::Sequel.pg_array(value)
+        #   #   end
+        #   # end
+        #
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity Article
+        #
+        #       attribute :id,    Integer
+        #       attribute :title, String
+        #       attribute :tags,  Array, coercer: PGArray
+        #     end
+        #   end
+        #
+        #   # When an entity is persisted as record into the database, PGArray
+        #   # will be invoked.
+        #
+        #   # When an entity is retrieved from the database, it will be
+        #   # deserialized as an Array
         def attribute(name, klass, options = {})
-          @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
+          @attributes[name] = Attribute.new(name, klass, options)
         end
 
         # Serializes an entity to be persisted in the database.

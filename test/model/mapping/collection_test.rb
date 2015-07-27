@@ -112,11 +112,11 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     it 'defines an attribute' do
-      @collection.attributes[:id].must_equal [Integer, :id]
+      @collection.attributes[:id].must_equal Lotus::Model::Mapping::Attribute.new(:id, Integer, {})
     end
 
     it 'defines a mapped attribute' do
-      @collection.attributes[:name].must_equal [String, :t_name]
+      @collection.attributes[:name].must_equal Lotus::Model::Mapping::Attribute.new(:name, String, as: :t_name)
     end
   end
 
