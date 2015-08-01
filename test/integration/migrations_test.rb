@@ -360,7 +360,7 @@ describe "Database migrations" do
   describe "PostgreSQL" do
     before do
       @database  = "#{ db_prefix }_#{ random_token }"
-      @uri = uri = "postgres://localhost/#{ @database }?user=#{ POSTGRES_USER }"
+      @uri = uri = "postgres://#{ POSTGRES_USER }@localhost/#{ @database }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
