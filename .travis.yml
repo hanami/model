@@ -15,6 +15,7 @@ rvm:
   - 2.2.1
   - 2.2.2
   - rbx-2
+  - jruby-9000
   - jruby-head
 
 addons:
@@ -24,3 +25,4 @@ matrix:
   allow_failures:
     - rvm: rbx-2
     - rvm: jruby-head
+    - rvm: jruby-9000
