@@ -206,7 +206,7 @@ describe "Database migrations" do
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -309,6 +309,8 @@ describe "Database migrations" do
         Lotus::Model::Migrator.prepare
 
         connection.tables.must_equal [:schema_migrations, :books, :authors]
+
+        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete
       end
 
       it "works even if schema doesn't exist" do
@@ -479,7 +481,7 @@ describe "Database migrations" do
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -796,7 +798,7 @@ SQL
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
