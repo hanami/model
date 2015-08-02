@@ -1,7 +1,11 @@
 language: ruby
 sudo: false
 cache: bundler
-script: 'bundle exec rake test:coverage'
+install: true
+script:
+  - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION; fi'
+  - 'bundle install'
+  - 'bundle exec rake test:coverage'
 rvm:
   - 2.0.0
   - 2.1.0
@@ -19,10 +23,9 @@ rvm:
   - jruby-head
 
 addons:
-  postgresql: "9.4"
+  postgresql: '9.4'
 
 matrix:
   allow_failures:
     - rvm: rbx-2
     - rvm: jruby-head
-    - rvm: jruby-9000

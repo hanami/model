@@ -69,7 +69,7 @@ module Lotus
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/#{ @connection.adapter_scheme }\:\/\//, '')
+            @connection.uri.sub(/(jdbc\:|)sqlite\:\/\//, '')
           )
         end
 

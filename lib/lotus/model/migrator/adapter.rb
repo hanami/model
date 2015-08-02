@@ -46,7 +46,7 @@ module Lotus
         # @since 0.4.0
         # @api private
         def initialize(connection)
-          @connection = connection
+          @connection = Connection.new(connection)
         end
 
         # Create database.
@@ -57,7 +57,7 @@ module Lotus
         #
         # @see Lotus::Model::Migrator.create
         def create
-          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support create.")
+          raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support create.")
         end
 
         # Drop database.
@@ -68,7 +68,7 @@ module Lotus
         #
         # @see Lotus::Model::Migrator.drop
         def drop
-          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support drop.")
+          raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support drop.")
         end
 
         # Load database schema.
@@ -79,7 +79,7 @@ module Lotus
         #
         # @see Lotus::Model::Migrator.prepare
         def load
-          raise MigrationError.new("Current adapter (#{ @connection.database_type }) doesn't support load.")
+          raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support load.")
         end
 
         # Database version.
@@ -87,25 +87,32 @@ module Lotus
         # @since 0.4.0
         # @api private
         def version
-          return unless @connection.tables.include?(MIGRATIONS_TABLE)
+          return unless connection.adapter_connection.tables.include?(MIGRATIONS_TABLE)
 
-          if record = @connection[MIGRATIONS_TABLE].order(MIGRATIONS_TABLE_VERSION_COLUMN).last
+          if record = connection.adapter_connection[MIGRATIONS_TABLE].order(MIGRATIONS_TABLE_VERSION_COLUMN).last
             record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_s
           end
         end
 
         private
 
-        # @since 0.4.0
+        # @since x.x.x
         # @api private
-        def new_connection
-          uri = URI.parse(@connection.uri)
-          scheme, userinfo, host, port = uri.select(:scheme, :userinfo, :host, :port)
+        attr_reader :connection
 
-          uri  = "#{ scheme }://"
-          uri += "#{ userinfo }@" unless userinfo.nil?
-          uri += host
-          uri += ":#{ port }" unless port.nil?
+        # Returns a database connection
+        #
+        # Given a DB connection URI we can connect to a specific database or not, we need this when creating
+        # or droping a database. Important to notice that we can't always open a _global_ DB connection,
+        # because most of the times application's DB user has no rights to do so.
+        #
+        # @param global [Boolean] determine whether or not a connection should specify an database.
+        #
+        # @since x.x.x
+        # @api private
+        #
+        def new_connection(global: false)
+          uri = global ? connection.global_uri : connection.uri
 
           Sequel.connect(uri)
         end
@@ -113,31 +120,31 @@ module Lotus
         # @since 0.4.0
         # @api private
         def database
-          escape options.fetch(:database)
-        end
-
-        # @since 0.4.0
-        # @api private
-        def host
-          escape options.fetch(:host)
+          escape connection.database
         end
 
         # @since 0.4.0
         # @api private
         def port
-          escape options.fetch(:port)
+          escape connection.port
+        end
+
+        # @since 0.4.0
+        # @api private
+        def host
+          escape connection.host
         end
 
         # @since 0.4.0
         # @api private
         def username
-          escape options.fetch(:user)
+          escape connection.user
         end
 
         # @since 0.4.0
         # @api private
         def password
-          escape options.fetch(:password)
+          escape connection.password
         end
 
         # @since 0.4.0
@@ -150,12 +157,6 @@ module Lotus
         # @api private
         def migrations_table
           escape MIGRATIONS_TABLE
-        end
-
-        # @since 0.4.0
-        # @api private
-        def options
-          @connection.opts
         end
 
         # @since 0.4.0
