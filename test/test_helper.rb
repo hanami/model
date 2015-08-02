@@ -49,7 +49,7 @@ if ENV['TRAVIS'] == 'true'
   POSTGRES_USER = 'postgres'
   MYSQL_USER    = 'travis'
 else
-  POSTGRES_USER = `whoami`
+  POSTGRES_USER = `whoami`.strip
   MYSQL_USER    = 'lotus'
 end
 require 'fixtures'
