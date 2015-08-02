@@ -206,7 +206,7 @@ describe "Database migrations" do
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -309,13 +309,13 @@ describe "Database migrations" do
         Lotus::Model::Migrator.prepare
 
         connection.tables.must_equal [:schema_migrations, :books, :authors]
+
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do
         # Simulate no database, no schema and pending migrations
-        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
-        @migrations_root.join('schema-sqlite.sql').delete                           rescue nil
-
+        FileUtils.rm_f @migrations_root.join('schema-sqlite.sql')
         Lotus::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
@@ -360,7 +360,7 @@ describe "Database migrations" do
   describe "PostgreSQL" do
     before do
       @database  = "#{ db_prefix }_#{ random_token }"
-      @uri = uri = "postgres://localhost/#{ @database }?user=#{ POSTGRES_USER }"
+      @uri = uri = "postgres://#{ POSTGRES_USER }@localhost/#{ @database }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
@@ -479,7 +479,7 @@ describe "Database migrations" do
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -796,7 +796,7 @@ SQL
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
