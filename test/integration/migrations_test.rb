@@ -310,14 +310,12 @@ describe "Database migrations" do
 
         connection.tables.must_equal [:schema_migrations, :books, :authors]
 
-        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do
         # Simulate no database, no schema and pending migrations
-        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
-        @migrations_root.join('schema-sqlite.sql').delete                           rescue nil
-
+        FileUtils.rm_f @migrations_root.join('schema-sqlite.sql')
         Lotus::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
