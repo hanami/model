@@ -49,7 +49,7 @@ if ENV['TRAVIS'] == 'true'
   POSTGRES_USER = 'postgres'
   MYSQL_USER    = 'travis'
 else
-  POSTGRES_USER = `whoami`
+  POSTGRES_USER = `whoami`.strip
   MYSQL_USER    = 'lotus'
 end
 MYSQL_JOINS_CONNECTION_STRING = "mysql2://#{ MYSQL_USER }@localhost/sql_joins"
