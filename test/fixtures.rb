@@ -49,8 +49,8 @@ class ArticleRepository
     rank.by_user(user)
   end
 
-  def self.aggregate
-    execute("select * from articles")
+  def self.aggregate(&block)
+    execute("SELECT * FROM articles", &block)
   end
 end
 

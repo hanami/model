@@ -2,11 +2,19 @@ require 'test_helper'
 require 'lotus/model/migrator'
 
 describe "Lotus::Model.migration" do
+  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
+
+  # Dirty DB can skip migrations
+  after :teardown do
+    File.delete(@database)
+    File.delete(@schema)
+  end
+
   describe "SQLite" do
     before do
       @database = Pathname.new("#{ __dir__ }/../tmp/migration.sqlite3").expand_path
       @schema   = schema_path = Pathname.new("#{ __dir__ }/../tmp/schema.sql").expand_path
-      @uri      = uri = "sqlite://#{ @database }"
+      @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri

@@ -607,8 +607,8 @@ module Lotus
       #   end
       #
       #   puts result_set.class # => SQLite3::ResultSet
-      def execute(raw)
-        @adapter.execute(raw)
+      def execute(raw, &block)
+        @adapter.execute(raw, &block)
       end
 
       # Fabricates a query and yields the given block to access the low level

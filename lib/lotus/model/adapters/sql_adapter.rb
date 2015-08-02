@@ -230,15 +230,17 @@ module Lotus
         # Executes raw sql directly on the connection
         #
         # @param raw [String] the raw sql statement to execute on the connection
+        # @param block [Proc] code to be executed directly in the adapter context, with that you can
+        # manipulate low level ResultSet objects.
         #
         # @return [Object]
         #
         # @raise [Lotus::Model::InvalidQueryError] if raw statement is invalid
         #
         # @since 0.3.1
-        def execute(raw)
+        def execute(raw, &block)
           begin
-            @connection.execute(raw)
+            @connection.execute(raw, &block)
           rescue Sequel::DatabaseError => e
             raise Lotus::Model::InvalidQueryError.new(e.message)
           end
