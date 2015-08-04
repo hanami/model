@@ -33,7 +33,24 @@ module Lotus
         # @api private
         def drop
           set_environment_variables
-          system "dropdb #{ database } --if-exists"
+
+          require 'open3'
+
+          Open3.popen3('dropdb', database) do |stdin, stdout, stderr, wait_thr|
+            exit_status = wait_thr.value
+
+            unless exit_status.success?
+              error_message = stderr.read
+
+              message = if error_message.match(/does not exist/)
+                "Cannot find database: #{ database }"
+              else
+                message
+              end
+
+              raise MigrationError.new(message)
+            end
+          end
         end
 
         # @since 0.4.0
