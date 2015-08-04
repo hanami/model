@@ -157,6 +157,22 @@ module Lotus
             end
           end
 
+
+          # Filters the current scope with a `group` directive.
+          #
+          # @param args [Array] the array of arguments
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#group
+          #
+          # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
+          #   collection
+          #
+          # @api private
+          # @since x.x.x
+          def group(*args)
+            Collection.new(super, @mapped_collection)
+          end
+
           # Filters the current scope with a `where` directive.
           #
           # @param args [Array] the array of arguments
