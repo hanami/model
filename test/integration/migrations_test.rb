@@ -625,6 +625,8 @@ SQL
         connection.tables.must_include(:schema_migrations)
         connection.tables.must_include(:books)
         connection.tables.must_include(:authors)
+
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do
@@ -934,6 +936,8 @@ SQL
         connection.tables.must_include(:schema_migrations)
         connection.tables.must_include(:books)
         connection.tables.must_include(:authors)
+
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do
