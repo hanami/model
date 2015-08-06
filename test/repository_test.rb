@@ -50,6 +50,16 @@ describe Lotus::Repository do
             persisted_user.age.must_equal(unpersisted_user.age.to_i)
           end
 
+          it 'returns a copy of the entity passed as argument' do
+            persisted_user = UserRepository.persist(unpersisted_user)
+            refute_same persisted_user, unpersisted_user
+          end
+
+          it 'does not assign an id on the entity passed as argument' do
+            UserRepository.persist(unpersisted_user)
+            unpersisted_user.id.must_be_nil
+          end
+
           it 'should coerce attributes' do
             persisted_user = UserRepository.persist(unpersisted_user)
             persisted_user.age.must_equal(25)
@@ -111,6 +121,12 @@ describe Lotus::Repository do
 
           UserRepository.create(user1)
           user1.id.must_equal id
+        end
+
+        it 'returns nil when trying to create an already persisted entity' do
+          created_user = UserRepository.create(User.new(name: 'Pascal'))
+          value = UserRepository.create(created_user)
+          value.must_be_nil
         end
 
         describe 'when entity is not persisted' do
