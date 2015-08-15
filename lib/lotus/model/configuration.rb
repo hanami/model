@@ -247,7 +247,7 @@ module Lotus
       # @api private
       # @since 0.2.0
       def _build_mapper
-        @mapper = Lotus::Model::Mapper.new(&@mapper_config.to_proc) if @mapper_config
+        @mapper = Lotus::Model::Mapper.new(&@mapper_config) if @mapper_config
       end
 
       # @api private
