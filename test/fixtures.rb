@@ -99,11 +99,6 @@ end
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 create_tables_per_database(DB)
 
-MYSQL_DB = Sequel.connect(MYSQL_JOINS_CONNECTION_STRING)
-create_tables_per_database(MYSQL_DB)
-
-# DB.dataset_class = Class.new(Sequel::Dataset)
-
 #FIXME this should be passed by the framework internals.
 MAPPER = Lotus::Model::Mapper.new do
   collection :users do

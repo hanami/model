@@ -95,7 +95,7 @@ describe 'SQL joins test' do
       end
     end.load!
 
-    @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, MYSQL_JOINS_CONNECTION_STRING)
+    @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
   end
 
   describe '#query' do
@@ -302,109 +302,6 @@ describe 'SQL joins test' do
               result_query_join.select{ |order| order.user_id == created_user.id }.size.must_equal 2
               result_query_join.select{ |order| order.user_id.nil? }.size.must_equal 1
               result_query_join.size.must_equal 3
-            end
-          end
-        end
-      end
-
-      # describe 'right join' do
-      #   describe 'with an empty collection' do
-      #     before do
-      #       @adapter.clear(:orders)
-      #       @adapter.clear(:users)
-      #     end
-
-      #     it 'returns an empty result set' do
-      #       result = @adapter.query(:orders) do
-      #         right_join(:users)
-      #       end.all
-
-      #       result.must_be_empty
-      #     end
-      #   end
-
-      #   describe 'with a filled collection' do
-      #     describe 'and default options' do
-      #       before do
-      #         @adapter.clear(:users)
-      #         @adapter.clear(:orders)
-
-      #         @created_user = @adapter.create(:users, user1)
-
-      #         @order1 = TestOrder.new(user_id: @created_user.id, total: 100)
-      #         @order2 = TestOrder.new(user_id: @created_user.id, total: 200)
-      #         @order3 = TestOrder.new(user_id: nil,              total: 300)
-
-      #         @adapter.create(:orders, @order1)
-      #         @adapter.create(:orders, @order2)
-      #         @adapter.create(:orders, @order3)
-
-      #         TestUserRepository.adapter  = @adapter
-      #         TestOrderRepository.adapter = @adapter
-      #       end
-
-      #       it 'returns records' do
-      #         created_user = TestUserRepository.first
-
-      #         query_join = Proc.new {
-      #           right_join(:users)
-      #         }
-
-      #         result_query_join  = @adapter.query(:orders, &query_join).all
-      #         puts result_query_join
-      #         # result_query_join.select{ |order| order.user_id == created_user.id }.size.must_equal 2
-      #         # result_query_join.select{ |order| order.user_id.nil? }.size.must_equal 1
-      #         # result_query_join.size.must_equal 3
-      #       end
-      #     end
-      #   end
-      # end
-
-      describe 'cross join' do
-        describe 'with an empty collection' do
-          before do
-            @adapter.clear(:orders)
-            @adapter.clear(:users)
-          end
-
-          it 'returns an empty result set' do
-            result = @adapter.query(:orders) do
-              cross_join(:users)
-            end.all
-
-            result.must_be_empty
-          end
-        end
-
-        describe 'with a filled collection' do
-          describe 'and default options' do
-            before do
-              @adapter.clear(:users)
-              @adapter.clear(:orders)
-
-              @created_user = @adapter.create(:users, user1)
-
-              @order1 = TestOrder.new(user_id: @created_user.id, total: 100)
-              @order2 = TestOrder.new(user_id: @created_user.id, total: 200)
-              @order3 = TestOrder.new(user_id: nil,              total: 300)
-
-              @adapter.create(:orders, @order1)
-              @adapter.create(:orders, @order2)
-              @adapter.create(:orders, @order3)
-
-              TestUserRepository.adapter = @adapter
-              TestOrderRepository.adapter = @adapter
-            end
-
-            it 'returns records' do
-              query = Proc.new {
-                cross_join(:users)
-              }
-
-              # result_query_where = @adapter.query(:orders, &query_where).all
-              result_query_join  = @adapter.query(:orders, &query).all
-              puts result_query_join.inspect
-              # result_query_join.must_equal result_query_where
             end
           end
         end

@@ -198,14 +198,38 @@ module Lotus
             @mapped_collection.deserialize(self)
           end
 
+          # Select all attributes for current scope
+          #
+          # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
+          #   collection
+          #
+          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Aselect_all
+          #
+          # @api private
+          # @since x.x.x
           def select_all
             Collection.new(super(table_name), @mapped_collection)
           end
 
+          # Use join table for current scope
+          #
+          # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
+          #   collection
+          #
+          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Ajoin_table
+          #
+          # @api private
+          # @since x.x.x
           def join_table(*args)
             Collection.new(super, @mapped_collection)
           end
 
+          # Return table name mapped collection
+          #
+          # @return [String] table name
+          #
+          # @api private
+          # @since x.x.x
           def table_name
             @mapped_collection.name
           end

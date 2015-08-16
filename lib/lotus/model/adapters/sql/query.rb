@@ -594,34 +594,58 @@ module Lotus
 
           alias_method :run, :scoped
 
+          # Return the current SQL statement
+          #
+          # @return [String] Sql statement
+          #
+          # @since x.x.x
           def sql
             scoped.sql
           end
 
+          # Specify an `INNER JOIN` clause.
+          #
+          # @param collection [String]
+          # @param options [Hash]
+          # @option key [Symbol] the key
+          # @option foreign_key [Symbol] the foreign key
+          #
+          # @return self
+          #
+          # @since x.x.x
+          #
+          # @example
+          #
+          #   query.join(:users)
+          #
+          #   # => SELECT * FROM `posts` INNER JOIN `users` ON `posts`.`user_id` = `users`.`id`
           def join(collection, options = {})
             _join(collection, options.merge(join: :inner))
           end
 
           alias_method :inner_join, :join
 
+          # Specify an `LEFT JOIN` clause.
+          #
+          # @param collection [String]
+          # @param options [Hash]
+          # @option key [Symbol] the key
+          # @option foreign_key [Symbol] the foreign key
+          #
+          # @return self
+          #
+          # @since x.x.x
+          #
+          # @example
+          #
+          #   query.left_join(:users)
+          #
+          #   # => SELECT * FROM `posts` LEFT JOIN `users` ON `posts`.`user_id` = `users`.`id`
           def left_join(collection, options = {})
             _join(collection, options.merge(join: :left))
           end
 
           alias_method :left_outer_join, :left_join
-
-          def right_join(collection, options = {})
-            _join(collection, options.merge(join: :right))
-          end
-
-          alias_method :rigth_outer_join, :right_join
-
-          def cross_join(collection)
-            conditions.push([:select_all])
-            conditions.push([:join_table, :cross, collection])
-          end
-
-          alias_method :rigth_outer_join, :right_join
 
           protected
           # Handles missing methods for query combinations
@@ -640,6 +664,14 @@ module Lotus
 
           private
 
+          # Specify an `LEFT JOIN` clause.
+          #
+          # @param collection [String]
+          #
+          # @return self
+          #
+          # @api private
+          # @since x.x.x
           def _join(collection, options = {})
             collection_name = Utils::String.new(collection).singularize
 
@@ -651,6 +683,7 @@ module Lotus
 
             self
           end
+          
           # Returns a new query that is the result of the merge of the current
           # conditions with the ones of the given query.
           #
