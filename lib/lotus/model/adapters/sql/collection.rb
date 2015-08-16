@@ -56,7 +56,7 @@ module Lotus
           # @since 0.1.0
           def insert(entity)
             serialized_entity            = _serialize(entity)
-            serialized_entity[_identity] = super(serialized_entity)
+            serialized_entity[identity] = super(serialized_entity)
 
             _deserialize(serialized_entity)
           end
@@ -198,6 +198,52 @@ module Lotus
             @mapped_collection.deserialize(self)
           end
 
+          # Select all attributes for current scope
+          #
+          # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
+          #   collection
+          #
+          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Aselect_all
+          #
+          # @api private
+          # @since x.x.x
+          def select_all
+            Collection.new(super(table_name), @mapped_collection)
+          end
+
+          # Use join table for current scope
+          #
+          # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
+          #   collection
+          #
+          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Ajoin_table
+          #
+          # @api private
+          # @since x.x.x
+          def join_table(*args)
+            Collection.new(super, @mapped_collection)
+          end
+
+          # Return table name mapped collection
+          #
+          # @return [String] table name
+          #
+          # @api private
+          # @since x.x.x
+          def table_name
+            @mapped_collection.name
+          end
+
+          # Name of the identity column in database
+          #
+          # @return [Symbol] the identity name
+          #
+          # @api private
+          # @since x.x.x
+          def identity
+            @mapped_collection.identity
+          end
+
           private
           # Serialize the given entity before to persist in the database.
           #
@@ -217,16 +263,6 @@ module Lotus
           # @since 0.2.2
           def _deserialize(entity)
             @mapped_collection.deserialize([entity]).first
-          end
-
-          # Name of the identity column in database
-          #
-          # @return [Symbol] the identity name
-          #
-          # @api private
-          # @since 0.2.2
-          def _identity
-            @mapped_collection.identity
           end
         end
       end
