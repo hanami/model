@@ -77,11 +77,16 @@ describe Lotus::Repository do
         end
 
         describe 'when passed a persisted entity' do
-          before do
-            @updated_at = user.updated_at
-          end
           let(:user)           { UserRepository.create(User.new(name: 'Don')) }
           let(:persisted_user) { UserRepository.persist(user) }
+
+          before do
+            @updated_at = user.updated_at
+
+            # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
+            # concurrent platforms like jRuby
+            sleep 2 if Lotus::Utils.jruby?
+          end
 
           it 'should return that entity' do
             UserRepository.persist(persisted_user).must_equal(user)
@@ -89,11 +94,13 @@ describe Lotus::Repository do
 
           it 'does not touch created_at' do
             UserRepository.persist(persisted_user)
+
             persisted_user.created_at.wont_be_nil
           end
 
           it 'touches updated_at' do
             updated_user = UserRepository.persist(user)
+
             assert updated_user.updated_at > @updated_at
           end
         end
@@ -163,6 +170,10 @@ describe Lotus::Repository do
         before do
           @user1 = UserRepository.create(user1)
           @updated_at = @user1.updated_at
+
+          # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
+          # concurrent platforms like jRuby
+          sleep 2 if Lotus::Utils.jruby?
         end
 
         it 'updates entities' do
@@ -479,9 +490,16 @@ describe Lotus::Repository do
       end
 
       it 'returns the ResultSet from the executes sql' do
-        result = ArticleRepository.aggregate
-        result.class.name.must_equal "SQLite3::ResultSet"
-        result.count.must_equal 1
+        if Lotus::Utils.jruby?
+          result = ArticleRepository.aggregate { |r| r }
+
+          result.class.must_equal Java::OrgSqliteJdbc4::JDBC4ResultSet
+        else
+          result = ArticleRepository.aggregate
+
+          result.must_be_kind_of SQLite3::ResultSet
+          result.count.must_equal 1
+        end
       end
     end
 

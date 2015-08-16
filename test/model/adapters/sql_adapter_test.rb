@@ -1184,10 +1184,29 @@ describe Lotus::Model::Adapters::SqlAdapter do
       end
 
       it 'returns the ResultSet from the executes sql' do
-        raw = "select * from users"
-        result = @adapter.execute(raw)
-        result.must_be_kind_of SQLite3::ResultSet
-        result.count.must_equal 3
+        raw = "SELECT * FROM users"
+
+        # In theory `execute` yields result set in a block
+        # https://github.com/jeremyevans/sequel/blob/54fa82326d3319d9aca4409c07f79edc09da3837/lib/sequel/adapters/sqlite.rb#L126-L129
+        #
+        # Would be interesting in future to wrap these results into Lotus result_sets, independent from
+        # Sequel adapter
+        #
+        records = [].tap do |r|
+          @adapter.execute raw do |result_set|
+            while result_set.next
+              r << result_set
+            end
+          end
+        end
+
+        if Lotus::Utils.jruby?
+          records.each { |r| r.class.must_equal Java::OrgSqliteJdbc4::JDBC4ResultSet }
+        else
+          records.each { |r| r.must_be_kind_of SQLite3::ResultSet }
+        end
+
+        records.count.must_equal 3
       end
 
       it 'raises an exception when an invalid sql is provided' do

@@ -1,5 +1,6 @@
 require 'sequel'
 require 'sequel/extensions/migration'
+require 'lotus/model/migrator/connection'
 require 'lotus/model/migrator/adapter'
 
 module Lotus
