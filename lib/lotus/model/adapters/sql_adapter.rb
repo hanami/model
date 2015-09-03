@@ -43,9 +43,8 @@ module Lotus
         # @since 0.1.0
         def initialize(mapper, uri)
           super
-          @connection = Sequel.connect(@uri)
-        rescue Sequel::AdapterNotFound => e
-          raise DatabaseAdapterNotFound.new(e.message)
+          _preprocess_uri
+          connect
         end
 
         # Creates a record in the database for the given entity.
@@ -256,6 +255,22 @@ module Lotus
         end
 
         private
+
+        # @api private
+        # @since x.x.x
+        def connect
+          @connection = Sequel.connect(@uri)
+        rescue Sequel::AdapterNotFound => e
+          raise DatabaseAdapterNotFound.new(e.message)
+        end
+
+        # Convert URI with mysql:// to mysql2://
+        #
+        # @api private
+        # @since x.x.x
+        def _preprocess_uri
+          @uri = @uri.gsub('mysql://', 'mysql2://')
+        end
 
         # Returns a collection from the given name.
         #

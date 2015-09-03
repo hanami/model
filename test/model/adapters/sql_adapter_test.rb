@@ -78,6 +78,11 @@ describe Lotus::Model::Adapters::SqlAdapter do
         Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'unknown_db:host')
       }.must_raise(URI::InvalidURIError)
     end
+
+    it 'changes the URI of mysql:// to mysql2://' do
+      sql_adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'mysql://host/db_name')
+      sql_adapter.instance_variable_get(:@uri).must_equal('mysql2://host/db_name')
+    end
   end
 
   describe '#persist' do
