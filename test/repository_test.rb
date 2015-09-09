@@ -26,6 +26,11 @@ describe Lotus::Repository do
         ArticleRepository.clear
       end
 
+      after do
+        UserRepository.adapter.disconnect
+        ArticleRepository.adapter.disconnect
+      end
+
       describe '.collection' do
         it 'returns the collection name' do
           UserRepository.collection.must_equal    :users
@@ -45,6 +50,16 @@ describe Lotus::Repository do
             persisted_user.age.must_equal(unpersisted_user.age.to_i)
           end
 
+          it 'returns a copy of the entity passed as argument' do
+            persisted_user = UserRepository.persist(unpersisted_user)
+            refute_same persisted_user, unpersisted_user
+          end
+
+          it 'does not assign an id on the entity passed as argument' do
+            UserRepository.persist(unpersisted_user)
+            unpersisted_user.id.must_be_nil
+          end
+
           it 'should coerce attributes' do
             persisted_user = UserRepository.persist(unpersisted_user)
             persisted_user.age.must_equal(25)
@@ -62,11 +77,16 @@ describe Lotus::Repository do
         end
 
         describe 'when passed a persisted entity' do
-          before do
-            @updated_at = user.updated_at
-          end
           let(:user)           { UserRepository.create(User.new(name: 'Don')) }
           let(:persisted_user) { UserRepository.persist(user) }
+
+          before do
+            @updated_at = user.updated_at
+
+            # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
+            # concurrent platforms like jRuby
+            sleep 2 if Lotus::Utils.jruby?
+          end
 
           it 'should return that entity' do
             UserRepository.persist(persisted_user).must_equal(user)
@@ -74,11 +94,13 @@ describe Lotus::Repository do
 
           it 'does not touch created_at' do
             UserRepository.persist(persisted_user)
+
             persisted_user.created_at.wont_be_nil
           end
 
           it 'touches updated_at' do
             updated_user = UserRepository.persist(user)
+
             assert updated_user.updated_at > @updated_at
           end
         end
@@ -106,6 +128,12 @@ describe Lotus::Repository do
 
           UserRepository.create(user1)
           user1.id.must_equal id
+        end
+
+        it 'returns nil when trying to create an already persisted entity' do
+          created_user = UserRepository.create(User.new(name: 'Pascal'))
+          value = UserRepository.create(created_user)
+          value.must_be_nil
         end
 
         describe 'when entity is not persisted' do
@@ -142,6 +170,10 @@ describe Lotus::Repository do
         before do
           @user1 = UserRepository.create(user1)
           @updated_at = @user1.updated_at
+
+          # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
+          # concurrent platforms like jRuby
+          sleep 2 if Lotus::Utils.jruby?
         end
 
         it 'updates entities' do
@@ -462,7 +494,7 @@ describe Lotus::Repository do
         -> { ArticleRepository.execute("UPDATE articles SET comments_count = '0'") }.must_raise NoMethodError
       end
 
-      it 'returns the ResultSet from the executes sql' do
+      it 'executes the command and returns nil' do
         result = ArticleRepository.reset_comments_count
         result.must_be_nil
 
@@ -504,7 +536,6 @@ describe Lotus::Repository do
         result.must_equal ['Art 1']
       end
     end
-
   end
 
   describe "with memory adapter" do

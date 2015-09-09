@@ -225,6 +225,17 @@ module Lotus
           end
         end
 
+        # @api private
+        # @since x.x.x
+        #
+        # @see Lotus::Model::Adapters::Abstract#disconnect
+        def disconnect
+          super
+
+          @_mutex = DisconnectedResource.new
+          @root   = DisconnectedResource.new
+        end
+
         private
         # @api private
         # @since 0.2.0

@@ -212,11 +212,17 @@ module Lotus
         @adapter = adapter
       end
 
+      # @since x.x.x
+      # @api private
+      def adapter
+        @adapter
+      end
+
       # Creates or updates a record in the database for the given entity.
       #
       # @param entity [#id, #id=] the entity to persist
       #
-      # @return [Object] the entity
+      # @return [Object] a copy of the entity with `id` assigned
       #
       # @since 0.1.0
       #
@@ -233,8 +239,9 @@ module Lotus
       #   article = Article.new(title: 'Introducing Lotus::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.persist(article) # creates a record
-      #   article.id # => 23
+      #   persisted_article = ArticleRepository.persist(article) # creates a record
+      #   article.id # => nil
+      #   persisted_article.id # => 23
       #
       # @example With a persisted entity
       #   require 'lotus/model'
@@ -257,13 +264,13 @@ module Lotus
       end
 
       # Creates a record in the database for the given entity.
-      # It assigns the `id` attribute, in case of success.
+      # It returns a copy of the entity with `id` assigned.
       #
       # If already persisted (`id` present) it does nothing.
       #
       # @param entity [#id,#id=] the entity to create
       #
-      # @return [Object] the entity
+      # @return [Object] a copy of the entity with `id` assigned
       #
       # @since 0.1.0
       #
@@ -279,10 +286,16 @@ module Lotus
       #   article = Article.new(title: 'Introducing Lotus::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.create(article) # creates a record
-      #   article.id # => 23
+      #   created_article = ArticleRepository.create(article) # creates a record
+      #   article.id # => nil
+      #   created_article.id # => 23
       #
-      #   ArticleRepository.create(article) # no-op
+      #   created_article = ArticleRepository.create(article)
+      #   created_article.id # => 24
+      #
+      #   created_article = ArticleRepository.create(existing_article) # => no-op
+      #   created_article # => nil
+      #
       def create(entity)
         unless _persisted?(entity)
           _touch(entity)

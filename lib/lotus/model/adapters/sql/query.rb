@@ -401,6 +401,30 @@ module Lotus
           #   query.desc(:name).desc(:year)
           alias_method :desc, :reverse_order
 
+          # Group by the specified columns.
+          #
+          # @param columns [Array<Symbol>]
+          #
+          # @return self
+          #
+          # @since x.x.x
+          #
+          # @example Single column
+          #
+          #   query.group(:name)
+          #
+          #   # => SELECT * FROM `people` GROUP BY `name`
+          #
+          # @example Multiple columns
+          #
+          #   query.group(:name, :year)
+          #
+          #   # => SELECT * FROM `people` GROUP BY `name`, `year`
+          def group(*columns)
+            conditions.push([:group, *columns])
+            self
+          end
+
           # Returns the sum of the values for the given column.
           #
           # @param column [Symbol] the column name

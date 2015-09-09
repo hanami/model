@@ -38,7 +38,7 @@ module Lotus
         def create
           path.dirname.mkpath
           FileUtils.touch(path)
-        rescue Errno::EACCES
+        rescue Errno::EACCES, Errno::EPERM
           raise MigrationError.new("Permission denied: #{ path.sub(/\A\/\//, '') }")
         end
 
@@ -69,7 +69,7 @@ module Lotus
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/#{ @connection.adapter_scheme }\:\/\//, '')
+            @connection.uri.sub(/(jdbc\:|)sqlite\:\/\//, '')
           )
         end
 

@@ -1148,4 +1148,15 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
       @adapter.info.fetch(collection).must_equal 1
     end
   end
+
+  describe '#disconnect' do
+    before do
+      @adapter.disconnect
+    end
+
+    it 'raises error' do
+      exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Lotus::Model::Adapters::DisconnectedAdapterError
+      exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
+    end
+  end
 end

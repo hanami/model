@@ -25,21 +25,32 @@ module Lotus
         # @since 0.4.0
         # @api private
         def create
-          `createdb #{ database } #{ create_options }`
+          set_environment_variables
+          `createdb #{ database }`
         end
 
         # @since 0.4.0
         # @api private
         def drop
-          new_connection.run %(DROP DATABASE "#{ database }")
-        rescue Sequel::DatabaseError => e
-          message = if e.message.match(/does not exist/)
-            "Cannot find database: #{ database }"
-          else
-            e.message
-          end
+          set_environment_variables
 
-          raise MigrationError.new(message)
+          require 'open3'
+
+          Open3.popen3('dropdb', database) do |stdin, stdout, stderr, wait_thr|
+            exit_status = wait_thr.value
+
+            unless exit_status.success?
+              error_message = stderr.read
+
+              message = if error_message.match(/does not exist/)
+                "Cannot find database: #{ database }"
+              else
+                message
+              end
+
+              raise MigrationError.new(message)
+            end
+          end
         end
 
         # @since 0.4.0
@@ -58,14 +69,6 @@ module Lotus
         end
 
         private
-
-        # @since 0.4.0
-        # @api private
-        def create_options
-          result  = ""
-          result += %( --owner=#{ username }) unless username.nil?
-          result
-        end
 
         # @since 0.4.0
         # @api private

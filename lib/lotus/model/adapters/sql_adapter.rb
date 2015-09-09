@@ -43,9 +43,8 @@ module Lotus
         # @since 0.1.0
         def initialize(mapper, uri)
           super
-          @connection = Sequel.connect(@uri)
-        rescue Sequel::AdapterNotFound => e
-          raise DatabaseAdapterNotFound.new(e.message)
+          _preprocess_uri
+          connect
         end
 
         # Creates a record in the database for the given entity.
@@ -234,6 +233,11 @@ module Lotus
         # @return [NilClass]
         #
         # @raise [Lotus::Model::InvalidCommandError] if the raw SQL statement is invalid
+        # @param raw [String] the raw sql statement to execute on the connection
+        #
+        # @return [Object]
+        #
+        # @raise [Lotus::Model::InvalidQueryError] if raw statement is invalid
         #
         # @since 0.3.1
         def execute(raw)
@@ -265,7 +269,32 @@ module Lotus
           raise Lotus::Model::InvalidQueryError.new(e.message)
         end
 
+        # @api private
+        # @since x.x.x
+        #
+        # @see Lotus::Model::Adapters::Abstract#disconnect
+        def disconnect
+          @connection.disconnect
+          @connection = DisconnectedResource.new
+        end
+
         private
+
+        # @api private
+        # @since x.x.x
+        def connect
+          @connection = Sequel.connect(@uri)
+        rescue Sequel::AdapterNotFound => e
+          raise DatabaseAdapterNotFound.new(e.message)
+        end
+
+        # Convert URI with mysql:// to mysql2://
+        #
+        # @api private
+        # @since x.x.x
+        def _preprocess_uri
+          @uri = @uri.gsub('mysql://', 'mysql2://')
+        end
 
         # Returns a collection from the given name.
         #
