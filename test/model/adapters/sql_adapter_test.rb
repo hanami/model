@@ -1220,6 +1220,56 @@ describe Lotus::Model::Adapters::SqlAdapter do
       end
     end
 
+    describe 'group' do
+      describe 'with an empty collection' do
+        it 'returns an empty result' do
+          result = @adapter.query(collection) do
+            group(:name)
+          end.all
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, user3)
+          @adapter.create(collection, user4)
+          @adapter.create(collection, user5)
+          @adapter.create(collection, user6)
+          @adapter.create(collection, user7)
+        end
+
+        let(:user1) { TestUser.new(name: 'L', age: 32) }
+        let(:user2) { TestUser.new(name: 'L', age: 10) }
+        let(:user3) { TestUser.new(name: 'L', age: 11) }
+        let(:user4) { TestUser.new(name: 'A', age: 12) }
+        let(:user5) { TestUser.new(name: 'A', age: 12) }
+        let(:user6) { TestUser.new(name: 'T', age: 11) }
+        let(:user7) { TestUser.new(name: 'O', age: 10) }
+
+        it 'returns grouped records with one column' do
+          query = Proc.new {
+            group(:name)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.size.must_equal 4
+        end
+
+        it 'returns grouped records with 2 columns' do
+          query = Proc.new {
+            group(:name, :age)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.size.must_equal 6
+        end
+      end
+    end
+
     describe '#disconnect' do
       before do
         @adapter.disconnect

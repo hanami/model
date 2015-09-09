@@ -541,6 +541,19 @@ module Lotus
             raise NotImplementedError
           end
 
+          # This method is defined in order to make the interface of
+          # `Memory::Query` identical to `Sql::Query`, but this feature is NOT
+          # implemented
+          #
+          # @raise [NotImplementedError]
+          #
+          # @since x.x.x
+          #
+          # @see Lotus::Model::Adapters::Sql::Query#group!
+          def group
+            raise NotImplementedError
+          end
+
           protected
           def method_missing(m, *args, &blk)
             if @context.respond_to?(m)
