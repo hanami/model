@@ -243,13 +243,26 @@ module Lotus
           raise NotSupportedError
         end
 
-        # Executes a raw statement directly on the connection
+        # Executes a raw command
         #
         # @param raw [String] the raw statement to execute on the connection
-        # @return [Object]
+        #
+        # @return [NilClass]
         #
         # @since 0.3.1
         def execute(raw)
+          raise NotImplementedError
+        end
+
+        # Fetches raw records from
+        #
+        # @param raw [String] the raw query
+        # @param blk [Proc] an optional block that is yielded for each record
+        #
+        # @return [Enumerable<Hash>, Array<Hash>]
+        #
+        # @since x.x.x
+        def fetch(raw, &blk)
           raise NotImplementedError
         end
 

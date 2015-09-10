@@ -1180,10 +1180,45 @@ describe Lotus::Model::Adapters::SqlAdapter do
       before do
         @adapter.create(collection, user1)
         @adapter.create(collection, user2)
-        @adapter.create(collection, TestUser.new(name: 'S'))
       end
 
-      it 'returns the ResultSet from the executes sql' do
+      it 'runs the command and returns nil' do
+        raw = "UPDATE users SET name='CP'"
+
+        result = @adapter.execute(raw)
+        result.must_be_nil
+
+        records = @adapter.all(:users)
+        records.all? {|r| r.name == 'CP' }.must_equal true
+      end
+
+      it 'raises an exception when invalid sql is provided' do
+        raw = "UPDATE users SET foo=22"
+
+        -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidCommandError
+      end
+    end
+
+    describe 'fetch' do
+      before do
+        @user1 = @adapter.create(collection, user1)
+      end
+
+      it 'returns the an array from the raw sql' do
+        raw = "SELECT * FROM users"
+
+        result = @adapter.fetch(raw)
+        result.count.must_equal 1
+
+        user = result.first
+        user[:id].must_equal         @user1.id
+        user[:name].must_equal       @user1.name
+        user[:age].must_equal        @user1.age
+        user[:created_at].must_be_nil
+        user[:updated_at].must_be_nil
+      end
+
+      it 'yields the given block' do
         raw = "SELECT * FROM users"
 
         # In theory `execute` yields result set in a block
@@ -1192,26 +1227,18 @@ describe Lotus::Model::Adapters::SqlAdapter do
         # Would be interesting in future to wrap these results into Lotus result_sets, independent from
         # Sequel adapter
         #
-        records = [].tap do |r|
-          @adapter.execute raw do |result_set|
-            while result_set.next
-              r << result_set
-            end
-          end
+        records = nil
+
+        @adapter.fetch raw do |result_set|
+          records = result_set
         end
 
-        if Lotus::Utils.jruby?
-          records.each { |r| r.class.must_equal Java::OrgSqliteJdbc4::JDBC4ResultSet }
-        else
-          records.each { |r| r.must_be_kind_of SQLite3::ResultSet }
-        end
-
-        records.count.must_equal 3
+        records.count.must_equal 5
       end
 
       it 'raises an exception when an invalid sql is provided' do
-        raw = "select foo from bar"
-        -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidQueryError
+        raw = "SELECT foo FROM users"
+        -> { @adapter.fetch(raw) }.must_raise Lotus::Model::InvalidQueryError
       end
     end
 
