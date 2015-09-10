@@ -51,8 +51,28 @@ class ArticleRepository
     rank.by_user(user)
   end
 
-  def self.aggregate
-    execute("select * from articles")
+  def self.reset_comments_count
+    execute("UPDATE articles SET comments_count = '0'")
+  end
+
+  def self.find_raw
+    fetch("SELECT * FROM articles")
+  end
+
+  def self.each_titles
+    result = []
+
+    fetch("SELECT s_title FROM articles") do |article|
+      result << article[:s_title]
+    end
+
+    result
+  end
+
+  def self.map_titles
+    fetch("SELECT s_title FROM articles").map do |article|
+      article[:s_title]
+    end
   end
 end
 

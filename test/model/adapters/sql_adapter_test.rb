@@ -1180,19 +1180,115 @@ describe Lotus::Model::Adapters::SqlAdapter do
       before do
         @adapter.create(collection, user1)
         @adapter.create(collection, user2)
-        @adapter.create(collection, TestUser.new(name: 'S'))
       end
 
-      it 'returns the ResultSet from the executes sql' do
-        raw = "select * from users"
+      it 'runs the command and returns nil' do
+        raw = "UPDATE users SET name='CP'"
+
         result = @adapter.execute(raw)
-        result.must_be_kind_of SQLite3::ResultSet
-        result.count.must_equal 3
+        result.must_be_nil
+
+        records = @adapter.all(:users)
+        records.all? {|r| r.name == 'CP' }.must_equal true
+      end
+
+      it 'raises an exception when invalid sql is provided' do
+        raw = "UPDATE users SET foo=22"
+
+        -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidCommandError
+      end
+    end
+
+    describe 'fetch' do
+      before do
+        @user1 = @adapter.create(collection, user1)
+      end
+
+      it 'returns the an array from the raw sql' do
+        raw = "SELECT * FROM users"
+
+        result = @adapter.fetch(raw)
+        result.count.must_equal 1
+
+        user = result.first
+        user[:id].must_equal         @user1.id
+        user[:name].must_equal       @user1.name
+        user[:age].must_equal        @user1.age
+        user[:created_at].must_be_nil
+        user[:updated_at].must_be_nil
+      end
+
+      it 'yields the given block' do
+        raw = "SELECT * FROM users"
+
+        # In theory `execute` yields result set in a block
+        # https://github.com/jeremyevans/sequel/blob/54fa82326d3319d9aca4409c07f79edc09da3837/lib/sequel/adapters/sqlite.rb#L126-L129
+        #
+        # Would be interesting in future to wrap these results into Lotus result_sets, independent from
+        # Sequel adapter
+        #
+        records = nil
+
+        @adapter.fetch raw do |result_set|
+          records = result_set
+        end
+
+        records.count.must_equal 5
       end
 
       it 'raises an exception when an invalid sql is provided' do
-        raw = "select foo from bar"
-        -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidQueryError
+        raw = "SELECT foo FROM users"
+        -> { @adapter.fetch(raw) }.must_raise Lotus::Model::InvalidQueryError
+      end
+    end
+
+    describe 'group' do
+      describe 'with an empty collection' do
+        it 'returns an empty result' do
+          result = @adapter.query(collection) do
+            group(:name)
+          end.all
+
+          result.must_be_empty
+        end
+      end
+
+      describe 'with a filled collection' do
+        before do
+          @adapter.create(collection, user1)
+          @adapter.create(collection, user2)
+          @adapter.create(collection, user3)
+          @adapter.create(collection, user4)
+          @adapter.create(collection, user5)
+          @adapter.create(collection, user6)
+          @adapter.create(collection, user7)
+        end
+
+        let(:user1) { TestUser.new(name: 'L', age: 32) }
+        let(:user2) { TestUser.new(name: 'L', age: 10) }
+        let(:user3) { TestUser.new(name: 'L', age: 11) }
+        let(:user4) { TestUser.new(name: 'A', age: 12) }
+        let(:user5) { TestUser.new(name: 'A', age: 12) }
+        let(:user6) { TestUser.new(name: 'T', age: 11) }
+        let(:user7) { TestUser.new(name: 'O', age: 10) }
+
+        it 'returns grouped records with one column' do
+          query = Proc.new {
+            group(:name)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.size.must_equal 4
+        end
+
+        it 'returns grouped records with 2 columns' do
+          query = Proc.new {
+            group(:name, :age)
+          }
+
+          result = @adapter.query(collection, &query).all
+          result.size.must_equal 6
+        end
       end
     end
 

@@ -222,7 +222,7 @@ module Lotus
       #
       # @param entity [#id, #id=] the entity to persist
       #
-      # @return [Object] the entity
+      # @return [Object] a copy of the entity with `id` assigned
       #
       # @since 0.1.0
       #
@@ -239,8 +239,9 @@ module Lotus
       #   article = Article.new(title: 'Introducing Lotus::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.persist(article) # creates a record
-      #   article.id # => 23
+      #   persisted_article = ArticleRepository.persist(article) # creates a record
+      #   article.id # => nil
+      #   persisted_article.id # => 23
       #
       # @example With a persisted entity
       #   require 'lotus/model'
@@ -263,13 +264,13 @@ module Lotus
       end
 
       # Creates a record in the database for the given entity.
-      # It assigns the `id` attribute, in case of success.
+      # It returns a copy of the entity with `id` assigned.
       #
       # If already persisted (`id` present) it does nothing.
       #
       # @param entity [#id,#id=] the entity to create
       #
-      # @return [Object] the entity
+      # @return [Object] a copy of the entity with `id` assigned
       #
       # @since 0.1.0
       #
@@ -285,10 +286,16 @@ module Lotus
       #   article = Article.new(title: 'Introducing Lotus::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.create(article) # creates a record
-      #   article.id # => 23
+      #   created_article = ArticleRepository.create(article) # creates a record
+      #   article.id # => nil
+      #   created_article.id # => 23
       #
-      #   ArticleRepository.create(article) # no-op
+      #   created_article = ArticleRepository.create(article)
+      #   created_article.id # => 24
+      #
+      #   created_article = ArticleRepository.create(existing_article) # => no-op
+      #   created_article # => nil
+      #
       def create(entity)
         unless _persisted?(entity)
           _touch(entity)
@@ -558,6 +565,7 @@ module Lotus
       end
 
       private
+
       # Executes the given raw statement on the adapter.
       #
       # Please note that it's only supported by some databases,
@@ -567,12 +575,13 @@ module Lotus
       # For advanced scenarios, please check the documentation of each adapter.
       #
       # @param raw [String] the raw statement to execute on the connection
-      # @return [Object] the raw result set from SQL adapter
+      #
+      # @return [NilClass]
       #
       # @raise [NotImplementedError] if current Lotus::Model adapter doesn't
       #   implement `execute`.
       #
-      # @raise [Lotus::Model::InvalidQueryError] if raw statement is invalid
+      # @raise [Lotus::Model::InvalidCommandError] if the raw statement is invalid
       #
       # @see Lotus::Model::Adapters::Abstract#execute
       # @see Lotus::Model::Adapters::SqlAdapter#execute
@@ -589,19 +598,120 @@ module Lotus
       #
       #   class ArticleRepository
       #     include Lotus::Repository
+      #
+      #     def self.reset_comments_count
+      #       execute "UPDATE articles SET comments_count = 0"
+      #     end
       #   end
       #
-      #   article = Article.new(title: 'Introducing transactions',
-      #     body: 'lorem ipsum')
-      #
-      #   result_set = ArticleRepository.execute("SELECT * FROM articles")
-      #   result_set.each_hash do |result|
-      #     result # -> { id: 123, title: "Introducing transactions", body: "lorem ipsum"}
-      #   end
-      #
-      #   puts result_set.class # => SQLite3::ResultSet
+      #   ArticleRepository.reset_comments_count
       def execute(raw)
         @adapter.execute(raw)
+      end
+
+      # Fetch raw result sets for the the given statement.
+      #
+      # PLEASE NOTE: The returned result set contains an array of hashes.
+      #              The columns are returned as they are from the database,
+      #              the mapper is bypassed here.
+      #
+      # @param raw [String] the raw statement used to fetch records
+      # @param blk [Proc] an optional block that is yielded for each record
+      #
+      # @return [Enumerable<Hash>,Array<Hash>] the collection of raw records
+      #
+      # @raise [NotImplementedError] if current Lotus::Model adapter doesn't
+      #   implement `fetch`.
+      #
+      # @raise [Lotus::Model::InvalidQueryError] if the raw statement is invalid
+      #
+      # @since x.x.x
+      #
+      # @example Basic Usage
+      #   require 'lotus/model'
+      #
+      #   mapping do
+      #     collection :articles do
+      #       attribute :id,    Integer, as: :s_id
+      #       attribute :title, String,  as: :s_title
+      #     end
+      #   end
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #
+      #     def self.all_raw
+      #       fetch("SELECT * FROM articles")
+      #     end
+      #   end
+      #
+      #   ArticleRepository.all_raw
+      #     # => [{:_id=>1, :user_id=>nil, :s_title=>"Art 1", :comments_count=>nil, :umapped_column=>nil}]
+      #
+      # @example Map A Value From Result Set
+      #   require 'lotus/model'
+      #
+      #   mapping do
+      #     collection :articles do
+      #       attribute :id,    Integer, as: :s_id
+      #       attribute :title, String,  as: :s_title
+      #     end
+      #   end
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #
+      #     def self.titles
+      #       fetch("SELECT s_title FROM articles").map do |article|
+      #         article[:s_title]
+      #       end
+      #     end
+      #   end
+      #
+      #   ArticleRepository.titles # => ["Announcing Lotus v0.5.0"]
+      #
+      # @example Passing A Block
+      #   require 'lotus/model'
+      #
+      #   mapping do
+      #     collection :articles do
+      #       attribute :id,    Integer, as: :s_id
+      #       attribute :title, String,  as: :s_title
+      #     end
+      #   end
+      #
+      #   class Article
+      #     include Lotus::Entity
+      #     attributes :title, :body
+      #   end
+      #
+      #   class ArticleRepository
+      #     include Lotus::Repository
+      #
+      #     def self.titles
+      #       result = []
+      #
+      #       fetch("SELECT s_title FROM articles") do |article|
+      #         result << article[:s_title]
+      #       end
+      #
+      #       result
+      #     end
+      #   end
+      #
+      #   ArticleRepository.titles # => ["Announcing Lotus v0.5.0"]
+      def fetch(raw, &blk)
+        @adapter.fetch(raw, &blk)
       end
 
       # Fabricates a query and yields the given block to access the low level

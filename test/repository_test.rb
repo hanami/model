@@ -51,6 +51,16 @@ describe Lotus::Repository do
             persisted_user.age.must_equal(unpersisted_user.age.to_i)
           end
 
+          it 'returns a copy of the entity passed as argument' do
+            persisted_user = UserRepository.persist(unpersisted_user)
+            refute_same persisted_user, unpersisted_user
+          end
+
+          it 'does not assign an id on the entity passed as argument' do
+            UserRepository.persist(unpersisted_user)
+            unpersisted_user.id.must_be_nil
+          end
+
           it 'should coerce attributes' do
             persisted_user = UserRepository.persist(unpersisted_user)
             persisted_user.age.must_equal(25)
@@ -78,11 +88,16 @@ describe Lotus::Repository do
         end
 
         describe 'when passed a persisted entity' do
-          before do
-            @updated_at = user.updated_at
-          end
           let(:user)           { UserRepository.create(User.new(name: 'Don')) }
           let(:persisted_user) { UserRepository.persist(user) }
+
+          before do
+            @updated_at = user.updated_at
+
+            # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
+            # concurrent platforms like jRuby
+            sleep 2 if Lotus::Utils.jruby?
+          end
 
           it 'should return that entity' do
             UserRepository.persist(persisted_user).must_equal(user)
@@ -90,11 +105,13 @@ describe Lotus::Repository do
 
           it 'does not touch created_at' do
             UserRepository.persist(persisted_user)
+
             persisted_user.created_at.wont_be_nil
           end
 
           it 'touches updated_at' do
             updated_user = UserRepository.persist(user)
+
             assert updated_user.updated_at > @updated_at
           end
         end
@@ -122,6 +139,12 @@ describe Lotus::Repository do
 
           UserRepository.create(user1)
           user1.id.must_equal id
+        end
+
+        it 'returns nil when trying to create an already persisted entity' do
+          created_user = UserRepository.create(User.new(name: 'Pascal'))
+          value = UserRepository.create(created_user)
+          value.must_be_nil
         end
 
         describe 'when entity is not persisted' do
@@ -158,6 +181,10 @@ describe Lotus::Repository do
         before do
           @user1 = UserRepository.create(user1)
           @updated_at = @user1.updated_at
+
+          # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
+          # concurrent platforms like jRuby
+          sleep 2 if Lotus::Utils.jruby?
         end
 
         it 'updates entities' do
@@ -469,17 +496,57 @@ describe Lotus::Repository do
     end
 
     describe '.execute' do
-      it 'is a private method' do
-        -> { ArticleRepository.execute("select * from articles") }.must_raise NoMethodError
+      before do
+        ArticleRepository.clear
+        @article = ArticleRepository.create(Article.new(title: 'WAT', comments_count: 100))
       end
 
-      it 'returns the ResultSet from the executes sql' do
-        result = ArticleRepository.aggregate
-        result.class.name.must_equal "SQLite3::ResultSet"
-        result.count.must_equal 1
+      it 'is a private method' do
+        -> { ArticleRepository.execute("UPDATE articles SET comments_count = '0'") }.must_raise NoMethodError
+      end
+
+      it 'executes the command and returns nil' do
+        result = ArticleRepository.reset_comments_count
+        result.must_be_nil
+
+        ArticleRepository.find(@article.id).comments_count.must_equal 0
       end
     end
 
+    describe '.fetch' do
+      before do
+        ArticleRepository.clear
+        @article = ArticleRepository.create(Article.new(title: 'Art 1'))
+      end
+
+      it 'is a private method' do
+        -> { ArticleRepository.fetch("SELECT s_title FROM articles") }.must_raise NoMethodError
+      end
+
+      it 'returns the raw ResultSet for the given SQL' do
+        result = ArticleRepository.find_raw
+
+        result.must_be_kind_of(::Array)
+        result.size.must_equal(1)
+
+        article = result.first
+        article[:_id].must_equal            @article.id
+        article[:user_id].must_equal        @article.user_id
+        article[:s_title].must_equal        @article.title
+        article[:comments_count].must_equal @article.comments_count
+        article[:unmapped_column].must_be_nil
+      end
+
+      it 'yields a block' do
+        result = ArticleRepository.each_titles
+        result.must_equal ['Art 1']
+      end
+
+      it 'returns an enumerable' do
+        result = ArticleRepository.map_titles
+        result.must_equal ['Art 1']
+      end
+    end
   end
 
   describe "with memory adapter" do
@@ -504,11 +571,21 @@ describe Lotus::Repository do
 
     describe '.execute' do
       it 'is a private method' do
-        -> { ArticleRepository.execute("select * from articles") }.must_raise NoMethodError
+        -> { ArticleRepository.execute("UPDATE articles SET comments_count = '0'") }.must_raise NoMethodError
       end
 
       it "raises an exception because memory adapter doesn't support execute" do
-        -> { ArticleRepository.aggregate }.must_raise NotImplementedError
+        -> { ArticleRepository.reset_comments_count }.must_raise NotImplementedError
+      end
+    end
+
+    describe '.fetch' do
+      it 'is a private method' do
+        -> { ArticleRepository.fetch("SELECT * FROM articles") }.must_raise NoMethodError
+      end
+
+      it "raises an exception because memory adapter doesn't support fetch" do
+        -> { ArticleRepository.find_raw }.must_raise NotImplementedError
       end
     end
   end

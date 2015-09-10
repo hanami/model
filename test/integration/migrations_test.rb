@@ -2,8 +2,15 @@ require 'test_helper'
 require 'lotus/model/migrator'
 
 describe "Database migrations" do
-  let(:db_prefix)    { name.gsub(/[^\w]/, '_') }
-  let(:random_token) { SecureRandom.hex(4) }
+  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
+
+  # Unfornatelly we need to explicitly include `::memory:` for JDBC
+  # https://github.com/jeremyevans/sequel/blob/master/lib/sequel/adapters/jdbc/sqlite.rb#L61
+  #
+  let(:adapter_sufix)  { Lotus::Utils.jruby? ? ':memory:' : '/' }
+
+  let(:db_prefix)      { name.gsub(/[^\w]/, '_') }
+  let(:random_token)   { SecureRandom.hex(4) }
 
   before do
     Lotus::Model.unload!
@@ -16,7 +23,7 @@ describe "Database migrations" do
 
   describe "SQLite (memory)" do
     before do
-      @uri = uri = "sqlite:/"
+      @uri = uri = "#{ adapter_prefix }sqlite:#{ adapter_sufix }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
@@ -74,7 +81,7 @@ describe "Database migrations" do
   describe "SQLite (filesystem)" do
     before do
       @database = Pathname.new("#{ __dir__ }/../../tmp/create-#{ SecureRandom.hex }.sqlite3").expand_path
-      @uri      = uri = "sqlite://#{ @database }"
+      @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
@@ -90,9 +97,12 @@ describe "Database migrations" do
 
       describe "when it doesn't have write permissions" do
         before do
+          @database = '/usr/bin/create.sqlite3'
+          @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
+
           Lotus::Model.unload!
           Lotus::Model.configure do
-            adapter type: :sql, uri: 'sqlite:///usr/bin/create.sqlite3'
+            adapter type: :sql, uri: uri
           end
         end
 
@@ -206,7 +216,7 @@ describe "Database migrations" do
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -309,13 +319,13 @@ describe "Database migrations" do
         Lotus::Model::Migrator.prepare
 
         connection.tables.must_equal [:schema_migrations, :books, :authors]
+
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do
         # Simulate no database, no schema and pending migrations
-        @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
-        @migrations_root.join('schema-sqlite.sql').delete                           rescue nil
-
+        FileUtils.rm_f @migrations_root.join('schema-sqlite.sql')
         Lotus::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
@@ -360,7 +370,7 @@ describe "Database migrations" do
   describe "PostgreSQL" do
     before do
       @database  = "#{ db_prefix }_#{ random_token }"
-      @uri = uri = "postgres://localhost/#{ @database }?user=#{ POSTGRES_USER }"
+      @uri       = uri = "#{ adapter_prefix }postgresql://127.0.0.1/#{ @database }?user=#{ POSTGRES_USER }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
@@ -390,7 +400,6 @@ describe "Database migrations" do
 
       it "raises error if database doesn't exist" do
         Lotus::Model::Migrator.drop # remove the first time
-
         exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
         exception.message.must_equal "Cannot find database: #{ @database }"
       end
@@ -479,7 +488,7 @@ describe "Database migrations" do
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -626,6 +635,8 @@ SQL
         connection.tables.must_include(:schema_migrations)
         connection.tables.must_include(:books)
         connection.tables.must_include(:authors)
+
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do
@@ -675,9 +686,11 @@ SQL
   end
 
   describe "MySQL" do
+    let(:adapter) { Lotus::Utils.jruby? ? 'mysql' : 'mysql2' }
+
     before do
-      @database  = "#{ db_prefix }_#{ random_token }"
-      @uri = uri = "mysql2://#{ MYSQL_USER }@localhost/#{ @database }"
+      @database = "#{ db_prefix }_#{ random_token }"
+      @uri      = uri = "#{ adapter_prefix }#{ adapter }://localhost/#{ @database }?user=#{ MYSQL_USER }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
@@ -796,7 +809,7 @@ SQL
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: "20150610133853")
+          Lotus::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -935,6 +948,8 @@ SQL
         connection.tables.must_include(:schema_migrations)
         connection.tables.must_include(:books)
         connection.tables.must_include(:authors)
+
+        FileUtils.rm_f @migrations_root.join('migrations/20150611165922_create_authors.rb')
       end
 
       it "works even if schema doesn't exist" do

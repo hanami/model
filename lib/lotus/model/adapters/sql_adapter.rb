@@ -227,8 +227,13 @@ module Lotus
           Sql::Console.new(@uri).connection_string
         end
 
-        # Executes raw sql directly on the connection
+        # Executes a raw SQL command
         #
+        # @param raw [String] the raw SQL statement to execute on the connection
+        #
+        # @return [NilClass]
+        #
+        # @raise [Lotus::Model::InvalidCommandError] if the raw SQL statement is invalid
         # @param raw [String] the raw sql statement to execute on the connection
         #
         # @return [Object]
@@ -239,9 +244,30 @@ module Lotus
         def execute(raw)
           begin
             @connection.execute(raw)
+            nil
           rescue Sequel::DatabaseError => e
-            raise Lotus::Model::InvalidQueryError.new(e.message)
+            raise Lotus::Model::InvalidCommandError.new(e.message)
           end
+        end
+
+        # Fetches raw result sets for the given SQL query
+        #
+        # @param raw [String] the raw SQL query
+        # @param blk [Proc] optional block that is yielded for each record
+        #
+        # @return [Array]
+        #
+        # @raise [Lotus::Model::InvalidQueryError] if the raw SQL statement is invalid
+        #
+        # @since x.x.x
+        def fetch(raw, &blk)
+          if block_given?
+            @connection.fetch(raw, &blk)
+          else
+            @connection.fetch(raw).to_a
+          end
+        rescue Sequel::DatabaseError => e
+          raise Lotus::Model::InvalidQueryError.new(e.message)
         end
 
         # @api private
