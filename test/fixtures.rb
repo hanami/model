@@ -77,9 +77,13 @@ class ArticleRepository
 end
 
 [SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
-  db = Sequel.connect(conn_string)
+  require 'lotus/utils/io'
 
-  db.create_table :users do
+  Lotus::Utils::IO.silence_warnings do
+    DB = Sequel.connect(conn_string)
+  end
+
+  DB.create_table :users do
     primary_key :id
     String  :name
     Integer :age
@@ -87,7 +91,7 @@ end
     DateTime :updated_at
   end
 
-  db.create_table :articles do
+  DB.create_table :articles do
     primary_key :_id
     Integer :user_id
     String  :s_title
@@ -101,14 +105,18 @@ end
     end
   end
 
-  db.create_table :devices do
+  DB.create_table :devices do
     primary_key :id
   end
 end
 
-class PGArray
-  def self.call(value)
+class PGArray < Lotus::Model::Coercer
+  def self.dump(value)
     ::Sequel.pg_array(value) rescue nil
+  end
+
+  def self.load(value)
+    ::Kernel.Array(value) unless value.nil?
   end
 end
 
@@ -131,7 +139,7 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
-    attribute :tags,           Array, coercer: PGArray
+    attribute :tags,           PGArray
 
     identity :_id
   end

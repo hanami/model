@@ -1,3 +1,5 @@
+require 'lotus/utils/class'
+
 module Lotus
   module Model
     module Mapping
@@ -6,28 +8,30 @@ module Lotus
       # @api private
       # @since x.x.x
       class Attribute
+        # @api private
+        # @since x.x.x
+        COERCERS_NAMESPACE = "Lotus::Model::Mapping::Coercers".freeze
+
         # Initialize a new attribute
         #
         # @param name [#to_sym] attribute name
-        # @param klass [Class] a supported Ruby class
+        # @param coercer [.load, .dump] a coercer
         # @param options [Hash] a set of options
         #
         # @option options [#to_sym] :as Resolve mismatch between database column
         #   name and entity attribute name
-        #
-        # @option options [Class,.call] :coercer A custom coercer that MUST
-        #   respond to <tt>.call</tt>
         #
         # @return [Lotus::Model::Mapping::Attribute]
         #
         # @api private
         # @since x.x.x
         #
-        # @see Lotus::Model::Mapping::Coercions
+        # @see Lotus::Model::Coercer
+        # @see Lotus::Model::Mapping::Coercers
         # @see Lotus::Model::Mapping::Collection#attribute
-        def initialize(name, klass, options)
+        def initialize(name, coercer, options)
           @name    = name.to_sym
-          @klass   = klass
+          @coercer = coercer
           @options = options
         end
 
@@ -43,55 +47,25 @@ module Lotus
           (@options.fetch(:as) { name }).to_sym
         end
 
-        # Returns a string representation of the coercer
-        #
-        # It's a string because we use the returning value with metaprogramming
-        #
-        # When only the Ruby type is specified with the mapper, the output of
-        # this method is:
-        #
-        #   <tt>Lotus::Model::Mapping::Coercions.String</tt>
-        #
-        # When a custom coercer is specified, the output is:
-        #
-        #   <tt>PGArray.</tt>
-        #
-        # Please note that both the outputs will be called like this by the coercer:
-        #
-        #   <tt>Lotus::Model::Mapping::Coercions.String(value)</tt>
-        #   <tt>PGArray.(value)</tt>
-        #
-        # For those who are unfamiliar with the latest notation, it's a shortcut
-        # for <tt>PGArray.call(value)</tt>.
-        #
-        # @return [String] string representation of the coercer to be used with
-        #   metaprogramming
-        #
         # @api private
         # @since x.x.x
-        #
-        # @see Lotus::Model::Mapping::Coercer
-        def database_coercer
-          if c = @options.fetch(:coercer) { nil }
-            "#{ c }."
-          else
-            ruby_coercer
-          end
+        def load_coercer
+          "#{ coercer }.load"
         end
 
         # @api private
         # @since x.x.x
-        def ruby_coercer
-          "Lotus::Model::Mapping::Coercions.#{ @klass }"
+        def dump_coercer
+          "#{ coercer }.dump"
         end
 
         # @api private
         # @since x.x.x
         def ==(other)
-          self.class          == other.class   &&
-            self.name         == other.name    &&
-            self.mapped       == other.mapped  &&
-            self.ruby_coercer == other.ruby_coercer
+          self.class     == other.class   &&
+            self.name    == other.name    &&
+            self.mapped  == other.mapped  &&
+            self.coercer == other.coercer
         end
 
         protected
@@ -99,6 +73,12 @@ module Lotus
         # @api private
         # @since x.x.x
         attr_reader :name
+
+        # @api private
+        # @since x.x.x
+        def coercer
+          Utils::Class.load_from_pattern!("(#{ COERCERS_NAMESPACE }::#{ @coercer }|#{ @coercer })")
+        end
       end
     end
   end

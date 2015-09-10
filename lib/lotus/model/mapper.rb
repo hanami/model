@@ -65,7 +65,7 @@ module Lotus
       #   * #from_record(record)    # translates a record into an entity
       #   * #deserialize_*(value)   # a set of methods, one for each database column.
       #
-      # If not given, it uses `Lotus::Model::Mapping::Coercer`, by default.
+      # If not given, it uses `Lotus::Model::Mapping::CollectionCoercer`, by default.
       #
       #
       #
@@ -79,7 +79,7 @@ module Lotus
       #
       # @since 0.1.0
       def initialize(coercer = nil, &blk)
-        @coercer     = coercer || Mapping::Coercer
+        @coercer     = coercer || Mapping::CollectionCoercer
         @collections = {}
 
         instance_eval(&blk) if block_given?

@@ -38,8 +38,11 @@ postgres_database = "lotus_model_test"
 
 if Lotus::Utils.jruby?
   require 'jdbc/sqlite3'
+  require 'jdbc/postgres'
   Jdbc::SQLite3.load_driver
+  Jdbc::Postgres.load_driver
   SQLITE_CONNECTION_STRING = "jdbc:sqlite:#{ sql }"
+  POSTGRES_CONNECTION_STRING = "jdbc:postgresql://localhost/#{ postgres_database }"
 else
   require 'sqlite3'
   require 'pg'
@@ -57,7 +60,10 @@ else
   MYSQL_USER    = 'lotus'
 end
 
-system "dropdb #{ postgres_database } && createdb #{ postgres_database }" rescue nil
+# system "dropdb #{ postgres_database } && createdb #{ postgres_database }" rescue nil
+system "dropdb #{ postgres_database }" rescue nil
+system "createdb #{ postgres_database }" rescue nil
+sleep 1
 require 'fixtures'
 
 Lotus::Model::Configuration.class_eval do
