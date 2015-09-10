@@ -88,10 +88,10 @@ module Lotus
         # @api private
         # @since x.x.x
         def ==(other)
-          self.class     == other.class   &&
-            self.name    == other.name    &&
-            self.mapped  == other.mapped  &&
-            self.coercer == other.coercer
+          self.class          == other.class   &&
+            self.name         == other.name    &&
+            self.mapped       == other.mapped  &&
+            self.ruby_coercer == other.ruby_coercer
         end
 
         protected

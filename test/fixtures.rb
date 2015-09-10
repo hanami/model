@@ -77,9 +77,9 @@ class ArticleRepository
 end
 
 [SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
-  DB = Sequel.connect(conn_string)
+  db = Sequel.connect(conn_string)
 
-  DB.create_table :users do
+  db.create_table :users do
     primary_key :id
     String  :name
     Integer :age
@@ -87,7 +87,7 @@ end
     DateTime :updated_at
   end
 
-  DB.create_table :articles do
+  db.create_table :articles do
     primary_key :_id
     Integer :user_id
     String  :s_title
@@ -101,7 +101,7 @@ end
     end
   end
 
-  DB.create_table :devices do
+  db.create_table :devices do
     primary_key :id
   end
 end
