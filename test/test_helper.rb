@@ -60,7 +60,6 @@ else
   MYSQL_USER    = 'lotus'
 end
 
-# system "dropdb #{ postgres_database } && createdb #{ postgres_database }" rescue nil
 system "dropdb #{ postgres_database }" rescue nil
 system "createdb #{ postgres_database }" rescue nil
 sleep 1
