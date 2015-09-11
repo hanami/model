@@ -1272,6 +1272,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
 
     describe 'fetch' do
       before do
+        UserRepository.adapter = @adapter
         @user1 = @adapter.create(collection, user1)
       end
 
@@ -1279,7 +1280,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         raw = "SELECT * FROM users"
 
         result = @adapter.fetch(raw)
-        result.count.must_equal 1
+        result.count.must_equal UserRepository.all.count
 
         user = result.first
         user[:id].must_equal         @user1.id
@@ -1298,13 +1299,13 @@ describe Lotus::Model::Adapters::SqlAdapter do
         # Would be interesting in future to wrap these results into Lotus result_sets, independent from
         # Sequel adapter
         #
-        records = nil
+        records = []
 
         @adapter.fetch raw do |result_set|
-          records = result_set
+          records << result_set
         end
 
-        records.count.must_equal 5
+        records.count.must_equal UserRepository.all.count
       end
 
       it 'raises an exception when an invalid sql is provided' do

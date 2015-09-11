@@ -3,23 +3,23 @@ require 'lotus/model/migrator'
 
 describe 'SQL joins test' do
   before do
-    class TestUserJoin
+    class TestUser
       include Lotus::Entity
 
       attributes :country_id, :name, :age
     end
 
-    class TestUserJoinRepository
+    class TestUserRepository
       include Lotus::Repository
     end
 
-    class TestDeviceJoin
+    class TestDevice
       include Lotus::Entity
 
       attributes :u_id
     end
 
-    class TestDeviceJoinRepository
+    class TestDeviceRepository
       include Lotus::Repository
     end
 
@@ -55,7 +55,7 @@ describe 'SQL joins test' do
 
     @mapper = Lotus::Model::Mapper.new do
       collection :users do
-        entity TestUserJoin
+        entity TestUser
 
         attribute :id,   Integer
         attribute :country_id, Integer
@@ -64,7 +64,7 @@ describe 'SQL joins test' do
       end
 
       collection :devices do
-        entity TestDeviceJoin
+        entity TestDevice
 
         attribute :id, Integer
         attribute :u_id, Integer
@@ -98,10 +98,24 @@ describe 'SQL joins test' do
     @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
   end
 
+  after do
+    Object.send(:remove_const, :TestUser)
+    Object.send(:remove_const, :TestUserRepository)
+    Object.send(:remove_const, :TestDevice)
+    Object.send(:remove_const, :TestDeviceRepository)
+    Object.send(:remove_const, :TestOrder)
+    Object.send(:remove_const, :TestOrderRepository)
+    Object.send(:remove_const, :TestAge)
+    Object.send(:remove_const, :TestAgeRepository)
+    Object.send(:remove_const, :TestCountry)
+    Object.send(:remove_const, :TestCountryRepository)
+  end
+
+
   describe '#query' do
-    let(:user1) { TestUserJoin.new(name: 'L',  age: '32') }
-    let(:user2) { TestUserJoin.new(name: 'MG', age: 31)   }
-    let(:user3) { TestUserJoin.new(name: 'S',  age: 2)    }
+    let(:user1) { TestUser.new(name: 'L',  age: '32') }
+    let(:user2) { TestUser.new(name: 'MG', age: 31)   }
+    let(:user3) { TestUser.new(name: 'S',  age: 2)    }
 
     describe 'join' do
       describe 'inner' do
@@ -136,7 +150,7 @@ describe 'SQL joins test' do
               @adapter.create(:orders, @order2)
               @adapter.create(:orders, @order3)
 
-              TestUserJoinRepository.adapter = @adapter
+              TestUserRepository.adapter = @adapter
               TestOrderRepository.adapter = @adapter
             end
 
@@ -168,10 +182,10 @@ describe 'SQL joins test' do
               country1 = @adapter.create(:countries, @country1)
               country2 = @adapter.create(:countries, @country2)
 
-              user = TestUserJoin.new(country_id: country2.id)
+              user = TestUser.new(country_id: country2.id)
               @created_user = @adapter.create(:users, user)
 
-              TestUserJoinRepository.adapter = @adapter
+              TestUserRepository.adapter = @adapter
               TestCountryRepository.adapter = @adapter
             end
 
@@ -192,15 +206,15 @@ describe 'SQL joins test' do
 
               @created_user = @adapter.create(:users, user1)
 
-              @device1 = TestDeviceJoin.new(u_id: @created_user.id)
-              @device2 = TestDeviceJoin.new(u_id: @created_user.id)
-              @device3 = TestDeviceJoin.new(u_id: nil)
+              @device1 = TestDevice.new(u_id: @created_user.id)
+              @device2 = TestDevice.new(u_id: @created_user.id)
+              @device3 = TestDevice.new(u_id: nil)
 
               @adapter.create(:devices, @device1)
               @adapter.create(:devices, @device2)
               @adapter.create(:devices, @device3)
 
-              TestUserJoinRepository.adapter = @adapter
+              TestUserRepository.adapter = @adapter
             end
 
             it 'returns records' do
@@ -235,12 +249,12 @@ describe 'SQL joins test' do
               @adapter.create(:ages, @age1)
               @adapter.create(:ages, @age2)
 
-              TestUserJoinRepository.adapter = @adapter
+              TestUserRepository.adapter = @adapter
             end
 
             it 'returns records' do
-              user_first = TestUserJoinRepository.first
-              user_last = TestUserJoinRepository.last
+              user_first = TestUserRepository.first
+              user_last = TestUserRepository.last
 
               query_join = Proc.new {
                 join(:ages, key: :value, foreign_key: :age)
@@ -285,12 +299,12 @@ describe 'SQL joins test' do
               @adapter.create(:orders, @order2)
               @adapter.create(:orders, @order3)
 
-              TestUserJoinRepository.adapter = @adapter
+              TestUserRepository.adapter = @adapter
               TestOrderRepository.adapter = @adapter
             end
 
             it 'returns records' do
-              created_user = TestUserJoinRepository.first
+              created_user = TestUserRepository.first
 
               query_join = Proc.new {
                 left_join(:users)
