@@ -51,6 +51,7 @@ else
   POSTGRES_USER = `whoami`.strip
   MYSQL_USER    = 'lotus'
 end
+
 require 'fixtures'
 
 Lotus::Model::Configuration.class_eval do
