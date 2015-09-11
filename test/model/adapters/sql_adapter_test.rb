@@ -1276,6 +1276,10 @@ describe Lotus::Model::Adapters::SqlAdapter do
         @user1 = @adapter.create(collection, user1)
       end
 
+      after do
+        UserRepository.adapter = nil
+      end
+
       it 'returns the an array from the raw sql' do
         raw = "SELECT * FROM users"
 
