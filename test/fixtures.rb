@@ -74,7 +74,6 @@ class ArticleRepository
   end
 end
 
-
 def create_tables_per_database(database)
   database.create_table? :users do
     primary_key :id
