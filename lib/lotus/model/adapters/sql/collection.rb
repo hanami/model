@@ -54,9 +54,13 @@ module Lotus
           #
           # @api private
           # @since 0.1.0
-          def insert(entity)
+          def insert(entity, defaults)
             serialized_entity            = _serialize(entity)
             serialized_entity[identity] = super(serialized_entity)
+
+            defaults.each_pair do |attribute, default|
+              serialized_entity[attribute] ||= default
+            end
 
             _deserialize(serialized_entity)
           end
