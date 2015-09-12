@@ -1,5 +1,3 @@
-require 'lotus/model/mapping/coercer'
-
 module Lotus
   module Model
     module Mapping
@@ -7,7 +5,7 @@ module Lotus
       #
       # @api private
       # @since 0.1.0
-      class Coercer
+      class CollectionCoercer
         # Initialize a coercer for the given collection.
         #
         # @param collection [Lotus::Model::Mapping::Collection] the collection
@@ -47,10 +45,10 @@ module Lotus
         # @api private
         # @since 0.1.0
         def _compile!
-          code = @collection.attributes.map do |_,(klass,mapped)|
+          code = @collection.attributes.map do |_,attr|
             %{
-            def deserialize_#{ mapped }(value)
-              Lotus::Model::Mapping::Coercions.#{klass}(value)
+            def deserialize_#{ attr.mapped }(value)
+              #{ attr.load_coercer }(value)
             end
             }
           end.join("\n")
@@ -58,17 +56,17 @@ module Lotus
           instance_eval <<-EVAL, __FILE__, __LINE__
             def to_record(entity)
               if entity.id
-                Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{mapped},Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name})"}.join(',') }]
+                Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.dump_coercer }(entity.#{name})"}.join(',') }]
               else
                 Hash[].tap do |record|
-                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,(klass,mapped)| "value = Lotus::Model::Mapping::Coercions.#{klass}(entity.#{name}); record[:#{mapped}] = value unless value.nil?"}.join('; ') }
+                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,attr| "value = #{ attr.dump_coercer }(entity.#{name}); record[:#{attr.mapped}] = value unless value.nil?"}.join('; ') }
                 end
               end
             end
 
             def from_record(record)
               ::#{ @collection.entity }.new(
-                Hash[#{ @collection.attributes.map{|name,(klass,mapped)| ":#{name},Lotus::Model::Mapping::Coercions.#{klass}(record[:#{mapped}])"}.join(',') }]
+                Hash[#{ @collection.attributes.map{|name,attr| ":#{name},#{attr.load_coercer}(record[:#{attr.mapped}])"}.join(',') }]
               )
             end
 

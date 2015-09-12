@@ -1,4 +1,5 @@
 require 'lotus/utils/class'
+require 'lotus/model/mapping/attribute'
 
 module Lotus
   module Model
@@ -227,7 +228,7 @@ module Lotus
         # Think of Redis, where everything is stored as a string or integer,
         # the mapper translates values from/to the database.
         #
-        # It supports the following types:
+        # It supports the following types (coercers):
         #
         #   * Array
         #   * Boolean
@@ -245,12 +246,16 @@ module Lotus
         # @param name [Symbol] the name of the attribute, as we want it to be
         #   mapped in the object
         #
-        # @param klass [Class] the Ruby type that we want to assign as value
+        # @param coercer [.load, .dump] a class that implements coercer interface
         #
         # @param options [Hash] a set of options to customize the mapping
         # @option options [Symbol] :as the name of the original column
         #
+        # @raise [NameError] if coercer cannot be found
+        #
         # @since 0.1.0
+        #
+        # @see Lotus::Model::Coercer
         #
         # @example Default schema
         #   require 'lotus/model'
@@ -281,8 +286,8 @@ module Lotus
         #   # The first argument (`:name`) always corresponds to the `User`
         #   # attribute.
         #
-        #   # The second one (`:klass`) is the Ruby type that we want for our
-        #   # attribute.
+        #   # The second one (`:coercer`) is the Ruby type coercer that we want
+        #   # for our attribute.
         #
         #   # We don't need to use `:as` because the database columns match the
         #   # `User` attributes.
@@ -322,7 +327,7 @@ module Lotus
         #   # The first argument (`:name`) always corresponds to the `Article`
         #   # attribute.
         #
-        #   # The second one (`:klass`) is the Ruby type that we want for our
+        #   # The second one (`:coercer`) is the Ruby type that we want for our
         #   # attribute.
         #
         #   # The third option (`:as`) is mandatory only when the database
@@ -330,8 +335,57 @@ module Lotus
         #   #
         #   # For instance: we need to use it for translate `:s_title` to
         #   # `:title`, but not for `:comments_count`.
-        def attribute(name, klass, options = {})
-          @attributes[name] = [klass, (options.fetch(:as) { name }).to_sym]
+        #
+        # @example Custom coercer
+        #   require 'lotus/model'
+        #
+        #   # Given the following schema:
+        #   #
+        #   # CREATE TABLE articles (
+        #   #   id     integer NOT NULL,
+        #   #   title  varchar(128),
+        #   #   tags   text[],
+        #   # );
+        #   #
+        #   # The following entity:
+        #   #
+        #   # class Article
+        #   #   include Lotus::Entity
+        #   #   attributes :title, :tags
+        #   # end
+        #   #
+        #   # And the following custom coercer:
+        #   #
+        #   # require 'lotus/model/coercer'
+        #   # require 'sequel/extensions/pg_array'
+        #   #
+        #   # class PGArray < Lotus::Model::Coercer
+        #   #   def self.dump(value)
+        #   #     ::Sequel.pg_array(value) rescue nil
+        #   #   end
+        #   #
+        #   #   def self.load(value)
+        #   #     ::Kernel.Array(value) unless value.nil?
+        #   #   end
+        #   # end
+        #
+        #   mapper = Lotus::Model::Mapper.new do
+        #     collection :articles do
+        #       entity Article
+        #
+        #       attribute :id,    Integer
+        #       attribute :title, String
+        #       attribute :tags,  PGArray
+        #     end
+        #   end
+        #
+        #   # When an entity is persisted as record into the database,
+        #   # `PGArray.dump` is invoked.
+        #
+        #   # When an entity is retrieved from the database, it will be
+        #   # deserialized as an Array via `PGArray.load`.
+        def attribute(name, coercer, options = {})
+          @attributes[name] = Attribute.new(name, coercer, options)
         end
 
         # Serializes an entity to be persisted in the database.

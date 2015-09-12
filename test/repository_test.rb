@@ -12,7 +12,8 @@ describe Lotus::Repository do
   {
     memory:      [Lotus::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
     file_system: [Lotus::Model::Adapters::FileSystemAdapter, FILE_SYSTEM_CONNECTION_STRING, MAPPER],
-    sql:         [Lotus::Model::Adapters::SqlAdapter,        SQLITE_CONNECTION_STRING,      MAPPER]
+    sqlite:      [Lotus::Model::Adapters::SqlAdapter,        SQLITE_CONNECTION_STRING,      MAPPER],
+    postgres:    [Lotus::Model::Adapters::SqlAdapter,        POSTGRES_CONNECTION_STRING,    MAPPER],
   }.each do |adapter_name, (adapter,uri,mapper)|
     describe "with #{ adapter_name } adapter" do
       before do
@@ -63,6 +64,16 @@ describe Lotus::Repository do
           it 'should coerce attributes' do
             persisted_user = UserRepository.persist(unpersisted_user)
             persisted_user.age.must_equal(25)
+          end
+
+          if adapter_name == :postgres
+            it 'should use custom coercers' do
+              article = Article.new(title: 'Coercer', tags: tags = ['ruby', 'lotus'])
+              article = ArticleRepository.persist(article)
+
+              article.tags.must_equal tags
+              article.tags.class.must_equal ::Array
+            end
           end
 
           it 'assigns and persist created_at attribute' do

@@ -1,3 +1,5 @@
+require 'sequel/extensions/pg_array'
+
 class User
   include Lotus::Entity
   attributes :name, :age, :created_at, :updated_at
@@ -6,7 +8,7 @@ end
 class Article
   include Lotus::Entity
   include Lotus::Entity::DirtyTracking
-  attributes :user_id, :unmapped_attribute, :title, :comments_count
+  attributes :user_id, :unmapped_attribute, :title, :comments_count, :tags
 end
 
 class Repository
@@ -74,8 +76,14 @@ class ArticleRepository
   end
 end
 
-def create_tables_per_database(database)
-  database.create_table? :users do
+[SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
+  require 'lotus/utils/io'
+
+  Lotus::Utils::IO.silence_warnings do
+    DB = Sequel.connect(conn_string)
+  end
+
+  DB.create_table :users do
     primary_key :id
     Integer :country_id
     String  :name
@@ -84,39 +92,52 @@ def create_tables_per_database(database)
     DateTime :updated_at
   end
 
-  database.create_table? :articles do
+  DB.create_table :articles do
     primary_key :_id
     Integer :user_id
     String  :s_title
     String  :comments_count # Not an error: we're testing String => Integer coercion
     String  :umapped_column
+
+    if conn_string.match(/\Apostgres/)
+      column :tags, 'text[]'
+    else
+      column :tags, String
+    end
   end
 
-  database.create_table? :devices do
+  DB.create_table :devices do
     primary_key :id
     Integer     :u_id # user_id: legacy schema simulation
   end
 
-  database.create_table? :orders do
+  DB.create_table :orders do
     primary_key :id
     Integer :user_id
     Integer :total
   end
 
-  database.create_table? :ages do
+  DB.create_table :ages do
     primary_key :id
     Integer :value
     String  :label
   end
 
-  database.create_table? :countries do
+  DB.create_table :countries do
     primary_key :country_id
     String :code
   end
 end
 
-DB = Sequel.connect(SQLITE_CONNECTION_STRING)
-create_tables_per_database(DB)
+class PGArray < Lotus::Model::Coercer
+  def self.dump(value)
+    ::Sequel.pg_array(value) rescue nil
+  end
+
+  def self.load(value)
+    ::Kernel.Array(value) unless value.nil?
+  end
+end
 
 #FIXME this should be passed by the framework internals.
 MAPPER = Lotus::Model::Mapper.new do
@@ -137,6 +158,7 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :user_id,        Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
+    attribute :tags,           PGArray
 
     identity :_id
   end
