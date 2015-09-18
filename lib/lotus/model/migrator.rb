@@ -315,7 +315,7 @@ module Lotus
       # @since 0.4.0
       # @api private
       def self.migrations?
-        migrations.children.any?
+        Dir["#{ migrations }/*.rb"].any?
       end
     end
   end
