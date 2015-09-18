@@ -407,7 +407,7 @@ module Lotus
           #
           # @return self
           #
-          # @since x.x.x
+          # @since 0.5.0
           #
           # @example Single column
           #
@@ -625,7 +625,7 @@ module Lotus
           #
           # @return self
           #
-          # @since x.x.x
+          # @since 0.5.0
           #
           # @example
           #
@@ -647,7 +647,7 @@ module Lotus
           #
           # @return self
           #
-          # @since x.x.x
+          # @since 0.5.0
           #
           # @example
           #
@@ -688,7 +688,7 @@ module Lotus
           # @return self
           #
           # @api private
-          # @since x.x.x
+          # @since 0.5.0
           def _join(collection, options = {})
             collection_name = Utils::String.new(collection).singularize
 
@@ -700,7 +700,7 @@ module Lotus
 
             self
           end
-          
+
           # Returns a new query that is the result of the merge of the current
           # conditions with the ones of the given query.
           #

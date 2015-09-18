@@ -6,12 +6,12 @@ module Lotus
     module Mapping
       # Default coercers
       #
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       module Coercers
         # Array coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -24,7 +24,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -36,7 +36,7 @@ module Lotus
 
         # Boolean coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -49,7 +49,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -61,7 +61,7 @@ module Lotus
 
         # Date coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -74,7 +74,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -86,7 +86,7 @@ module Lotus
 
         # DateTime coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -99,7 +99,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -111,7 +111,7 @@ module Lotus
 
         # Float coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -124,7 +124,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -136,7 +136,7 @@ module Lotus
 
         # Hash coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -149,7 +149,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -161,7 +161,7 @@ module Lotus
 
         # Integer coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -174,7 +174,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -186,7 +186,7 @@ module Lotus
 
         # BigDecimal coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -199,7 +199,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -211,7 +211,7 @@ module Lotus
 
         # Set coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -224,7 +224,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -236,7 +236,7 @@ module Lotus
 
         # String coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -249,7 +249,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -261,7 +261,7 @@ module Lotus
 
         # Symbol coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -274,7 +274,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load
@@ -286,7 +286,7 @@ module Lotus
 
         # Time coercer
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         # @see Lotus::Model::Coercer
@@ -299,7 +299,7 @@ module Lotus
           #
           # @raise [TypeError] if the value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.5.0
           # @api private
           #
           # @see Lotus::Model::Coercer.load

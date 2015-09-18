@@ -231,14 +231,9 @@ module Lotus
         #
         # @param raw [String] the raw SQL statement to execute on the connection
         #
-        # @return [NilClass]
-        #
         # @raise [Lotus::Model::InvalidCommandError] if the raw SQL statement is invalid
-        # @param raw [String] the raw sql statement to execute on the connection
         #
-        # @return [Object]
-        #
-        # @raise [Lotus::Model::InvalidQueryError] if raw statement is invalid
+        # @return [NilClass]
         #
         # @since 0.3.1
         def execute(raw)
@@ -259,7 +254,7 @@ module Lotus
         #
         # @raise [Lotus::Model::InvalidQueryError] if the raw SQL statement is invalid
         #
-        # @since x.x.x
+        # @since 0.5.0
         def fetch(raw, &blk)
           if block_given?
             @connection.fetch(raw, &blk)
@@ -271,7 +266,7 @@ module Lotus
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         #
         # @see Lotus::Model::Adapters::Abstract#disconnect
         def disconnect

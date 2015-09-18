@@ -30,7 +30,7 @@ module Lotus
 
     # Error for invalid raw command syntax
     #
-    # @since x.x.x
+    # @since 0.5.0
     class InvalidCommandError < ::StandardError
       def initialize(message = "Invalid command")
         super

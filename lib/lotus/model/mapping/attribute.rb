@@ -6,10 +6,10 @@ module Lotus
       # Mapping attribute
       #
       # @api private
-      # @since x.x.x
+      # @since 0.5.0
       class Attribute
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         COERCERS_NAMESPACE = "Lotus::Model::Mapping::Coercers".freeze
 
         # Initialize a new attribute
@@ -24,7 +24,7 @@ module Lotus
         # @return [Lotus::Model::Mapping::Attribute]
         #
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         #
         # @see Lotus::Model::Coercer
         # @see Lotus::Model::Mapping::Coercers
@@ -40,7 +40,7 @@ module Lotus
         # @return [Symbol] the mapped name
         #
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         #
         # @see Lotus::Model::Mapping::Collection#attribute
         def mapped
@@ -48,19 +48,19 @@ module Lotus
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         def load_coercer
           "#{ coercer }.load"
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         def dump_coercer
           "#{ coercer }.dump"
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         def ==(other)
           self.class     == other.class   &&
             self.name    == other.name    &&
@@ -71,11 +71,11 @@ module Lotus
         protected
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         attr_reader :name
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         def coercer
           Utils::Class.load_from_pattern!("(#{ COERCERS_NAMESPACE }::#{ @coercer }|#{ @coercer })")
         end

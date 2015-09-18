@@ -547,7 +547,7 @@ module Lotus
           #
           # @raise [NotImplementedError]
           #
-          # @since x.x.x
+          # @since 0.5.0
           #
           # @see Lotus::Model::Adapters::Sql::Query#group!
           def group

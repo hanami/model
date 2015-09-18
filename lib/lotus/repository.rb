@@ -212,7 +212,7 @@ module Lotus
         @adapter = adapter
       end
 
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       def adapter
         @adapter
@@ -625,7 +625,7 @@ module Lotus
       #
       # @raise [Lotus::Model::InvalidQueryError] if the raw statement is invalid
       #
-      # @since x.x.x
+      # @since 0.5.0
       #
       # @example Basic Usage
       #   require 'lotus/model'

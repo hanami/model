@@ -226,7 +226,7 @@ module Lotus
         end
 
         # @api private
-        # @since x.x.x
+        # @since 0.5.0
         #
         # @see Lotus::Model::Adapters::Abstract#disconnect
         def disconnect

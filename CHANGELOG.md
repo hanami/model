@@ -1,8 +1,22 @@
 # Lotus::Model
 A persistence layer for Lotus
 
-## v0.4.1 - 2015-07-10
+## v0.5.0 - 2015-09-23
 ### Added
+- [Brenno Costa] Official support for JRuby 9k+
+- [Luca Guidi] Command/Query separation via `Repository.execute` and `Repository.fetch`
+- [Luca Guidi] Custom attribute coercers for data mapper
+- [Alfonso Uceda] Added `#join` and `#left_join` and `#group` to SQL adapter
+
+### Changed
+- [Luca Guidi] `Repository.execute` no longer returns a result from the database.
+
+### Fixed
+- [Manuel Corrales] Use `dropdb` to drop PostgreSQL database.
+- [Luca Guidi] Ignore dotfiles while running migrations.
+
+## v0.4.1 - 2015-07-10
+### Fixed
 - [Nick Coyne] Fixed database creation for PostgreSQL (now it uses `createdb`).
 
 ## v0.4.0 - 2015-06-23

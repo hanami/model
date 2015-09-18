@@ -168,7 +168,7 @@ module Lotus
           #   collection
           #
           # @api private
-          # @since x.x.x
+          # @since 0.5.0
           def group(*args)
             Collection.new(super, @mapped_collection)
           end
@@ -219,10 +219,10 @@ module Lotus
           # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
           #   collection
           #
-          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Aselect_all
-          #
           # @api private
-          # @since x.x.x
+          # @since 0.5.0
+          #
+          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Aselect_all
           def select_all
             Collection.new(super(table_name), @mapped_collection)
           end
@@ -232,10 +232,10 @@ module Lotus
           # @return [Lotus::Model::Adapters::Sql::Collection] the filtered
           #   collection
           #
-          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Ajoin_table
-          #
           # @api private
-          # @since x.x.x
+          # @since 0.5.0
+          #
+          # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Ajoin_table
           def join_table(*args)
             Collection.new(super, @mapped_collection)
           end
@@ -245,7 +245,7 @@ module Lotus
           # @return [String] table name
           #
           # @api private
-          # @since x.x.x
+          # @since 0.5.0
           def table_name
             @mapped_collection.name
           end
@@ -255,7 +255,7 @@ module Lotus
           # @return [Symbol] the identity name
           #
           # @api private
-          # @since x.x.x
+          # @since 0.5.0
           def identity
             @mapped_collection.identity
           end

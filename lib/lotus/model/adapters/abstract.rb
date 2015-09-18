@@ -28,7 +28,7 @@ module Lotus
       # It's raised when an operation is requested to an adapter after it was
       # disconnected.
       #
-      # @since x.x.x
+      # @since 0.5.0
       class DisconnectedAdapterError < ::StandardError
         def initialize
           super "You have tried to perform an operation on a disconnected adapter"
@@ -53,7 +53,7 @@ module Lotus
       # will face a specific message relative to the state of the adapter.
       #
       # @api private
-      # @since x.x.x
+      # @since 0.5.0
       #
       # @see Lotus::Model::Adapters::Abstract#disconnect
       # @see Lotus::Model::Adapters::MemoryAdapter#disconnect
@@ -261,14 +261,14 @@ module Lotus
         #
         # @return [Enumerable<Hash>, Array<Hash>]
         #
-        # @since x.x.x
+        # @since 0.5.0
         def fetch(raw, &blk)
           raise NotImplementedError
         end
 
         # Disconnects the connection by freeing low level resources
         #
-        # @since x.x.x
+        # @since 0.5.0
         def disconnect
           raise NotImplementedError
         end

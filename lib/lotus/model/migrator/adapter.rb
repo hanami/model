@@ -96,7 +96,7 @@ module Lotus
 
         private
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         attr_reader :connection
 
@@ -108,7 +108,7 @@ module Lotus
         #
         # @param global [Boolean] determine whether or not a connection should specify an database.
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         #
         def new_connection(global: false)

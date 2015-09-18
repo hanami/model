@@ -4,7 +4,7 @@ module Lotus
     #
     # It can be used as super class for custom mapping coercers.
     #
-    # @since x.x.x
+    # @since 0.5.0
     #
     # @see Lotus::Model::Mapper
     #
@@ -50,7 +50,7 @@ module Lotus
       #
       # @raise [TypeError] if the value can't be coerced
       #
-      # @since x.x.x
+      # @since 0.5.0
       #
       # @see Lotus::Model::Mapping::Coercers
       def self.load(value)
@@ -63,7 +63,7 @@ module Lotus
       #
       # @raise [TypeError] if the value can't be coerced
       #
-      # @since x.x.x
+      # @since 0.5.0
       #
       # @see Lotus::Model::Mapping::Coercers
       def self.dump(value)
