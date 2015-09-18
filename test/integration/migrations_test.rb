@@ -60,9 +60,7 @@ describe "Database migrations" do
 
       describe "when no migrations" do
         before do
-          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
-          @migrations_root.mkpath
-          @migrations_root.each_child(&:delete)
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../fixtures/empty_migrations')
 
           Lotus::Model.configure do
             migrations migrations_root
@@ -138,9 +136,7 @@ describe "Database migrations" do
 
       describe "when no migrations" do
         before do
-          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
-          @migrations_root.mkpath
-          @migrations_root.each_child(&:delete)
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../fixtures/empty_migrations')
 
           Lotus::Model.configure do
             migrations migrations_root
@@ -412,9 +408,7 @@ describe "Database migrations" do
 
       describe "when no migrations" do
         before do
-          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
-          @migrations_root.mkpath
-          @migrations_root.each_child(&:delete)
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../fixtures/empty_migrations')
 
           Lotus::Model.configure do
             migrations migrations_root
@@ -733,9 +727,7 @@ SQL
 
       describe "when no migrations" do
         before do
-          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../tmp/migrations')
-          @migrations_root.mkpath
-          @migrations_root.each_child(&:delete)
+          @migrations_root = migrations_root = Pathname.new(__dir__ + '/../fixtures/empty_migrations')
 
           Lotus::Model.configure do
             migrations migrations_root
