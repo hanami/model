@@ -13,7 +13,7 @@ A persistence layer for Lotus
 
 ### Fixed
 - [Manuel Corrales] Use `dropdb` to drop PostgreSQL database.
-- [Luca Guidi] Ignore dotfiles while running migrations.
+- [Luca Guidi & Bohdan V.] Ignore dotfiles while running migrations.
 
 ## v0.4.1 - 2015-07-10
 ### Fixed
