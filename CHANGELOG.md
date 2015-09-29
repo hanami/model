@@ -1,7 +1,7 @@
 # Lotus::Model
 A persistence layer for Lotus
 
-## v0.5.0 - 2015-09-23
+## v0.5.0 - 2015-09-30
 ### Added
 - [Brenno Costa] Official support for JRuby 9k+
 - [Luca Guidi] Command/Query separation via `Repository.execute` and `Repository.fetch`
