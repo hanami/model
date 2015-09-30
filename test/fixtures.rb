@@ -180,6 +180,7 @@ MAPPER = Lotus::Model::Mapper.new do
 
   collection :categories do
     entity Category
+
     attribute :id, Integer
   end
 
