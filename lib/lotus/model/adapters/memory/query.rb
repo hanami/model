@@ -58,6 +58,7 @@ module Lotus
             @collection = collection
             @conditions = []
             @modifiers  = []
+            @associations = []
             instance_eval(&blk) if block_given?
           end
 
@@ -68,7 +69,7 @@ module Lotus
           #
           # @since 0.1.0
           def all
-            @collection.deserialize(run)
+            @collection.deserialize(run, @associations)
           end
 
           # Adds a condition that behaves like SQL `WHERE`.
@@ -552,6 +553,11 @@ module Lotus
           # @see Lotus::Model::Adapters::Sql::Query#group!
           def group
             raise NotImplementedError
+          end
+
+          def preload(association)
+            @associations << association
+            self
           end
 
           protected

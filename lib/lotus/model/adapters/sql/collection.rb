@@ -27,6 +27,7 @@ module Lotus
           def initialize(dataset, mapped_collection)
             super(dataset)
             @mapped_collection = mapped_collection
+            @associations = []
           end
 
           # Filters the current scope with an `exclude` directive.
@@ -211,7 +212,12 @@ module Lotus
           # @api private
           # @since 0.1.0
           def to_a
-            @mapped_collection.deserialize(self)
+            @mapped_collection.deserialize(self, @associations)
+          end
+
+          def preload(association)
+            @associations << association
+            self
           end
 
           # Select all attributes for current scope

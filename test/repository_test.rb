@@ -4,8 +4,9 @@ describe Lotus::Repository do
   let(:user1) { User.new(name: 'L') }
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
+  let(:category) { Category.new }
 
-  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
+  let(:article1) { Article.new(category_id: category.id, user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
   let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
@@ -19,12 +20,15 @@ describe Lotus::Repository do
       before do
         UserRepository.adapter    = adapter.new(mapper, uri)
         ArticleRepository.adapter = adapter.new(mapper, uri)
+        CategoryRepository.adapter = adapter.new(mapper, uri)
 
         UserRepository.collection    = :users
         ArticleRepository.collection = :articles
+        CategoryRepository.collection = :categories
 
         UserRepository.clear
         ArticleRepository.clear
+        CategoryRepository.clear
       end
 
       after do

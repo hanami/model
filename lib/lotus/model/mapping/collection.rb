@@ -1,5 +1,7 @@
 require 'lotus/utils/class'
 require 'lotus/model/mapping/attribute'
+require 'lotus/model/associations/many_to_one'
+require 'lotus/model/associations/one_to_many'
 
 module Lotus
   module Model
@@ -60,6 +62,8 @@ module Lotus
         # @api private
         attr_accessor :adapter
 
+        attr_accessor :associations
+
         # Instantiate a new collection
         #
         # @param name [Symbol] the name of the mapped collection. If used with a
@@ -74,8 +78,17 @@ module Lotus
         def initialize(name, coercer_class, &blk)
           @name = name
           @coercer_class = coercer_class
-          @attributes = {}
+          @associations, @attributes = {}, {}
           instance_eval(&blk) if block_given?
+        end
+
+        def association(name, type, options = {})
+          @associations[name] =
+            if type.is_a? Array
+              one_to_many(options.merge(name: name))
+            else
+              many_to_one(options.merge(name: name))
+            end
         end
 
         # Defines the entity that is persisted with this collection.
@@ -404,10 +417,16 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def deserialize(records)
-          records.map do |record|
+        def deserialize(records, associations = [])
+          entities = records.map do |record|
             @coercer.from_record(record)
           end
+
+          associations.each do |association|
+            @associations[association].associate_entities!(entities)
+          end
+
+          entities
         end
 
         # Deserialize only one attribute from a raw value.
@@ -419,6 +438,14 @@ module Lotus
         # @since 0.1.0
         def deserialize_attribute(attribute, value)
           @coercer.public_send(:"deserialize_#{ attribute }", value)
+        end
+
+        def many_to_one(options)
+          Lotus::Model::Associations::ManyToOne.new(options)
+        end
+
+        def one_to_many(options)
+          Lotus::Model::Associations::OneToMany.new(options)
         end
 
         # Loads the internals of the mapper, in order to guarantee thread safety.

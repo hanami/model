@@ -2,13 +2,18 @@ require 'sequel/extensions/pg_array'
 
 class User
   include Lotus::Entity
-  attributes :name, :age, :created_at, :updated_at
+  attributes :name, :age, :created_at, :updated_at, :articles
 end
 
 class Article
   include Lotus::Entity
   include Lotus::Entity::DirtyTracking
-  attributes :user_id, :unmapped_attribute, :title, :comments_count, :tags
+  attributes :user_id, :unmapped_attribute, :title, :comments_count, :tags, :category_id, :user, :category
+end
+
+class Category
+  include Lotus::Entity
+  attributes :article
 end
 
 class Repository
@@ -20,8 +25,16 @@ class CustomUserRepository
   include Lotus::Repository
 end
 
+class CategoryRepository
+  include Lotus::Repository
+end
+
 class UserRepository
   include Lotus::Repository
+
+  def self.all_with_articles
+    query.preload(:articles)
+  end
 end
 
 class UnmappedRepository
@@ -74,6 +87,14 @@ class ArticleRepository
       article[:s_title]
     end
   end
+
+  def self.all_with_user
+    query.preload(:user)
+  end
+
+  def self.all_with_user_and_category
+    query.preload(:user).preload(:category)
+  end
 end
 
 [SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
@@ -92,9 +113,14 @@ end
     DateTime :updated_at
   end
 
+  DB.create_table :categories do
+    primary_key :id
+  end
+
   DB.create_table :articles do
     primary_key :_id
     Integer :user_id
+    Integer :category_id
     String  :s_title
     String  :comments_count # Not an error: we're testing String => Integer coercion
     String  :umapped_column
@@ -149,6 +175,12 @@ MAPPER = Lotus::Model::Mapper.new do
     attribute :age,        Integer
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
+    association :articles, [Article], foreign_key: :user_id, collection: :articles
+  end
+
+  collection :categories do
+    entity Category
+    attribute :id, Integer
   end
 
   collection :articles do
@@ -156,9 +188,12 @@ MAPPER = Lotus::Model::Mapper.new do
 
     attribute :id,             Integer, as: :_id
     attribute :user_id,        Integer
+    attribute :category_id,    Integer
     attribute :title,          String,  as: 's_title'
     attribute :comments_count, Integer
     attribute :tags,           PGArray
+    association :user, User, foreign_key: :user_id, collection: :users
+    association :category, Category, foreign_key: :category_id, collection: :categories
 
     identity :_id
   end
