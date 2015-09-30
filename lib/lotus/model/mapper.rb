@@ -114,8 +114,8 @@ module Lotus
       # @since 0.1.0
       def load!(adapter = nil)
         @collections.each_value do |collection|
-          collection.load!
           collection.adapter = adapter
+          collection.load!
           load_associations!(collection)
         end
         self
