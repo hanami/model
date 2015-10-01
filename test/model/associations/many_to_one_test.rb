@@ -1,7 +1,6 @@
 require 'test_helper'
 require 'lotus/model/associations/many_to_one'
 
-
 describe Lotus::Model::Associations::ManyToOne do
   let(:adapter) { Lotus::Model::Adapters::MemoryAdapter.new(MAPPER) }
   let(:association) {Lotus::Model::Associations::ManyToOne.new(options)}
