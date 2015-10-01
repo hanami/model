@@ -596,6 +596,35 @@ module Lotus
             end
           end
 
+          # Preload a given association into root's aggregation
+          # This should be implemented inside Repository in a class method. See example below.
+          #
+          # @example
+          #
+          #     mapping do
+          #       collections :users do
+          #         entity User
+          #         attribute :id, Integer
+          #         association :articles, [Article], foreign_key: :user_id, collection: :articles
+          #       end
+          #
+          #       collections :articles do
+          #         entity Article
+          #         attribute :id, Integer
+          #         attribute :user_id, Integer
+          #         association :user, [User], foreign_key: :id, collection: :articles
+          #       end
+          #     end
+          #
+          #      class UserRepository
+          #        include Lotus::Repository
+          #
+          #       def with_articles
+          #         query.preload(:articles)
+          #       end
+          #     end
+          #
+          # @return Lotus::Model::Adapters::Sql::Query
           def preload(association)
             @collection.preload(association)
             self
