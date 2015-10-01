@@ -122,6 +122,10 @@ module Lotus
       end
 
       private
+      # Injects association's repository
+      #
+      # @api private
+      # @since x.x.x
       def load_associations!(_collection)
         _collection.associations.each_value do |association|
           association.repository = collection(association.collection).repository

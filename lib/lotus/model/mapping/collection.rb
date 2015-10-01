@@ -62,6 +62,10 @@ module Lotus
         # @api private
         attr_accessor :adapter
 
+        # @attr_reader associations [Array] Associations collection (OneToMany/ManyToOne)
+        #
+        # @since x.x.x
+        # @api private
         attr_accessor :associations
 
         # Instantiate a new collection
@@ -82,6 +86,18 @@ module Lotus
           instance_eval(&blk) if block_given?
         end
 
+        # Define a new association between Entities
+        #
+        # @example
+        #
+        #  OneToMany association:
+        #  association :articles, [Article], foreign_key: :user_id, collection: :articles
+        #
+        #  ManyToOne association:
+        #  association :articles, Article, foreign_key: :user_id, collection: :articles
+        #
+        # @param association_name, relation_type(array, const), *options
+        # @since x.x.x
         def association(name, type, options = {})
           @associations[name] =
             if type.is_a? Array
@@ -413,7 +429,7 @@ module Lotus
 
         # Deserialize a set of records fetched from the database.
         #
-        # @param records [Array] a set of raw records
+        # @param records [Array] a set of raw records, associations' array
         #
         # @api private
         # @since 0.1.0
@@ -440,10 +456,20 @@ module Lotus
           @coercer.public_send(:"deserialize_#{ attribute }", value)
         end
 
+        # Create a new ManyToOne Relation
+        #
+        # @param array with options
+        # @api private
+        # @since x.x.x
         def many_to_one(options)
           Lotus::Model::Associations::ManyToOne.new(options)
         end
 
+        # Create a new OneToMany Relation
+        #
+        # @param array with options
+        # @api private
+        # @since x.x.x
         def one_to_many(options)
           Lotus::Model::Associations::OneToMany.new(options)
         end
