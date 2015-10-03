@@ -82,11 +82,20 @@ module Lotus
         def initialize(name, coercer_class, &blk)
           @name = name
           @coercer_class = coercer_class
-          @associations, @attributes = {}, {}
+          @associations = {}
+          @attributes = {}
           instance_eval(&blk) if block_given?
         end
 
         # Define a new association between Entities
+        #
+        # @param name [Symbol]
+        # @param type [Array|Const]
+        # @param options [Hash]
+        # @option foreign_key [Symbol] the foreign key
+        # @option collection [Symbol] reference to associated Collection
+        #
+        # @since x.x.x
         #
         # @example
         #
@@ -95,9 +104,6 @@ module Lotus
         #
         #  ManyToOne association:
         #  association :articles, Article, foreign_key: :user_id, collection: :articles
-        #
-        # @param association_name, relation_type(array, const), *options
-        # @since x.x.x
         def association(name, type, options = {})
           @associations[name] =
             if type.is_a? Array
@@ -427,9 +433,11 @@ module Lotus
           @coercer.to_record(entity)
         end
 
-        # Deserialize a set of records fetched from the database.
+        # Deserialize a set of records fetched from the database and
+        # reloads related associations
         #
-        # @param records [Array] a set of raw records, associations' array
+        # @param records [Array] a set of raw records
+        # @param associations [Array] defined associations
         #
         # @api private
         # @since 0.1.0

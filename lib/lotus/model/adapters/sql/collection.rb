@@ -218,6 +218,9 @@ module Lotus
           # Preload a given association into root's aggregation
           # This should be implemented inside Repository in a class method. See example below.
           #
+          # @since x.x.x
+          # @return Lotus::Model::Adapters::Sql::Collection
+          #
           # @example
           #
           #     mapping do
@@ -231,7 +234,7 @@ module Lotus
           #         entity Article
           #         attribute :id, Integer
           #         attribute :user_id, Integer
-          #         association :user, [User], foreign_key: :id, collection: :articles
+          #         association :user, User, foreign_key: :id, collection: :articles
           #       end
           #     end
           #
@@ -242,8 +245,6 @@ module Lotus
           #         query.preload(:articles)
           #       end
           #     end
-          #
-          # @return Lotus::Model::Adapters::Sql::Collection
           def preload(association)
             @associations << association
             self
