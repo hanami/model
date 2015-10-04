@@ -56,6 +56,12 @@ class ArticleRepository
     end
   end
 
+  def self.by_category(category)
+    query do
+      where(category_id: category.id)
+    end
+  end
+
   def self.not_by_user(user)
     exclude by_user(user)
   end
@@ -88,8 +94,16 @@ class ArticleRepository
     end
   end
 
+  def self.all_with_category
+    query do
+      preload(:category)
+    end
+  end
+
   def self.all_with_user
-    query.preload(:user)
+    query do
+      preload(:user)
+    end
   end
 
   def self.all_with_user_and_category

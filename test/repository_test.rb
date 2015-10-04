@@ -6,7 +6,7 @@ describe Lotus::Repository do
   let(:users) { [user1, user2] }
   let(:category) { Category.new }
 
-  let(:article1) { Article.new(category_id: category.id, user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
+  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
   let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
@@ -361,6 +361,26 @@ describe Lotus::Repository do
         end
       end
 
+      describe '.preload' do
+        before do
+          @article_without_category = ArticleRepository.create(article2)
+
+          @persisted_category = CategoryRepository.persist(category)
+          article1.category_id = @persisted_category.id
+          @persisted_article = ArticleRepository.create(article1)
+        end
+
+        it 'will return nil when no Category is associated' do
+          article = ArticleRepository.all_with_category.all
+          article.first.category.must_be_nil
+        end
+
+        it 'fetch associated Category (all Drivers)' do
+          article = ArticleRepository.all_with_category.all.last
+          article.category.must_equal @persisted_category
+        end
+      end
+
       describe 'querying' do
         before do
           @user1    = UserRepository.create(user1)
@@ -376,7 +396,7 @@ describe Lotus::Repository do
           actual.all.must_equal [@article1, @article2]
         end
 
-        if adapter_name == :sql
+        if adapter == Lotus::Model::Adapters::SqlAdapter
           it 'combines queries' do
             actual = ArticleRepository.rank_by_user(@user1)
             actual.all.must_equal [@article2, @article1]
