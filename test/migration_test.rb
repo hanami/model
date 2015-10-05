@@ -22,10 +22,11 @@ describe "Lotus::Model.migration" do
         schema     schema_path
       end
 
+      @connection = Sequel.connect(@uri)
+
       Lotus::Model::Migrator.create
       Lotus::Model::Migrator.migrate
 
-      @connection = Sequel.connect(@uri)
       Lotus::Model::Migrator::Adapter.for(@connection).dump
     end
 
@@ -193,7 +194,6 @@ describe "Lotus::Model.migration" do
 
         options.fetch(:allow_null).must_equal  true
         options.fetch(:default).must_equal     nil
-        # options.fetch(:type).must_equal        :decimal
         options.fetch(:db_type).must_equal     "numeric(10)"
         options.fetch(:primary_key).must_equal false
 
