@@ -3,7 +3,7 @@ require 'lotus/model/associations/many_to_one'
 
 describe Lotus::Model::Associations::ManyToOne do
   let(:adapter) { Lotus::Model::Adapters::MemoryAdapter.new(MAPPER) }
-  let(:association) {Lotus::Model::Associations::ManyToOne.new(options)}
+  let(:association) { Lotus::Model::Associations::ManyToOne.new(options) }
 
   before { UserRepository.adapter = adapter }
 
@@ -16,7 +16,6 @@ describe Lotus::Model::Associations::ManyToOne do
     user = User.new(name: 'Makis')
     UserRepository.create(user)
   end
-
 
   describe 'all options present' do
     let(:options) {
