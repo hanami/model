@@ -397,16 +397,6 @@ describe Lotus::Repository do
             article.user.must_equal @persisted_user1
             article.category.must_equal @persisted_category
           end
-
-          # it 'follows nested associations' do
-          #   article = ArticleRepository.by_category(@persisted_category).first
-          #   article.category.articles.must_equal [@persisted_article1, @persisted_article4]
-          # end
-
-          # it 'follows deep nested associations' do
-          #   article = ArticleRepository.all_with_user_and_category.by_category(@persisted_category).first
-          #   article.user.articles.first.category.must_be_nil
-          # end
         end
       end
 

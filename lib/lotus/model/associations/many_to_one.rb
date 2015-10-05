@@ -14,11 +14,12 @@ module Lotus
         attr_accessor :repository
 
         # Collects initial data to build ManyToOne Association
+        #
+        # @since x.x.x
+        #
         # @example
         #
         #   collection: :articles, foreign_key: :article_id, repository: ArticlesRepository
-        #
-        # @since x.x.x
         def initialize(opts)
           @name        = opts.fetch(:name)
           @collection  = opts.fetch(:collection)
