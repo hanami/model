@@ -13,7 +13,7 @@ end
 
 class Category
   include Lotus::Entity
-  attributes :article
+  attributes :articles
 end
 
 class Repository
@@ -56,9 +56,15 @@ class ArticleRepository
     end
   end
 
-  def self.by_category(category)
+  def self.by_category_preload(category)
     query do
-      where(category_id: category.id)
+      where(category_id: category.id).preload(:category)
+    end
+  end
+
+  def self.by_category_with_user_preload(category)
+    query do
+      where(category_id: category.id).preload(:category).preload(:user)
     end
   end
 
@@ -95,15 +101,17 @@ class ArticleRepository
   end
 
   def self.all_with_category
-    query do
-      preload(:category)
-    end
+    query.preload(:category)
   end
 
   def self.all_with_user
     query do
       preload(:user)
     end
+  end
+
+  def self.foo(id)
+    query.where(category_id: id.id).preload(:category).all
   end
 
   def self.all_with_user_and_category
@@ -196,6 +204,7 @@ MAPPER = Lotus::Model::Mapper.new do
     entity Category
 
     attribute :id, Integer
+    association :articles, [Article], foreign_key: :id, collection: :articles
   end
 
   collection :articles do

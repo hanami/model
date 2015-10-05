@@ -19,15 +19,16 @@ module Lotus
           #   subset of it.
           # @param mapped_collection [Lotus::Model::Mapping::Collection] a
           #   mapped collection
+          # @param associations [Array] association symbols names to preload
           #
           # @return [Lotus::Model::Adapters::Sql::Collection]
           #
           # @api private
           # @since 0.1.0
-          def initialize(dataset, mapped_collection)
+          def initialize(dataset, mapped_collection, associations = [])
             super(dataset)
             @mapped_collection = mapped_collection
-            @associations = []
+            @associations = associations
           end
 
           # Filters the current scope with an `exclude` directive.
@@ -42,7 +43,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def exclude(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Creates a record for the given entity and assigns an id.
@@ -74,7 +75,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def limit(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Filters the current scope with an `offset` directive.
@@ -89,7 +90,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def offset(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Filters the current scope with an `or` directive.
@@ -104,7 +105,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def or(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Filters the current scope with an `order` directive.
@@ -119,7 +120,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def order(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Filters the current scope with an `order` directive.
@@ -134,7 +135,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def order_more(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Filters the current scope with a `select` directive.
@@ -150,11 +151,11 @@ module Lotus
           # @since 0.1.0
           if RUBY_VERSION >= '2.1'
             def select(*args)
-              Collection.new(super, @mapped_collection)
+              Collection.new(super, @mapped_collection, @associations)
             end
           else
             def select(*args)
-              Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @mapped_collection)
+              Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @mapped_collection, @associations)
             end
           end
 
@@ -171,7 +172,7 @@ module Lotus
           # @api private
           # @since 0.5.0
           def group(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Filters the current scope with a `where` directive.
@@ -186,7 +187,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def where(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Updates the record corresponding to the given entity.
@@ -260,7 +261,7 @@ module Lotus
           #
           # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Aselect_all
           def select_all
-            Collection.new(super(table_name), @mapped_collection)
+            Collection.new(super(table_name), @mapped_collection, @associations)
           end
 
           # Use join table for current scope
@@ -273,7 +274,7 @@ module Lotus
           #
           # @see http://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset%3Ajoin_table
           def join_table(*args)
-            Collection.new(super, @mapped_collection)
+            Collection.new(super, @mapped_collection, @associations)
           end
 
           # Return table name mapped collection

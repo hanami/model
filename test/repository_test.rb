@@ -6,9 +6,10 @@ describe Lotus::Repository do
   let(:users) { [user1, user2] }
   let(:category) { Category.new }
 
-  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
-  let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
-  let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
+  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model',    comments_count: '23') }
+  let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',               comments_count: '42') }
+  let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',          comments_count: '4') }
+  let(:article4) { Article.new(user_id: user2.id, title: 'Preload Associations works!', comments_count: '4') }
 
   {
     memory:      [Lotus::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
@@ -364,10 +365,15 @@ describe Lotus::Repository do
       describe '.preload' do
         before do
           @article_without_category = ArticleRepository.create(article2)
-
+          @persisted_user1 = UserRepository.create(user1)
           @persisted_category = CategoryRepository.persist(category)
+
           article1.category_id = @persisted_category.id
-          @persisted_article = ArticleRepository.create(article1)
+          article1.user_id     = @persisted_user1.id
+          @persisted_article1 = ArticleRepository.create(article1)
+
+          article4.category_id = @persisted_category.id
+          @persisted_article4 = ArticleRepository.create(article4)
         end
 
         it 'will return nil when no Category is associated' do
@@ -376,8 +382,31 @@ describe Lotus::Repository do
         end
 
         it 'fetch associated Category (all Drivers)' do
-          article = ArticleRepository.all_with_category.all.last
-          article.category.must_equal @persisted_category
+          article = ArticleRepository.all_with_category.all
+          article.last.category.must_equal @persisted_category
+        end
+
+        if adapter == Lotus::Model::Adapters::SqlAdapter
+          it "fetch associated Category #{adapter_name}" do
+            article = ArticleRepository.by_category_preload(@persisted_category).first
+            article.category.must_equal @persisted_category
+          end
+
+          it 'fetch multiple associations' do
+            article = ArticleRepository.by_category_with_user_preload(@persisted_category).first
+            article.user.must_equal @persisted_user1
+            article.category.must_equal @persisted_category
+          end
+
+          # it 'follows nested associations' do
+          #   article = ArticleRepository.by_category(@persisted_category).first
+          #   article.category.articles.must_equal [@persisted_article1, @persisted_article4]
+          # end
+
+          # it 'follows deep nested associations' do
+          #   article = ArticleRepository.all_with_user_and_category.by_category(@persisted_category).first
+          #   article.user.articles.first.category.must_be_nil
+          # end
         end
       end
 

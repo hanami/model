@@ -59,7 +59,8 @@ module Lotus
           #
           # @return [Lotus::Model::Adapters::Sql::Query]
           def initialize(collection, context = nil, &blk)
-            @collection, @context = collection, context
+            @collection = collection
+            @context = context
             @conditions = []
 
             instance_eval(&blk) if block_given?
