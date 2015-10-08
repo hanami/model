@@ -13,6 +13,12 @@ module Lotus
         # @see http://sequel.jeremyevans.net/rdoc/files/doc/dataset_basics_rdoc.html
         # @see http://sequel.jeremyevans.net/rdoc/files/doc/dataset_filtering_rdoc.html
         class Collection < SimpleDelegator
+          # @attr_reader associations [Array] symbols names to preload mapped collections
+          #
+          # @since x.x.x
+          # @api private
+          attr_reader :associations
+
           # Initialize a collection
           #
           # @param dataset [Sequel::Dataset] the dataset that maps a table or a
@@ -158,7 +164,6 @@ module Lotus
               Collection.new(__getobj__.select(*Lotus::Utils::Kernel.Array(args)), @mapped_collection, @associations)
             end
           end
-
 
           # Filters the current scope with a `group` directive.
           #

@@ -392,6 +392,16 @@ describe Lotus::Repository do
             article.category.must_equal @persisted_category
           end
 
+          it "fetch associated Category composing queries for #{adapter_name}" do
+            article = ArticleRepository.with_category.by_category(@persisted_category).first
+            article.category.must_equal @persisted_category
+          end
+
+          it "fetch associated Category composing queries with preload at the end for #{adapter_name}" do
+            article = ArticleRepository.by_category(@persisted_category).with_category.first
+            article.category.must_equal @persisted_category
+          end
+
           it 'fetch multiple associations' do
             article = ArticleRepository.by_category_with_user_preload(@persisted_category).first
             article.user.must_equal @persisted_user1

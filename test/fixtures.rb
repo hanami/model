@@ -56,6 +56,16 @@ class ArticleRepository
     end
   end
 
+  def self.by_category(category)
+    query do
+      where(category_id: category.id)
+    end
+  end
+
+  def self.with_category
+    query.preload(:category)
+  end
+
   def self.by_category_preload(category)
     query do
       where(category_id: category.id).preload(:category)

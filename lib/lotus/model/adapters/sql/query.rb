@@ -49,6 +49,12 @@ module Lotus
           # @api private
           attr_reader :conditions
 
+          # @attr_reader collection [Lotus::Model::Adapters::Sql::Collection]
+          #
+          # @since x.x.x
+          # @api private
+          attr_reader :collection
+
           # Initialize a query
           #
           # @param collection [Lotus::Model::Adapters::Sql::Collection] the
@@ -790,6 +796,9 @@ module Lotus
           #   # You're welcome ;)
           def apply(query)
             dup.tap do |result|
+              query.collection.associations.each do |association|
+                result.preload(association)
+              end
               result.conditions.push(*query.conditions)
             end
           end
