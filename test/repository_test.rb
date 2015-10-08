@@ -386,6 +386,11 @@ describe Lotus::Repository do
           article.last.category.must_equal @persisted_category
         end
 
+        it "fetch associated Category (all Drivers)" do
+          article = ArticleRepository.by_category_preload(@persisted_category).first
+          article.category.must_equal @persisted_category
+        end
+
         if adapter == Lotus::Model::Adapters::SqlAdapter
           it "fetch associated Category #{adapter_name}" do
             article = ArticleRepository.by_category_preload(@persisted_category).first
