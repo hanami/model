@@ -45,7 +45,7 @@ module Lotus
               message = if error_message.match(/does not exist/)
                 "Cannot find database: #{ database }"
               else
-                message
+                error_message
               end
 
               raise MigrationError.new(message)
