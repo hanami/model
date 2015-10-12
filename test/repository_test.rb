@@ -39,6 +39,31 @@ describe Lotus::Repository do
         end
       end
 
+      describe '.persisted?' do
+        describe 'when passed a non-persisted entity' do
+          let(:unpersisted_user) { User.new(name: 'Don', age: '25') }
+
+          it 'should return false' do
+            UserRepository.persisted?(unpersisted_user).must_equal false
+          end
+
+          it 'should return false if id present' do
+            unpersisted_user.id = 100
+            UserRepository.persisted?(unpersisted_user).must_equal false
+          end
+        end
+
+        describe 'when passed a persisted entity' do
+          let(:user)           { UserRepository.create(User.new(name: 'Don')) }
+          let(:persisted_user) { UserRepository.persist(user) }
+
+
+          it 'should return true' do
+            UserRepository.persisted?(persisted_user).must_equal true
+          end
+        end
+      end
+
       describe '.persist' do
         describe 'when passed a non-persisted entity' do
           let(:unpersisted_user) { User.new(name: 'Don', age: '25') }
@@ -59,6 +84,11 @@ describe Lotus::Repository do
           it 'does not assign an id on the entity passed as argument' do
             UserRepository.persist(unpersisted_user)
             unpersisted_user.id.must_be_nil
+          end
+
+          it 'persists new entity' do
+            user = UserRepository.persist(User.new(name: 'Don', id: 25))
+            UserRepository.all.must_include(user)
           end
 
           it 'should coerce attributes' do
@@ -173,6 +203,16 @@ describe Lotus::Repository do
           it 'does not touch created_at' do
             UserRepository.create(@persisted_user)
             @persisted_user.created_at.wont_be_nil
+          end
+        end
+
+        describe 'when entity has id' do
+          before do
+            @persisted_user = UserRepository.create(User.new(name: 'My', id: 234))
+          end
+
+          it 'persist entities' do
+            UserRepository.all.must_include(@persisted_user)
           end
         end
       end
