@@ -343,4 +343,64 @@ describe Lotus::Entity do
       end
     end
   end
+
+  describe '#identity' do
+    describe 'default behavior' do
+      it 'sets :id' do
+        Car.identity.must_equal :id
+      end
+
+      describe ".attributes" do
+        it 'defines :identity by default' do
+          Car.attributes.must_equal Set.new([:id])
+        end
+      end
+
+      describe "#id" do
+        it 'is accessible' do
+          car = Car.new
+          car.id = 100
+          car.id.must_equal 100
+        end
+      end
+    end
+
+    describe 'new value' do
+      before do
+        class Post
+          include Lotus::Entity
+          identity :uuid
+
+          attributes :name
+        end
+      end
+
+      it 'sets new identity' do
+        Post.identity :uuid
+        Post.identity.must_equal :uuid
+      end
+
+      it 'replaces old identity' do
+        Post.attributes.must_equal Set.new([:uuid, :name])
+        post = Post.new
+        proc{post.id}.must_raise NoMethodError
+        proc{post.id = 100}.must_raise NoMethodError
+      end
+
+      it 'sets new attribute' do
+        Post.attributes.must_equal Set.new([:uuid, :name])
+        post = Post.new
+        post.uuid = 100
+        post.uuid.must_equal 100
+      end
+    end
+  end
+
+  describe ".identity" do
+    let(:book) { Book.new(id: 23, title: 'Wuthering Meadow', author: 'J. K. Rowling', published: true ) }
+
+    it 'returns identity value' do
+      book.identity.must_equal 23
+    end
+  end
 end

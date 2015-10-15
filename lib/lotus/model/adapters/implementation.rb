@@ -16,7 +16,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def persist(collection, entity)
-          if entity.id
+          if entity.identity
             update(collection, entity)
           else
             create(collection, entity)
