@@ -104,7 +104,7 @@ module Lotus
           # @api private
           # @since 0.1.0
           def delete(entity)
-            records.delete(entity.id)
+            records.delete(entity.identity)
           end
 
           # Returns all the raw records

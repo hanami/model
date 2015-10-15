@@ -833,7 +833,7 @@ module Lotus
       # @return a boolean value
       # @since 0.3.1
       def _persisted?(entity)
-        !!entity.id
+        !!entity.identity
       end
 
       # Update timestamps

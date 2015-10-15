@@ -55,7 +55,7 @@ module Lotus
 
           instance_eval <<-EVAL, __FILE__, __LINE__
             def to_record(entity)
-              if entity.id
+              if entity.identity
                 Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.dump_coercer }(entity.#{name})"}.join(',') }]
               else
                 Hash[].tap do |record|

@@ -75,7 +75,7 @@ module Lotus
         # @since 0.1.0
         def update(collection, entity)
           command(
-            _find(collection, entity.id)
+            _find(collection, entity.identity)
           ).update(entity)
         end
 
@@ -88,7 +88,7 @@ module Lotus
         # @since 0.1.0
         def delete(collection, entity)
           command(
-            _find(collection, entity.id)
+            _find(collection, entity.identity)
           ).delete
         end
 

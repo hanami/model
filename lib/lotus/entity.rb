@@ -81,7 +81,7 @@ module Lotus
     def self.included(base)
       base.class_eval do
         extend ClassMethods
-        attributes :id
+        attributes identity
       end
     end
 
@@ -152,6 +152,44 @@ module Lotus
         end
       end
 
+      # Defines the identity for a entity.
+      # An identity is a unique value that identifies a record.
+      #
+      # This is an optional feature.
+      # By default the system assumes that your identity is `:id`.
+      #
+      # @param name [Symbol] the name of the identity
+      # @since 0.5.1
+      #
+      # @example Default
+      #   require 'lotus/model'
+      #   class User
+      #     include Lotus::Entity
+      #     attributes :name
+      #   end
+      #
+      # @example Custom identity
+      #   require 'lotus/model'
+      #   class User
+      #     include Lotus::Entity
+      #     identity :i_id
+      #   end
+      def identity(name = nil)
+        return @identity if @identity && !name
+
+        if @identity
+          undefine_attr_accessor(@identity)
+          attributes.delete(@identity)
+          @identity = name
+        else
+          @identity = :id
+        end
+
+        attributes @identity
+
+        @identity
+      end
+
       # Define setter/getter methods for attributes.
       #
       # @param attr [Symbol] an attribute name
@@ -162,12 +200,23 @@ module Lotus
         attr_accessor(attr)
       end
 
+      # Undefine setter/getter methods for attributes.
+      #
+      # @param attr [Symbol] an attribute name
+      #
+      # @since 0.5.1
+      # @api private
+      def undefine_attr_accessor(attr)
+        undef_method(attr)
+        undef_method("#{attr}=")
+      end
+
       # Check if attr_reader define the given attribute
       #
       # @since 0.3.1
       # @api private
       def defined_attribute?(name)
-        name == :id ||
+        name == identity ||
           !instance_methods.include?(name)
       end
 
@@ -206,7 +255,7 @@ module Lotus
     # @since 0.1.0
     def ==(other)
       self.class == other.class &&
-         self.id == other.id
+         self.identity == other.identity
     end
 
     # Return the hash of attributes
@@ -286,6 +335,23 @@ module Lotus
       attributes.each do |attribute, value|
         public_send("#{attribute}=", value)
       end
+    end
+
+    # Returns identity attribute value for entity
+    #
+    # @since 0.5.1
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     identity :uuid
+    #   end
+    #
+    #   user = User.new(uuid: 1234)
+    #   user.identity # => 1234
+    def identity
+      public_send(self.class.identity)
     end
 
     private
