@@ -223,8 +223,50 @@ module Lotus
     #   user = User.new(id: 23, name: 'Luca')
     #   user.to_h # => { :id => 23, :name => "Luca" }
     def to_h
-      Hash[self.class.attributes.map { |a| [a, public_send(a)] }]
+      Hash[attribute_names.map { |a| [a, read_attribute(a)] }]
     end
+
+    # Return the set of attribute names
+    #
+    # @since 0.5.1
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     attributes :name
+    #   end
+    #
+    #   user = User.new(id: 23, name: 'Luca')
+    #   user.attribute_names # #<Set: {:id, :name}>
+    def attribute_names
+      self.class.attributes
+    end
+
+    # Return the contents of the entity as a nicely formatted string.
+    #
+    # Display all attributes of the entity for inspection (even if they are nil)
+    #
+    # @since 0.5.1
+    #
+    # @example
+    #   require 'lotus/model'
+    #   class User
+    #     include Lotus::Entity
+    #     attributes :name, :email
+    #   end
+    #
+    #   user = User.new(id: 23, name: 'Luca')
+    #   user.inspect # #<User:0x007fa7eefe0b58 @id=nil @name="Luca" @email=nil>
+    def inspect
+      attr_list = attribute_names.inject([]) do |res, name|
+        res << "@#{name}=#{read_attribute(name).inspect}"
+      end.join(' ')
+
+      "#<#{self.class.name}:0x00#{(__id__ << 1).to_s(16)} #{attr_list}>"
+    end
+
+    alias_method :to_s, :inspect
 
     # Set attributes for entity
     #
@@ -246,5 +288,14 @@ module Lotus
       end
     end
 
+    private
+
+    # Return the value by attribute name
+    #
+    # @since 0.5.1
+    # @api private
+    def read_attribute(attr_name)
+      public_send(attr_name)
+    end
   end
 end

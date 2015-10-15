@@ -182,6 +182,29 @@ describe Lotus::Entity do
     end
   end
 
+  describe '#attribute_names' do
+    before do
+      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false)
+    end
+
+    it 'returns an attribute names' do
+      @book.attribute_names.must_equal Set.new([:id, :title, :author, :published, :tags])
+    end
+  end
+
+  describe "#inspect, #to_s" do
+    before do
+      @book = Book.new(id: 100, author: 'Emily Brontë', published: false)
+    end
+
+    it 'returns all assigned attributes' do
+      @book.stub(:__id__, 70179622946220) do
+        @book.inspect.must_equal "#<Book:0x007fa7eefe0b58 @id=100 @title=nil @author=\"Emily Brontë\" @published=false @tags=nil>"
+        @book.to_s.must_equal "#<Book:0x007fa7eefe0b58 @id=100 @title=nil @author=\"Emily Brontë\" @published=false @tags=nil>"
+      end
+    end
+  end
+
   describe '#update' do
     let(:book) { Book.new(id: nil, title: 'Wuthering Meadow', author: 'J. K. Rowling', published: true ) }
     let(:attributes) { Hash[title: 'Wuthering Heights', author: 'Emily Brontë', published: false] }
