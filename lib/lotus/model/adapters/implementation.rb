@@ -6,6 +6,20 @@ module Lotus
       # @api private
       # @since 0.1.0
       module Implementation
+
+        # This is a method to check entity persited or not
+        #
+        # @param collection [Symbol] the target collection (it must be mapped).
+        # @param id [Object] the identity of the object.
+        #
+        # @return a boolean value
+        #
+        # @api private
+        # @since 0.5.1
+        def persisted?(collection, entity)
+          !!find(collection, entity.id)
+        end
+
         # Creates or updates a record in the database for the given entity.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
@@ -16,7 +30,7 @@ module Lotus
         # @api private
         # @since 0.1.0
         def persist(collection, entity)
-          if entity.id
+          if persisted?(collection, entity)
             update(collection, entity)
           else
             create(collection, entity)
