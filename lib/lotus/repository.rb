@@ -218,51 +218,6 @@ module Lotus
         @adapter
       end
 
-      # Creates or updates a record in the database for the given entity.
-      #
-      # @param entity [#id, #id=] the entity to persist
-      #
-      # @return [Object] a copy of the entity with `id` assigned
-      #
-      # @since 0.1.0
-      #
-      # @see Lotus::Repository#create
-      # @see Lotus::Repository#update
-      #
-      # @example With a non persisted entity
-      #   require 'lotus/model'
-      #
-      #   class ArticleRepository
-      #     include Lotus::Repository
-      #   end
-      #
-      #   article = Article.new(title: 'Introducing Lotus::Model')
-      #   article.id # => nil
-      #
-      #   persisted_article = ArticleRepository.persist(article) # creates a record
-      #   article.id # => nil
-      #   persisted_article.id # => 23
-      #
-      # @example With a persisted entity
-      #   require 'lotus/model'
-      #
-      #   class ArticleRepository
-      #     include Lotus::Repository
-      #   end
-      #
-      #   article = ArticleRepository.find(23)
-      #   article.id # => 23
-      #
-      #   article.title = 'Launching Lotus::Model'
-      #   ArticleRepository.persist(article) # updates the record
-      #
-      #   article = ArticleRepository.find(23)
-      #   article.title # => "Launching Lotus::Model"
-      def persist(entity)
-        _touch(entity)
-        @adapter.persist(collection, entity)
-      end
-
       # Creates a record in the database for the given entity.
       # It returns a copy of the entity with `id` assigned.
       #
@@ -273,8 +228,6 @@ module Lotus
       # @return [Object] a copy of the entity with `id` assigned
       #
       # @since 0.1.0
-      #
-      # @see Lotus::Repository#persist
       #
       # @example
       #   require 'lotus/model'
@@ -316,7 +269,6 @@ module Lotus
       #
       # @since 0.1.0
       #
-      # @see Lotus::Repository#persist
       # @see Lotus::Model::NonPersistedEntityError
       #
       # @example With a persisted entity

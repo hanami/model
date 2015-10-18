@@ -112,67 +112,6 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
     end
   end
 
-  # BUG
-  # See: https://github.com/lotus/model/issues/151
-  describe 'when already present database' do
-    before do
-      data = Pathname.new(FILE_SYSTEM_CONNECTION_STRING)
-      data.rmtree if data.exist?
-
-      @user1   = TestUser.new(name: 'L')
-      @user2   = TestUser.new(name: 'MG')
-      old_data = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
-      @user1   = old_data.persist(collection, @user1)
-
-      @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
-    end
-
-    it 'reads the old data' do
-      @adapter.all(collection).must_equal [@user1]
-    end
-
-    it 'writes without erasing old data' do
-      @user2 = @adapter.persist(collection, @user2)
-      @adapter.all(collection).must_equal [@user1, @user2]
-    end
-  end
-
-  describe '#persist' do
-    after do
-      @adapter.disconnect
-    end
-
-    describe 'when the given entity is not persisted' do
-      let(:entity) { TestUser.new }
-
-      it 'stores the record and assigns an id' do
-        result = @adapter.persist(collection, entity)
-
-        result.id.wont_be_nil
-        @verifier.find(collection, result.id).must_equal result
-      end
-    end
-
-    describe 'when the given entity is persisted' do
-      before do
-        @entity = @adapter.create(collection, entity)
-      end
-
-      let(:entity) { TestUser.new }
-
-      it 'updates the record and leaves untouched the id' do
-        id = @entity.id
-        id.wont_be_nil
-
-        @entity.name = 'L'
-        @adapter.persist(collection, @entity)
-
-        @entity.id.must_equal(id)
-        @verifier.find(collection, @entity.id).name.must_equal @entity.name
-      end
-    end
-  end
-
   describe '#create' do
     let(:entity) { TestUser.new }
 

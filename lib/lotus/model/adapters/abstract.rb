@@ -91,18 +91,6 @@ module Lotus
           @uri    = uri
         end
 
-        # Creates or updates a record in the database for the given entity.
-        #
-        # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [Object] the entity to persist
-        #
-        # @return [Object] the entity
-        #
-        # @since 0.1.0
-        def persist(collection, entity)
-          raise NotImplementedError
-        end
-
         # Creates a record in the database for the given entity.
         # It should assign an id (identity) to the entity in case of success.
         #

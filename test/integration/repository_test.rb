@@ -39,84 +39,6 @@ describe Lotus::Repository do
         end
       end
 
-      describe '.persist' do
-        describe 'when passed a non-persisted entity' do
-          let(:unpersisted_user) { User.new(name: 'Don', age: '25') }
-
-          it 'should return that entity' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-
-            persisted_user.id.wont_be_nil
-            persisted_user.name.must_equal(unpersisted_user.name)
-            persisted_user.age.must_equal(unpersisted_user.age.to_i)
-          end
-
-          it 'returns a copy of the entity passed as argument' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            refute_same persisted_user, unpersisted_user
-          end
-
-          it 'does not assign an id on the entity passed as argument' do
-            UserRepository.persist(unpersisted_user)
-            unpersisted_user.id.must_be_nil
-          end
-
-          it 'should coerce attributes' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.age.must_equal(25)
-          end
-
-          if adapter_name == :postgres
-            it 'should use custom coercers' do
-              article = Article.new(title: 'Coercer', tags: tags = ['ruby', 'lotus'])
-              article = ArticleRepository.persist(article)
-
-              article.tags.must_equal tags
-              article.tags.class.must_equal ::Array
-            end
-          end
-
-          it 'assigns and persist created_at attribute' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.created_at.wont_be_nil
-          end
-
-          it 'assigns and persist updated_at attribute' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.updated_at.must_equal persisted_user.created_at
-          end
-        end
-
-        describe 'when passed a persisted entity' do
-          let(:user)           { UserRepository.create(User.new(name: 'Don')) }
-          let(:persisted_user) { UserRepository.persist(user) }
-
-          before do
-            @updated_at = user.updated_at
-
-            # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
-            # concurrent platforms like jRuby
-            sleep 2 if Lotus::Utils.jruby?
-          end
-
-          it 'should return that entity' do
-            UserRepository.persist(persisted_user).must_equal(user)
-          end
-
-          it 'does not touch created_at' do
-            UserRepository.persist(persisted_user)
-
-            persisted_user.created_at.wont_be_nil
-          end
-
-          it 'touches updated_at' do
-            updated_user = UserRepository.persist(user)
-
-            assert updated_user.updated_at > @updated_at
-          end
-        end
-      end
-
       describe '.create' do
         before do
           @users = [
@@ -404,39 +326,6 @@ describe Lotus::Repository do
           @article = ArticleRepository.update(@article)
 
           @article.changed?.must_equal false
-        end
-      end
-
-      describe 'missing timestamps attribute' do
-        describe '.persist' do
-          before do
-            @article = ArticleRepository.persist(Article.new(title: 'Lotus', comments_count: '4'))
-            @article.instance_eval do
-              def created_at
-                @created_at
-              end
-
-              def updated_at
-                @updated_at
-              end
-            end
-          end
-
-          after do
-            ArticleRepository.delete(@article)
-          end
-
-          describe 'when entity does not have created_at accessor' do
-            it 'does not touch created_at' do
-              @article.created_at.must_be_nil
-            end
-          end
-
-          describe 'when entity does not have updated_at accessor' do
-            it 'does not touch updated_at' do
-              @article.updated_at.must_be_nil
-            end
-          end
         end
       end
     end
