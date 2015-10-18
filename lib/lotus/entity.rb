@@ -140,15 +140,13 @@ module Lotus
       #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
       #
       def attributes(*attrs)
-        if attrs.any?
-          attrs = Lotus::Utils::Kernel.Array(attrs)
-          self.attributes.merge attrs
+        return @attributes ||= Set.new unless attrs.any?
 
-          attrs.each do |attr|
-            define_attr_accessor(attr) if defined_attribute?(attr)
+        Lotus::Utils::Kernel.Array(attrs).each do |attr|
+          if allowed_attribute_name?(attr)
+            define_attr_accessor(attr)
+            self.attributes << attr
           end
-        else
-          @attributes ||= Set.new
         end
       end
 
@@ -164,11 +162,10 @@ module Lotus
 
       # Check if attr_reader define the given attribute
       #
-      # @since 0.3.1
+      # @since 0.5.1
       # @api private
-      def defined_attribute?(name)
-        name == :id ||
-          !instance_methods.include?(name)
+      def allowed_attribute_name?(name)
+        !instance_methods.include?(name)
       end
 
       protected

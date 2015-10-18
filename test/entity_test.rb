@@ -38,11 +38,31 @@ describe Lotus::Entity do
       Car.attributes.must_equal Set.new([:id, :model])
     end
 
+    it 'rejects existed instance methods' do
+      Car.attributes :object_id
+      Car.attributes.must_equal Set.new([:id])
+    end
+
     describe 'params is array' do
       it 'defines attributes' do
         Car.attributes [:model]
         Car.attributes.must_equal Set.new([:id, :model])
       end
+    end
+  end
+
+  describe '.allowed_attribute_name?' do
+    it 'returns true if attrubute not defined' do
+      Car.allowed_attribute_name?(:model).must_equal true
+    end
+
+    it 'returns false if attribute defined' do
+      Car.attributes :model
+      Car.allowed_attribute_name?(:model).must_equal false
+    end
+
+    it 'returns false for reserved word' do
+      Car.allowed_attribute_name?(:to_json).must_equal false
     end
   end
 
