@@ -399,6 +399,13 @@ describe "Database migrations" do
         exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
         exception.message.must_equal "Cannot find database: #{ @database }"
       end
+
+      it 'raises error if database is busy' do
+        Sequel.connect(@uri).tables
+        exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
+        exception.message.must_include 'dropdb: database removal failed'
+        exception.message.must_include 'There is 1 other session using the database'
+      end
     end
 
     describe "migrate" do
