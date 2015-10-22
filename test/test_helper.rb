@@ -24,15 +24,17 @@ require 'lotus/model/adapters/memory_adapter'
 require 'lotus/model/adapters/file_system_adapter'
 require 'lotus/model/adapters/sql_adapter'
 
-db = Pathname.new(__dir__).join('../tmp/db')
-db.dirname.mkpath        # create directory if not exist
 
-sql = db.join('sql.db')
-sql.delete if sql.exist? # delete file if exist
+tmp_dir = Pathname.new(__dir__).join('../tmp')
+tmp_dir.rmtree rescue nil
+tmp_dir.mkpath
 
-filesystem = db.join('filesystem')
-filesystem.rmtree if filesystem.exist?
-filesystem.dirname.mkpath # recreate directory
+
+db_dir = tmp_dir.join('db')
+sql = db_dir.join('sql.db')
+
+filesystem = db_dir.join('filesystem')
+filesystem.mkpath
 
 postgres_database = "lotus_model_test"
 
@@ -63,6 +65,7 @@ end
 system "dropdb #{ postgres_database }" rescue nil
 system "createdb #{ postgres_database }" rescue nil
 sleep 1
+
 require 'fixtures'
 
 Lotus::Model::Configuration.class_eval do
