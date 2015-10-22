@@ -43,7 +43,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
         identity :_id
       end
-      
+
     end.load!
 
     @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
@@ -53,6 +53,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
   end
 
   after do
+    @adapter.disconnect
     Object.send(:remove_const, :TestUser)
     Object.send(:remove_const, :TestUserRepository)
     Object.send(:remove_const, :TestDevice)
@@ -77,6 +78,10 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
   describe '#initialize' do
     before do
       @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, uri)
+    end
+
+    after do
+      @adapter.disconnect
     end
 
     describe 'absolute path' do
@@ -133,6 +138,10 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
   end
 
   describe '#persist' do
+    after do
+      @adapter.disconnect
+    end
+
     describe 'when the given entity is not persisted' do
       let(:entity) { TestUser.new }
 
@@ -207,6 +216,10 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
   end
 
   describe '#all' do
+    after do
+      @adapter.disconnect
+    end
+
     describe 'when no records are persisted' do
       before do
         @adapter.clear(collection)
@@ -231,6 +244,10 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
   end
 
   describe '#find' do
+    after do
+      @adapter.disconnect
+    end
+
     before do
       @entity = @adapter.create(collection, entity)
       @adapter.instance_variable_get(:@collections).fetch(collection).records.store(nil, nil_entity)
