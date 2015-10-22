@@ -4,21 +4,20 @@ require 'lotus/model/migrator'
 describe "Lotus::Model.migration" do
   let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
 
-  # Dirty DB can skip migrations
-  after :teardown do
+  after(:each) do
     File.delete(@database)
     File.delete(@schema)
   end
 
   describe "SQLite" do
     before do
-      @database = Pathname.new("#{ __dir__ }/../tmp/migration.sqlite3").expand_path
-      @schema   = schema_path = Pathname.new("#{ __dir__ }/../tmp/schema.sql").expand_path
+      @database = Pathname.new("#{ __dir__ }/../../tmp/migration.sqlite3").expand_path
+      @schema   = schema_path = Pathname.new("#{ __dir__ }/../../tmp/schema.sql").expand_path
       @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
 
       Lotus::Model.configure do
         adapter type: :sql, uri: uri
-        migrations __dir__ + '/fixtures/database_migrations'
+        migrations __dir__ + '/../fixtures/database_migrations'
         schema     schema_path
       end
 
@@ -27,6 +26,11 @@ describe "Lotus::Model.migration" do
 
       @connection = Sequel.connect(@uri)
       Lotus::Model::Migrator::Adapter.for(@connection).dump
+    end
+
+    after(:each) do
+      Lotus::Model.unload!
+      @connection.disconnect
     end
 
     describe "columns" do
