@@ -221,7 +221,7 @@ module Lotus
       # Creates a record in the database for the given entity.
       # It returns a copy of the entity with `id` assigned.
       #
-      # If already persisted (`id` present) it does nothing.
+      # If already persisted it does nothing and returns nil.
       #
       # @param entity [#id,#id=] the entity to create
       #
@@ -249,10 +249,14 @@ module Lotus
       #   created_article = ArticleRepository.create(existing_article) # => no-op
       #   created_article # => nil
       #
+      #   imported_article = ArticleRepository.create(Article.new(title: 'New Lotus features', id: 123))
+      #   imported_article.id  # => 123
       def create(entity)
-        unless _persisted?(entity)
-          _touch(entity)
+        _touch(entity)
+        begin
           @adapter.create(collection, entity)
+        rescue Exception => e
+          raise Lotus::Model::AlreadyPersistedEntityError.new e.message
         end
       end
 

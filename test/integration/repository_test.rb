@@ -40,37 +40,18 @@ describe Lotus::Repository do
       end
 
       describe '.create' do
-        before do
-          @users = [
-            UserRepository.create(user1),
-            UserRepository.create(user2)
-          ]
-        end
-
-        it 'persist entities' do
-          UserRepository.all.must_equal(@users)
-        end
-
-        it 'creates different kind of entities' do
-          result = ArticleRepository.create(article1)
-          ArticleRepository.all.must_equal([result])
-        end
-
-        it 'does nothing when already persisted' do
-          id = user1.id
-
-          UserRepository.create(user1)
-          user1.id.must_equal id
-        end
-
-        it 'returns nil when trying to create an already persisted entity' do
-          created_user = UserRepository.create(User.new(name: 'Pascal'))
-          value = UserRepository.create(created_user)
-          value.must_be_nil
-        end
-
         describe 'when entity is not persisted' do
           let(:unpersisted_user) { User.new(name: 'My', age: '23') }
+
+          it 'reposists entity' do
+            result = UserRepository.create(unpersisted_user)
+            UserRepository.all.must_equal([result])
+          end
+
+          it 'assigns and persists identity' do
+            result = UserRepository.create(unpersisted_user)
+            result.id.wont_be_nil
+          end
 
           it 'assigns and persists created_at attribute' do
             result = UserRepository.create(unpersisted_user)
@@ -92,9 +73,23 @@ describe Lotus::Repository do
             UserRepository.delete(@persisted_user)
           end
 
-          it 'does not touch created_at' do
-            UserRepository.create(@persisted_user)
-            @persisted_user.created_at.wont_be_nil
+          it 'raises an exception' do
+            -> { UserRepository.create(@persisted_user) }.must_raise Lotus::Model::AlreadyPersistedEntityError
+          end
+        end
+
+        describe 'when entity is not persisted but with unique identity' do
+          before do
+            UserRepository.clear
+            @persisted_user = UserRepository.create(User.new(name: 'My', age: '23', id: 23))
+          end
+
+          it 'persist entity' do
+            UserRepository.all.must_equal([@persisted_user])
+          end
+
+          it 'leaves given id' do
+            @persisted_user.id.must_equal 23
           end
         end
       end
@@ -137,7 +132,7 @@ describe Lotus::Repository do
 
         let(:user) { User.new(name: 'D') }
 
-        it 'delete entity' do
+        it 'deletes entity' do
           UserRepository.all.wont_include(@user)
         end
 

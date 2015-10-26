@@ -17,6 +17,21 @@ module Lotus
     #
     # @see Lotus::Repository.update
     class NonPersistedEntityError < ::StandardError
+      def initialize(message = "Entity is not persisted")
+        super
+      end
+    end
+
+    # Error for already persisted entity
+    # It's raised when we try to create already persisted entry.
+    #
+    # @since 0.6.0
+    #
+    # @see Lotus::Repository.create
+    class AlreadyPersistedEntityError < ::StandardError
+      def initialize(message = "Entity is already persisted")
+        super
+      end
     end
 
     # Error for invalid mapper configuration
