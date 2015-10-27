@@ -31,11 +31,20 @@ describe 'PostgreSQL Database migrations' do
     end
 
     describe "create" do
-      it "creates the database" do
+      before do
         Lotus::Model::Migrator.create
+      end
 
+      it "creates the database" do
         connection = Sequel.connect(@uri)
         connection.tables.must_be :empty?
+      end
+
+      it 'raises error if database is busy' do
+        Sequel.connect(@uri).tables
+        exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        exception.message.must_include 'createdb: database creation failed'
+        exception.message.must_include 'There is 1 other session using the database'
       end
     end
 
