@@ -10,6 +10,14 @@ module Lotus
         # @api private
         def create
           new_connection(global: true).run %(CREATE DATABASE #{ database };)
+        rescue Sequel::DatabaseError => e
+          message = if e.message.match(/database exists/)
+            "Database creation failed. There is 1 other session using the database"
+          else
+            e.message
+          end
+
+          raise MigrationError.new(message)
         end
 
         # @since 0.4.0
