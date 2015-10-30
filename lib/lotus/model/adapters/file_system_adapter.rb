@@ -66,7 +66,7 @@ module Lotus
         #
         # @api private
         # @since 0.2.0
-        def initialize(mapper, uri)
+        def initialize(mapper, uri, callbacks = {})
           super
           prepare(uri)
 

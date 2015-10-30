@@ -46,6 +46,10 @@ module Lotus
         # @since 0.2.0
         attr_reader :uri
 
+        # @return [Hash] a hash of callbacks to be executed upon connection to the underlying repo db
+        #
+        attr_reader :callbacks
+
         # @return [String] the adapter class name
         #
         # @since 0.2.0
@@ -64,6 +68,8 @@ module Lotus
         def initialize(**options)
           @type = options[:type]
           @uri  = options[:uri]
+          @callbacks = options.select { |opt| allowed_callbacks.include?(opt) }
+
           @class_name ||= Lotus::Utils::String.new("#{@type}_adapter").classify
         end
 
@@ -83,6 +89,10 @@ module Lotus
 
         private
 
+        def allowed_callbacks
+          [:after_connect]
+        end
+
         def load_adapter
           begin
             require "lotus/model/adapters/#{type}_adapter"
@@ -94,7 +104,7 @@ module Lotus
         def instantiate_adapter(mapper)
           begin
             klass = Lotus::Utils::Class.load!(class_name, Lotus::Model::Adapters)
-            klass.new(mapper, uri)
+            klass.new(mapper, uri, callbacks)
           rescue NameError
             raise AdapterNotFound.new(class_name)
           rescue => e

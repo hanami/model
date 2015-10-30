@@ -31,8 +31,10 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def initialize(mapper, uri = nil)
+        def initialize(mapper, uri = nil, callbacks = {})
           super
+
+          execute_callbacks
 
           @mutex       = Mutex.new
           @collections = {}
@@ -150,6 +152,10 @@ module Lotus
         end
 
         private
+
+        def execute_callbacks
+          @callbacks.each_pair { |_, callback| callback.call(self) }
+        end
 
         # Returns a collection from the given name.
         #
