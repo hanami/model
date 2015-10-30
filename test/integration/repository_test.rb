@@ -32,7 +32,7 @@ describe Lotus::Repository do
         CategoryRepository.clear
       end
 
-      after do
+      after(:each) do
         UserRepository.adapter.disconnect
         ArticleRepository.adapter.disconnect
       end
@@ -512,6 +512,10 @@ describe Lotus::Repository do
       ArticleRepository.clear
 
       ArticleRepository.create(article1)
+    end
+
+    after do
+      UserRepository.adapter.disconnect
     end
 
     describe '.transaction' do

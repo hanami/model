@@ -26,7 +26,16 @@ module Lotus
         # @api private
         def create
           set_environment_variables
-          `createdb #{ database }`
+
+          call_db_command('createdb') do |error_message|
+            message = if error_message.match(/already exists/)
+              "createdb: database creation failed. There is 1 other session using the database."
+            else
+              error_message
+            end
+
+            raise MigrationError.new(message)
+          end
         end
 
         # @since 0.4.0
@@ -34,22 +43,14 @@ module Lotus
         def drop
           set_environment_variables
 
-          require 'open3'
-
-          Open3.popen3('dropdb', database) do |stdin, stdout, stderr, wait_thr|
-            exit_status = wait_thr.value
-
-            unless exit_status.success?
-              error_message = stderr.read
-
-              message = if error_message.match(/does not exist/)
-                "Cannot find database: #{ database }"
-              else
-                message
-              end
-
-              raise MigrationError.new(message)
+          call_db_command('dropdb') do |error_message|
+            message = if error_message.match(/does not exist/)
+              "Cannot find database: #{ database }"
+            else
+              error_message
             end
+
+            raise MigrationError.new(message)
           end
         end
 
@@ -95,6 +96,20 @@ module Lotus
         # @api private
         def dump_migrations_data
           system "pg_dump -t #{ migrations_table } #{ database } >> #{ escape(schema) }"
+        end
+
+        # @since x.x.x
+        # @api private
+        def call_db_command(command)
+          require 'open3'
+
+          Open3.popen3(command, database) do |stdin, stdout, stderr, wait_thr|
+            exit_status = wait_thr.value
+
+            unless exit_status.success?
+              yield stderr.read
+            end
+          end
         end
       end
     end

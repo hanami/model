@@ -38,11 +38,31 @@ describe Lotus::Entity do
       Car.attributes.must_equal Set.new([:id, :model])
     end
 
+    it 'rejects existed instance methods' do
+      Car.attributes :object_id
+      Car.attributes.must_equal Set.new([:id])
+    end
+
     describe 'params is array' do
       it 'defines attributes' do
         Car.attributes [:model]
         Car.attributes.must_equal Set.new([:id, :model])
       end
+    end
+  end
+
+  describe '.allowed_attribute_name?' do
+    it 'returns true if attrubute not defined' do
+      Car.allowed_attribute_name?(:model).must_equal true
+    end
+
+    it 'returns false if attribute defined' do
+      Car.attributes :model
+      Car.allowed_attribute_name?(:model).must_equal false
+    end
+
+    it 'returns false for reserved word' do
+      Car.allowed_attribute_name?(:to_json).must_equal false
     end
   end
 
@@ -179,6 +199,29 @@ describe Lotus::Entity do
 
     it 'returns an attributes hash' do
       @book.to_h.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false, tags: nil})
+    end
+  end
+
+  describe '#attribute_names' do
+    before do
+      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false)
+    end
+
+    it 'returns an attribute names' do
+      @book.attribute_names.must_equal Set.new([:id, :title, :author, :published, :tags])
+    end
+  end
+
+  describe "#inspect, #to_s" do
+    before do
+      @book = Book.new(id: 100, author: 'Emily Brontë', published: false)
+    end
+
+    it 'returns all assigned attributes' do
+      @book.stub(:__id__, 70179622946220) do
+        @book.inspect.must_equal "#<Book:0x007fa7eefe0b58 @id=100 @title=nil @author=\"Emily Brontë\" @published=false @tags=nil>"
+        @book.to_s.must_equal "#<Book:0x007fa7eefe0b58 @id=100 @title=nil @author=\"Emily Brontë\" @published=false @tags=nil>"
+      end
     end
   end
 
