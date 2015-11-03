@@ -149,7 +149,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       }.must_raise(URI::InvalidURIError)
     end
 
-    it 'executes after_connect callbacks' do
+    it 'supports non-mandatory adapter configurations' do
       spy = nil
       after_connect_spy_proc = Proc.new { spy = true }
 

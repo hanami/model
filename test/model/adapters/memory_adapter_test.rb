@@ -46,17 +46,6 @@ describe Lotus::Model::Adapters::MemoryAdapter do
 
   let(:collection) { :users }
 
-  describe 'initialize' do
-    it 'executes after_connect callback' do
-      spy = nil
-      after_connect_spy_proc = Proc.new { spy = true }
-
-      adapter = Lotus::Model::Adapters::MemoryAdapter.new(@mapper, nil, after_connect: after_connect_spy_proc)
-
-      spy.must_equal true
-    end
-  end
-
   describe 'multiple collections' do
     it 'create records' do
       user   = TestUser.new
