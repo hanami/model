@@ -85,6 +85,8 @@ module Lotus
         #
         # @param uri [String] the optional connection string to the database
         #
+        # @param options [Hash] a list of non-mandatory adapter options
+        #
         # @since 0.1.0
         def initialize(mapper, uri = nil, options = {})
           @mapper = mapper
