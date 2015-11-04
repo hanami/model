@@ -59,6 +59,7 @@ module Lotus
         #
         # @param mapper [Object] the database mapper
         # @param uri [String] the connection uri
+        # @param options [Hash] a hash of non-mandatory adapter options
         #
         # @return [Lotus::Model::Adapters::FileSystemAdapter]
         #
