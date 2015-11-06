@@ -59,6 +59,7 @@ module Lotus
         #
         # @param mapper [Object] the database mapper
         # @param uri [String] the connection uri
+        # @param options [Hash] a hash of non-mandatory adapter options
         #
         # @return [Lotus::Model::Adapters::FileSystemAdapter]
         #
@@ -66,7 +67,7 @@ module Lotus
         #
         # @api private
         # @since 0.2.0
-        def initialize(mapper, uri)
+        def initialize(mapper, uri, options = {})
           super
           prepare(uri)
 

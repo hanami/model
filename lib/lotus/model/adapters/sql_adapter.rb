@@ -28,6 +28,7 @@ module Lotus
         #
         # @param mapper [Object] the database mapper
         # @param uri [String] the connection uri for the database
+        # @param options [Hash] a hash of non-mandatory adapter options
         #
         # @return [Lotus::Model::Adapters::SqlAdapter]
         #
@@ -41,9 +42,9 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def initialize(mapper, uri)
+        def initialize(mapper, uri, options = {})
           super
-          @connection = Sequel.connect(@uri)
+          @connection = Sequel.connect(@uri, @options)
         rescue Sequel::AdapterNotFound => e
           raise DatabaseAdapterNotFound.new(e.message)
         end

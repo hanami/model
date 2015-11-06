@@ -46,6 +46,10 @@ module Lotus
         # @since 0.2.0
         attr_reader :uri
 
+        # @return [Hash] a list of non-mandatory options for the adapter
+        #
+        attr_reader :options
+
         # @return [String] the adapter class name
         #
         # @since 0.2.0
@@ -62,8 +66,12 @@ module Lotus
         #
         # @since 0.2.0
         def initialize(**options)
-          @type = options[:type]
-          @uri  = options[:uri]
+          opts     = options.dup
+
+          @type    = opts.delete(:type)
+          @uri     = opts.delete(:uri)
+          @options = opts
+
           @class_name ||= Lotus::Utils::String.new("#{@type}_adapter").classify
         end
 
@@ -94,7 +102,7 @@ module Lotus
         def instantiate_adapter(mapper)
           begin
             klass = Lotus::Utils::Class.load!(class_name, Lotus::Model::Adapters)
-            klass.new(mapper, uri)
+            klass.new(mapper, uri, options)
           rescue NameError
             raise AdapterNotFound.new(class_name)
           rescue => e

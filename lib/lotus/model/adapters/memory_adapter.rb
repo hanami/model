@@ -24,6 +24,7 @@ module Lotus
         #
         # @param mapper [Object] the database mapper
         # @param uri [String] the connection uri (ignored)
+        # @param options [Hash] a hash of non mandatory adapter options
         #
         # @return [Lotus::Model::Adapters::MemoryAdapter]
         #
@@ -31,7 +32,7 @@ module Lotus
         #
         # @api private
         # @since 0.1.0
-        def initialize(mapper, uri = nil)
+        def initialize(mapper, uri = nil, options = {})
           super
 
           @mutex       = Mutex.new

@@ -148,6 +148,20 @@ describe Lotus::Model::Adapters::SqlAdapter do
         Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'unknown_db:host')
       }.must_raise(URI::InvalidURIError)
     end
+
+    it 'supports non-mandatory adapter configurations' do
+      spy = nil
+      after_connect_spy_proc = Proc.new { spy = true }
+
+      adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper,
+                                                        SQLITE_CONNECTION_STRING, after_connect: after_connect_spy_proc)
+
+      # Sequel lazily connects
+      adapter.execute('select 1 as dummy')
+
+      spy.must_equal true
+    end
+
   end
 
   describe '#persist' do

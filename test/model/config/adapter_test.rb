@@ -2,6 +2,15 @@ require 'test_helper'
 
 describe Lotus::Model::Config::Adapter do
 
+  describe 'initialize' do
+    it 'sets other adapater options' do
+      after_connect_proc = -> {}
+      config =  Lotus::Model::Config::Adapter.new(type: :memory, uri: nil, after_connect: after_connect_proc)
+
+      config.options.must_equal({after_connect: after_connect_proc})
+    end
+  end
+
   describe '#build' do
     let(:mapper) { Lotus::Model::Mapper.new }
     let(:adapter) { config.build(mapper) }
