@@ -7,12 +7,6 @@ describe Lotus::Model::Adapters::Abstract do
   let(:query)      { Object.new }
   let(:collection) { :collection }
 
-  describe '#persist' do
-    it 'raises error' do
-      -> { adapter.persist(collection, entity) }.must_raise NotImplementedError
-    end
-  end
-
   describe '#create' do
     it 'raises error' do
       -> { adapter.create(collection, entity) }.must_raise NotImplementedError

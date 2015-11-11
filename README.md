@@ -192,7 +192,6 @@ This architecture has several advantages:
 
 When a class includes `Lotus::Repository`, it will receive the following interface:
 
-  * `.persist(entity)` – Create or update an entity
   * `.create(entity)`  – Create a record for the given entity
   * `.update(entity)`  – Update the record corresponding to the given entity
   * `.delete(entity)`  – Delete the record corresponding to the given entity

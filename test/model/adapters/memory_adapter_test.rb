@@ -59,38 +59,6 @@ describe Lotus::Model::Adapters::MemoryAdapter do
     end
   end
 
-  describe '#persist' do
-    describe 'when the given entity is not persisted' do
-      let(:entity) { TestUser.new }
-
-      it 'stores the record and assigns an id' do
-        result = @adapter.persist(collection, entity)
-
-        result.id.wont_be_nil
-        @adapter.find(collection, result.id).must_equal result
-      end
-    end
-
-    describe 'when the given entity is persisted' do
-      before do
-        @entity = @adapter.create(collection, entity)
-      end
-
-      let(:entity) { TestUser.new }
-
-      it 'updates the record and leaves untouched the id' do
-        id = @entity.id
-        id.wont_be_nil
-
-        @entity.name = 'L'
-        @adapter.persist(collection, @entity)
-
-        @entity.id.must_equal(id)
-        @adapter.find(collection, @entity.id).name.must_equal @entity.name
-      end
-    end
-  end
-
   describe '#create' do
     let(:entity) { TestUser.new }
 

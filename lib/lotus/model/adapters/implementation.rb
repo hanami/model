@@ -6,23 +6,6 @@ module Lotus
       # @api private
       # @since 0.1.0
       module Implementation
-        # Creates or updates a record in the database for the given entity.
-        #
-        # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id, #id=] the entity to persist
-        #
-        # @return [Object] the entity
-        #
-        # @api private
-        # @since 0.1.0
-        def persist(collection, entity)
-          if entity.id
-            update(collection, entity)
-          else
-            create(collection, entity)
-          end
-        end
-
         # Returns all the records for the given collection
         #
         # @param collection [Symbol] the target collection (it must be mapped).

@@ -39,116 +39,19 @@ describe Lotus::Repository do
         end
       end
 
-      describe '.persist' do
-        describe 'when passed a non-persisted entity' do
-          let(:unpersisted_user) { User.new(name: 'Don', age: '25') }
-
-          it 'should return that entity' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-
-            persisted_user.id.wont_be_nil
-            persisted_user.name.must_equal(unpersisted_user.name)
-            persisted_user.age.must_equal(unpersisted_user.age.to_i)
-          end
-
-          it 'returns a copy of the entity passed as argument' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            refute_same persisted_user, unpersisted_user
-          end
-
-          it 'does not assign an id on the entity passed as argument' do
-            UserRepository.persist(unpersisted_user)
-            unpersisted_user.id.must_be_nil
-          end
-
-          it 'should coerce attributes' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.age.must_equal(25)
-          end
-
-          if adapter_name == :postgres
-            it 'should use custom coercers' do
-              article = Article.new(title: 'Coercer', tags: tags = ['ruby', 'lotus'])
-              article = ArticleRepository.persist(article)
-
-              article.tags.must_equal tags
-              article.tags.class.must_equal ::Array
-            end
-          end
-
-          it 'assigns and persist created_at attribute' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.created_at.wont_be_nil
-          end
-
-          it 'assigns and persist updated_at attribute' do
-            persisted_user = UserRepository.persist(unpersisted_user)
-            persisted_user.updated_at.must_equal persisted_user.created_at
-          end
-        end
-
-        describe 'when passed a persisted entity' do
-          let(:user)           { UserRepository.create(User.new(name: 'Don')) }
-          let(:persisted_user) { UserRepository.persist(user) }
-
-          before do
-            @updated_at = user.updated_at
-
-            # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
-            # concurrent platforms like jRuby
-            sleep 2 if Lotus::Utils.jruby?
-          end
-
-          it 'should return that entity' do
-            UserRepository.persist(persisted_user).must_equal(user)
-          end
-
-          it 'does not touch created_at' do
-            UserRepository.persist(persisted_user)
-
-            persisted_user.created_at.wont_be_nil
-          end
-
-          it 'touches updated_at' do
-            updated_user = UserRepository.persist(user)
-
-            assert updated_user.updated_at > @updated_at
-          end
-        end
-      end
-
       describe '.create' do
-        before do
-          @users = [
-            UserRepository.create(user1),
-            UserRepository.create(user2)
-          ]
-        end
-
-        it 'persist entities' do
-          UserRepository.all.must_equal(@users)
-        end
-
-        it 'creates different kind of entities' do
-          result = ArticleRepository.create(article1)
-          ArticleRepository.all.must_equal([result])
-        end
-
-        it 'does nothing when already persisted' do
-          id = user1.id
-
-          UserRepository.create(user1)
-          user1.id.must_equal id
-        end
-
-        it 'returns nil when trying to create an already persisted entity' do
-          created_user = UserRepository.create(User.new(name: 'Pascal'))
-          value = UserRepository.create(created_user)
-          value.must_be_nil
-        end
-
         describe 'when entity is not persisted' do
           let(:unpersisted_user) { User.new(name: 'My', age: '23') }
+
+          it 'reposists entity' do
+            result = UserRepository.create(unpersisted_user)
+            UserRepository.all.must_equal([result])
+          end
+
+          it 'assigns and persists identity' do
+            result = UserRepository.create(unpersisted_user)
+            result.id.wont_be_nil
+          end
 
           it 'assigns and persists created_at attribute' do
             result = UserRepository.create(unpersisted_user)
@@ -170,9 +73,23 @@ describe Lotus::Repository do
             UserRepository.delete(@persisted_user)
           end
 
-          it 'does not touch created_at' do
-            UserRepository.create(@persisted_user)
-            @persisted_user.created_at.wont_be_nil
+          it 'raises an exception' do
+            -> { UserRepository.create(@persisted_user) }.must_raise Lotus::Model::AlreadyPersistedEntityError
+          end
+        end
+
+        describe 'when entity is not persisted but with unique identity' do
+          before do
+            UserRepository.clear
+            @persisted_user = UserRepository.create(User.new(name: 'My', age: '23', id: 23))
+          end
+
+          it 'persist entity' do
+            UserRepository.all.must_equal([@persisted_user])
+          end
+
+          it 'leaves given id' do
+            @persisted_user.id.must_equal 23
           end
         end
       end
@@ -215,7 +132,7 @@ describe Lotus::Repository do
 
         let(:user) { User.new(name: 'D') }
 
-        it 'delete entity' do
+        it 'deletes entity' do
           UserRepository.all.wont_include(@user)
         end
 
@@ -404,39 +321,6 @@ describe Lotus::Repository do
           @article = ArticleRepository.update(@article)
 
           @article.changed?.must_equal false
-        end
-      end
-
-      describe 'missing timestamps attribute' do
-        describe '.persist' do
-          before do
-            @article = ArticleRepository.persist(Article.new(title: 'Lotus', comments_count: '4'))
-            @article.instance_eval do
-              def created_at
-                @created_at
-              end
-
-              def updated_at
-                @updated_at
-              end
-            end
-          end
-
-          after do
-            ArticleRepository.delete(@article)
-          end
-
-          describe 'when entity does not have created_at accessor' do
-            it 'does not touch created_at' do
-              @article.created_at.must_be_nil
-            end
-          end
-
-          describe 'when entity does not have updated_at accessor' do
-            it 'does not touch updated_at' do
-              @article.updated_at.must_be_nil
-            end
-          end
         end
       end
     end
