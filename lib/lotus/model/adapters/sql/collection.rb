@@ -287,7 +287,7 @@ module Lotus
           def _apply_defaults(entity, defaults)
             defaults.each_pair do |attribute, default|
               if entity.send(attribute).nil?
-                entity.send("#{attribute}=", default)
+                entity.send("#{attribute}=", @mapped_collection.deserialize_attribute(attribute, default))
               end
             end
           end
