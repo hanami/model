@@ -55,12 +55,11 @@ module Lotus
           # @api private
           # @since 0.1.0
           def insert(entity, defaults)
+            _apply_defaults(entity, defaults)
+
             serialized_entity            = _serialize(entity)
             serialized_entity[identity] = super(serialized_entity)
 
-            defaults.each_pair do |attribute, default|
-              serialized_entity[attribute] ||= default
-            end
 
             _deserialize(serialized_entity)
           end
@@ -283,6 +282,14 @@ module Lotus
           # @since 0.2.2
           def _deserialize(entity)
             @mapped_collection.deserialize([entity]).first
+          end
+
+          def _apply_defaults(entity, defaults)
+            defaults.each_pair do |attribute, default|
+              if entity.send(attribute).nil?
+                entity.send("#{attribute}=", default)
+              end
+            end
           end
         end
       end

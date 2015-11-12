@@ -5,7 +5,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
     class TestUser
       include Lotus::Entity
 
-      attributes :country_id, :name, :age
+      attributes :country_id, :name, :age, :email
     end
 
     class TestUserRepository
@@ -60,6 +60,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         attribute :country_id, Integer
         attribute :name, String
         attribute :age,  Integer
+        attribute :email, String
       end
 
       collection :devices do
@@ -204,6 +205,14 @@ describe Lotus::Model::Adapters::SqlAdapter do
 
       result.id.wont_be_nil
       @adapter.find(collection, result.id).must_equal result
+    end
+
+    describe 'with database defaults' do
+      it 'respects database defaults' do
+        result = @adapter.create(collection, entity)
+
+        result.email.must_equal 'N/A'
+      end
     end
   end
 

@@ -88,6 +88,8 @@ end
     Integer :country_id
     String  :name
     Integer :age
+    String  :email, default: 'N/A'
+
     DateTime :created_at
     DateTime :updated_at
   end

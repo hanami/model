@@ -282,10 +282,11 @@ module Lotus
         # @api private
         # @since x.x.x
         def defaults(collection)
-          {}.tap do |hsh|
+          {}.tap do |defaults|
             schema(collection).each_pair do |attribute, properties|
-              if properties[:ruby_default] || properties[:db_type] == 'boolean'
-                hsh[attribute] = properties[:ruby_default]
+              if @mapper.collection(collection).attributes.has_key?(attribute) &&
+                  (properties[:ruby_default] || properties[:db_type] == 'boolean')
+                defaults[attribute] = properties[:ruby_default]
               end
             end
           end
@@ -296,7 +297,7 @@ module Lotus
         # @api private
         # @since x.x.x
         def schema(collection)
-          @connection.schema(collection).to_h
+          Hash[@connection.schema(collection)]
         end
 
         # Returns a collection from the given name.
