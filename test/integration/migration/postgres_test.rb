@@ -71,6 +71,23 @@ describe 'PostgreSQL Database migrations' do
         exception.message.must_include 'dropdb: database removal failed'
         exception.message.must_include 'There is 1 other session using the database'
       end
+
+      describe "when a command isn't available" do
+        before do
+          # We accomplish having a command not be available by setting PATH
+          # to an empty string, which means *no commands* are available.
+          @original_path = ENV['PATH']
+          ENV['PATH'] = ''
+        end
+
+        it "raises MigrationError on create" do
+          -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        end
+
+        after do
+          ENV['PATH'] = @original_path
+        end
+      end
     end
 
     describe "migrate" do
