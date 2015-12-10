@@ -14,7 +14,7 @@ module Lotus
       # collection.
       #
       # @since 0.1.0
-      class UnmappedCollectionError < ::StandardError
+      class UnmappedCollectionError < Lotus::Model::Error
         def initialize(name)
           super("Cannot find collection: #{ name }")
         end
@@ -26,7 +26,7 @@ module Lotus
       # entity.
       #
       # @since 0.2.0
-      class EntityNotFound < ::StandardError
+      class EntityNotFound < Lotus::Model::Error
         def initialize(name)
           super("Cannot find class for entity: #{ name }")
         end
@@ -38,7 +38,7 @@ module Lotus
       # repository.
       #
       # @since 0.2.0
-      class RepositoryNotFound < ::StandardError
+      class RepositoryNotFound < Lotus::Model::Error
         def initialize(name)
           super("Cannot find class for repository: #{ name }")
         end

@@ -8,7 +8,7 @@ module Lotus
     # @since 0.2.0
     #
     # @see Lotus::Model::Configuration#mapping
-    class NoMappingError < ::StandardError
+    class NoMappingError < Lotus::Model::Error
       def initialize
         super("Mapping is missing. Please check your framework configuration.")
       end
