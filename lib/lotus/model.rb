@@ -4,6 +4,7 @@ require 'lotus/entity/dirty_tracking'
 require 'lotus/repository'
 require 'lotus/model/mapper'
 require 'lotus/model/configuration'
+require 'lotus/model/error'
 
 module Lotus
   # Model
@@ -16,7 +17,7 @@ module Lotus
     # @since 0.1.0
     #
     # @see Lotus::Repository.update
-    class NonPersistedEntityError < ::StandardError
+    class NonPersistedEntityError < Lotus::Model::Error
     end
 
     # Error for invalid mapper configuration
@@ -25,13 +26,13 @@ module Lotus
     # @since 0.2.0
     #
     # @see Lotus::Configuration#mapping
-    class InvalidMappingError < ::StandardError
+    class InvalidMappingError < Lotus::Model::Error
     end
 
     # Error for invalid raw command syntax
     #
     # @since 0.5.0
-    class InvalidCommandError < ::StandardError
+    class InvalidCommandError < Lotus::Model::Error
       def initialize(message = "Invalid command")
         super
       end
@@ -40,7 +41,7 @@ module Lotus
     # Error for invalid raw query syntax
     #
     # @since 0.3.1
-    class InvalidQueryError < ::StandardError
+    class InvalidQueryError < Lotus::Model::Error
       def initialize(message = "Invalid query")
         super
       end

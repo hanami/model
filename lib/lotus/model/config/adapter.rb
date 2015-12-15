@@ -6,7 +6,7 @@ module Lotus
       # Raised when an adapter class does not exist
       #
       # @since 0.2.0
-      class AdapterNotFound < ::StandardError
+      class AdapterNotFound < Lotus::Model::Error
         def initialize(adapter_name)
           super "Cannot find Lotus::Model adapter #{adapter_name}"
         end

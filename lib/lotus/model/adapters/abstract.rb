@@ -11,7 +11,7 @@ module Lotus
       # @see Lotus::Model::Adapters::SqlAdapter#initialize
       #
       # @since 0.1.0
-      class DatabaseAdapterNotFound < ::StandardError
+      class DatabaseAdapterNotFound < Lotus::Model::Error
       end
 
       # It's raised when an adapter does not support a feature.
@@ -22,14 +22,14 @@ module Lotus
       # @see Lotus::Model::Adapters::Abstract#connection_string
       #
       # @since 0.3.0
-      class NotSupportedError < ::StandardError
+      class NotSupportedError < Lotus::Model::Error
       end
 
       # It's raised when an operation is requested to an adapter after it was
       # disconnected.
       #
       # @since 0.5.0
-      class DisconnectedAdapterError < ::StandardError
+      class DisconnectedAdapterError < Lotus::Model::Error
         def initialize
           super "You have tried to perform an operation on a disconnected adapter"
         end

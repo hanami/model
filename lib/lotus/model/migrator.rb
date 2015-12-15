@@ -8,7 +8,7 @@ module Lotus
     # Migration error
     #
     # @since 0.4.0
-    class MigrationError < ::StandardError
+    class MigrationError < Lotus::Model::Error
     end
 
     # Define a migration

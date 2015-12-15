@@ -1,8 +1,10 @@
+require 'lotus/model/error'
+
 module Lotus
   module Model
     module Adapters
       # @since 0.2.0
-      class NoAdapterError < ::StandardError
+      class NoAdapterError < Lotus::Model::Error
         def initialize(method_name)
           super("Cannot invoke `#{ method_name }' without selecting an adapter. Please check your framework configuration.")
         end
