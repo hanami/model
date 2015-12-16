@@ -45,32 +45,41 @@ module Lotus
         # @api private
         # @since 0.1.0
         def _compile!
-          code = @collection.attributes.map do |_,attr|
-            %{
-            def deserialize_#{ attr.mapped }(value)
-              #{ attr.load_coercer }(value)
-            end
+          code = ''
+          hash = ''
+          taped_hash = ''
+          from_record = ''
+
+          @collection.attributes.each do |name, attr|
+            code << %{
+              def deserialize_#{attr.mapped}(value)
+                #{attr.load_coercer}(value)
+              end
             }
-          end.join("\n")
+
+            hash << ":#{attr.mapped},#{attr.dump_coercer}(entity.#{name}),"
+            from_record << ":#{name},#{attr.load_coercer}(record[:#{attr.mapped}]),"
+
+            unless name == @collection.identity
+              taped_hash << "value = #{attr.dump_coercer}(entity.#{name}); record[:#{attr.mapped}] = value unless value.nil?;"
+            end
+          end
 
           instance_eval <<-EVAL, __FILE__, __LINE__
             def to_record(entity)
               if entity.id
-                Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.dump_coercer }(entity.#{name})"}.join(',') }]
+                Hash[#{hash}]
               else
                 Hash[].tap do |record|
-                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,attr| "value = #{ attr.dump_coercer }(entity.#{name}); record[:#{attr.mapped}] = value unless value.nil?"}.join('; ') }
+                  #{taped_hash}
                 end
               end
             end
 
             def from_record(record)
-              ::#{ @collection.entity }.new(
-                Hash[#{ @collection.attributes.map{|name,attr| ":#{name},#{attr.load_coercer}(record[:#{attr.mapped}])"}.join(',') }]
-              )
+              ::#{@collection.entity}.new(Hash[#{from_record}])
             end
-
-            #{ code }
+            #{code}
           EVAL
         end
       end
