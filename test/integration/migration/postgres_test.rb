@@ -80,12 +80,13 @@ describe 'PostgreSQL Database migrations' do
           ENV['PATH'] = ''
         end
 
-        it "raises MigrationError on create" do
-          -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
-        end
-
         after do
           ENV['PATH'] = @original_path
+        end
+
+        it "raises MigrationError on create" do
+          exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+          exception.message.must_equal "No such file or directory - createdb"
         end
       end
     end
