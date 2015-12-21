@@ -1,6 +1,20 @@
 # Lotus::Model
 A persistence layer for Lotus
 
+## v0.5.1 - (unreleased)
+### Added
+- [Taylor Finnell] Let `Lotus::Model::Configuration#adapter` to accept arbitrary options (eg. `adapter type: :sql, uri: 'jdbc:...', after_connect: Proc.new { |connection| connection.auto_commit(true) }`)
+
+### Changed
+- [Andrey Deryabin] Improved `Entity#inspect`
+- [Karim Tarek] Introduced `Lotus::Model::Error` and let all the framework exceptions to inherit from it.
+
+### Fixed
+- [Luca Guidi] Improved error message when trying to use a repository without mapping the corresponding collections
+- [Sean Collins] Improved error message when trying to create database, but it fails (eg. missing `createdb` executable)
+- [Andrey Deryabin] Improved error message when trying to drop database, but a client is still connected (useful for PostgreSQL)
+- [Hiếu Nguyễn] Improved error message when trying to "prepare" database, but it fails
+
 ## v0.5.0 - 2015-09-30
 ### Added
 - [Brenno Costa] Official support for JRuby 9k+
