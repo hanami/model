@@ -103,12 +103,14 @@ module Lotus
         def call_db_command(command)
           require 'open3'
 
-          Open3.popen3(command, database) do |stdin, stdout, stderr, wait_thr|
-            exit_status = wait_thr.value
-
-            unless exit_status.success?
-              yield stderr.read
+          begin
+            Open3.popen3(command, database) do |stdin, stdout, stderr, wait_thr|
+              unless wait_thr.value.success? # wait_thr.value is the exit status
+                yield stderr.read
+              end
             end
+          rescue SystemCallError => e
+            yield e.message
           end
         end
       end
