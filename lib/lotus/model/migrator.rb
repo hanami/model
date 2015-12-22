@@ -292,6 +292,8 @@ module Lotus
         Sequel.connect(
           configuration.adapter.uri
         )
+      rescue Sequel::AdapterNotFound
+        raise MigrationError.new("Current adapter (#{ configuration.adapter.type }) doesn't support SQL database operations.")
       end
 
       # Lotus::Model configuration
