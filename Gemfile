@@ -13,6 +13,7 @@ platforms :ruby do
   gem 'sqlite3', require: false
   gem 'pg'
   gem 'mysql2'
+  gem 'mysql'
 end
 
 platforms :jruby do
