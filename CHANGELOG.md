@@ -1,7 +1,7 @@
 # Lotus::Model
 A persistence layer for Lotus
 
-## v0.5.1 - (unreleased)
+## v0.5.1 - 2016-01-12
 ### Added
 - [Taylor Finnell] Let `Lotus::Model::Configuration#adapter` to accept arbitrary options (eg. `adapter type: :sql, uri: 'jdbc:...', after_connect: Proc.new { |connection| connection.auto_commit(true) }`)
 

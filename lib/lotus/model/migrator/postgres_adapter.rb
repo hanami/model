@@ -98,7 +98,7 @@ module Lotus
           system "pg_dump -t #{ migrations_table } #{ database } >> #{ escape(schema) }"
         end
 
-        # @since x.x.x
+        # @since 0.5.1
         # @api private
         def call_db_command(command)
           require 'open3'
