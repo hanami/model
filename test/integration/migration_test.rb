@@ -4,11 +4,6 @@ require 'lotus/model/migrator'
 describe "Lotus::Model.migration" do
   let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
 
-  after(:each) do
-    File.delete(@database)
-    File.delete(@schema)
-  end
-
   describe "SQLite" do
     before do
       @database = Pathname.new("#{ __dir__ }/../../tmp/migration.sqlite3").expand_path
@@ -26,6 +21,11 @@ describe "Lotus::Model.migration" do
 
       @connection = Sequel.connect(@uri)
       Lotus::Model::Migrator::Adapter.for(@connection).dump
+    end
+
+    after(:each) do
+      File.delete(@database)
+      File.delete(@schema)
     end
 
     after(:each) do
@@ -488,6 +488,36 @@ describe "Lotus::Model.migration" do
 
       it "defines column constraint and check" do
         @schema.read.must_include %(CREATE TABLE `table_constraints` (`age` integer, `role` varchar(255), CONSTRAINT `age_constraint` CHECK (`age` > 18), CHECK (role IN("contributor", "manager", "owner")));)
+      end
+    end
+  end
+
+  describe "File system" do
+    before do
+      Lotus::Model.configure do
+        adapter type: :file_system, uri: "file:///db/test417_development"
+      end
+    end
+
+    describe "connection" do
+      it "return error" do
+        exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        exception.message.must_include "Current adapter (file_system) doesn't support SQL database operations."
+      end
+    end
+  end
+
+  describe "Memory" do
+    before do
+      Lotus::Model.configure do
+        adapter type: :memory, uri: "memory://localhost"
+      end
+    end
+
+    describe "connection" do
+      it "return error" do
+        exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        exception.message.must_include "Current adapter (memory) doesn't support SQL database operations."
       end
     end
   end
