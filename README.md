@@ -31,7 +31,7 @@ Like all the other Lotus components, it can be used as a standalone framework or
 * API Doc: http://rdoc.info/gems/lotus-model
 * Bugs/Issues: https://github.com/lotus/model/issues
 * Support: http://stackoverflow.com/questions/tagged/lotus-ruby
-* Chat: https://gitter.im/lotus/chat
+* Chat: https://chat.lotusrb.org
 
 ## Rubies
 
