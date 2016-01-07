@@ -62,7 +62,7 @@ module Lotus
         def create(collection, entity)
           command(
             query(collection)
-          ).create(entity)
+          ).create(entity, defaults(collection))
         end
 
         # Updates a record in the database corresponding to the given entity.
@@ -276,6 +276,29 @@ module Lotus
         end
 
         private
+
+        # Returns a hash of attributes and their default values
+        #
+        # @api private
+        # @since x.x.x
+        def defaults(collection)
+          {}.tap do |defaults|
+            schema(collection).each_pair do |attribute, properties|
+              if @mapper.collection(collection).attributes.has_key?(attribute) &&
+                  (properties[:ruby_default] || properties[:db_type] == 'boolean')
+                defaults[attribute] = properties[:ruby_default]
+              end
+            end
+          end
+        end
+
+        # Returns the schema for the collection as a hash
+        #
+        # @api private
+        # @since x.x.x
+        def schema(collection)
+          Hash[@connection.schema(collection)]
+        end
 
         # Returns a collection from the given name.
         #

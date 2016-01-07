@@ -29,8 +29,8 @@ module Lotus
           #
           # @api private
           # @since 0.1.0
-          def create(entity)
-            @collection.insert(entity)
+          def create(entity, defaults)
+            @collection.insert(entity, defaults)
           end
 
           # Updates the corresponding record for the given entity.
