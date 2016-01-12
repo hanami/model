@@ -10,6 +10,10 @@ describe Lotus::Model::Error do
     Lotus::Model::NonPersistedEntityError.superclass.must_equal Lotus::Model::Error
     Lotus::Model::InvalidMappingError.superclass.must_equal Lotus::Model::Error
     Lotus::Model::InvalidCommandError.superclass.must_equal Lotus::Model::Error
+    Lotus::Model::CheckConstraintViolationError.superclass.must_equal Lotus::Model::Error
+    Lotus::Model::ForeignKeyConstraintViolationError.superclass.must_equal Lotus::Model::Error
+    Lotus::Model::NotNullConstraintViolationError.superclass.must_equal Lotus::Model::Error
+    Lotus::Model::UniqueConstraintViolationError.superclass.must_equal Lotus::Model::Error
     Lotus::Model::InvalidQueryError.superclass.must_equal Lotus::Model::Error
     Lotus::Model::Adapters::DatabaseAdapterNotFound.superclass.must_equal Lotus::Model::Error
     Lotus::Model::Adapters::NotSupportedError.superclass.must_equal Lotus::Model::Error

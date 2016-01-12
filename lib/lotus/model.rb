@@ -38,6 +38,34 @@ module Lotus
       end
     end
 
+    # Error for check constraint violation
+    class CheckConstraintViolationError < Lotus::Model::Error
+      def initialize(message = "Check constraint has been violated")
+        super
+      end
+    end
+
+    # Error for foreign key constraint violation
+    class ForeignKeyConstraintViolationError < Lotus::Model::Error
+      def initialize(message = "Foreign key constraint has been violated")
+        super
+      end
+    end
+
+    # Error for NOT NULL constraint violation
+    class NotNullConstraintViolationError < Lotus::Model::Error
+      def initialize(message = "NOT NULL constraint has been violated")
+        super
+      end
+    end
+
+    # Error for unique constraint violation
+    class UniqueConstraintViolationError < Lotus::Model::Error
+      def initialize(message = "Unique constraint has been violated")
+        super
+      end
+    end
+
     # Error for invalid raw query syntax
     #
     # @since 0.3.1

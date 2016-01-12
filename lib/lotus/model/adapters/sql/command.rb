@@ -30,7 +30,9 @@ module Lotus
           # @api private
           # @since 0.1.0
           def create(entity)
-            @collection.insert(entity)
+            _rescue_database_error do
+              @collection.insert(entity)
+            end
           end
 
           # Updates the corresponding record for the given entity.
@@ -42,7 +44,9 @@ module Lotus
           # @api private
           # @since 0.1.0
           def update(entity)
-            @collection.update(entity)
+            _rescue_database_error do
+              @collection.update(entity)
+            end
           end
 
           # Deletes all the records for the current query.
@@ -55,10 +59,41 @@ module Lotus
           # @api private
           # @since 0.1.0
           def delete
-            @collection.delete
+            _rescue_database_error do
+              @collection.delete
+            end
           end
 
           alias_method :clear, :delete
+
+          private
+
+          # Rescues Sequel::DatabaseError in yielded block
+          #
+          # @api private
+          def _rescue_database_error
+            yield
+          rescue Sequel::DatabaseError => e
+            raise _transform_database_error(e)
+          end
+
+          # Transforms error into a Lotus::Model::Error
+          #
+          # @api private
+          def _transform_database_error(error)
+            case error
+            when Sequel::CheckConstraintViolation
+              Lotus::Model::CheckConstraintViolationError.new(error.message)
+            when Sequel::ForeignKeyConstraintViolation
+              Lotus::Model::ForeignKeyConstraintViolationError.new(error.message)
+            when Sequel::NotNullConstraintViolation
+              Lotus::Model::NotNullConstraintViolationError.new(error.message)
+            when Sequel::UniqueConstraintViolation
+              Lotus::Model::UniqueConstraintViolationError.new(error.message)
+            else
+              Lotus::Model::InvalidCommandError.new(error.message)
+            end
+          end
         end
       end
     end
