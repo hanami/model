@@ -1,58 +1,58 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::SqlAdapter do
+describe Hanami::Model::Adapters::SqlAdapter do
   before do
     class TestUser
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :country_id, :name, :age
     end
 
     class TestUserRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestDevice
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :u_id
     end
 
     class TestDeviceRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestOrder
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :user_id, :total
     end
 
     class TestOrderRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestAge
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :value, :label
     end
 
     class TestAgeRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestCountry
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :code, :country_id
     end
 
     class TestCountryRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
-    @mapper = Lotus::Model::Mapper.new do
+    @mapper = Hanami::Model::Mapper.new do
       collection :users do
         entity TestUser
 
@@ -94,7 +94,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       end
     end.load!
 
-    @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
+    @adapter = Hanami::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
     @adapter.clear(collection)
   end
 
@@ -133,19 +133,19 @@ describe Lotus::Model::Adapters::SqlAdapter do
   describe '#initialize' do
     it 'raises an error when the given URI refers to a non registered database adapter' do
       -> {
-        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'oracle://host')
-      }.must_raise(Lotus::Model::Adapters::DatabaseAdapterNotFound)
+        Hanami::Model::Adapters::SqlAdapter.new(@mapper, 'oracle://host')
+      }.must_raise(Hanami::Model::Adapters::DatabaseAdapterNotFound)
     end
 
     it 'raises an error when the given URI refers to an unknown database adapter' do
       -> {
-        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'unknown://host')
-      }.must_raise(Lotus::Model::Adapters::DatabaseAdapterNotFound)
+        Hanami::Model::Adapters::SqlAdapter.new(@mapper, 'unknown://host')
+      }.must_raise(Hanami::Model::Adapters::DatabaseAdapterNotFound)
     end
 
     it 'raises an error when the given URI is malformed' do
       -> {
-        Lotus::Model::Adapters::SqlAdapter.new(@mapper, 'unknown_db:host')
+        Hanami::Model::Adapters::SqlAdapter.new(@mapper, 'unknown_db:host')
       }.must_raise(URI::InvalidURIError)
     end
 
@@ -153,7 +153,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       spy = nil
       after_connect_spy_proc = Proc.new { spy = true }
 
-      adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper,
+      adapter = Hanami::Model::Adapters::SqlAdapter.new(@mapper,
                                                         SQLITE_CONNECTION_STRING, after_connect: after_connect_spy_proc)
 
       # Sequel lazily connects
@@ -421,7 +421,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           exception = -> {
             query = Proc.new { where { a > 31 } }
             @adapter.query(collection, &query).all
-          }.must_raise(Lotus::Model::InvalidQueryError)
+          }.must_raise(Hanami::Model::InvalidQueryError)
 
           exception.message.wont_be_nil
         end
@@ -496,7 +496,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
           exception = -> {
             query = Proc.new { exclude{ a > 32 } }
             @adapter.query(collection, &query).all
-          }.must_raise(Lotus::Model::InvalidQueryError)
+          }.must_raise(Hanami::Model::InvalidQueryError)
 
           exception.message.wont_be_nil
         end
@@ -579,7 +579,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
             query = Proc.new { where(name: name1).or(n: name2) }
 
             @adapter.query(collection, &query).all
-          }.must_raise(Lotus::Model::InvalidQueryError)
+          }.must_raise(Hanami::Model::InvalidQueryError)
 
           exception.message.wont_be_nil
         end
@@ -1280,7 +1280,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       it 'raises an exception when invalid sql is provided' do
         raw = "UPDATE users SET foo=22"
 
-        -> { @adapter.execute(raw) }.must_raise Lotus::Model::InvalidCommandError
+        -> { @adapter.execute(raw) }.must_raise Hanami::Model::InvalidCommandError
       end
     end
 
@@ -1314,7 +1314,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
         # In theory `execute` yields result set in a block
         # https://github.com/jeremyevans/sequel/blob/54fa82326d3319d9aca4409c07f79edc09da3837/lib/sequel/adapters/sqlite.rb#L126-L129
         #
-        # Would be interesting in future to wrap these results into Lotus result_sets, independent from
+        # Would be interesting in future to wrap these results into Hanami result_sets, independent from
         # Sequel adapter
         #
         records = []
@@ -1328,7 +1328,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
 
       it 'raises an exception when an invalid sql is provided' do
         raw = "SELECT foo FROM users"
-        -> { @adapter.fetch(raw) }.must_raise Lotus::Model::InvalidQueryError
+        -> { @adapter.fetch(raw) }.must_raise Hanami::Model::InvalidQueryError
       end
     end
 
@@ -1388,7 +1388,7 @@ describe Lotus::Model::Adapters::SqlAdapter do
       end
 
       it 'raises error' do
-        exception = -> { @adapter.create(collection, user1) }.must_raise Lotus::Model::Adapters::DisconnectedAdapterError
+        exception = -> { @adapter.create(collection, user1) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
         exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
       end
     end

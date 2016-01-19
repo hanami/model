@@ -1,8 +1,8 @@
 require 'test_helper'
 
-describe Lotus::Model::Mapper do
+describe Hanami::Model::Mapper do
   before do
-    @mapper = Lotus::Model::Mapper.new
+    @mapper = Hanami::Model::Mapper.new
   end
 
   describe '#initialize' do
@@ -16,7 +16,7 @@ describe Lotus::Model::Mapper do
     end
 
     it 'uses the given coercer' do
-      mapper  = Lotus::Model::Mapper.new(FakeCoercer) do
+      mapper  = Hanami::Model::Mapper.new(FakeCoercer) do
         collection :articles do
         end
       end
@@ -25,19 +25,19 @@ describe Lotus::Model::Mapper do
     end
 
     it 'executes the given block' do
-      mapper = Lotus::Model::Mapper.new do
+      mapper = Hanami::Model::Mapper.new do
         collection :articles do
           entity Article
         end
       end.load!
 
-      mapper.collection(:articles).must_be_kind_of Lotus::Model::Mapping::Collection
+      mapper.collection(:articles).must_be_kind_of Hanami::Model::Mapping::Collection
     end
   end
 
   describe '#collections' do
     before do
-      @mapper = Lotus::Model::Mapper.new do
+      @mapper = Hanami::Model::Mapper.new do
         collection :teas do
         end
       end
@@ -47,7 +47,7 @@ describe Lotus::Model::Mapper do
       name, collection = @mapper.collections.first
 
       name.must_equal :teas
-      collection.must_be_kind_of Lotus::Model::Mapping::Collection
+      collection.must_be_kind_of Hanami::Model::Mapping::Collection
     end
   end
 
@@ -61,7 +61,7 @@ describe Lotus::Model::Mapper do
         @mapper.load!
 
         collection = @mapper.collection(:users)
-        collection.must_be_kind_of Lotus::Model::Mapping::Collection
+        collection.must_be_kind_of Hanami::Model::Mapping::Collection
         collection.name.must_equal :users
       end
     end
@@ -79,14 +79,14 @@ describe Lotus::Model::Mapper do
         it 'returns the collection' do
           collection = @mapper.collection(:users)
 
-          collection.must_be_kind_of(Lotus::Model::Mapping::Collection)
+          collection.must_be_kind_of(Hanami::Model::Mapping::Collection)
           collection.name.must_equal :users
         end
       end
 
       describe 'and the collection is missing' do
         it 'raises an error' do
-          -> { @mapper.collection(:unknown) }.must_raise(Lotus::Model::Mapping::UnmappedCollectionError)
+          -> { @mapper.collection(:unknown) }.must_raise(Hanami::Model::Mapping::UnmappedCollectionError)
         end
       end
     end

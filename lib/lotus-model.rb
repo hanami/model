@@ -1,1 +1,0 @@
-require 'lotus/model'

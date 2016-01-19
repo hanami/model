@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'lotus/model/migrator'
+require 'hanami/model/migrator'
 
-describe "Lotus::Model.migration" do
-  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
+describe "Hanami::Model.migration" do
+  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby?  }
 
   describe "SQLite" do
     before do
@@ -10,17 +10,17 @@ describe "Lotus::Model.migration" do
       @schema   = schema_path = Pathname.new("#{ __dir__ }/../../tmp/schema.sql").expand_path
       @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
 
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :sql, uri: uri
         migrations __dir__ + '/../fixtures/database_migrations'
         schema     schema_path
       end
 
-      Lotus::Model::Migrator.create
-      Lotus::Model::Migrator.migrate
+      Hanami::Model::Migrator.create
+      Hanami::Model::Migrator.migrate
 
       @connection = Sequel.connect(@uri)
-      Lotus::Model::Migrator::Adapter.for(@connection).dump
+      Hanami::Model::Migrator::Adapter.for(@connection).dump
     end
 
     after(:each) do
@@ -29,7 +29,7 @@ describe "Lotus::Model.migration" do
     end
 
     after(:each) do
-      Lotus::Model.unload!
+      Hanami::Model.unload!
       @connection.disconnect
     end
 
@@ -291,8 +291,8 @@ describe "Lotus::Model.migration" do
         name.must_equal :b
 
         options.fetch(:allow_null).must_equal  true
-        options.fetch(:default).must_equal     "'Lotus'"
-        options.fetch(:ruby_default).must_equal "Lotus"
+        options.fetch(:default).must_equal     "'Hanami'"
+        options.fetch(:ruby_default).must_equal "Hanami"
         options.fetch(:type).must_equal        :string
         options.fetch(:db_type).must_equal     "varchar(255)"
         options.fetch(:primary_key).must_equal false
@@ -494,14 +494,14 @@ describe "Lotus::Model.migration" do
 
   describe "File system" do
     before do
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :file_system, uri: "file:///db/test417_development"
       end
     end
 
     describe "connection" do
       it "return error" do
-        exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        exception = -> { Hanami::Model::Migrator.create }.must_raise Hanami::Model::MigrationError
         exception.message.must_include "Current adapter (file_system) doesn't support SQL database operations."
       end
     end
@@ -509,14 +509,14 @@ describe "Lotus::Model.migration" do
 
   describe "Memory" do
     before do
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :memory, uri: "memory://localhost"
       end
     end
 
     describe "connection" do
       it "return error" do
-        exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        exception = -> { Hanami::Model::Migrator.create }.must_raise Hanami::Model::MigrationError
         exception.message.must_include "Current adapter (memory) doesn't support SQL database operations."
       end
     end

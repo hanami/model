@@ -1,8 +1,8 @@
-Lotus::Model.migration do
+Hanami::Model.migration do
   change do
     create_table :default_values do
       column :a, Integer,    default: 23
-      column :b, String,     default: "Lotus"
+      column :b, String,     default: "Hanami"
       column :c, Fixnum,     default: -1
       column :d, Bignum,     default: 0
       column :e, Float,      default: 3.14

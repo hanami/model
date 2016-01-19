@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'lotus/model/migrator/connection'
+require 'hanami/model/migrator/connection'
 
-describe Lotus::Model::Migrator::Connection do
-  let(:connection) { Lotus::Model::Migrator::Connection.new(adapter_connection) }
+describe Hanami::Model::Migrator::Connection do
+  let(:connection) { Hanami::Model::Migrator::Connection.new(adapter_connection) }
 
   let(:adapter_connection) do
     OpenStruct.new(

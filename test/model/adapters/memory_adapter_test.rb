@@ -1,24 +1,24 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::MemoryAdapter do
+describe Hanami::Model::Adapters::MemoryAdapter do
   before do
     TestUser = Struct.new(:id, :name, :age) do
-      include Lotus::Entity
+      include Hanami::Entity
     end
 
     class TestUserRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     TestDevice = Struct.new(:id) do
-      include Lotus::Entity
+      include Hanami::Entity
     end
 
     class TestDeviceRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
-    @mapper = Lotus::Model::Mapper.new do
+    @mapper = Hanami::Model::Mapper.new do
       collection :users do
         entity TestUser
 
@@ -34,7 +34,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
     end.load!
 
-    @adapter = Lotus::Model::Adapters::MemoryAdapter.new(@mapper)
+    @adapter = Hanami::Model::Adapters::MemoryAdapter.new(@mapper)
   end
 
   after do
@@ -371,7 +371,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           exception = -> {
             query = Proc.new { where { a > 32 } }
             @adapter.query(collection, &query).all
-          }.must_raise(Lotus::Model::InvalidQueryError)
+          }.must_raise(Hanami::Model::InvalidQueryError)
 
           exception.message.must_equal "Invalid query"
         end
@@ -464,7 +464,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           exception = -> {
             query = Proc.new { exclude { a > 32 } }
             @adapter.query(collection, &query).all
-          }.must_raise(Lotus::Model::InvalidQueryError)
+          }.must_raise(Hanami::Model::InvalidQueryError)
 
           exception.message.must_equal "Invalid query"
         end
@@ -543,7 +543,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
           exception = -> {
             query = Proc.new { where(name: "MG").or { a > 31 } }
             @adapter.query(collection, &query).all
-          }.must_raise(Lotus::Model::InvalidQueryError)
+          }.must_raise(Hanami::Model::InvalidQueryError)
 
           exception.message.must_equal "Invalid query"
         end
@@ -1214,7 +1214,7 @@ describe Lotus::Model::Adapters::MemoryAdapter do
       end
 
       it 'raises error' do
-        exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Lotus::Model::Adapters::DisconnectedAdapterError
+        exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
         exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
       end
     end

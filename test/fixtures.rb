@@ -1,35 +1,35 @@
 require 'sequel/extensions/pg_array'
 
 class User
-  include Lotus::Entity
+  include Hanami::Entity
   attributes :name, :age, :created_at, :updated_at
 end
 
 class Article
-  include Lotus::Entity
-  include Lotus::Entity::DirtyTracking
+  include Hanami::Entity
+  include Hanami::Entity::DirtyTracking
   attributes :user_id, :unmapped_attribute, :title, :comments_count, :tags
 end
 
 class Repository
-  include Lotus::Entity
+  include Hanami::Entity
   attributes :id, :name
 end
 
 class CustomUserRepository
-  include Lotus::Repository
+  include Hanami::Repository
 end
 
 class UserRepository
-  include Lotus::Repository
+  include Hanami::Repository
 end
 
 class UnmappedRepository
-  include Lotus::Repository
+  include Hanami::Repository
 end
 
 class ArticleRepository
-  include Lotus::Repository
+  include Hanami::Repository
 
   def self.rank
     query do
@@ -77,9 +77,9 @@ class ArticleRepository
 end
 
 [SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
-  require 'lotus/utils/io'
+  require 'hanami/utils/io'
 
-  Lotus::Utils::IO.silence_warnings do
+  Hanami::Utils::IO.silence_warnings do
     DB = Sequel.connect(conn_string)
   end
 
@@ -129,7 +129,7 @@ end
   end
 end
 
-class PGArray < Lotus::Model::Coercer
+class PGArray < Hanami::Model::Coercer
   def self.dump(value)
     ::Sequel.pg_array(value) rescue nil
   end
@@ -140,7 +140,7 @@ class PGArray < Lotus::Model::Coercer
 end
 
 #FIXME this should be passed by the framework internals.
-MAPPER = Lotus::Model::Mapper.new do
+MAPPER = Hanami::Model::Mapper.new do
   collection :users do
     entity User
 

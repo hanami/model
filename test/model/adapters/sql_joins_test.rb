@@ -1,59 +1,59 @@
 require 'test_helper'
-require 'lotus/model/migrator'
+require 'hanami/model/migrator'
 
 describe 'SQL joins test' do
   before do
     class TestUser
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :country_id, :name, :age
     end
 
     class TestUserRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestDevice
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :u_id
     end
 
     class TestDeviceRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestOrder
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :user_id, :total
     end
 
     class TestOrderRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestAge
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :value, :label
     end
 
     class TestAgeRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     class TestCountry
-      include Lotus::Entity
+      include Hanami::Entity
 
       attributes :code, :country_id
     end
 
     class TestCountryRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
-    @mapper = Lotus::Model::Mapper.new do
+    @mapper = Hanami::Model::Mapper.new do
       collection :users do
         entity TestUser
 
@@ -95,7 +95,7 @@ describe 'SQL joins test' do
       end
     end.load!
 
-    @adapter = Lotus::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
+    @adapter = Hanami::Model::Adapters::SqlAdapter.new(@mapper, SQLITE_CONNECTION_STRING)
   end
 
   after do

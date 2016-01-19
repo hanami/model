@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe 'Configuration DSL' do
   before do
-    Lotus::Model.configure do
+    Hanami::Model.configure do
       adapter type: :memory, uri: 'memory://localhost'
 
       mapping do
@@ -16,11 +16,11 @@ describe 'Configuration DSL' do
       end
     end
 
-    Lotus::Model.load!
+    Hanami::Model.load!
   end
 
   after do
-    Lotus::Model.unload!
+    Hanami::Model.unload!
   end
 
   describe 'when creating new user' do
@@ -41,7 +41,7 @@ describe 'Configuration DSL' do
 
   describe "when a repository isn't mapped" do
     it 'raises an error when try to use it' do
-      exception = -> { UnmappedRepository.find(1) }.must_raise(Lotus::Model::Adapters::NoAdapterError)
+      exception = -> { UnmappedRepository.find(1) }.must_raise(Hanami::Model::Adapters::NoAdapterError)
       exception.message.must_equal(
         "Cannot invoke `find' on repository. "\
         "Please check if `adapter' and `mapping' are set, "\
@@ -52,15 +52,15 @@ describe 'Configuration DSL' do
 
   describe 'when mapping is not set' do
     before do
-      Lotus::Model.unload!
+      Hanami::Model.unload!
 
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :memory, uri: 'memory://localhost'
       end
     end
 
     it 'raises an error when try to use it' do
-      exception = -> { Lotus::Model.load! }.must_raise(Lotus::Model::NoMappingError)
+      exception = -> { Hanami::Model.load! }.must_raise(Hanami::Model::NoMappingError)
       exception.message.must_equal("Mapping is missing. Please check your framework configuration.")
     end
   end

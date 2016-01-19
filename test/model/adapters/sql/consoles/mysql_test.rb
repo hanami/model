@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'lotus/model/adapters/sql/consoles/mysql'
+require 'hanami/model/adapters/sql/consoles/mysql'
 
-describe Lotus::Model::Adapters::Sql::Consoles::Mysql do
-  let(:console) { Lotus::Model::Adapters::Sql::Consoles::Mysql.new(uri) }
+describe Hanami::Model::Adapters::Sql::Consoles::Mysql do
+  let(:console) { Hanami::Model::Adapters::Sql::Consoles::Mysql.new(uri) }
 
   describe '#connection_string' do
     let(:uri) { URI.parse('mysql://username:password@localhost:1234/foo_development') }

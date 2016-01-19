@@ -1,19 +1,19 @@
 require 'test_helper'
 
-describe Lotus::Repository do
+describe Hanami::Repository do
   let(:user1) { User.new(name: 'L') }
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
 
-  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
+  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Hanami::Model', comments_count: '23') }
   let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
   {
-    memory:      [Lotus::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
-    file_system: [Lotus::Model::Adapters::FileSystemAdapter, FILE_SYSTEM_CONNECTION_STRING, MAPPER],
-    sqlite:      [Lotus::Model::Adapters::SqlAdapter,        SQLITE_CONNECTION_STRING,      MAPPER],
-    postgres:    [Lotus::Model::Adapters::SqlAdapter,        POSTGRES_CONNECTION_STRING,    MAPPER],
+    memory:      [Hanami::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
+    file_system: [Hanami::Model::Adapters::FileSystemAdapter, FILE_SYSTEM_CONNECTION_STRING, MAPPER],
+    sqlite:      [Hanami::Model::Adapters::SqlAdapter,        SQLITE_CONNECTION_STRING,      MAPPER],
+    postgres:    [Hanami::Model::Adapters::SqlAdapter,        POSTGRES_CONNECTION_STRING,    MAPPER],
   }.each do |adapter_name, (adapter,uri,mapper)|
     describe "with #{ adapter_name } adapter" do
       before do
@@ -68,7 +68,7 @@ describe Lotus::Repository do
 
           if adapter_name == :postgres
             it 'should use custom coercers' do
-              article = Article.new(title: 'Coercer', tags: tags = ['ruby', 'lotus'])
+              article = Article.new(title: 'Coercer', tags: tags = ['ruby', 'hanami'])
               article = ArticleRepository.persist(article)
 
               article.tags.must_equal tags
@@ -96,7 +96,7 @@ describe Lotus::Repository do
 
             # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
             # concurrent platforms like jRuby
-            sleep 2 if Lotus::Utils.jruby?
+            sleep 2 if Hanami::Utils.jruby?
           end
 
           it 'should return that entity' do
@@ -184,7 +184,7 @@ describe Lotus::Repository do
 
           # Ensure we're updating sufficiently later of the creation, we can get realy close dates in
           # concurrent platforms like jRuby
-          sleep 2 if Lotus::Utils.jruby?
+          sleep 2 if Hanami::Utils.jruby?
         end
 
         it 'updates entities' do
@@ -203,7 +203,7 @@ describe Lotus::Repository do
         end
 
         it 'raises an error when not persisted' do
-          -> { UserRepository.update(user2) }.must_raise(Lotus::Model::NonPersistedEntityError)
+          -> { UserRepository.update(user2) }.must_raise(Hanami::Model::NonPersistedEntityError)
         end
       end
 
@@ -220,7 +220,7 @@ describe Lotus::Repository do
         end
 
         it 'raises error when the given entity is not persisted' do
-          -> { UserRepository.delete(user2) }.must_raise(Lotus::Model::NonPersistedEntityError)
+          -> { UserRepository.delete(user2) }.must_raise(Hanami::Model::NonPersistedEntityError)
         end
       end
 
@@ -410,7 +410,7 @@ describe Lotus::Repository do
       describe 'missing timestamps attribute' do
         describe '.persist' do
           before do
-            @article = ArticleRepository.persist(Article.new(title: 'Lotus', comments_count: '4'))
+            @article = ArticleRepository.persist(Article.new(title: 'Hanami', comments_count: '4'))
             @article.instance_eval do
               def created_at
                 @created_at
@@ -444,8 +444,8 @@ describe Lotus::Repository do
 
   describe "with sql adapter" do
     before do
-      UserRepository.adapter    = Lotus::Model::Adapters::SqlAdapter.new(MAPPER, SQLITE_CONNECTION_STRING)
-      ArticleRepository.adapter = Lotus::Model::Adapters::SqlAdapter.new(MAPPER, SQLITE_CONNECTION_STRING)
+      UserRepository.adapter    = Hanami::Model::Adapters::SqlAdapter.new(MAPPER, SQLITE_CONNECTION_STRING)
+      ArticleRepository.adapter = Hanami::Model::Adapters::SqlAdapter.new(MAPPER, SQLITE_CONNECTION_STRING)
 
       UserRepository.collection    = :users
       ArticleRepository.collection = :articles
@@ -555,8 +555,8 @@ describe Lotus::Repository do
 
   describe "with memory adapter" do
     before do
-      UserRepository.adapter    = Lotus::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
-      ArticleRepository.adapter = Lotus::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
+      UserRepository.adapter    = Hanami::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
+      ArticleRepository.adapter = Hanami::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
 
       UserRepository.collection    = :users
       ArticleRepository.collection = :articles
