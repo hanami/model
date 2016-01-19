@@ -31,6 +31,8 @@ module Lotus
           # @since 0.1.0
           def create(entity)
             @collection.insert(entity)
+          rescue Sequel::DatabaseError => e
+            raise Lotus::Model::Error.new(e.message)
           end
 
           # Updates the corresponding record for the given entity.
@@ -43,6 +45,8 @@ module Lotus
           # @since 0.1.0
           def update(entity)
             @collection.update(entity)
+          rescue Sequel::DatabaseError => e
+            raise Lotus::Model::Error.new(e.message)
           end
 
           # Deletes all the records for the current query.
@@ -56,6 +60,8 @@ module Lotus
           # @since 0.1.0
           def delete
             @collection.delete
+          rescue Sequel::DatabaseError => e
+            raise Lotus::Model::Error.new(e.message)
           end
 
           alias_method :clear, :delete
