@@ -116,8 +116,20 @@ module Lotus
         @collections.each_value do |collection|
           collection.adapter = adapter
           collection.load!
+          load_associations!(collection)
         end
         self
+      end
+
+      private
+      # Injects association's repository
+      #
+      # @api private
+      # @since x.x.x
+      def load_associations!(_collection)
+        _collection.associations.each_value do |association|
+          association.repository = collection(association.collection).repository
+        end
       end
     end
   end

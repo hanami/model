@@ -49,6 +49,12 @@ module Lotus
           # @api private
           attr_reader :conditions
 
+          # @attr_reader collection [Lotus::Model::Adapters::Sql::Collection]
+          #
+          # @since x.x.x
+          # @api private
+          attr_reader :collection
+
           # Initialize a query
           #
           # @param collection [Lotus::Model::Adapters::Sql::Collection] the
@@ -59,7 +65,8 @@ module Lotus
           #
           # @return [Lotus::Model::Adapters::Sql::Query]
           def initialize(collection, context = nil, &blk)
-            @collection, @context = collection, context
+            @collection = collection
+            @context = context
             @conditions = []
 
             instance_eval(&blk) if block_given?
@@ -596,6 +603,41 @@ module Lotus
             end
           end
 
+          # Preload a given association into root's aggregation
+          # This should be implemented inside Repository in a class method. See example below.
+          #
+          # @since x.x.x
+          # @return Lotus::Model::Adapters::Sql::Query
+          #
+          # @example
+          #
+          #     mapping do
+          #       collections :users do
+          #         entity User
+          #         attribute :id, Integer
+          #         association :articles, [Article], foreign_key: :user_id, collection: :articles
+          #       end
+          #
+          #       collections :articles do
+          #         entity Article
+          #         attribute :id, Integer
+          #         attribute :user_id, Integer
+          #         association :user, [User], foreign_key: :id, collection: :articles
+          #       end
+          #     end
+          #
+          #      class UserRepository
+          #        include Lotus::Repository
+          #
+          #       def with_articles
+          #         query.preload(:articles)
+          #       end
+          #     end
+          def preload(association)
+            @collection.preload(association)
+            self
+          end
+
           # Apply all the conditions and returns a filtered collection.
           #
           # This operation is idempotent, and the returned result didn't
@@ -754,6 +796,9 @@ module Lotus
           #   # You're welcome ;)
           def apply(query)
             dup.tap do |result|
+              query.collection.associations.each do |association|
+                result.preload(association)
+              end
               result.conditions.push(*query.conditions)
             end
           end

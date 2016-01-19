@@ -13,7 +13,7 @@ describe Lotus::Model::Adapters::Memory::Query do
     end
 
     class MockCollection
-      def deserialize(array)
+      def deserialize(array, _associations=[])
         array
       end
     end

@@ -19,15 +19,15 @@ describe Lotus::Model::Configuration do
 
     if Lotus::Utils.jruby?
       it 'avoids duplication' do
-        configuration.adapter(type: :sql,    uri: 'jdbc:sqlite:uri')
+        configuration.adapter(type: :sql,    uri: 'jdbc:sqlite:localdomain')
         configuration.adapter(type: :memory, uri: 'memory://uri')
 
         configuration.adapter_config.type.must_equal :sql
       end
     else
       it 'avoids duplication' do
-        configuration.adapter(type: :sql,    uri: 'sqlite3://uri')
-        configuration.adapter(type: :memory, uri: 'memory://uri')
+        configuration.adapter(type: :sql,    uri: 'sqlite3://localdomain')
+        configuration.adapter(type: :memory, uri: 'memory://localhost')
 
         configuration.adapter_config.type.must_equal :sql
       end
@@ -57,7 +57,7 @@ describe Lotus::Model::Configuration do
     end
 
     it 'instantiates the registered adapter (memory)' do
-      configuration.adapter(type: :memory, uri: 'memory://localhost')
+      configuration.adapter(type: :memory, uri: 'memory://local')
       configuration.load!
 
       adapter = configuration.instance_variable_get(:@adapter)

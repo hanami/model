@@ -58,6 +58,7 @@ module Lotus
             @collection = collection
             @conditions = []
             @modifiers  = []
+            @associations = []
             instance_eval(&blk) if block_given?
           end
 
@@ -68,7 +69,7 @@ module Lotus
           #
           # @since 0.1.0
           def all
-            @collection.deserialize(run)
+            @collection.deserialize(run, @associations)
           end
 
           # Adds a condition that behaves like SQL `WHERE`.
@@ -552,6 +553,41 @@ module Lotus
           # @see Lotus::Model::Adapters::Sql::Query#group!
           def group
             raise NotImplementedError
+          end
+
+          # Preload a given association into root's aggregation
+          # This should be implemented inside Repository in a class method. See example below.
+          #
+          # @since x.x.x
+          # @return Lotus::Model::Adapters::Memory::Query
+          #
+          # @example
+          #
+          #     mapping do
+          #       collections :users do
+          #         entity User
+          #         attribute :id, Integer
+          #         association :articles, [Article], foreign_key: :user_id, collection: :articles
+          #       end
+          #
+          #       collections :articles do
+          #         entity Article
+          #         attribute :id, Integer
+          #         attribute :user_id, Integer
+          #         association :user, User, foreign_key: :id, collection: :articles
+          #       end
+          #     end
+          #
+          #      class UserRepository
+          #        include Lotus::Repository
+          #
+          #       def with_articles
+          #         query.preload(:articles)
+          #       end
+          #     end
+          def preload(association)
+            @associations << association
+            self
           end
 
           protected

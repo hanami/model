@@ -1,5 +1,7 @@
 require 'lotus/utils/class'
 require 'lotus/model/mapping/attribute'
+require 'lotus/model/associations/many_to_one'
+require 'lotus/model/associations/one_to_many'
 
 module Lotus
   module Model
@@ -60,6 +62,12 @@ module Lotus
         # @api private
         attr_accessor :adapter
 
+        # @attr_reader associations [Array] Associations collection (OneToMany/ManyToOne)
+        #
+        # @since x.x.x
+        # @api private
+        attr_accessor :associations
+
         # Instantiate a new collection
         #
         # @param name [Symbol] the name of the mapped collection. If used with a
@@ -74,8 +82,35 @@ module Lotus
         def initialize(name, coercer_class, &blk)
           @name = name
           @coercer_class = coercer_class
+          @associations = {}
           @attributes = {}
           instance_eval(&blk) if block_given?
+        end
+
+        # Define a new association between Entities
+        #
+        # @param name [Symbol]
+        # @param type [Array|Const]
+        # @param options [Hash]
+        # @option foreign_key [Symbol] the foreign key
+        # @option collection [Symbol] reference to associated Collection
+        #
+        # @since x.x.x
+        #
+        # @example
+        #
+        #  OneToMany association:
+        #  association :articles, [Article], foreign_key: :user_id, collection: :articles
+        #
+        #  ManyToOne association:
+        #  association :articles, Article, foreign_key: :user_id, collection: :articles
+        def association(name, type, options = {})
+          @associations[name] =
+            if type.is_a? Array
+              one_to_many(options.merge(name: name))
+            else
+              many_to_one(options.merge(name: name))
+            end
         end
 
         # Defines the entity that is persisted with this collection.
@@ -398,16 +433,24 @@ module Lotus
           @coercer.to_record(entity)
         end
 
-        # Deserialize a set of records fetched from the database.
+        # Deserialize a set of records fetched from the database and
+        # reloads related associations
         #
         # @param records [Array] a set of raw records
+        # @param associations [Array] defined associations
         #
         # @api private
         # @since 0.1.0
-        def deserialize(records)
-          records.map do |record|
+        def deserialize(records, associations = [])
+          entities = records.map do |record|
             @coercer.from_record(record)
           end
+
+          associations.each do |association|
+            @associations[association].associate_entities!(entities)
+          end
+
+          entities
         end
 
         # Deserialize only one attribute from a raw value.
@@ -419,6 +462,24 @@ module Lotus
         # @since 0.1.0
         def deserialize_attribute(attribute, value)
           @coercer.public_send(:"deserialize_#{ attribute }", value)
+        end
+
+        # Create a new ManyToOne Relation
+        #
+        # @param array with options
+        # @api private
+        # @since x.x.x
+        def many_to_one(options)
+          Lotus::Model::Associations::ManyToOne.new(options)
+        end
+
+        # Create a new OneToMany Relation
+        #
+        # @param array with options
+        # @api private
+        # @since x.x.x
+        def one_to_many(options)
+          Lotus::Model::Associations::OneToMany.new(options)
         end
 
         # Loads the internals of the mapper, in order to guarantee thread safety.

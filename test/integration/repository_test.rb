@@ -4,10 +4,12 @@ describe Lotus::Repository do
   let(:user1) { User.new(name: 'L') }
   let(:user2) { User.new(name: 'MG') }
   let(:users) { [user1, user2] }
+  let(:category) { Category.new }
 
-  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model', comments_count: '23') }
-  let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
-  let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
+  let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Lotus::Model',    comments_count: '23') }
+  let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',               comments_count: '42') }
+  let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',          comments_count: '4') }
+  let(:article4) { Article.new(user_id: user2.id, title: 'Preload Associations works!', comments_count: '4') }
 
   {
     memory:      [Lotus::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
@@ -19,12 +21,15 @@ describe Lotus::Repository do
       before do
         UserRepository.adapter    = adapter.new(mapper, uri)
         ArticleRepository.adapter = adapter.new(mapper, uri)
+        CategoryRepository.adapter = adapter.new(mapper, uri)
 
         UserRepository.collection    = :users
         ArticleRepository.collection = :articles
+        CategoryRepository.collection = :categories
 
         UserRepository.clear
         ArticleRepository.clear
+        CategoryRepository.clear
       end
 
       after(:each) do
@@ -357,6 +362,59 @@ describe Lotus::Repository do
         end
       end
 
+      describe '.preload' do
+        before do
+          @article_without_category = ArticleRepository.create(article2)
+          @persisted_user1 = UserRepository.create(user1)
+          @persisted_category = CategoryRepository.persist(category)
+
+          article1.category_id = @persisted_category.id
+          article1.user_id     = @persisted_user1.id
+          @persisted_article1 = ArticleRepository.create(article1)
+
+          article4.category_id = @persisted_category.id
+          @persisted_article4 = ArticleRepository.create(article4)
+        end
+
+        it 'will return nil when no Category is associated' do
+          article = ArticleRepository.all_with_category.all
+          article.first.category.must_be_nil
+        end
+
+        it 'fetch associated Category (all Drivers)' do
+          article = ArticleRepository.all_with_category.all
+          article.last.category.must_equal @persisted_category
+        end
+
+        it "fetch associated Category (all Drivers)" do
+          article = ArticleRepository.by_category_preload(@persisted_category).first
+          article.category.must_equal @persisted_category
+        end
+
+        if adapter == Lotus::Model::Adapters::SqlAdapter
+          it "fetch associated Category #{adapter_name}" do
+            article = ArticleRepository.by_category_preload(@persisted_category).first
+            article.category.must_equal @persisted_category
+          end
+
+          it "fetch associated Category composing queries for #{adapter_name}" do
+            article = ArticleRepository.with_category.by_category(@persisted_category).first
+            article.category.must_equal @persisted_category
+          end
+
+          it "fetch associated Category composing queries with preload at the end for #{adapter_name}" do
+            article = ArticleRepository.by_category(@persisted_category).with_category.first
+            article.category.must_equal @persisted_category
+          end
+
+          it 'fetch multiple associations' do
+            article = ArticleRepository.by_category_with_user_preload(@persisted_category).first
+            article.user.must_equal @persisted_user1
+            article.category.must_equal @persisted_category
+          end
+        end
+      end
+
       describe 'querying' do
         before do
           @user1    = UserRepository.create(user1)
@@ -372,7 +430,7 @@ describe Lotus::Repository do
           actual.all.must_equal [@article1, @article2]
         end
 
-        if adapter_name == :sql
+        if adapter == Lotus::Model::Adapters::SqlAdapter
           it 'combines queries' do
             actual = ArticleRepository.rank_by_user(@user1)
             actual.all.must_equal [@article2, @article1]

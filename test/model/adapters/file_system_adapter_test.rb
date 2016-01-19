@@ -33,6 +33,12 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
         attribute :id, Integer
       end
 
+      collection :categories do
+        entity Category
+
+        attribute :id, Integer
+      end
+
       collection :articles do
         entity Article
 
@@ -40,6 +46,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
         attribute :user_id,        Integer
         attribute :title,          String,  as: 's_title'
         attribute :comments_count, Integer
+        association :category, Category, foreign_key: :category_id, collection: :categories
 
         identity :_id
       end
