@@ -42,7 +42,11 @@ describe 'Configuration DSL' do
   describe "when a repository isn't mapped" do
     it 'raises an error when try to use it' do
       exception = -> { UnmappedRepository.find(1) }.must_raise(Lotus::Model::Adapters::NoAdapterError)
-      exception.message.must_equal("Cannot invoke `find' on repository. Please check if `adapter' and `mapping' are set.")
+      exception.message.must_equal(
+        "Cannot invoke `find' on repository. "\
+        "Please check if `adapter' and `mapping' are set, "\
+        "and that you call `.load!' on the configuration."
+      )
     end
   end
 

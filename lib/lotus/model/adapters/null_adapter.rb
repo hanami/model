@@ -6,7 +6,9 @@ module Lotus
       # @since 0.2.0
       class NoAdapterError < Lotus::Model::Error
         def initialize(method_name)
-          super("Cannot invoke `#{ method_name }' on repository. Please check if `adapter' and `mapping' are set.")
+          super("Cannot invoke `#{ method_name }' on repository. "\
+                "Please check if `adapter' and `mapping' are set, "\
+                "and that you call `.load!' on the configuration.")
         end
       end
 
