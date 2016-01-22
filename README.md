@@ -35,7 +35,7 @@ Like all the other Hanami components, it can be used as a standalone framework o
 
 ## Rubies
 
-__Hanami::Model__ supports Ruby (MRI) 2+ and JRuby 9000+
+__Hanami::Model__ supports Ruby (MRI) 2.2+ and JRuby 9000+
 
 ## Installation
 
@@ -625,4 +625,5 @@ __Hanami::Model__ uses [Semantic Versioning 2.0.0](http://semver.org)
 ## Copyright
 
 Copyright © 2014-2016 Luca Guidi – Released under MIT License
+
 This project was formerly known as Lotus (`lotus-model`).

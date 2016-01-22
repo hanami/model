@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v0.6.0 - (unreleased)
+### Changed
+- [Luca Guidi] Drop support MRI 2.0, 2.1
+
 ## v0.5.2 - 2016-01-19
 ### Changed
 - [Sean Collins] Improved error message for `Hanami::Model::Adapters::NoAdapterError`
