@@ -7,8 +7,8 @@ script:
   - 'bundle install'
   - 'bundle exec rake test:coverage'
 rvm:
-  - 2.2
-  - 2.3
+  - 2.2.4
+  - 2.3.0
   - ruby-head
   - jruby-9000
   - jruby-head
