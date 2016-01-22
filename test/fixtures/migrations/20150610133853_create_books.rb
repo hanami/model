@@ -1,4 +1,4 @@
-Lotus::Model.migration do
+Hanami::Model.migration do
   up do
     create_table :books do
       primary_key :id

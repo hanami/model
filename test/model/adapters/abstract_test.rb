@@ -1,7 +1,7 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Abstract do
-  let(:adapter)    { Lotus::Model::Adapters::Abstract.new(mapper) }
+describe Hanami::Model::Adapters::Abstract do
+  let(:adapter)    { Hanami::Model::Adapters::Abstract.new(mapper) }
   let(:mapper)     { Object.new }
   let(:entity)     { Object.new }
   let(:query)      { Object.new }
@@ -81,7 +81,7 @@ describe Lotus::Model::Adapters::Abstract do
 
   describe '#connection_string' do
     it 'raises error' do
-      -> { adapter.connection_string }.must_raise Lotus::Model::Adapters::NotSupportedError
+      -> { adapter.connection_string }.must_raise Hanami::Model::Adapters::NotSupportedError
     end
   end
 end

@@ -1,16 +1,16 @@
 require 'test_helper'
-require 'lotus/model/migrator'
+require 'hanami/model/migrator'
 
 describe 'Filesystem SQLite Database migrations' do
-  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
+  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby?  }
 
   before do
-    Lotus::Model.unload!
+    Hanami::Model.unload!
   end
 
   after do
-    Lotus::Model::Migrator.drop rescue nil
-    Lotus::Model.unload!
+    Hanami::Model::Migrator.drop rescue nil
+    Hanami::Model.unload!
   end
 
   describe "SQLite filesystem" do
@@ -18,7 +18,7 @@ describe 'Filesystem SQLite Database migrations' do
       @database = Pathname.new("#{ __dir__ }/../../../tmp/create-#{ SecureRandom.hex }.sqlite3").expand_path
       @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
 
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :sql, uri: uri
         migrations __dir__ + '/../../fixtures/migrations'
       end
@@ -26,7 +26,7 @@ describe 'Filesystem SQLite Database migrations' do
 
     describe "create" do
       it "creates the database" do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
         assert File.exist?(@database), "Expected database #{ @database } to exist"
       end
 
@@ -35,14 +35,14 @@ describe 'Filesystem SQLite Database migrations' do
           @database = '/usr/bin/create.sqlite3'
           @uri      = uri = "#{ adapter_prefix }sqlite://#{ @database }"
 
-          Lotus::Model.unload!
-          Lotus::Model.configure do
+          Hanami::Model.unload!
+          Hanami::Model.configure do
             adapter type: :sql, uri: uri
           end
         end
 
         it "raises an error" do
-          exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+          exception = -> { Hanami::Model::Migrator.create }.must_raise Hanami::Model::MigrationError
           exception.message.must_equal "Permission denied: /usr/bin/create.sqlite3"
         end
       end
@@ -50,40 +50,40 @@ describe 'Filesystem SQLite Database migrations' do
 
     describe "drop" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       it "drops the database" do
-        Lotus::Model::Migrator.drop
+        Hanami::Model::Migrator.drop
         assert !File.exist?(@database), "Expected database #{ @database } to NOT exist"
       end
 
       it "raises error if database doesn't exist" do
-        Lotus::Model::Migrator.drop # remove the first time
+        Hanami::Model::Migrator.drop # remove the first time
 
-        exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
+        exception = -> { Hanami::Model::Migrator.drop }.must_raise Hanami::Model::MigrationError
         exception.message.must_equal "Cannot find database: #{ @database }"
       end
     end
 
     describe "migrate" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       describe "when no migrations" do
         before do
           @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../fixtures/empty_migrations')
 
-          Lotus::Model.configure do
+          Hanami::Model.configure do
             migrations migrations_root
           end
 
-          Lotus::Model::Migrator.create
+          Hanami::Model::Migrator.create
         end
 
         it "it doesn't alter database" do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
 
           connection = Sequel.connect(@uri)
           connection.tables.must_be :empty?
@@ -92,7 +92,7 @@ describe 'Filesystem SQLite Database migrations' do
 
       describe "when migrations are present" do
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -131,11 +131,11 @@ describe 'Filesystem SQLite Database migrations' do
 
       describe "when migrations are ran twice" do
         before do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
         end
 
         it "doesn't alter the schema" do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -145,11 +145,11 @@ describe 'Filesystem SQLite Database migrations' do
 
       describe "migrate down" do
         before do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: '20150610133853')
+          Hanami::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -191,19 +191,19 @@ describe 'Filesystem SQLite Database migrations' do
         migrations_root.mkpath
         FileUtils.cp_r(fixtures_root, migrations_root)
 
-        Lotus::Model.unload!
-        Lotus::Model.configure do
+        Hanami::Model.unload!
+        Hanami::Model.configure do
           adapter type: :sql, uri: uri
 
           migrations migrations_root.join('migrations')
           schema     migrations_root.join('schema-sqlite.sql')
         end
 
-        Lotus::Model::Migrator.apply
+        Hanami::Model::Migrator.apply
       end
 
       after do
-        Lotus::Model.unload!
+        Hanami::Model.unload!
       end
 
       it "migrates to latest version" do
@@ -236,8 +236,8 @@ describe 'Filesystem SQLite Database migrations' do
         migrations_root.mkpath
         FileUtils.cp_r(fixtures_root, migrations_root)
 
-        Lotus::Model.unload!
-        Lotus::Model.configure do
+        Hanami::Model.unload!
+        Hanami::Model.configure do
           adapter type: :sql, uri: uri
 
           migrations migrations_root.join('migrations')
@@ -248,12 +248,12 @@ describe 'Filesystem SQLite Database migrations' do
       it "creates database, loads schema and migrate" do
         # Simulate already existing schema.sql, without existing database and pending migrations
         connection = Sequel.connect(@uri)
-        Lotus::Model::Migrator::Adapter.for(connection).dump
+        Hanami::Model::Migrator::Adapter.for(connection).dump
 
         FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
           @migrations_root.join('migrations/20150611165922_create_authors.rb')
 
-        Lotus::Model::Migrator.prepare
+        Hanami::Model::Migrator.prepare
 
         connection.tables.must_equal [:schema_migrations, :books, :authors]
 
@@ -263,15 +263,15 @@ describe 'Filesystem SQLite Database migrations' do
       it "works even if schema doesn't exist" do
         # Simulate no database, no schema and pending migrations
         FileUtils.rm_f @migrations_root.join('schema-sqlite.sql')
-        Lotus::Model::Migrator.prepare
+        Hanami::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
         connection.tables.must_equal [:schema_migrations, :books]
       end
 
       it "drops the database and recreate it" do
-        Lotus::Model::Migrator.create
-        Lotus::Model::Migrator.prepare
+        Hanami::Model::Migrator.create
+        Hanami::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
         connection.tables.must_include(:schema_migrations)
@@ -281,23 +281,23 @@ describe 'Filesystem SQLite Database migrations' do
 
     describe "version" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       describe "when no migrations were ran" do
         it "returns nil" do
-          version = Lotus::Model::Migrator.version
+          version = Hanami::Model::Migrator.version
           version.must_be_nil
         end
       end
 
       describe "with migrations" do
         before do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
         end
 
         it "returns current database version" do
-          version = Lotus::Model::Migrator.version
+          version = Hanami::Model::Migrator.version
           version.must_equal "20150610141017"
         end
       end

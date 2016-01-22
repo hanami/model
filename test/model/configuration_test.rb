@@ -1,7 +1,7 @@
 require 'test_helper'
 
-describe Lotus::Model::Configuration do
-  let(:configuration) { Lotus::Model::Configuration.new }
+describe Hanami::Model::Configuration do
+  let(:configuration) { Hanami::Model::Configuration.new }
 
   describe '#adapter_config' do
     it 'defaults to an empty set' do
@@ -13,11 +13,11 @@ describe Lotus::Model::Configuration do
       configuration.adapter(type: :sql, uri: SQLITE_CONNECTION_STRING)
 
       adapter_config = configuration.adapter_config
-      adapter_config.must_be_instance_of Lotus::Model::Config::Adapter
+      adapter_config.must_be_instance_of Hanami::Model::Config::Adapter
       adapter_config.uri.must_equal SQLITE_CONNECTION_STRING
     end
 
-    if Lotus::Utils.jruby?
+    if Hanami::Utils.jruby?
       it 'avoids duplication' do
         configuration.adapter(type: :sql,    uri: 'jdbc:sqlite:uri')
         configuration.adapter(type: :memory, uri: 'memory://uri')
@@ -61,7 +61,7 @@ describe Lotus::Model::Configuration do
       configuration.load!
 
       adapter = configuration.instance_variable_get(:@adapter)
-      adapter.must_be_instance_of Lotus::Model::Adapters::MemoryAdapter
+      adapter.must_be_instance_of Hanami::Model::Adapters::MemoryAdapter
     end
 
     it 'instantiates the registered adapter (file system)' do
@@ -69,7 +69,7 @@ describe Lotus::Model::Configuration do
       configuration.load!
 
       adapter = configuration.instance_variable_get(:@adapter)
-      adapter.must_be_instance_of Lotus::Model::Adapters::FileSystemAdapter
+      adapter.must_be_instance_of Hanami::Model::Adapters::FileSystemAdapter
     end
 
     it 'instantiates the registered adapter (sql)' do
@@ -77,7 +77,7 @@ describe Lotus::Model::Configuration do
       configuration.load!
 
       adapter = configuration.instance_variable_get(:@adapter)
-      adapter.must_be_instance_of Lotus::Model::Adapters::SqlAdapter
+      adapter.must_be_instance_of Hanami::Model::Adapters::SqlAdapter
     end
 
     it 'builds collections from mapping' do
@@ -85,7 +85,7 @@ describe Lotus::Model::Configuration do
       configuration.load!
 
       collection = configuration.mapper.collection(:users)
-      collection.must_be_kind_of Lotus::Model::Mapping::Collection
+      collection.must_be_kind_of Hanami::Model::Mapping::Collection
       collection.name.must_equal :users
     end
   end
@@ -103,7 +103,7 @@ describe Lotus::Model::Configuration do
         end
 
         mapper_config = configuration.instance_variable_get(:@mapper_config)
-        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
+        mapper_config.must_be_instance_of Hanami::Model::Config::Mapper
       end
     end
 
@@ -112,13 +112,13 @@ describe Lotus::Model::Configuration do
         configuration.mapping 'test/fixtures/mapping'
 
         mapper_config = configuration.instance_variable_get(:@mapper_config)
-        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
+        mapper_config.must_be_instance_of Hanami::Model::Config::Mapper
       end
     end
 
     describe "when block and path are not given" do
       it 'raise error' do
-        exception = -> { configuration.mapping }.must_raise Lotus::Model::InvalidMappingError
+        exception = -> { configuration.mapping }.must_raise Hanami::Model::InvalidMappingError
         exception.message.must_equal 'You must specify a block or a file.'
       end
     end
@@ -189,7 +189,7 @@ describe Lotus::Model::Configuration do
 
     it 'resets mapper' do
       configuration.instance_variable_get(:@mapper_config).must_be_nil
-      configuration.mapper.must_be_instance_of Lotus::Model::NullMapper
+      configuration.mapper.must_be_instance_of Hanami::Model::NullMapper
     end
 
     it 'resets migrations' do

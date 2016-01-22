@@ -1,4 +1,4 @@
-Lotus::Model.migration do
+Hanami::Model.migration do
   up do
     add_column :books, :price, 'integer', default: 100
   end

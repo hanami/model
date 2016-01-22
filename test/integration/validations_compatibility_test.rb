@@ -1,11 +1,11 @@
 require 'test_helper'
-require 'lotus/validations'
+require 'hanami/validations'
 
-describe 'Lotus::Validations compatibility' do
+describe 'Hanami::Validations compatibility' do
   before do
     class Product
-      include Lotus::Entity
-      include Lotus::Validations
+      include Hanami::Entity
+      include Hanami::Validations
 
       attribute :price, type: Integer
       attributes :price

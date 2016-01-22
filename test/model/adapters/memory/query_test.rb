@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Memory::Query do
+describe Hanami::Model::Adapters::Memory::Query do
   before do
     MockDataset = Struct.new(:records) do
       def all
@@ -19,7 +19,7 @@ describe Lotus::Model::Adapters::Memory::Query do
     end
 
     collection = MockCollection.new
-    @query     = Lotus::Model::Adapters::Memory::Query.new(dataset, collection)
+    @query     = Hanami::Model::Adapters::Memory::Query.new(dataset, collection)
   end
 
   after do

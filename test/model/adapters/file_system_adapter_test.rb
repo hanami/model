@@ -1,24 +1,24 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::FileSystemAdapter do
+describe Hanami::Model::Adapters::FileSystemAdapter do
   before do
     TestUser = Struct.new(:id, :name, :age) do
-      include Lotus::Entity
+      include Hanami::Entity
     end
 
     class TestUserRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
     TestDevice = Struct.new(:id) do
-      include Lotus::Entity
+      include Hanami::Entity
     end
 
     class TestDeviceRepository
-      include Lotus::Repository
+      include Hanami::Repository
     end
 
-    @mapper = Lotus::Model::Mapper.new do
+    @mapper = Hanami::Model::Mapper.new do
       collection :users do
         entity TestUser
 
@@ -46,10 +46,10 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
     end.load!
 
-    @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+    @adapter = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
     @adapter.clear(collection)
 
-    @verifier = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+    @verifier = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
   end
 
   after do
@@ -77,7 +77,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
   describe '#initialize' do
     before do
-      @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, uri)
+      @adapter = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, uri)
     end
 
     after do
@@ -113,7 +113,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
   end
 
   # BUG
-  # See: https://github.com/lotus/model/issues/151
+  # See: https://github.com/hanami/model/issues/151
   describe 'when already present database' do
     before do
       data = Pathname.new(FILE_SYSTEM_CONNECTION_STRING)
@@ -121,10 +121,10 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
 
       @user1   = TestUser.new(name: 'L')
       @user2   = TestUser.new(name: 'MG')
-      old_data = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+      old_data = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
       @user1   = old_data.persist(collection, @user1)
 
-      @adapter = Lotus::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
+      @adapter = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
     end
 
     it 'reads the old data' do
@@ -1172,7 +1172,7 @@ describe Lotus::Model::Adapters::FileSystemAdapter do
     end
 
     it 'raises error' do
-      exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Lotus::Model::Adapters::DisconnectedAdapterError
+      exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
       exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
     end
   end

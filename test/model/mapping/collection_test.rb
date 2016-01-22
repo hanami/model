@@ -1,8 +1,8 @@
 require 'test_helper'
 
-describe Lotus::Model::Mapping::Collection do
+describe Hanami::Model::Mapping::Collection do
   before do
-    @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::CollectionCoercer)
+    @collection = Hanami::Model::Mapping::Collection.new(:users, Hanami::Model::Mapping::CollectionCoercer)
   end
 
   describe '#initialize' do
@@ -11,11 +11,11 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     it 'assigns the coercer class' do
-      @collection.coercer_class.must_equal Lotus::Model::Mapping::CollectionCoercer
+      @collection.coercer_class.must_equal Hanami::Model::Mapping::CollectionCoercer
     end
 
     it 'executes the given block' do
-      collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::CollectionCoercer) do
+      collection = Hanami::Model::Mapping::Collection.new(:users, Hanami::Model::Mapping::CollectionCoercer) do
         entity User
       end
 
@@ -112,17 +112,17 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     it 'defines an attribute' do
-      @collection.attributes[:id].must_equal Lotus::Model::Mapping::Attribute.new(:id, Integer, {})
+      @collection.attributes[:id].must_equal Hanami::Model::Mapping::Attribute.new(:id, Integer, {})
     end
 
     it 'defines a mapped attribute' do
-      @collection.attributes[:name].must_equal Lotus::Model::Mapping::Attribute.new(:name, String, as: :t_name)
+      @collection.attributes[:name].must_equal Hanami::Model::Mapping::Attribute.new(:name, String, as: :t_name)
     end
   end
 
   describe '#load!' do
     before do
-      @adapter = Lotus::Model::Adapters::SqlAdapter.new(nil, SQLITE_CONNECTION_STRING)
+      @adapter = Hanami::Model::Adapters::SqlAdapter.new(nil, SQLITE_CONNECTION_STRING)
       @collection.entity('User')
       @collection.repository('UserRepository')
       @collection.adapter = @adapter
@@ -143,30 +143,30 @@ describe Lotus::Model::Mapping::Collection do
     end
 
     it 'instantiates coercer' do
-      @collection.instance_variable_get(:@coercer).must_be_instance_of Lotus::Model::Mapping::CollectionCoercer
+      @collection.instance_variable_get(:@coercer).must_be_instance_of Hanami::Model::Mapping::CollectionCoercer
     end
 
     describe 'when entity class does not exist' do
       before do
-        @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::CollectionCoercer)
+        @collection = Hanami::Model::Mapping::Collection.new(:users, Hanami::Model::Mapping::CollectionCoercer)
         @collection.entity('NonExistingUser')
         @collection.repository('UserRepository')
       end
 
       it 'raises error' do
-        -> { @collection.load! }.must_raise(Lotus::Model::Mapping::EntityNotFound)
+        -> { @collection.load! }.must_raise(Hanami::Model::Mapping::EntityNotFound)
       end
     end
 
     describe 'when repository class does not exist' do
       before do
-        @collection = Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::CollectionCoercer)
+        @collection = Hanami::Model::Mapping::Collection.new(:users, Hanami::Model::Mapping::CollectionCoercer)
         @collection.entity('User')
         @collection.repository('NonExistingUserRepository')
       end
 
       it 'raises error' do
-        -> { @collection.load! }.must_raise(Lotus::Model::Mapping::RepositoryNotFound)
+        -> { @collection.load! }.must_raise(Hanami::Model::Mapping::RepositoryNotFound)
       end
     end
   end

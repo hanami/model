@@ -18,11 +18,11 @@ end
 
 require 'minitest/autorun'
 $:.unshift 'lib'
-require 'lotus/utils'
-require 'lotus-model'
-require 'lotus/model/adapters/memory_adapter'
-require 'lotus/model/adapters/file_system_adapter'
-require 'lotus/model/adapters/sql_adapter'
+require 'hanami/utils'
+require 'hanami-model'
+require 'hanami/model/adapters/memory_adapter'
+require 'hanami/model/adapters/file_system_adapter'
+require 'hanami/model/adapters/sql_adapter'
 
 db = Pathname.new(__dir__).join('../tmp/db')
 db.dirname.mkpath        # create directory if not exist
@@ -34,9 +34,9 @@ filesystem = db.join('filesystem')
 filesystem.rmtree if filesystem.exist?
 filesystem.dirname.mkpath # recreate directory
 
-postgres_database = "lotus_model_test"
+postgres_database = "hanami_model_test"
 
-if Lotus::Utils.jruby?
+if Hanami::Utils.jruby?
   require 'jdbc/sqlite3'
   require 'jdbc/postgres'
   Jdbc::SQLite3.load_driver
@@ -57,7 +57,7 @@ if ENV['TRAVIS'] == 'true'
   MYSQL_USER    = 'travis'
 else
   POSTGRES_USER = `whoami`.strip
-  MYSQL_USER    = 'lotus'
+  MYSQL_USER    = 'hanami'
 end
 
 system "dropdb #{ postgres_database }" rescue nil
@@ -65,7 +65,7 @@ system "createdb #{ postgres_database }" rescue nil
 sleep 1
 require 'fixtures'
 
-Lotus::Model::Configuration.class_eval do
+Hanami::Model::Configuration.class_eval do
   def ==(other)
     other.kind_of?(self.class) &&
       other.adapter == adapter &&

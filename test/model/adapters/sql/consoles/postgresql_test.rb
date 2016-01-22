@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'lotus/model/adapters/sql/consoles/postgresql'
+require 'hanami/model/adapters/sql/consoles/postgresql'
 
-describe Lotus::Model::Adapters::Sql::Consoles::Postgresql do
-  let(:console) { Lotus::Model::Adapters::Sql::Consoles::Postgresql.new(uri) }
+describe Hanami::Model::Adapters::Sql::Consoles::Postgresql do
+  let(:console) { Hanami::Model::Adapters::Sql::Consoles::Postgresql.new(uri) }
 
   describe '#connection_string' do
     let(:uri) { URI.parse('postgres://username:password@localhost:1234/foo_development') }

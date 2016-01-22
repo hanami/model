@@ -1,9 +1,9 @@
 require 'test_helper'
 
-describe Lotus::Model::Mapping::CollectionCoercer do
+describe Hanami::Model::Mapping::CollectionCoercer do
   let(:entity) { User.new(name: 'Tyrion Lannister') }
-  let(:collection) { Lotus::Model::Mapping::Collection.new(:users, Lotus::Model::Mapping::CollectionCoercer) }
-  let(:coercer) { Lotus::Model::Mapping::CollectionCoercer.new(collection) }
+  let(:collection) { Hanami::Model::Mapping::Collection.new(:users, Hanami::Model::Mapping::CollectionCoercer) }
+  let(:coercer) { Hanami::Model::Mapping::CollectionCoercer.new(collection) }
 
   before do
     collection.entity(User)
@@ -19,7 +19,7 @@ describe Lotus::Model::Mapping::CollectionCoercer do
 
     describe 'new record' do
       # Bug:
-      # https://github.com/lotus/model/issues/155
+      # https://github.com/hanami/model/issues/155
       it 'ignores unset values' do
         entity = User.new(name: 'Daenerys Targaryen')
         coercer.to_record(entity).must_equal(name: 'Daenerys Targaryen')

@@ -1,19 +1,19 @@
 require 'test_helper'
 
-describe Lotus::Model do
+describe Hanami::Model do
   before do
-    Lotus::Model.unload!
+    Hanami::Model.unload!
   end
 
   describe '.configuration' do
     it 'exposes class configuration' do
-      Lotus::Model.configuration.must_be_kind_of(Lotus::Model::Configuration)
+      Hanami::Model.configuration.must_be_kind_of(Hanami::Model::Configuration)
     end
   end
 
   describe '.duplicate' do
     before do
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :sql, uri: 'postgres://localhost/database'
 
         mapping do
@@ -27,14 +27,14 @@ describe Lotus::Model do
       end
 
       module Duplicated
-        Model = Lotus::Model.duplicate(self)
+        Model = Hanami::Model.duplicate(self)
       end
 
       module DuplicatedConfigure
-        Model = Lotus::Model.duplicate(self) do
+        Model = Hanami::Model.duplicate(self) do
           reset!
 
-          if Lotus::Utils.jruby?
+          if Hanami::Utils.jruby?
             adapter type: :sql, uri: 'jdbc:sqlite:path/database.sqlite3'
           else
             adapter type: :sql, uri: 'sqlite3://path/database.sqlite3'
@@ -44,17 +44,17 @@ describe Lotus::Model do
     end
 
     after do
-      Lotus::Model.configuration.reset!
+      Hanami::Model.configuration.reset!
 
       Object.send(:remove_const, :Duplicated)
       Object.send(:remove_const, :DuplicatedConfigure)
     end
 
     # Bug
-    # See https://github.com/lotus/model/issues/154
+    # See https://github.com/hanami/model/issues/154
     it 'duplicates the configuration of the framework' do
       actual = Duplicated::Model.configuration
-      assert actual == Lotus::Model::Configuration.new
+      assert actual == Hanami::Model::Configuration.new
     end
 
     it 'duplicates a namespace for entity' do
@@ -65,7 +65,7 @@ describe Lotus::Model do
       assert defined?(Duplicated::Repository), 'Duplicated::Repository expected'
     end
 
-    if Lotus::Utils.jruby?
+    if Hanami::Utils.jruby?
       it 'optionally accepts a block to configure the duplicated module' do
         configuration = DuplicatedConfigure::Model.configuration
 
@@ -84,23 +84,23 @@ describe Lotus::Model do
 
   describe '.configure' do
     after do
-      Lotus::Model.unload!
+      Hanami::Model.unload!
     end
 
     it 'returns self' do
-      returning = Lotus::Model.configure { }
-      returning.must_equal(Lotus::Model)
+      returning = Hanami::Model.configure { }
+      returning.must_equal(Hanami::Model)
     end
 
     describe '.adapter' do
       before do
-        Lotus::Model.configure do
+        Hanami::Model.configure do
           adapter type: :sql, uri: 'postgres://localhost/database'
         end
       end
 
       it 'allows to register SQL adapter configuration' do
-        adapter_config = Lotus::Model.configuration.adapter_config
+        adapter_config = Hanami::Model.configuration.adapter_config
         adapter_config.type.must_equal :sql
         adapter_config.uri.must_equal 'postgres://localhost/database'
       end
@@ -108,7 +108,7 @@ describe Lotus::Model do
 
     describe '.mapping' do
       before do
-        Lotus::Model.configure do
+        Hanami::Model.configure do
           mapping do
             collection :users do
               entity User
@@ -121,8 +121,8 @@ describe Lotus::Model do
       end
 
       it 'configures the global persistence mapper' do
-        mapper_config = Lotus::Model.configuration.instance_variable_get(:@mapper_config)
-        mapper_config.must_be_instance_of Lotus::Model::Config::Mapper
+        mapper_config = Hanami::Model.configuration.instance_variable_get(:@mapper_config)
+        mapper_config.must_be_instance_of Hanami::Model::Config::Mapper
       end
     end
   end

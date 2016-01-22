@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Sql::Command do
+describe Hanami::Model::Adapters::Sql::Command do
   let(:collection) { Object.new }
   let(:query) do
     query = Object.new
@@ -10,56 +10,56 @@ describe Lotus::Model::Adapters::Sql::Command do
   end
 
   before do
-    @command = Lotus::Model::Adapters::Sql::Command.new(query)
+    @command = Hanami::Model::Adapters::Sql::Command.new(query)
   end
 
   describe '#create' do
     describe 'when a Sequel::ForeignKeyConstraintViolation is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
           raise ::Sequel::ForeignKeyConstraintViolation.new('fkey constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('fkey constraint error')
       end
     end
 
     describe 'when a Sequel::CheckConstraintViolation is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
           raise ::Sequel::CheckConstraintViolation.new('check constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('check constraint error')
       end
     end
 
     describe 'when a Sequel::NotNullConstraintViolation is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
           raise ::Sequel::NotNullConstraintViolation.new('not null constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('not null constraint error')
       end
     end
 
     describe 'when a Sequel::UniqueConstraintViolation is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
           raise ::Sequel::UniqueConstraintViolation.new('unique constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('unique constraint error')
       end
     end
 
     describe 'when a Sequel::DatabaseError is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
           raise ::Sequel::DatabaseError.new('db error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('db error')
       end
     end
@@ -77,11 +77,11 @@ describe Lotus::Model::Adapters::Sql::Command do
 
   describe '#update' do
     describe 'when a Sequel::DatabaseError is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:update) do |_|
           raise Sequel::DatabaseError.new('db error')
         end
-        exception = -> { @command.update(Object.new) }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.update(Object.new) }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('db error')
       end
     end
@@ -99,11 +99,11 @@ describe Lotus::Model::Adapters::Sql::Command do
 
   describe '#delete' do
     describe 'when a Sequel::DatabaseError is raised' do
-      it 'raises Lotus::Model::Error exception' do
+      it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:delete) do
           raise Sequel::DatabaseError.new('db error')
         end
-        exception = -> { @command.delete }.must_raise(Lotus::Model::Error)
+        exception = -> { @command.delete }.must_raise(Hanami::Model::Error)
         exception.message.must_equal('db error')
       end
     end

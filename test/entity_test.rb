@@ -1,14 +1,14 @@
 require 'test_helper'
 
-describe Lotus::Entity do
+describe Hanami::Entity do
   before do
     class Car
-      include Lotus::Entity
+      include Hanami::Entity
     end
 
     class Book
-      include Lotus::Entity
-      include Lotus::Entity::DirtyTracking
+      include Hanami::Entity
+      include Hanami::Entity::DirtyTracking
       attributes :title, :author, :published, :tags
     end
 
@@ -21,7 +21,7 @@ describe Lotus::Entity do
     end
 
     class Camera
-      include Lotus::Entity
+      include Hanami::Entity
       attr_accessor :analog
     end
   end

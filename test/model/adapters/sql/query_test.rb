@@ -1,8 +1,8 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Sql::Query do
+describe Hanami::Model::Adapters::Sql::Query do
   before do
-    @query = Lotus::Model::Adapters::Sql::Query.new(collection)
+    @query = Hanami::Model::Adapters::Sql::Query.new(collection)
   end
 
   let(:collection) { [] }

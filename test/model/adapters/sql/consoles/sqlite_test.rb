@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'lotus/model/adapters/sql/consoles/sqlite'
+require 'hanami/model/adapters/sql/consoles/sqlite'
 
-describe Lotus::Model::Adapters::Sql::Consoles::Sqlite do
-  let(:console) { Lotus::Model::Adapters::Sql::Consoles::Sqlite.new(uri) }
+describe Hanami::Model::Adapters::Sql::Consoles::Sqlite do
+  let(:console) { Hanami::Model::Adapters::Sql::Consoles::Sqlite.new(uri) }
 
   describe '#connection_string' do
     describe 'with shell ok database uri' do

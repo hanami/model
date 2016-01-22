@@ -1,9 +1,9 @@
 require 'test_helper'
 
-describe Lotus::Model::Adapters::Implementation do
+describe Hanami::Model::Adapters::Implementation do
   before do
-    TestAdapter = Class.new(Lotus::Model::Adapters::Abstract) do
-      include Lotus::Model::Adapters::Implementation
+    TestAdapter = Class.new(Hanami::Model::Adapters::Abstract) do
+      include Hanami::Model::Adapters::Implementation
     end
 
     mapper   = Object.new

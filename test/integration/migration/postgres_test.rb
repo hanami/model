@@ -1,18 +1,18 @@
 require 'test_helper'
-require 'lotus/model/migrator'
+require 'hanami/model/migrator'
 
 describe 'PostgreSQL Database migrations' do
-  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby?  }
+  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby?  }
   let(:db_prefix)      { name.gsub(/[^\w]/, '_') }
   let(:random_token)   { SecureRandom.hex(4) }
 
   before do
-    Lotus::Model.unload!
+    Hanami::Model.unload!
   end
 
   after do
-    Lotus::Model::Migrator.drop rescue nil
-    Lotus::Model.unload!
+    Hanami::Model::Migrator.drop rescue nil
+    Hanami::Model.unload!
   end
 
   describe "PostgreSQL" do
@@ -20,7 +20,7 @@ describe 'PostgreSQL Database migrations' do
       @database  = "#{ db_prefix }_#{ random_token }"
       @uri       = uri = "#{ adapter_prefix }postgresql://127.0.0.1/#{ @database }?user=#{ POSTGRES_USER }"
 
-      Lotus::Model.configure do
+      Hanami::Model.configure do
         adapter type: :sql, uri: uri
         migrations __dir__ + '/../../fixtures/migrations'
       end
@@ -32,7 +32,7 @@ describe 'PostgreSQL Database migrations' do
 
     describe "create" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       it "creates the database" do
@@ -42,7 +42,7 @@ describe 'PostgreSQL Database migrations' do
 
       it 'raises error if database is busy' do
         Sequel.connect(@uri).tables
-        exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+        exception = -> { Hanami::Model::Migrator.create }.must_raise Hanami::Model::MigrationError
         exception.message.must_include 'createdb: database creation failed'
         exception.message.must_include 'There is 1 other session using the database'
       end
@@ -50,24 +50,24 @@ describe 'PostgreSQL Database migrations' do
 
     describe "drop" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       it "drops the database" do
-        Lotus::Model::Migrator.drop
+        Hanami::Model::Migrator.drop
 
         -> { Sequel.connect(@uri).tables }.must_raise Sequel::DatabaseConnectionError
       end
 
       it "raises error if database doesn't exist" do
-        Lotus::Model::Migrator.drop # remove the first time
-        exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
+        Hanami::Model::Migrator.drop # remove the first time
+        exception = -> { Hanami::Model::Migrator.drop }.must_raise Hanami::Model::MigrationError
         exception.message.must_equal "Cannot find database: #{ @database }"
       end
 
       it 'raises error if database is busy' do
         Sequel.connect(@uri).tables
-        exception = -> { Lotus::Model::Migrator.drop }.must_raise Lotus::Model::MigrationError
+        exception = -> { Hanami::Model::Migrator.drop }.must_raise Hanami::Model::MigrationError
         exception.message.must_include 'dropdb: database removal failed'
         exception.message.must_include 'There is 1 other session using the database'
       end
@@ -85,7 +85,7 @@ describe 'PostgreSQL Database migrations' do
         end
 
         it "raises MigrationError on create" do
-          exception = -> { Lotus::Model::Migrator.create }.must_raise Lotus::Model::MigrationError
+          exception = -> { Hanami::Model::Migrator.create }.must_raise Hanami::Model::MigrationError
           exception.message.must_equal "No such file or directory - createdb"
         end
       end
@@ -93,20 +93,20 @@ describe 'PostgreSQL Database migrations' do
 
     describe "migrate" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       describe "when no migrations" do
         before do
           @migrations_root = migrations_root = Pathname.new(__dir__ + '/../../fixtures/empty_migrations')
 
-          Lotus::Model.configure do
+          Hanami::Model.configure do
             migrations migrations_root
           end
         end
 
         it "it doesn't alter database" do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
 
           connection = Sequel.connect(@uri)
           connection.tables.must_be :empty?
@@ -115,7 +115,7 @@ describe 'PostgreSQL Database migrations' do
 
       describe "when migrations are present" do
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -154,11 +154,11 @@ describe 'PostgreSQL Database migrations' do
 
       describe "when migrations are ran twice" do
         before do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
         end
 
         it "doesn't alter the schema" do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -168,11 +168,11 @@ describe 'PostgreSQL Database migrations' do
 
       describe "migrate down" do
         before do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
         end
 
         it "migrates the database" do
-          Lotus::Model::Migrator.migrate(version: '20150610133853')
+          Hanami::Model::Migrator.migrate(version: '20150610133853')
 
           connection = Sequel.connect(@uri)
           connection.tables.wont_be :empty?
@@ -214,16 +214,16 @@ describe 'PostgreSQL Database migrations' do
         migrations_root.mkpath
         FileUtils.cp_r(fixtures_root, migrations_root)
 
-        Lotus::Model.unload!
-        Lotus::Model.configure do
+        Hanami::Model.unload!
+        Hanami::Model.configure do
           adapter type: :sql, uri: uri
 
           migrations migrations_root.join('migrations')
           schema     migrations_root.join('schema-postgres.sql')
         end
 
-        Lotus::Model::Migrator.create
-        Lotus::Model::Migrator.apply
+        Hanami::Model::Migrator.create
+        Hanami::Model::Migrator.apply
       end
 
       it "migrates to latest version" do
@@ -298,8 +298,8 @@ SQL
         migrations_root.mkpath
         FileUtils.cp_r(fixtures_root, migrations_root)
 
-        Lotus::Model.unload!
-        Lotus::Model.configure do
+        Hanami::Model.unload!
+        Hanami::Model.configure do
           adapter type: :sql, uri: uri
 
           migrations migrations_root.join('migrations')
@@ -314,7 +314,7 @@ SQL
         FileUtils.cp 'test/fixtures/20150611165922_create_authors.rb',
           @migrations_root.join('migrations/20150611165922_create_authors.rb')
 
-        Lotus::Model::Migrator.prepare
+        Hanami::Model::Migrator.prepare
 
         connection.tables.must_include(:schema_migrations)
         connection.tables.must_include(:books)
@@ -328,15 +328,15 @@ SQL
         @migrations_root.join('migrations/20150611165922_create_authors.rb').delete rescue nil
         @migrations_root.join('schema-postgres.sql').delete                         rescue nil
 
-        Lotus::Model::Migrator.prepare
+        Hanami::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
         connection.tables.must_equal [:schema_migrations, :books]
       end
 
       it "drops the database and recreate it" do
-        Lotus::Model::Migrator.create
-        Lotus::Model::Migrator.prepare
+        Hanami::Model::Migrator.create
+        Hanami::Model::Migrator.prepare
 
         connection = Sequel.connect(@uri)
         connection.tables.must_include(:schema_migrations)
@@ -346,23 +346,23 @@ SQL
 
     describe "version" do
       before do
-        Lotus::Model::Migrator.create
+        Hanami::Model::Migrator.create
       end
 
       describe "when no migrations were ran" do
         it "returns nil" do
-          version = Lotus::Model::Migrator.version
+          version = Hanami::Model::Migrator.version
           version.must_be_nil
         end
       end
 
       describe "with migrations" do
         before do
-          Lotus::Model::Migrator.migrate
+          Hanami::Model::Migrator.migrate
         end
 
         it "returns current database version" do
-          version = Lotus::Model::Migrator.version
+          version = Hanami::Model::Migrator.version
           version.must_equal "20150610141017"
         end
       end
