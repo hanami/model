@@ -1,24 +1,24 @@
 # Hanami::Model
 A persistence layer for Hanami
 
-## v0.6.0 - (unreleased)
+## v0.6.0 - 2016-01-22
 ### Changed
-- [Luca Guidi] Drop support MRI 2.0, 2.1
+- [Luca Guidi] Renamed the project
 
 ## v0.5.2 - 2016-01-19
 ### Changed
-- [Sean Collins] Improved error message for `Hanami::Model::Adapters::NoAdapterError`
+- [Sean Collins] Improved error message for `Lotus::Model::Adapters::NoAdapterError`
 
 ### Fixed
-- [Kyle Chong & Trung Lê] Catch Sequel exceptions and re-raise as `Hanami::Model::Error`
+- [Kyle Chong & Trung Lê] Catch Sequel exceptions and re-raise as `Lotus::Model::Error`
 
 ## v0.5.1 - 2016-01-12
 ### Added
-- [Taylor Finnell] Let `Hanami::Model::Configuration#adapter` to accept arbitrary options (eg. `adapter type: :sql, uri: 'jdbc:...', after_connect: Proc.new { |connection| connection.auto_commit(true) }`)
+- [Taylor Finnell] Let `Lotus::Model::Configuration#adapter` to accept arbitrary options (eg. `adapter type: :sql, uri: 'jdbc:...', after_connect: Proc.new { |connection| connection.auto_commit(true) }`)
 
 ### Changed
 - [Andrey Deryabin] Improved `Entity#inspect`
-- [Karim Tarek] Introduced `Hanami::Model::Error` and let all the framework exceptions to inherit from it.
+- [Karim Tarek] Introduced `Lotus::Model::Error` and let all the framework exceptions to inherit from it.
 
 ### Fixed
 - [Luca Guidi] Improved error message when trying to use a repository without mapping the corresponding collections
@@ -57,9 +57,9 @@ A persistence layer for Hanami
 
 ## v0.3.1 - 2015-05-15
 ### Added
-- [Dmitry Tymchuk] Dirty tracking for entities (via `Hanami::Entity::DirtyTracking` module to include)
+- [Dmitry Tymchuk] Dirty tracking for entities (via `Lotus::Entity::DirtyTracking` module to include)
 - [My Mai] Automatic update of timestamps when an entity is persisted.
-- [Peter Berkenbosch] Introduced `Hanami::Repository#execute`, to execute raw query/commands against database (eg. `BookRepository.execute "SELECT * FROM users"` or `BookRepository.execute "UPDATE users SET admin = 'f'"`)
+- [Peter Berkenbosch] Introduced `Lotus::Repository#execute`, to execute raw query/commands against database (eg. `BookRepository.execute "SELECT * FROM users"` or `BookRepository.execute "UPDATE users SET admin = 'f'"`)
 - [Guilherme Franco] Memory and File System adapters now accept a block for `where`, `or`, `and` conditions (eg `where { age > 33 }`).
 
 ### Fixed
@@ -77,7 +77,7 @@ A persistence layer for Hanami
 
 ## v0.2.4 - 2015-02-20
 ### Fixed
-- [Luca Guidi] When duplicate the framework don't copy over the original `Hanami::Model` configuration
+- [Luca Guidi] When duplicate the framework don't copy over the original `Lotus::Model` configuration
 
 ## v0.2.3 - 2015-02-13
 ### Added
@@ -92,7 +92,7 @@ A persistence layer for Hanami
 
 ## v0.2.1 - 2015-01-12
 ### Added
-- [Luca Guidi] Compatibility between Hanami::Entity and Hanami::Validations
+- [Luca Guidi] Compatibility between Lotus::Entity and Lotus::Validations
 
 ## v0.2.0 - 2014-12-23
 ### Added
@@ -101,17 +101,17 @@ A persistence layer for Hanami
 - [Trung Lê] Introduced `Entity#update` for bulk update of attributes
 - [Luca Guidi] Improved error when try to use a repository which wasn't configured or when the framework wasn't loaded yet
 - [Trung Lê] Introduced `Entity#to_h`
-- [Trung Lê] Introduced `Hanami::Model.duplicate`
-- [Trung Lê] Made `Hanami::Mapper` lazy
+- [Trung Lê] Introduced `Lotus::Model.duplicate`
+- [Trung Lê] Made `Lotus::Mapper` lazy
 - [Trung Lê] Introduced thread safe autoloading for adapters
 - [Felipe Sere] Add support for `Symbol` coercion
 - [Celso Fernandes] Add support for `BigDecimal` coercion
-- [Trung Lê] Introduced `Hanami::Model.load!` as entry point for loading
+- [Trung Lê] Introduced `Lotus::Model.load!` as entry point for loading
 - [Trung Lê] Introduced `Mapper#repository` as DSL to associate a repository to a collection
 - [Trung Lê & Tao Guo] Introduced `Configuration#mapping` as DSL to configure the mapping
 - [Coen Wessels] Allow `where`, `exclude` and `or` to accept blocks
 - [Trung Lê & Tao Guo] Introduced `Configuration#adapter` as DSL to configure the adapter
-- [Trung Lê] Introduced `Hanami::Model::Configuration`
+- [Trung Lê] Introduced `Lotus::Model::Configuration`
 
 ### Changed
 - [Trung Lê] Changed `Entity.attributes=` to `Entity.attributes`
@@ -131,15 +131,15 @@ A persistence layer for Hanami
 
 ## v0.1.1 - 2014-06-23
 ### Added
-- [Luca Guidi] Introduced `Hanami::Model::Mapping::Coercions` in order to decouple from `Hanami::Utils::Kernel`
+- [Luca Guidi] Introduced `Lotus::Model::Mapping::Coercions` in order to decouple from `Lotus::Utils::Kernel`
 - [Luca Guidi] Official support for Ruby 2.1
 
 ## v0.1.0 - 2014-04-23
 ### Added
 - [Luca Guidi] Allow to inject coercer into mapper
 - [Luca Guidi] Introduced database mapping
-- [Luca Guidi] Introduced `Hanami::Entity`
+- [Luca Guidi] Introduced `Lotus::Entity`
 - [Luca Guidi] Introduced SQL adapter
 - [Luca Guidi] Introduced memory adapter
 – [Luca Guidi] Introduced adapters for repositories
-- [Luca Guidi] Introduced `Hanami::Repository`
+- [Luca Guidi] Introduced `Lotus::Repository`
