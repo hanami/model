@@ -31,8 +31,6 @@ module Hanami
           # @since 0.1.0
           def create(entity)
             @collection.insert(entity)
-          rescue Sequel::DatabaseError => e
-            raise Hanami::Model::Error.new(e.message)
           end
 
           # Updates the corresponding record for the given entity.
@@ -45,8 +43,6 @@ module Hanami
           # @since 0.1.0
           def update(entity)
             @collection.update(entity)
-          rescue Sequel::DatabaseError => e
-            raise Hanami::Model::Error.new(e.message)
           end
 
           # Deletes all the records for the current query.
@@ -60,8 +56,6 @@ module Hanami
           # @since 0.1.0
           def delete
             @collection.delete
-          rescue Sequel::DatabaseError => e
-            raise Hanami::Model::Error.new(e.message)
           end
 
           alias_method :clear, :delete

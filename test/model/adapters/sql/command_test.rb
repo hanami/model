@@ -17,9 +17,9 @@ describe Hanami::Model::Adapters::Sql::Command do
     describe 'when a Sequel::ForeignKeyConstraintViolation is raised' do
       it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
-          raise ::Sequel::ForeignKeyConstraintViolation.new('fkey constraint error')
+          raise Sequel::ForeignKeyConstraintViolation.new('fkey constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Sequel::ForeignKeyConstraintViolation)
         exception.message.must_equal('fkey constraint error')
       end
     end
@@ -27,9 +27,9 @@ describe Hanami::Model::Adapters::Sql::Command do
     describe 'when a Sequel::CheckConstraintViolation is raised' do
       it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
-          raise ::Sequel::CheckConstraintViolation.new('check constraint error')
+          raise Sequel::CheckConstraintViolation.new('check constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Sequel::CheckConstraintViolation)
         exception.message.must_equal('check constraint error')
       end
     end
@@ -37,9 +37,9 @@ describe Hanami::Model::Adapters::Sql::Command do
     describe 'when a Sequel::NotNullConstraintViolation is raised' do
       it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
-          raise ::Sequel::NotNullConstraintViolation.new('not null constraint error')
+          raise Sequel::NotNullConstraintViolation.new('not null constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Sequel::NotNullConstraintViolation)
         exception.message.must_equal('not null constraint error')
       end
     end
@@ -47,9 +47,9 @@ describe Hanami::Model::Adapters::Sql::Command do
     describe 'when a Sequel::UniqueConstraintViolation is raised' do
       it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
-          raise ::Sequel::UniqueConstraintViolation.new('unique constraint error')
+          raise Sequel::UniqueConstraintViolation.new('unique constraint error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Sequel::UniqueConstraintViolation)
         exception.message.must_equal('unique constraint error')
       end
     end
@@ -57,9 +57,9 @@ describe Hanami::Model::Adapters::Sql::Command do
     describe 'when a Sequel::DatabaseError is raised' do
       it 'raises Hanami::Model::Error exception' do
         collection.define_singleton_method(:insert) do |_|
-          raise ::Sequel::DatabaseError.new('db error')
+          raise Sequel::DatabaseError.new('db error')
         end
-        exception = -> { @command.create(Object.new) }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.create(Object.new) }.must_raise(Sequel::DatabaseError)
         exception.message.must_equal('db error')
       end
     end
@@ -81,7 +81,7 @@ describe Hanami::Model::Adapters::Sql::Command do
         collection.define_singleton_method(:update) do |_|
           raise Sequel::DatabaseError.new('db error')
         end
-        exception = -> { @command.update(Object.new) }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.update(Object.new) }.must_raise(Sequel::DatabaseError)
         exception.message.must_equal('db error')
       end
     end
@@ -103,7 +103,7 @@ describe Hanami::Model::Adapters::Sql::Command do
         collection.define_singleton_method(:delete) do
           raise Sequel::DatabaseError.new('db error')
         end
-        exception = -> { @command.delete }.must_raise(Hanami::Model::Error)
+        exception = -> { @command.delete }.must_raise(Sequel::DatabaseError)
         exception.message.must_equal('db error')
       end
     end
