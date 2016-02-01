@@ -47,6 +47,42 @@ module Hanami
       end
     end
 
+    # Error for Unique Constraint Violation
+    #
+    # @since x.x.x
+    class UniqueConstraintViolationError < Hanami::Model::Error
+      def initialize(message = "Unique constraint has been violated")
+        super
+      end
+    end
+
+    # Error for Foreign Key Constraint Violation
+    #
+    # @since x.x.x
+    class ForeignKeyConstraintViolationError < Hanami::Model::Error
+      def initialize(message = "Foreign key constraint has been violated")
+        super
+      end
+    end
+
+    # Error for Not Null Constraint Violation
+    #
+    # @since x.x.x
+    class NotNullConstraintViolationError < Hanami::Model::Error
+      def initialize(message = "NOT NULL constraint has been violated")
+        super
+      end
+    end
+
+    # Error for Check Constraint Violation raised by Sequel
+    #
+    # @since x.x.x
+    class CheckConstraintViolationError < Hanami::Model::Error
+      def initialize(message = "Check constraint has been violated")
+        super
+      end
+    end
+
     include Utils::ClassAttribute
 
     # Framework configuration
