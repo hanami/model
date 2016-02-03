@@ -8,6 +8,23 @@ SEQUEL_TO_HANAMI_MAPPING = {
 }
 
 describe Hanami::Model::Adapters::Sql::Command do
+  describe 'when create new entity successfully' do
+    it 'delegates the entity to the collection correctly' do
+      entity = Object.new
+      query = SqlQueryFake.new
+
+      collection = Minitest::Mock.new
+      collection.expect(:insert, true, [entity])
+
+      query.stub(:scoped, collection) do
+        command = Hanami::Model::Adapters::Sql::Command.new(query)
+        command.create(entity)
+
+        collection.verify
+      end
+    end
+  end
+
   describe 'when #create raises Sequel Database Violation Error' do
     SEQUEL_TO_HANAMI_MAPPING.each do |sequel_error, hanami_error|
 
@@ -23,6 +40,23 @@ describe Hanami::Model::Adapters::Sql::Command do
     end
   end
 
+  describe 'when update an entity successfully' do
+    it 'delegates the entity to the collection correctly' do
+      entity = Object.new
+      query = SqlQueryFake.new
+
+      collection = Minitest::Mock.new
+      collection.expect(:update, true, [entity])
+
+      query.stub(:scoped, collection) do
+        command = Hanami::Model::Adapters::Sql::Command.new(query)
+        command.update(entity)
+
+        collection.verify
+      end
+    end
+  end
+
   describe 'when #update raises Sequel Database Violation Error' do
     SEQUEL_TO_HANAMI_MAPPING.each do |sequel_error, hanami_error|
 
@@ -35,6 +69,23 @@ describe Hanami::Model::Adapters::Sql::Command do
         end
       end
 
+    end
+  end
+
+  describe 'when delete an entity successfully' do
+    it 'delegates to delete method on collection' do
+      entity = Object.new
+      query = SqlQueryFake.new
+
+      collection = Minitest::Mock.new
+      collection.expect(:delete, true)
+
+      query.stub(:scoped, collection) do
+        command = Hanami::Model::Adapters::Sql::Command.new(query)
+        command.delete
+
+        collection.verify
+      end
     end
   end
 

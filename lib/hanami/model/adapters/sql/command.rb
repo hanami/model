@@ -81,16 +81,16 @@ module Hanami
           def _mapping_sequel_to_model(error)
             case error
             when Sequel::CheckConstraintViolation
-              Hanami::Model::CheckConstraintViolationError.new(error.message)
+              Hanami::Model::CheckConstraintViolationError
             when Sequel::ForeignKeyConstraintViolation
-              Hanami::Model::ForeignKeyConstraintViolationError.new(error.message)
+              Hanami::Model::ForeignKeyConstraintViolationError
             when Sequel::NotNullConstraintViolation
-              Hanami::Model::NotNullConstraintViolationError.new(error.message)
+              Hanami::Model::NotNullConstraintViolationError
             when Sequel::UniqueConstraintViolation
-              Hanami::Model::UniqueConstraintViolationError.new(error.message)
+              Hanami::Model::UniqueConstraintViolationError
             else
-              Hanami::Model::InvalidCommandError.new(error.message)
-            end
+              Hanami::Model::InvalidCommandError
+            end.new(error.message)
           end
         end
       end
