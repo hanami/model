@@ -19,7 +19,8 @@ Like all the other Hanami components, it can be used as a standalone framework o
 
 [![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](http://badge.fury.io/rb/hanami-model)
 [![Build Status](https://secure.travis-ci.org/hanami/model.svg?branch=master)](http://travis-ci.org/hanami/model?branch=master)
-[![Coverage](https://img.shields.io/coveralls/hanami/model/master.svg)](https://coveralls.io/r/hanami/model)
+[![Coverage](https://coveralls.io/repos/github/hanami/model/badge.svg?branch=master)](https://coveralls.io/github/hanami/model?branch=master)
+
 [![Code Climate](https://img.shields.io/codeclimate/github/hanami/model.svg)](https://codeclimate.com/github/hanami/model)
 [![Dependencies](https://gemnasium.com/hanami/model.svg)](https://gemnasium.com/hanami/model)
 [![Inline docs](http://inch-ci.org/github/hanami/model.png)](http://inch-ci.org/github/hanami/model)
