@@ -30,9 +30,7 @@ module Hanami
           # @api private
           # @since 0.1.0
           def create(entity)
-            @collection.insert(entity)
-          rescue Sequel::DatabaseError => e
-            raise Hanami::Model::Error.new(e.message)
+            _handle_database_error { @collection.insert(entity) }
           end
 
           # Updates the corresponding record for the given entity.
@@ -44,9 +42,7 @@ module Hanami
           # @api private
           # @since 0.1.0
           def update(entity)
-            @collection.update(entity)
-          rescue Sequel::DatabaseError => e
-            raise Hanami::Model::Error.new(e.message)
+            _handle_database_error { @collection.update(entity) }
           end
 
           # Deletes all the records for the current query.
@@ -59,15 +55,45 @@ module Hanami
           # @api private
           # @since 0.1.0
           def delete
-            @collection.delete
-          rescue Sequel::DatabaseError => e
-            raise Hanami::Model::Error.new(e.message)
+            _handle_database_error { @collection.delete }
           end
 
           alias_method :clear, :delete
+
+          private
+
+          # Handles any possible Adapter's Database Error
+          #
+          # @api private
+          # @since x.x.x
+          def _handle_database_error
+            yield
+          rescue Sequel::DatabaseError => e
+            raise _mapping_sequel_to_model(e)
+          end
+
+          # Maps SQL Adapter Violation's Errors into Hanami::Model Specific Errors
+          #
+          # @param adapter error [Object]
+          #
+          # @api private
+          # @since x.x.x
+          def _mapping_sequel_to_model(error)
+            case error
+            when Sequel::CheckConstraintViolation
+              Hanami::Model::CheckConstraintViolationError
+            when Sequel::ForeignKeyConstraintViolation
+              Hanami::Model::ForeignKeyConstraintViolationError
+            when Sequel::NotNullConstraintViolation
+              Hanami::Model::NotNullConstraintViolationError
+            when Sequel::UniqueConstraintViolation
+              Hanami::Model::UniqueConstraintViolationError
+            else
+              Hanami::Model::InvalidCommandError
+            end.new(error.message)
+          end
         end
       end
     end
   end
 end
-

@@ -10,6 +10,10 @@ describe Hanami::Model::Error do
     Hanami::Model::NonPersistedEntityError.superclass.must_equal Hanami::Model::Error
     Hanami::Model::InvalidMappingError.superclass.must_equal Hanami::Model::Error
     Hanami::Model::InvalidCommandError.superclass.must_equal Hanami::Model::Error
+    Hanami::Model::CheckConstraintViolationError.superclass.must_equal Hanami::Model::Error
+    Hanami::Model::ForeignKeyConstraintViolationError.superclass.must_equal Hanami::Model::Error
+    Hanami::Model::NotNullConstraintViolationError.superclass.must_equal Hanami::Model::Error
+    Hanami::Model::UniqueConstraintViolationError.superclass.must_equal Hanami::Model::Error
     Hanami::Model::InvalidQueryError.superclass.must_equal Hanami::Model::Error
     Hanami::Model::Adapters::DatabaseAdapterNotFound.superclass.must_equal Hanami::Model::Error
     Hanami::Model::Adapters::NotSupportedError.superclass.must_equal Hanami::Model::Error
