@@ -160,7 +160,7 @@ We instantiate and persist an `Author` and a few `Articles` for our example:
 
 ```ruby
 author = Author.new(name: 'Luca')
-author = AuthorRepository.create(author)
+author = AuthorRepository.new.create(author)
 
 articles = [
   Article.new(title: 'Announcing Hanami',              author_id: author.id, comments_count: 123, published: true),
@@ -170,7 +170,7 @@ articles = [
 ]
 
 articles.each do |article|
-  ArticleRepository.create(article)
+  ArticleRepository.new.create(article)
 end
 ```
 
@@ -179,8 +179,8 @@ end
 We use the repositories to query the database and return the entities we're looking for:
 
 ```ruby
-ArticleRepository.first # => return the first article
-ArticleRepository.last  # => return the last article
+ArticleRepository.new.first # => return the first article
+ArticleRepository.new.last  # => return the last article
 
 ArticleRepository.published # => return all the published articles
 ArticleRepository.drafts    # => return all the drafts
@@ -209,5 +209,5 @@ article.publish!
 
 article.published? # => true
 
-ArticleRepository.update(article)
+ArticleRepository.new.update(article)
 ```

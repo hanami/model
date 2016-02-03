@@ -87,11 +87,11 @@ end
 Hanami::Model.load!
 
 user = User.new(name: 'Luca', age: 32)
-user = UserRepository.create(user)
+user = UserRepository.new.create(user)
 
 puts user.id # => 1
 
-u = UserRepository.find(user.id)
+u = UserRepository.new.find(user.id)
 u == user # => true
 ```
 
@@ -407,7 +407,7 @@ end
 In the example above, there are a few problems:
 
 * `Article` could not be fetched because mapping could not map `price`.
-* Finding a persisted `RareArticle` record, for eg. `ArticleRepository.find(123)`,
+* Finding a persisted `RareArticle` record, for eg. `ArticleRepository.new.find(123)`,
 the result is an `Article` not `RareArticle`.
 
 ### Adapter
@@ -554,13 +554,13 @@ user = User.new(name: 'L')
 puts user.created_at # => nil
 puts user.updated_at # => nil
 
-user = UserRepository.create(user)
+user = UserRepository.new.create(user)
 puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
 puts user.updated_at.to_s # => "2015-05-15T10:12:20+00:00"
 
 sleep 3
 user.name = "Luca"
-user      = UserRepository.update(user)
+user      = UserRepository.new.update(user)
 puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
 puts user.updated_at.to_s # => "2015-05-15T10:12:23+00:00"
 ```
@@ -604,17 +604,17 @@ user.age = 33
 user.changed?           # => true
 user.changed_attributes # => {:age=>33}
 
-user = UserRepository.create(user)
+user = UserRepository.new.create(user)
 user.changed? # => false
 
 user.update(name: 'Luca')
 user.changed?           # => true
 user.changed_attributes # => {:name=>"Luca"}
 
-user = UserRepository.update(user)
+user = UserRepository.new.update(user)
 user.changed? # => false
 
-result = UserRepository.find(user.id)
+result = UserRepository.new.find(user.id)
 result.changed? # => false
 ```
 

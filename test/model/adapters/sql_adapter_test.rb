@@ -1298,7 +1298,7 @@ describe Hanami::Model::Adapters::SqlAdapter do
         raw = "SELECT * FROM users"
 
         result = @adapter.fetch(raw)
-        result.count.must_equal UserRepository.all.count
+        result.count.must_equal UserRepository.new.all.count
 
         user = result.first
         user[:id].must_equal         @user1.id
@@ -1323,7 +1323,7 @@ describe Hanami::Model::Adapters::SqlAdapter do
           records << result_set
         end
 
-        records.count.must_equal UserRepository.all.count
+        records.count.must_equal UserRepository.new.all.count
       end
 
       it 'raises an exception when an invalid sql is provided' do
