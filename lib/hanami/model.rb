@@ -11,78 +11,6 @@ module Hanami
   #
   # @since 0.1.0
   module Model
-    # Error for non persisted entity
-    # It's raised when we try to update or delete a non persisted entity.
-    #
-    # @since 0.1.0
-    #
-    # @see Hanami::Repository.update
-    class NonPersistedEntityError < Hanami::Model::Error
-    end
-
-    # Error for invalid mapper configuration
-    # It's raised when mapping is not configured correctly
-    #
-    # @since 0.2.0
-    #
-    # @see Hanami::Configuration#mapping
-    class InvalidMappingError < Hanami::Model::Error
-    end
-
-    # Error for invalid raw command syntax
-    #
-    # @since 0.5.0
-    class InvalidCommandError < Hanami::Model::Error
-      def initialize(message = "Invalid command")
-        super
-      end
-    end
-
-    # Error for invalid raw query syntax
-    #
-    # @since 0.3.1
-    class InvalidQueryError < Hanami::Model::Error
-      def initialize(message = "Invalid query")
-        super
-      end
-    end
-
-    # Error for Unique Constraint Violation
-    #
-    # @since x.x.x
-    class UniqueConstraintViolationError < Hanami::Model::Error
-      def initialize(message = "Unique constraint has been violated")
-        super
-      end
-    end
-
-    # Error for Foreign Key Constraint Violation
-    #
-    # @since x.x.x
-    class ForeignKeyConstraintViolationError < Hanami::Model::Error
-      def initialize(message = "Foreign key constraint has been violated")
-        super
-      end
-    end
-
-    # Error for Not Null Constraint Violation
-    #
-    # @since x.x.x
-    class NotNullConstraintViolationError < Hanami::Model::Error
-      def initialize(message = "NOT NULL constraint has been violated")
-        super
-      end
-    end
-
-    # Error for Check Constraint Violation raised by Sequel
-    #
-    # @since x.x.x
-    class CheckConstraintViolationError < Hanami::Model::Error
-      def initialize(message = "Check constraint has been violated")
-        super
-      end
-    end
-
     include Utils::ClassAttribute
 
     # Framework configuration
@@ -240,6 +168,5 @@ module Hanami
         duplicated.configure(&blk) if block_given?
       end
     end
-
   end
 end
