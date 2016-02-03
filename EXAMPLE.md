@@ -58,7 +58,8 @@ We have two entities in our application: `Author` and `Article`.
 ```ruby
 Author = Struct.new(:id, :name) do
   def initialize(attributes = {})
-    @id, @name = attributes.values_at(:id, :name)
+    self.id = attributes[:id]
+    self.name = attributes[:name]
   end
 end
 
@@ -159,7 +160,7 @@ We instantiate and persist an `Author` and a few `Articles` for our example:
 
 ```ruby
 author = Author.new(name: 'Luca')
-AuthorRepository.create(author)
+author = AuthorRepository.create(author)
 
 articles = [
   Article.new(title: 'Announcing Hanami',              author_id: author.id, comments_count: 123, published: true),
