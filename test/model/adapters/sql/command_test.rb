@@ -4,7 +4,8 @@ SEQUEL_TO_HANAMI_MAPPING = {
   'Sequel::UniqueConstraintViolation'     => 'Hanami::Model::UniqueConstraintViolationError',
   'Sequel::ForeignKeyConstraintViolation' => 'Hanami::Model::ForeignKeyConstraintViolationError',
   'Sequel::NotNullConstraintViolation'    => 'Hanami::Model::NotNullConstraintViolationError',
-  'Sequel::CheckConstraintViolation'      => 'Hanami::Model::CheckConstraintViolationError'
+  'Sequel::CheckConstraintViolation'      => 'Hanami::Model::CheckConstraintViolationError',
+  'Sequel::SerializationFailure'          => 'Hanami::Model::InvalidCommandError'
 }
 
 describe Hanami::Model::Adapters::Sql::Command do
