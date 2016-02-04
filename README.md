@@ -472,7 +472,7 @@ Think of an adapter for Redis, it will probably employ different strategies to f
 
 ### Model Error Coercions
 
-We encapsulate all adapter's errors into Hanami specialized error classes.
+All adapters' errors are encapsulated into Hanami error classes.
 
 Hanami Model may raise the following exceptions:
 
