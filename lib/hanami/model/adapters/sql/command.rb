@@ -9,7 +9,7 @@ module Hanami
         # @api private
         # @since 0.1.0
         class Command
-          ERROR_MAPPER = {
+          SEQUEL_TO_HANAMI_ERROR_MAPPING = {
             'Sequel::UniqueConstraintViolation'     => Hanami::Model::UniqueConstraintViolationError,
             'Sequel::ForeignKeyConstraintViolation' => Hanami::Model::ForeignKeyConstraintViolationError,
             'Sequel::NotNullConstraintViolation'    => Hanami::Model::NotNullConstraintViolationError,
@@ -76,7 +76,8 @@ module Hanami
           def _handle_database_error
             yield
           rescue Sequel::DatabaseError => e
-            raise (ERROR_MAPPER[e.class.name] || Hanami::Model::InvalidCommandError).new(e.message)
+            error_class = SEQUEL_TO_HANAMI_ERROR_MAPPING.fetch(e.class.name, Hanami::Model::InvalidCommandError)
+            raise error_class, e.message
           end
         end
       end
