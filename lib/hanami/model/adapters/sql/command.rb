@@ -9,6 +9,13 @@ module Hanami
         # @api private
         # @since 0.1.0
         class Command
+          ERROR_MAPPER = {
+            'Sequel::UniqueConstraintViolation'     => Hanami::Model::UniqueConstraintViolationError,
+            'Sequel::ForeignKeyConstraintViolation' => Hanami::Model::ForeignKeyConstraintViolationError,
+            'Sequel::NotNullConstraintViolation'    => Hanami::Model::NotNullConstraintViolationError,
+            'Sequel::CheckConstraintViolation'      => Hanami::Model::CheckConstraintViolationError
+          }.freeze
+
           # Initialize a command
           #
           # @param query [Hanami::Model::Adapters::Sql::Query]
@@ -69,28 +76,7 @@ module Hanami
           def _handle_database_error
             yield
           rescue Sequel::DatabaseError => e
-            raise _mapping_sequel_to_model(e)
-          end
-
-          # Maps SQL Adapter Violation's Errors into Hanami::Model Specific Errors
-          #
-          # @param adapter error [Object]
-          #
-          # @api private
-          # @since x.x.x
-          def _mapping_sequel_to_model(error)
-            case error
-            when Sequel::CheckConstraintViolation
-              Hanami::Model::CheckConstraintViolationError
-            when Sequel::ForeignKeyConstraintViolation
-              Hanami::Model::ForeignKeyConstraintViolationError
-            when Sequel::NotNullConstraintViolation
-              Hanami::Model::NotNullConstraintViolationError
-            when Sequel::UniqueConstraintViolation
-              Hanami::Model::UniqueConstraintViolationError
-            else
-              Hanami::Model::InvalidCommandError
-            end.new(error.message)
+            raise (ERROR_MAPPER[e.class.name] || Hanami::Model::InvalidCommandError).new(e.message)
           end
         end
       end

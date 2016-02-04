@@ -470,6 +470,20 @@ If you need more information regarding those methods, you can use comments from 
 
 Think of an adapter for Redis, it will probably employ different strategies to filter records than an SQL query object.
 
+### Model Error Coercions
+
+All adapters' errors are encapsulated into Hanami error classes.
+
+Hanami Model may raise the following exceptions:
+
+  * `Hanami::Model::UniqueConstraintViolationError`
+  * `Hanami::Model::ForeignKeyConstraintViolationError`
+  * `Hanami::Model::NotNullConstraintViolationError`
+  * `Hanami::Model::CheckConstraintViolationError`
+
+For any other adapter's errors, Hanami will raise the `Hanami::Model::InvalidCommandError` object.
+All errors contains the root cause and the full error message thrown by sql adapter.
+
 ### Conventions
 
   * A repository must be named after an entity, by appending `"Repository"` to the entity class name (eg. `Article` => `ArticleRepository`).
