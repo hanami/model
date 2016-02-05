@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v0.6.1 - 2016-02-05
+### Changed
+- [Hélio Costa e Silva & Pascal Betz] Mapping SQL Adapter's errors as `Hanami::Model` errors
+
 ## v0.6.0 - 2016-01-22
 ### Changed
 - [Luca Guidi] Renamed the project

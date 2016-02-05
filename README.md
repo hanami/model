@@ -19,8 +19,8 @@ Like all the other Hanami components, it can be used as a standalone framework o
 
 [![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](http://badge.fury.io/rb/hanami-model)
 [![Build Status](https://secure.travis-ci.org/hanami/model.svg?branch=master)](http://travis-ci.org/hanami/model?branch=master)
-[![Coverage](https://img.shields.io/coveralls/hanami/model/master.svg)](https://coveralls.io/r/hanami/model)
-[![Code Climate](https://img.shields.io/codeclimate/github/hanami/model.svg)](https://codeclimate.com/github/hanami/model)
+[![Coverage](https://coveralls.io/repos/github/hanami/model/badge.svg?branch=master)](https://coveralls.io/github/hanami/model?branch=master)
+[![Code Climate](https://codeclimate.com/github/hanami/model/badges/gpa.svg)](https://codeclimate.com/github/hanami/model)
 [![Dependencies](https://gemnasium.com/hanami/model.svg)](https://gemnasium.com/hanami/model)
 [![Inline docs](http://inch-ci.org/github/hanami/model.png)](http://inch-ci.org/github/hanami/model)
 
@@ -469,6 +469,20 @@ Here is common interface for existing class:
 If you need more information regarding those methods, you can use comments from [memory](https://github.com/hanami/model/blob/master/lib/hanami/model/adapters/memory/query.rb#L29) or [sql](https://github.com/hanami/model/blob/master/lib/hanami/model/adapters/sql/query.rb#L28) adapters interface.
 
 Think of an adapter for Redis, it will probably employ different strategies to filter records than an SQL query object.
+
+### Model Error Coercions
+
+All adapters' errors are encapsulated into Hanami error classes.
+
+Hanami Model may raise the following exceptions:
+
+  * `Hanami::Model::UniqueConstraintViolationError`
+  * `Hanami::Model::ForeignKeyConstraintViolationError`
+  * `Hanami::Model::NotNullConstraintViolationError`
+  * `Hanami::Model::CheckConstraintViolationError`
+
+For any other adapter's errors, Hanami will raise the `Hanami::Model::InvalidCommandError` object.
+All errors contains the root cause and the full error message thrown by sql adapter.
 
 ### Conventions
 
