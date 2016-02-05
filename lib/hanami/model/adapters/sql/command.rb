@@ -9,6 +9,8 @@ module Hanami
         # @api private
         # @since 0.1.0
         class Command
+          # @api private
+          # @since 0.6.1
           SEQUEL_TO_HANAMI_ERROR_MAPPING = {
             'Sequel::UniqueConstraintViolation'     => Hanami::Model::UniqueConstraintViolationError,
             'Sequel::ForeignKeyConstraintViolation' => Hanami::Model::ForeignKeyConstraintViolationError,
@@ -72,7 +74,7 @@ module Hanami
           # Handles any possible Adapter's Database Error
           #
           # @api private
-          # @since x.x.x
+          # @since 0.6.1
           def _handle_database_error
             yield
           rescue Sequel::DatabaseError => e

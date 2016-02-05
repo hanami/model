@@ -42,7 +42,7 @@ module Hanami
 
     # Error for Unique Constraint Violation
     #
-    # @since x.x.x
+    # @since 0.6.1
     class UniqueConstraintViolationError < Error
       def initialize(message = "Unique constraint has been violated")
         super
@@ -51,7 +51,7 @@ module Hanami
 
     # Error for Foreign Key Constraint Violation
     #
-    # @since x.x.x
+    # @since 0.6.1
     class ForeignKeyConstraintViolationError < Error
       def initialize(message = "Foreign key constraint has been violated")
         super
@@ -60,7 +60,7 @@ module Hanami
 
     # Error for Not Null Constraint Violation
     #
-    # @since x.x.x
+    # @since 0.6.1
     class NotNullConstraintViolationError < Error
       def initialize(message = "NOT NULL constraint has been violated")
         super
@@ -69,7 +69,7 @@ module Hanami
 
     # Error for Check Constraint Violation raised by Sequel
     #
-    # @since x.x.x
+    # @since 0.6.1
     class CheckConstraintViolationError < Error
       def initialize(message = "Check constraint has been violated")
         super
