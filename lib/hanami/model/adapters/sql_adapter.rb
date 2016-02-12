@@ -163,7 +163,7 @@ module Hanami
         #   article = Article.new(title: 'Introducing transactions',
         #     body: 'lorem ipsum')
         #
-        #   ArticleRepository.transaction do
+        #   ArticleRepository.new.transaction do
         #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
         #     # !!! ROLLBACK !!!
         #   end
@@ -183,8 +183,8 @@ module Hanami
         #   article = Article.new(title: 'Introducing transactions',
         #     body: 'lorem ipsum')
         #
-        #   ArticleRepository.transaction(rollback: :always) do
-        #     ArticleRepository.create(article)
+        #   ArticleRepository.new.transaction(rollback: :always) do
+        #     ArticleRepository.new.create(article)
         #     # !!! ROLLBACK !!!
         #   end
         #
@@ -205,7 +205,7 @@ module Hanami
         #   article = Article.new(title: 'Introducing transactions',
         #     body: 'lorem ipsum')
         #
-        #   ArticleRepository.transaction(rollback: :reraise) do
+        #   ArticleRepository.new.transaction(rollback: :reraise) do
         #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
         #     # !!! ROLLBACK !!!
         #   end # => RuntimeError

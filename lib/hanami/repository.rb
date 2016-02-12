@@ -130,10 +130,11 @@ module Hanami
     #     include Hanami::Repository
     #   end
     def self.included(base)
+
       base.class_eval do
+        include InstanceMethods
         extend ClassMethods
         include Hanami::Utils::ClassAttribute
-
         class_attribute :collection
         self.adapter = Hanami::Model::Adapters::NullAdapter.new
       end
@@ -208,14 +209,27 @@ module Hanami
       #   end
       #
       #   UserRepository.adapter = adapter
+      # @since 0.5.0
+      # @api private
       def adapter=(adapter)
         @adapter = adapter
       end
 
-      # @since 0.5.0
-      # @api private
       def adapter
         @adapter
+      end
+
+    end
+
+    module InstanceMethods
+      # Get the currently configured adapter
+      def adapter
+        self.class.adapter
+      end
+
+      # Get the currently configured collection name
+      def collection
+        self.class.collection
       end
 
       # Creates or updates a record in the database for the given entity.
@@ -239,7 +253,7 @@ module Hanami
       #   article = Article.new(title: 'Introducing Hanami::Model')
       #   article.id # => nil
       #
-      #   persisted_article = ArticleRepository.persist(article) # creates a record
+      #   persisted_article = ArticleRepository.new.persist(article) # creates a record
       #   article.id # => nil
       #   persisted_article.id # => 23
       #
@@ -250,17 +264,17 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   article = ArticleRepository.find(23)
+      #   article = ArticleRepository.new.find(23)
       #   article.id # => 23
       #
       #   article.title = 'Launching Hanami::Model'
-      #   ArticleRepository.persist(article) # updates the record
+      #   ArticleRepository.new.persist(article) # updates the record
       #
-      #   article = ArticleRepository.find(23)
+      #   article = ArticleRepository.new.find(23)
       #   article.title # => "Launching Hanami::Model"
       def persist(entity)
         _touch(entity)
-        @adapter.persist(collection, entity)
+        adapter.persist(collection, entity)
       end
 
       # Creates a record in the database for the given entity.
@@ -286,20 +300,20 @@ module Hanami
       #   article = Article.new(title: 'Introducing Hanami::Model')
       #   article.id # => nil
       #
-      #   created_article = ArticleRepository.create(article) # creates a record
+      #   created_article = ArticleRepository.new.create(article) # creates a record
       #   article.id # => nil
       #   created_article.id # => 23
       #
-      #   created_article = ArticleRepository.create(article)
+      #   created_article = ArticleRepository.new.create(article)
       #   created_article.id # => 24
       #
-      #   created_article = ArticleRepository.create(existing_article) # => no-op
+      #   created_article = ArticleRepository.new.create(existing_article) # => no-op
       #   created_article # => nil
       #
       def create(entity)
         unless _persisted?(entity)
           _touch(entity)
-          @adapter.create(collection, entity)
+          adapter.create(collection, entity)
         end
       end
 
@@ -326,11 +340,11 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   article = ArticleRepository.find(23)
+      #   article = ArticleRepository.new.find(23)
       #   article.id # => 23
       #   article.title = 'Launching Hanami::Model'
       #
-      #   ArticleRepository.update(article) # updates the record
+      #   ArticleRepository.new.update(article) # updates the record
       #
       #
       #
@@ -344,11 +358,11 @@ module Hanami
       #   article = Article.new(title: 'Introducing Hanami::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.update(article) # raises Hanami::Model::NonPersistedEntityError
+      #   ArticleRepository.new.update(article) # raises Hanami::Model::NonPersistedEntityError
       def update(entity)
         if _persisted?(entity)
           _touch(entity)
-          @adapter.update(collection, entity)
+          adapter.update(collection, entity)
         else
           raise Hanami::Model::NonPersistedEntityError
         end
@@ -376,10 +390,10 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   article = ArticleRepository.find(23)
+      #   article = ArticleRepository.new.find(23)
       #   article.id # => 23
       #
-      #   ArticleRepository.delete(article) # deletes the record
+      #   ArticleRepository.new.delete(article) # deletes the record
       #
       #
       #
@@ -393,10 +407,10 @@ module Hanami
       #   article = Article.new(title: 'Introducing Hanami::Model')
       #   article.id # => nil
       #
-      #   ArticleRepository.delete(article) # raises Hanami::Model::NonPersistedEntityError
+      #   ArticleRepository.new.delete(article) # raises Hanami::Model::NonPersistedEntityError
       def delete(entity)
         if _persisted?(entity)
-          @adapter.delete(collection, entity)
+          adapter.delete(collection, entity)
         else
           raise Hanami::Model::NonPersistedEntityError
         end
@@ -417,9 +431,9 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.all # => [ #<Article:0x007f9b19a60098> ]
+      #   ArticleRepository.new.all # => [ #<Article:0x007f9b19a60098> ]
       def all
-        @adapter.all(collection)
+        adapter.all(collection)
       end
 
       # Finds an entity by its identity.
@@ -439,10 +453,10 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.find(23)   # => #<Article:0x007f9b19a60098>
-      #   ArticleRepository.find(9999) # => nil
+      #   ArticleRepository.new.find(23)   # => #<Article:0x007f9b19a60098>
+      #   ArticleRepository.new.find(9999) # => nil
       def find(id)
-        @adapter.find(collection, id)
+        adapter.find(collection, id)
       end
 
       # Returns the first entity in the database.
@@ -460,7 +474,7 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.first # => #<Article:0x007f8c71d98a28>
+      #   ArticleRepository.new.first # => #<Article:0x007f8c71d98a28>
       #
       # @example With an empty collection
       #   require 'hanami/model'
@@ -469,9 +483,9 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.first # => nil
+      #   ArticleRepository.new.first # => nil
       def first
-        @adapter.first(collection)
+        adapter.first(collection)
       end
 
       # Returns the last entity in the database.
@@ -489,7 +503,7 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.last # => #<Article:0x007f8c71d98a28>
+      #   ArticleRepository.new.last # => #<Article:0x007f8c71d98a28>
       #
       # @example With an empty collection
       #   require 'hanami/model'
@@ -498,9 +512,9 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.last # => nil
+      #   ArticleRepository.new.last # => nil
       def last
-        @adapter.last(collection)
+        adapter.last(collection)
       end
 
       # Deletes all the records from the current collection.
@@ -516,9 +530,9 @@ module Hanami
       #     include Hanami::Repository
       #   end
       #
-      #   ArticleRepository.clear # deletes all the records
+      #   ArticleRepository.new.clear # deletes all the records
       def clear
-        @adapter.clear(collection)
+        adapter.clear(collection)
       end
 
       # Wraps the given block in a transaction.
@@ -554,12 +568,12 @@ module Hanami
       #   article = Article.new(title: 'Introducing transactions',
       #     body: 'lorem ipsum')
       #
-      #   ArticleRepository.transaction do
+      #   ArticleRepository.new.transaction do
       #     ArticleRepository.dangerous_operation!(article) # => RuntimeError
       #     # !!! ROLLBACK !!!
       #   end
       def transaction(options = {})
-        @adapter.transaction(options) do
+        adapter.transaction(options) do
           yield
         end
       end
@@ -606,7 +620,7 @@ module Hanami
       #
       #   ArticleRepository.reset_comments_count
       def execute(raw)
-        @adapter.execute(raw)
+        adapter.execute(raw)
       end
 
       # Fetch raw result sets for the the given statement.
@@ -650,7 +664,7 @@ module Hanami
       #     end
       #   end
       #
-      #   ArticleRepository.all_raw
+      #   ArticleRepository.new.all_raw
       #     # => [{:_id=>1, :user_id=>nil, :s_title=>"Art 1", :comments_count=>nil, :umapped_column=>nil}]
       #
       # @example Map A Value From Result Set
@@ -711,7 +725,7 @@ module Hanami
       #
       #   ArticleRepository.titles # => ["Announcing Hanami v0.5.0"]
       def fetch(raw, &blk)
-        @adapter.fetch(raw, &blk)
+        adapter.fetch(raw, &blk)
       end
 
       # Fabricates a query and yields the given block to access the low level
@@ -789,7 +803,7 @@ module Hanami
       #     end
       #   end
       def query(&blk)
-        @adapter.query(collection, self, &blk)
+        adapter.query(collection, self, &blk)
       end
 
       # Negates the filtering conditions of a given query with the logical

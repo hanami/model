@@ -24,6 +24,9 @@ class UserRepository
   include Hanami::Repository
 end
 
+class SubclassedUserRepository < UserRepository
+end
+
 class UnmappedRepository
   include Hanami::Repository
 end
@@ -31,35 +34,35 @@ end
 class ArticleRepository
   include Hanami::Repository
 
-  def self.rank
+  def rank
     query do
       desc(:comments_count)
     end
   end
 
-  def self.by_user(user)
+  def by_user(user)
     query do
       where(user_id: user.id)
     end
   end
 
-  def self.not_by_user(user)
+  def not_by_user(user)
     exclude by_user(user)
   end
 
-  def self.rank_by_user(user)
+  def rank_by_user(user)
     rank.by_user(user)
   end
 
-  def self.reset_comments_count
+  def reset_comments_count
     execute("UPDATE articles SET comments_count = '0'")
   end
 
-  def self.find_raw
+  def find_raw
     fetch("SELECT * FROM articles")
   end
 
-  def self.each_titles
+  def each_titles
     result = []
 
     fetch("SELECT s_title FROM articles") do |article|
@@ -69,7 +72,7 @@ class ArticleRepository
     result
   end
 
-  def self.map_titles
+  def map_titles
     fetch("SELECT s_title FROM articles").map do |article|
       article[:s_title]
     end

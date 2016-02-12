@@ -253,8 +253,8 @@ describe 'SQL joins test' do
             end
 
             it 'returns records' do
-              user_first = TestUserRepository.first
-              user_last = TestUserRepository.last
+              user_first = TestUserRepository.new.first
+              user_last = TestUserRepository.new.last
 
               query_join = Proc.new {
                 join(:ages, key: :value, foreign_key: :age)
@@ -304,7 +304,7 @@ describe 'SQL joins test' do
             end
 
             it 'returns records' do
-              created_user = TestUserRepository.first
+              created_user = TestUserRepository.new.first
 
               query_join = Proc.new {
                 left_join(:users)

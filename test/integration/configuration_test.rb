@@ -29,11 +29,11 @@ describe 'Configuration DSL' do
     end
 
     it 'add the entity to repositories' do
-      @user_counter = UserRepository.all.size
+      @user_counter = UserRepository.new.all.size
 
-      @user = UserRepository.create(@user)
+      @user = UserRepository.new.create(@user)
 
-      users = UserRepository.all
+      users = UserRepository.new.all
       users.size.must_equal(@user_counter + 1)
       users.first.must_equal(@user)
     end
@@ -41,7 +41,7 @@ describe 'Configuration DSL' do
 
   describe "when a repository isn't mapped" do
     it 'raises an error when try to use it' do
-      exception = -> { UnmappedRepository.find(1) }.must_raise(Hanami::Model::Adapters::NoAdapterError)
+      exception = -> { UnmappedRepository.new.find(1) }.must_raise(Hanami::Model::Adapters::NoAdapterError)
       exception.message.must_equal(
         "Cannot invoke `find' on repository. "\
         "Please check if `adapter' and `mapping' are set, "\
