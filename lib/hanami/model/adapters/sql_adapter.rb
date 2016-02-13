@@ -76,7 +76,7 @@ module Hanami
         # @since 0.1.0
         def update(collection, entity)
           command(
-            _find(collection, entity.id)
+            _find(collection, entity.to_hash[:id])
           ).update(entity)
         end
 
@@ -89,7 +89,7 @@ module Hanami
         # @since 0.1.0
         def delete(collection, entity)
           command(
-            _find(collection, entity.id)
+            _find(collection, entity.to_hash[:id])
           ).delete
         end
 

@@ -55,11 +55,12 @@ module Hanami
 
           instance_eval <<-EVAL, __FILE__, __LINE__
             def to_record(entity)
-              if entity.id
-                Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.dump_coercer }(entity.#{name})"}.join(',') }]
+              attributes = entity.to_hash
+              if attributes[:id]
+                Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.dump_coercer }(attributes[:#{name}])"}.join(',') }]
               else
                 Hash[].tap do |record|
-                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,attr| "value = #{ attr.dump_coercer }(entity.#{name}); record[:#{attr.mapped}] = value unless value.nil?"}.join('; ') }
+                  #{ @collection.attributes.reject{|name,_| name == @collection.identity }.map{|name,attr| "value = #{ attr.dump_coercer }(attributes[:#{name}]); record[:#{attr.mapped}] = value unless value.nil?"}.join('; ') }
                 end
               end
             end

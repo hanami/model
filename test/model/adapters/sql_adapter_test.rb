@@ -168,8 +168,15 @@ describe Hanami::Model::Adapters::SqlAdapter do
     describe 'when the given entity is not persisted' do
       let(:entity) { TestUser.new }
 
-      it 'stores the record and assigns an id' do
+      it 'stores the record and assigns an id with entity' do
         result = @adapter.persist(collection, entity)
+
+        result.id.wont_be_nil
+        @adapter.find(collection, result.id).must_equal result
+      end
+
+      it 'stores the record and assigns an id with hash' do
+        result = @adapter.persist(collection, entity.to_hash)
 
         result.id.wont_be_nil
         @adapter.find(collection, result.id).must_equal result
@@ -183,7 +190,7 @@ describe Hanami::Model::Adapters::SqlAdapter do
 
       let(:entity) { TestUser.new }
 
-      it 'updates the record and leaves untouched the id' do
+      it 'updates the record and leaves untouched the id with entity' do
         id = @entity.id
         id.wont_be_nil
 
@@ -193,14 +200,33 @@ describe Hanami::Model::Adapters::SqlAdapter do
         @entity.id.must_equal(id)
         @adapter.find(collection, @entity.id).name.must_equal @entity.name
       end
+
+      it 'updates the record and leaves untouched the id with hash' do
+        id = @entity.id
+        id.wont_be_nil
+
+        attributes = @entity.to_hash
+        attributes[:name] = 'L'
+        @adapter.persist(collection, attributes)
+
+        @entity.id.must_equal(id)
+        @adapter.find(collection, @entity.id).name.must_equal attributes[:name]
+      end
     end
   end
 
   describe '#create' do
     let(:entity) { TestUser.new }
 
-    it 'stores the record and assigns an id' do
+    it 'stores the record and assigns an id with entity' do
       result = @adapter.create(collection, entity)
+
+      result.id.wont_be_nil
+      @adapter.find(collection, result.id).must_equal result
+    end
+
+    it 'stores the record and assigns an id with hash' do
+      result = @adapter.create(collection, entity.to_hash)
 
       result.id.wont_be_nil
       @adapter.find(collection, result.id).must_equal result
@@ -214,7 +240,7 @@ describe Hanami::Model::Adapters::SqlAdapter do
 
     let(:entity) { TestUser.new(id: nil, name: 'L') }
 
-    it 'stores the changes and leave the id untouched' do
+    it 'stores the changes and leave the id untouched with entity' do
       id = @entity.id
 
       @entity.name = 'MG'
@@ -222,6 +248,17 @@ describe Hanami::Model::Adapters::SqlAdapter do
 
       @entity.id.must_equal id
       @adapter.find(collection, @entity.id).name.must_equal @entity.name
+    end
+
+    it 'stores the changes and leave the id untouched with hash' do
+      id = @entity.id
+
+      attributes = @entity.to_hash
+      attributes[:name] = 'MG'
+      @adapter.update(collection, attributes.to_hash)
+
+      @entity.id.must_equal id
+      @adapter.find(collection, @entity.id).name.must_equal attributes[:name]
     end
   end
 
@@ -232,8 +269,13 @@ describe Hanami::Model::Adapters::SqlAdapter do
 
     let(:entity) { TestUser.new }
 
-    it 'removes the given identity' do
+    it 'removes the given identity with entity' do
       @adapter.delete(collection, entity)
+      @adapter.find(collection, entity.id).must_be_nil
+    end
+
+    it 'removes the given identity with hash' do
+      @adapter.delete(collection, {})
       @adapter.find(collection, entity.id).must_be_nil
     end
   end

@@ -16,7 +16,7 @@ module Hanami
         # @api private
         # @since 0.1.0
         def persist(collection, entity)
-          if entity.id
+          if entity.to_hash[:id]
             update(collection, entity)
           else
             create(collection, entity)
