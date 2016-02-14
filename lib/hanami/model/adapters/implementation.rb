@@ -50,6 +50,8 @@ module Hanami
           _first(
             _find(collection, id)
           )
+        rescue TypeError, Hanami::Model::InvalidQueryError
+          nil
         end
 
         # Returns the first record in the given collection.
