@@ -42,7 +42,7 @@ module Hanami
         # @param collection [Symbol] the target collection (it must be mapped).
         # @param id [Object] the identity of the object.
         #
-        # @return [Object] the entity
+        # @return [Object] the entity or nil if not found
         #
         # @api private
         # @since 0.1.0
@@ -50,7 +50,8 @@ module Hanami
           _first(
             _find(collection, id)
           )
-        rescue TypeError, Hanami::Model::InvalidQueryError
+        rescue TypeError, Hanami::Model::InvalidQueryError => error
+          raise error unless _type_mismatch_error?(error)
           nil
         end
 
@@ -89,6 +90,10 @@ module Hanami
 
         def _mapped_collection(name)
           @mapper.collection(name)
+        end
+
+        def _type_mismatch_error?(error)
+          error.message.match(/InvalidTextRepresentation|incorrect-type/)
         end
 
         def _find(collection, id)
