@@ -1,16 +1,12 @@
 language: ruby
 sudo: false
 cache: bundler
-install: true
-script:
-  - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION; fi'
-  - 'bundle install'
-  - 'bundle exec rake test:coverage'
+script: 'bundle exec rake test:coverage --trace'
 rvm:
   - 2.2.4
   - 2.3.0
+  - jruby-9.0.5.0
   - ruby-head
-  - jruby-9000
   - jruby-head
 
 addons:

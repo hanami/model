@@ -274,6 +274,40 @@ describe Hanami::Repository do
           end
         end
 
+        describe 'with wrong type' do
+          it 'returns nil' do
+            UserRepository.new.find('incorrect-type').must_be_nil
+          end
+        end
+
+        if adapter_name == :postgres
+          describe 'with id as uuid type' do
+            before do
+              RobotRepository.adapter = adapter.new(mapper, uri)
+              RobotRepository.collection = :robots
+              RobotRepository.new.clear
+
+              @robot = RobotRepository.new.create(Robot.new(name: 'R2D2', build_date: Time.new(1970, 1, 1)))
+            end
+
+            after(:each) do
+              RobotRepository.adapter.disconnect
+            end
+
+            it 'returns correctly' do
+              RobotRepository.new.find(@robot.id).must_equal @robot
+            end
+
+            it 'returns nil for invalid uuid' do
+              RobotRepository.new.find('6ca6bcaa-d36a-3be9-839c-21d6bce84e63').must_be_nil
+            end
+
+            it 'returns nil for invalid id type' do
+              RobotRepository.new.find(1234).must_be_nil
+            end
+          end
+        end
+
         describe 'with data' do
           before do
             TestPrimaryKey = Struct.new(:id) do

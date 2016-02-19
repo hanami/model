@@ -79,6 +79,15 @@ class ArticleRepository
   end
 end
 
+class Robot
+  include Hanami::Entity
+  attributes :name, :build_date
+end
+
+class RobotRepository
+  include Hanami::Repository
+end
+
 [SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
   require 'hanami/utils/io'
 
@@ -102,7 +111,7 @@ end
     String  :comments_count # Not an error: we're testing String => Integer coercion
     String  :umapped_column
 
-    if conn_string.match(/\Apostgres/)
+    if conn_string.match(/postgres/)
       column :tags, 'text[]'
     else
       column :tags, String
@@ -129,6 +138,15 @@ end
   DB.create_table :countries do
     primary_key :country_id
     String :code
+  end
+
+  if conn_string.match(/postgres/)
+    DB.run('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
+    DB.create_table :robots do
+      column :id, :uuid, :default => Sequel.function(:uuid_generate_v1mc), primary_key: true
+      String :name
+      DateTime :build_date
+    end
   end
 end
 
@@ -166,6 +184,13 @@ MAPPER = Hanami::Model::Mapper.new do
     identity :_id
   end
 
+  collection :robots do
+    entity Robot
+
+    attribute :id, String
+    attribute :name, String
+    attribute :build_date, DateTime
+  end
 end
 
 MAPPER.load!
