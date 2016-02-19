@@ -93,7 +93,7 @@ module Hanami
         end
 
         def _type_mismatch_error?(error)
-          error.message.match(/InvalidTextRepresentation|incorrect-type/)
+          error.message.match(/InvalidTextRepresentation|incorrect-type|syntax\ for\ uuid/)
         end
 
         def _find(collection, id)
