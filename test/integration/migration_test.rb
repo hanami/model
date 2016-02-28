@@ -4,6 +4,11 @@ require 'hanami/model/migrator'
 describe "Hanami::Model.migration" do
   let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby?  }
 
+  after(:each) do
+    Hanami::Model.unload!
+    @connection && @connection.disconnect
+  end
+
   describe "SQLite" do
     before do
       @database = Pathname.new("#{ __dir__ }/../../tmp/migration.sqlite3").expand_path
@@ -26,11 +31,6 @@ describe "Hanami::Model.migration" do
     after(:each) do
       File.delete(@database)
       File.delete(@schema)
-    end
-
-    after(:each) do
-      Hanami::Model.unload!
-      @connection.disconnect
     end
 
     describe "columns" do
