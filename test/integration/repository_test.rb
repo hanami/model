@@ -112,12 +112,21 @@ describe Hanami::Repository do
             article = ArticleRepository.new.persist(Article.new(title: 'Art 1'))
             article.must_be_kind_of Article
             article.id.wont_be_nil
+            article.title.must_equal 'Art 1'
           end
 
-          it 'works with hash' do
+          it 'works with symbol key hash' do
             article = ArticleRepository.new.persist({ title: 'Art 1' })
             article.must_be_kind_of Article
             article.id.wont_be_nil
+            article.title.must_equal 'Art 1'
+          end
+
+          it 'works with string key hash' do
+            article = ArticleRepository.new.persist({ 'title' => 'Art 1' })
+            article.must_be_kind_of Article
+            article.id.wont_be_nil
+            article.title.must_equal 'Art 1'
           end
         end
 
@@ -162,8 +171,22 @@ describe Hanami::Repository do
             persisted_article.title.must_equal 'Art 2'
           end
 
-          it 'works with hash' do
+          it 'works with symbol key hash' do
             attributes = Article.new(title: 'Art 1').to_hash
+            created_article = ArticleRepository.new.create(attributes)
+            created_article.must_be_kind_of Article
+            created_article.id.wont_be_nil
+            attributes[:id] = created_article.id
+            attributes[:title] = 'Art 2'
+
+            persisted_article = ArticleRepository.new.persist(attributes)
+            persisted_article.must_be_kind_of Article
+            persisted_article.id.must_equal attributes[:id]
+            persisted_article.title.must_equal 'Art 2'
+          end
+
+          it 'works with string key hash' do
+            attributes = Article.new('title' => 'Art 1').to_hash
             created_article = ArticleRepository.new.create(attributes)
             created_article.must_be_kind_of Article
             created_article.id.wont_be_nil
@@ -214,8 +237,14 @@ describe Hanami::Repository do
           article.id.wont_be_nil
         end
 
-        it 'works with hash' do
+        it 'works with symbol key hash' do
           article = ArticleRepository.new.create({ title: 'Art 1' })
+          article.must_be_kind_of Article
+          article.id.wont_be_nil
+        end
+
+        it 'works with string key hash' do
+          article = ArticleRepository.new.create({ 'title' => 'Art 1' })
           article.must_be_kind_of Article
           article.id.wont_be_nil
         end
@@ -229,8 +258,15 @@ describe Hanami::Repository do
             result.updated_at.must_equal result.created_at
           end
 
-          it 'assigns and persists created_at and updated_at attribute with hash' do
+          it 'assigns and persists created_at and updated_at attribute with symbol key hash' do
             result = UserRepository.new.create(unpersisted_user.to_hash)
+            result.created_at.wont_be_nil
+            result.updated_at.must_equal result.created_at
+          end
+
+          it 'assigns and persists created_at and updated_at attribute with string key hash' do
+            attributes = Hanami::Utils::Hash.new(unpersisted_user.to_hash).stringify!
+            result = UserRepository.new.create(attributes)
             result.created_at.wont_be_nil
             result.updated_at.must_equal result.created_at
           end
@@ -288,9 +324,17 @@ describe Hanami::Repository do
           saved_user.name.must_equal 'Art 2'
         end
 
-        it 'works with hash' do
+        it 'works with symbol key hash' do
           attributes = @user1.to_hash
           attributes[:name] = 'Art 2'
+          saved_user = UserRepository.new.update(attributes)
+          saved_user.must_be_kind_of User
+          saved_user.name.must_equal 'Art 2'
+        end
+
+        it 'works with string key hash' do
+          attributes = Hanami::Utils::Hash.new(@user1.to_hash).stringify!
+          attributes['name'] = 'Art 2'
           saved_user = UserRepository.new.update(attributes)
           saved_user.must_be_kind_of User
           saved_user.name.must_equal 'Art 2'
@@ -323,13 +367,24 @@ describe Hanami::Repository do
           UserRepository.new.find(@user.id).must_be_nil
         end
 
-        it 'works with hash' do
+        it 'works with symbol key hash' do
           @user = UserRepository.new.create(user)
           found_user = UserRepository.new.find(@user.id)
           found_user.must_be_kind_of User
           found_user.id.wont_be_nil
 
           UserRepository.new.delete(@user.to_hash)
+          UserRepository.new.find(@user.id).must_be_nil
+        end
+
+        it 'works with string key hash' do
+          @user = UserRepository.new.create(user)
+          found_user = UserRepository.new.find(@user.id)
+          found_user.must_be_kind_of User
+          found_user.id.wont_be_nil
+
+          attributes = Hanami::Utils::Hash.new(@user.to_hash).stringify!
+          UserRepository.new.delete(attributes)
           UserRepository.new.find(@user.id).must_be_nil
         end
       end
