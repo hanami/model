@@ -219,11 +219,9 @@ module Hanami
     #
     #   user = User.new(id: 23, name: 'Luca')
     #   user.to_h # => { :id => 23, :name => "Luca" }
-    #   user.to_hash # => { :id => 23, :name => "Luca" }
     def to_h
       Hash[attribute_names.map { |a| [a, read_attribute(a)] }]
     end
-    alias :to_hash :to_h
 
     # Return the set of attribute names
     #

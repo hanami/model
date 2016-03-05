@@ -202,16 +202,6 @@ describe Hanami::Entity do
     end
   end
 
-  describe '#to_hash' do
-    before do
-      @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false)
-    end
-
-    it 'returns an attributes hash' do
-      @book.to_hash.must_equal({id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false, tags: nil})
-    end
-  end
-
   describe '#attribute_names' do
     before do
       @book = Book.new(id: 100, title: 'Wuthering Heights', author: 'Emily Brontë', published: false)

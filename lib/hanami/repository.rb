@@ -273,7 +273,7 @@ module Hanami
       #   article = ArticleRepository.new.find(23)
       #   article.title # => "Launching Hanami::Model"
       def persist(entity)
-        attributes_entity = Utils::Hash.new(entity.to_hash).symbolize!
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
         _touch(attributes_entity)
         adapter.persist(collection, attributes_entity)
       end
@@ -312,7 +312,7 @@ module Hanami
       #   created_article # => nil
       #
       def create(entity)
-        attributes_entity = Utils::Hash.new(entity.to_hash).symbolize!
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
         unless _persisted?(attributes_entity)
           _touch(attributes_entity)
           adapter.create(collection, attributes_entity)
@@ -362,7 +362,7 @@ module Hanami
       #
       #   ArticleRepository.new.update(article) # raises Hanami::Model::NonPersistedEntityError
       def update(entity)
-        attributes_entity = Utils::Hash.new(entity.to_hash).symbolize!
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
         if _persisted?(attributes_entity)
           _touch(attributes_entity)
           adapter.update(collection, attributes_entity)
@@ -412,7 +412,7 @@ module Hanami
       #
       #   ArticleRepository.new.delete(article) # raises Hanami::Model::NonPersistedEntityError
       def delete(entity)
-        attributes_entity = Utils::Hash.new(entity.to_hash).symbolize!
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
         if _persisted?(attributes_entity)
           adapter.delete(collection, attributes_entity)
         else

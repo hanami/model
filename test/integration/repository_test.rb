@@ -172,7 +172,7 @@ describe Hanami::Repository do
           end
 
           it 'works with symbol key hash' do
-            attributes = Article.new(title: 'Art 1').to_hash
+            attributes = Article.new(title: 'Art 1').to_h
             created_article = ArticleRepository.new.create(attributes)
             created_article.must_be_kind_of Article
             created_article.id.wont_be_nil
@@ -186,7 +186,7 @@ describe Hanami::Repository do
           end
 
           it 'works with string key hash' do
-            attributes = Article.new('title' => 'Art 1').to_hash
+            attributes = Article.new('title' => 'Art 1').to_h
             created_article = ArticleRepository.new.create(attributes)
             created_article.must_be_kind_of Article
             created_article.id.wont_be_nil
@@ -259,13 +259,13 @@ describe Hanami::Repository do
           end
 
           it 'assigns and persists created_at and updated_at attribute with symbol key hash' do
-            result = UserRepository.new.create(unpersisted_user.to_hash)
+            result = UserRepository.new.create(unpersisted_user.to_h)
             result.created_at.wont_be_nil
             result.updated_at.must_equal result.created_at
           end
 
           it 'assigns and persists created_at and updated_at attribute with string key hash' do
-            attributes = Hanami::Utils::Hash.new(unpersisted_user.to_hash).stringify!
+            attributes = Hanami::Utils::Hash.new(unpersisted_user.to_h).stringify!
             result = UserRepository.new.create(attributes)
             result.created_at.wont_be_nil
             result.updated_at.must_equal result.created_at
@@ -325,7 +325,7 @@ describe Hanami::Repository do
         end
 
         it 'works with symbol key hash' do
-          attributes = @user1.to_hash
+          attributes = @user1.to_h
           attributes[:name] = 'Art 2'
           saved_user = UserRepository.new.update(attributes)
           saved_user.must_be_kind_of User
@@ -333,7 +333,7 @@ describe Hanami::Repository do
         end
 
         it 'works with string key hash' do
-          attributes = Hanami::Utils::Hash.new(@user1.to_hash).stringify!
+          attributes = Hanami::Utils::Hash.new(@user1.to_h).stringify!
           attributes['name'] = 'Art 2'
           saved_user = UserRepository.new.update(attributes)
           saved_user.must_be_kind_of User
@@ -373,7 +373,7 @@ describe Hanami::Repository do
           found_user.must_be_kind_of User
           found_user.id.wont_be_nil
 
-          UserRepository.new.delete(@user.to_hash)
+          UserRepository.new.delete(@user.to_h)
           UserRepository.new.find(@user.id).must_be_nil
         end
 
@@ -383,7 +383,7 @@ describe Hanami::Repository do
           found_user.must_be_kind_of User
           found_user.id.wont_be_nil
 
-          attributes = Hanami::Utils::Hash.new(@user.to_hash).stringify!
+          attributes = Hanami::Utils::Hash.new(@user.to_h).stringify!
           UserRepository.new.delete(attributes)
           UserRepository.new.find(@user.id).must_be_nil
         end
