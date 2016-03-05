@@ -39,47 +39,47 @@ module Hanami
           @collections = {}
         end
 
-        # Creates a record in the database for the given entity.
+        # Creates a record in the database for the given attributes.
         # It assigns the `id` attribute, in case of success.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id=] the entity to create
+        # @param attributes [#id=] the attributes to create
         #
         # @return [Object] the entity
         #
         # @api private
         # @since 0.1.0
-        def create(collection, entity)
+        def create(collection, attributes)
           synchronize do
-            command(collection).create(entity)
+            command(collection).create(attributes)
           end
         end
 
-        # Updates a record in the database corresponding to the given entity.
+        # Updates a record in the database corresponding to the given attributes.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id] the entity to update
+        # @param attributes [#id] the attributes to update
         #
         # @return [Object] the entity
         #
         # @api private
         # @since 0.1.0
-        def update(collection, entity)
+        def update(collection, attributes)
           synchronize do
-            command(collection).update(entity)
+            command(collection).update(attributes)
           end
         end
 
-        # Deletes a record in the database corresponding to the given entity.
+        # Deletes a record in the database corresponding to the given attributes.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id] the entity to delete
+        # @param attributes [#id] the attributes to delete
         #
         # @api private
         # @since 0.1.0
-        def delete(collection, entity)
+        def delete(collection, attributes)
           synchronize do
-            command(collection).delete(entity)
+            command(collection).delete(attributes)
           end
         end
 

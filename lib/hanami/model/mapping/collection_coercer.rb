@@ -54,8 +54,7 @@ module Hanami
           end.join("\n")
 
           instance_eval <<-EVAL, __FILE__, __LINE__
-            def to_record(entity)
-              attributes = entity.to_hash
+            def to_record(attributes)
               if attributes[:id]
                 Hash[#{ @collection.attributes.map{|name,attr| ":#{ attr.mapped },#{ attr.dump_coercer }(attributes[:#{name}])"}.join(',') }]
               else

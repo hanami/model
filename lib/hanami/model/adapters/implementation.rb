@@ -6,20 +6,20 @@ module Hanami
       # @api private
       # @since 0.1.0
       module Implementation
-        # Creates or updates a record in the database for the given entity.
+        # Creates or updates a record in the database for the given attributes.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id, #id=] the entity to persist
+        # @param attributes [#id, #id=] the attributes to persist
         #
         # @return [Object] the entity
         #
         # @api private
         # @since 0.1.0
-        def persist(collection, entity)
-          if entity.to_hash[:id]
-            update(collection, entity)
+        def persist(collection, attributes)
+          if attributes[:id]
+            update(collection, attributes)
           else
-            create(collection, entity)
+            create(collection, attributes)
           end
         end
 

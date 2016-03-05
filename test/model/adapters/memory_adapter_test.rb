@@ -53,8 +53,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
       user   = TestUser.new
       device = TestDevice.new
 
-      user   = @adapter.create(:users, user)
-      device = @adapter.create(:devices, device)
+      user   = @adapter.create(:users, user.to_h)
+      device = @adapter.create(:devices, device.to_h)
 
       @adapter.all(:users).must_equal   [user]
       @adapter.all(:devices).must_equal [device]
@@ -65,15 +65,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
     describe 'when the given entity is not persisted' do
       let(:entity) { TestUser.new }
 
-      it 'stores the record and assigns an id with entity' do
-        result = @adapter.persist(collection, entity)
-
-        result.id.wont_be_nil
-        @adapter.find(collection, result.id).must_equal result
-      end
-
-      it 'stores the record and assigns an id with hash' do
-        result = @adapter.persist(collection, {})
+      it 'stores the record and assigns an id' do
+        result = @adapter.persist(collection, entity.to_h)
 
         result.id.wont_be_nil
         @adapter.find(collection, result.id).must_equal result
@@ -82,32 +75,20 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
     describe 'when the given entity is persisted' do
       before do
-        @entity = @adapter.create(collection, entity)
+        @entity = @adapter.create(collection, entity.to_h)
       end
 
       let(:entity) { TestUser.new }
 
-      it 'updates the record and leaves untouched the id with entity' do
+      it 'updates the record and leaves untouched the id' do
         id = @entity.id
         id.wont_be_nil
 
         @entity.name = 'L'
-        @adapter.persist(collection, @entity)
+        result = @adapter.persist(collection, @entity.to_h)
 
-        @entity.id.must_equal(id)
-        @adapter.find(collection, @entity.id).name.must_equal @entity.name
-      end
-
-      it 'updates the record and leaves untouched the id with hash' do
-        id = @entity.id
-        id.wont_be_nil
-
-        attributes = @entity.to_hash
-        attributes[:name] = 'L'
-        @adapter.persist(collection, attributes)
-
-        @entity.id.must_equal(attributes[:id])
-        @adapter.find(collection, attributes[:id]).name.must_equal attributes[:name]
+        result.id.must_equal(id)
+        @adapter.find(collection, result.id).name.must_equal @entity.name
       end
     end
   end
@@ -115,15 +96,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
   describe '#create' do
     let(:entity) { TestUser.new }
 
-    it 'stores the record and assigns an id with entity' do
-      result = @adapter.create(collection, entity)
-
-      result.id.wont_be_nil
-      @adapter.find(collection, result.id).must_equal result
-    end
-
-    it 'stores the record and assigns an id with hash' do
-      result = @adapter.create(collection, {})
+    it 'stores the record and assigns an id' do
+      result = @adapter.create(collection, entity.to_h)
 
       result.id.wont_be_nil
       @adapter.find(collection, result.id).must_equal result
@@ -132,47 +106,32 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
   describe '#update' do
     before do
-      @entity = @adapter.create(collection, entity)
+      @entity = @adapter.create(collection, entity.to_h)
     end
 
     let(:entity) { TestUser.new(id: nil, name: 'L') }
 
-    it 'stores the changes and leave the id untouched with entity' do
+    it 'stores the changes and leave the id untouched' do
       id = @entity.id
-
       entity.name = 'MG'
-      @adapter.update(collection, @entity)
 
-      @entity.id.must_equal id
-      @adapter.find(collection, @entity.id).name.must_equal @entity.name
-    end
+      result = @adapter.update(collection, @entity.to_h)
 
-    it 'stores the changes and leave the id untouched with hash' do
-      attributes = @entity.to_hash
-      attributes[:name] = 'MG'
-      entity = @adapter.update(collection, attributes)
-
-      @entity.id.must_equal attributes[:id]
-      @adapter.find(collection, @entity.id).name.must_equal entity.name
+      result.id.must_equal id
+      @adapter.find(collection, result.id).name.must_equal @entity.name
     end
   end
 
   describe '#delete' do
     before do
-      @adapter.create(collection, entity)
+      @adapter.create(collection, entity.to_h)
     end
 
     let(:entity) { TestUser.new }
 
-    it 'removes the given identity with entity' do
-      @adapter.delete(collection, entity)
+    it 'removes the given identity' do
+      @adapter.delete(collection, entity.to_h)
       @adapter.find(collection, entity.id).must_be_nil
-    end
-
-    it 'removes the given identity with hash' do
-      attributes = entity.to_hash
-      @adapter.delete(collection, attributes)
-      @adapter.find(collection, attributes[:id]).must_be_nil
     end
   end
 
@@ -189,7 +148,7 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
     describe 'when some records are persisted' do
       before do
-        @entity = @adapter.create(collection, entity)
+        @entity = @adapter.create(collection, entity.to_h)
       end
 
       let(:entity) { TestUser.new }
@@ -202,7 +161,7 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
   describe '#find' do
     before do
-      @entity = @adapter.create(collection, entity)
+      @entity = @adapter.create(collection, entity.to_h)
       @adapter.instance_variable_get(:@collections).fetch(collection).records.store(nil, nil_entity)
     end
 
@@ -235,8 +194,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
     describe 'when some records are persisted' do
       before do
-        @entity1 = @adapter.create(collection, entity1)
-        @entity2 = @adapter.create(collection, entity2)
+        @entity1 = @adapter.create(collection, entity1.to_h)
+        @entity2 = @adapter.create(collection, entity2.to_h)
       end
 
       let(:entity1) { TestUser.new }
@@ -261,8 +220,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
     describe 'when some records are persisted' do
       before do
-        @entity1 = @adapter.create(collection, entity1)
-        @entity2 = @adapter.create(collection, entity2)
+        @entity1 = @adapter.create(collection, entity1.to_h)
+        @entity2 = @adapter.create(collection, entity2.to_h)
       end
 
       let(:entity1) { TestUser.new }
@@ -276,7 +235,7 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
   describe '#clear' do
     before do
-      @adapter.create(collection, entity)
+      @adapter.create(collection, entity.to_h)
     end
 
     let(:entity) { TestUser.new }
@@ -289,7 +248,7 @@ describe Hanami::Model::Adapters::MemoryAdapter do
     it 'resets the id counter' do
       @adapter.clear(collection)
 
-      result = @adapter.create(collection, entity)
+      result = @adapter.create(collection, entity.to_h)
       result.id.must_equal 1
     end
   end
@@ -316,9 +275,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
         end
 
         it 'returns selected records' do
@@ -452,9 +411,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
         end
 
         let(:user3) { TestUser.new(name: 'S', age: 2) }
@@ -545,9 +504,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
         end
 
         it 'returns selected records' do
@@ -624,9 +583,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
 
           @users = [@user1, @user2, @user3]
         end
@@ -692,8 +651,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns sorted records' do
@@ -720,8 +679,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns sorted records' do
@@ -748,8 +707,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns reverse sorted records' do
@@ -776,9 +735,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, TestUser.new(name: user2.name))
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, TestUser.new(name: user2.name).to_h)
         end
 
         it 'returns only the number of requested records' do
@@ -807,10 +766,10 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
-          @user4 = @adapter.create(collection, user4)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
+          @user4 = @adapter.create(collection, user4.to_h)
         end
 
         let(:user3) { TestUser.new(name: user2.name, age: 31) }
@@ -842,8 +801,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns true when there are matched records' do
@@ -881,8 +840,8 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
         end
 
         it 'returns the count of all the records' do
@@ -928,9 +887,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the sum of all the records' do
@@ -976,9 +935,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the average of all the records' do
@@ -1024,9 +983,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the average of all the records' do
@@ -1072,9 +1031,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the maximum of all the records' do
@@ -1120,9 +1079,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the minimum of all the records' do
@@ -1168,9 +1127,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the interval of all the records' do
@@ -1216,9 +1175,9 @@ describe Hanami::Model::Adapters::MemoryAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the range of all the records' do
@@ -1257,7 +1216,7 @@ describe Hanami::Model::Adapters::MemoryAdapter do
       end
 
       it 'raises error' do
-        exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
+        exception = -> { @adapter.create(collection, TestUser.new.to_h) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
         exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
       end
     end

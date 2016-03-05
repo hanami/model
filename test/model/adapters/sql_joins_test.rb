@@ -140,15 +140,15 @@ describe 'SQL joins test' do
               @adapter.clear(:users)
               @adapter.clear(:orders)
 
-              @created_user = @adapter.create(:users, user1)
+              @created_user = @adapter.create(:users, user1.to_h)
 
               @order1 = TestOrder.new(user_id: @created_user.id, total: 100)
               @order2 = TestOrder.new(user_id: @created_user.id, total: 200)
               @order3 = TestOrder.new(user_id: nil,              total: 300)
 
-              @adapter.create(:orders, @order1)
-              @adapter.create(:orders, @order2)
-              @adapter.create(:orders, @order3)
+              @adapter.create(:orders, @order1.to_h)
+              @adapter.create(:orders, @order2.to_h)
+              @adapter.create(:orders, @order3.to_h)
 
               TestUserRepository.adapter = @adapter
               TestOrderRepository.adapter = @adapter
@@ -179,11 +179,11 @@ describe 'SQL joins test' do
               @country1 = TestCountry.new(code: 'IT')
               @country2 = TestCountry.new(code: 'US')
 
-              country1 = @adapter.create(:countries, @country1)
-              country2 = @adapter.create(:countries, @country2)
+              country1 = @adapter.create(:countries, @country1.to_h)
+              country2 = @adapter.create(:countries, @country2.to_h)
 
               user = TestUser.new(country_id: country2.id)
-              @created_user = @adapter.create(:users, user)
+              @created_user = @adapter.create(:users, user.to_h)
 
               TestUserRepository.adapter = @adapter
               TestCountryRepository.adapter = @adapter
@@ -204,15 +204,15 @@ describe 'SQL joins test' do
               @adapter.clear(:users)
               @adapter.clear(:devices)
 
-              @created_user = @adapter.create(:users, user1)
+              @created_user = @adapter.create(:users, user1.to_h)
 
               @device1 = TestDevice.new(u_id: @created_user.id)
               @device2 = TestDevice.new(u_id: @created_user.id)
               @device3 = TestDevice.new(u_id: nil)
 
-              @adapter.create(:devices, @device1)
-              @adapter.create(:devices, @device2)
-              @adapter.create(:devices, @device3)
+              @adapter.create(:devices, @device1.to_h)
+              @adapter.create(:devices, @device2.to_h)
+              @adapter.create(:devices, @device3.to_h)
 
               TestUserRepository.adapter = @adapter
             end
@@ -239,15 +239,15 @@ describe 'SQL joins test' do
               @adapter.clear(:users)
               @adapter.clear(:ages)
 
-              created_user1 = @adapter.create(:users, user1)
-              @adapter.create(:users, user2)
-              created_user3 = @adapter.create(:users, user3)
+              created_user1 = @adapter.create(:users, user1.to_h)
+              @adapter.create(:users, user2.to_h)
+              created_user3 = @adapter.create(:users, user3.to_h)
 
               @age1 = TestAge.new(value: created_user1.age, label: 'Adulthood')
               @age2 = TestAge.new(value: created_user3.age, label: 'Childhood')
 
-              @adapter.create(:ages, @age1)
-              @adapter.create(:ages, @age2)
+              @adapter.create(:ages, @age1.to_h)
+              @adapter.create(:ages, @age2.to_h)
 
               TestUserRepository.adapter = @adapter
             end
@@ -289,15 +289,15 @@ describe 'SQL joins test' do
               @adapter.clear(:users)
               @adapter.clear(:orders)
 
-              @created_user = @adapter.create(:users, user1)
+              @created_user = @adapter.create(:users, user1.to_h)
 
               @order1 = TestOrder.new(user_id: @created_user.id, total: 100)
               @order2 = TestOrder.new(user_id: @created_user.id, total: 200)
               @order3 = TestOrder.new(user_id: nil,              total: 300)
 
-              @adapter.create(:orders, @order1)
-              @adapter.create(:orders, @order2)
-              @adapter.create(:orders, @order3)
+              @adapter.create(:orders, @order1.to_h)
+              @adapter.create(:orders, @order2.to_h)
+              @adapter.create(:orders, @order3.to_h)
 
               TestUserRepository.adapter = @adapter
               TestOrderRepository.adapter = @adapter
