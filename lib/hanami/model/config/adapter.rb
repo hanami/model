@@ -7,8 +7,8 @@ module Hanami
       #
       # @since 0.2.0
       class AdapterNotFound < Hanami::Model::Error
-        def initialize(adapter_name)
-          super "Cannot find Hanami::Model adapter #{adapter_name}"
+        def initialize(adapter_name, message)
+          super "Cannot find Hanami::Model adapter '#{adapter_name}' (#{message})"
         end
       end
 
@@ -95,7 +95,7 @@ module Hanami
           begin
             require "hanami/model/adapters/#{type}_adapter"
           rescue LoadError => e
-            raise LoadError.new("Cannot find Hanami::Model adapter '#{type}' (#{e.message})")
+            raise AdapterNotFound.new(class_name, e.message)
           end
         end
 
@@ -103,13 +103,10 @@ module Hanami
           begin
             klass = Hanami::Utils::Class.load!(class_name, Hanami::Model::Adapters)
             klass.new(mapper, uri, options)
-          rescue NameError
-            raise AdapterNotFound.new(class_name)
           rescue => e
-            raise "Cannot instantiate adapter of #{klass} (#{e.message})"
+            raise Error, e
           end
         end
-
       end
     end
   end
