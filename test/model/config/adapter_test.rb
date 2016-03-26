@@ -37,7 +37,8 @@ describe Hanami::Model::Config::Adapter do
       let(:config) { Hanami::Model::Config::Adapter.new(type: :redis, uri: 'redis://not_exist') }
 
       it 'raises an error' do
-        -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
+        exception = -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
+        exception.message.must_equal "Cannot find Hanami::Model adapter `Hanami::Model::Adapters::RedisAdapter' (cannot load such file -- hanami/model/adapters/redis_adapter)"
       end
     end
 
@@ -46,7 +47,8 @@ describe Hanami::Model::Config::Adapter do
 
       it 'raises an error' do
         config.stub(:load_adapter, nil) do
-          -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
+          exception = -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
+          exception.message.must_equal "uninitialized constant Hanami::Model::Adapters::RedisAdapter"
         end
       end
     end
