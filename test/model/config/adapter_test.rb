@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'hanami/utils'
 
 describe Hanami::Model::Config::Adapter do
 
@@ -38,7 +39,12 @@ describe Hanami::Model::Config::Adapter do
 
       it 'raises an error' do
         exception = -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
-        exception.message.must_equal "Cannot find Hanami::Model adapter `Hanami::Model::Adapters::RedisAdapter' (cannot load such file -- hanami/model/adapters/redis_adapter)"
+
+        if Hanami::Utils.jruby?
+          exception.message.must_equal "Cannot find Hanami::Model adapter `Hanami::Model::Adapters::RedisAdapter' (no such file to load -- hanami/model/adapters/redis_adapter)"
+        else
+          exception.message.must_equal "Cannot find Hanami::Model adapter `Hanami::Model::Adapters::RedisAdapter' (cannot load such file -- hanami/model/adapters/redis_adapter)"
+        end
       end
     end
 
@@ -48,7 +54,12 @@ describe Hanami::Model::Config::Adapter do
       it 'raises an error' do
         config.stub(:load_adapter, nil) do
           exception = -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
-          exception.message.must_equal "uninitialized constant Hanami::Model::Adapters::RedisAdapter"
+
+          if RUBY_VERSION >= "2.3" || Hanami::Utils.jruby?
+            exception.message.must_equal "uninitialized constant Hanami::Model::Adapters::RedisAdapter"
+          else
+            exception.message.must_equal "uninitialized constant RedisAdapter"
+          end
         end
       end
     end
