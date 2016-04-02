@@ -7,7 +7,7 @@ describe Hanami::Model::Adapters::Implementation do
     end
 
     mapper   = Object.new
-    @adapter = TestAdapter.new(mapper)
+    @adapter = TestAdapter.new(mapper, "test://uri")
   end
 
   after do

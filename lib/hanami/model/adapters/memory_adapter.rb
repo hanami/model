@@ -173,6 +173,14 @@ module Hanami
         def synchronize
           @mutex.synchronize { yield }
         end
+
+        # Most adapters need a URI, but this one doesn't
+        #
+        # @api private
+        # @since x.x.x
+        def uri_mandatory?
+          false
+        end
       end
     end
   end
