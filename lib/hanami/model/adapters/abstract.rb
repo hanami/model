@@ -89,6 +89,12 @@ module Hanami
       #
       # @since 0.1.0
       class Abstract
+        # @since x.x.x
+        # @api private
+        #
+        # @see Hanami::Model::Adapters::Abstract#adapter_name
+        ADAPTER_NAME_SUFFIX = '_adapter'.freeze
+
         # Initialize the adapter
         #
         # @param mapper [Hanami::Model::Mapper] the object that defines the
@@ -295,7 +301,7 @@ module Hanami
         #
         # @since x.x.x
         def adapter_name
-          Utils::String.new(self.class.name).demodulize.underscore.to_s
+          Utils::String.new(self.class.name).demodulize.underscore.to_s.sub(ADAPTER_NAME_SUFFIX, '')
         end
 
         private

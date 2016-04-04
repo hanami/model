@@ -1175,5 +1175,11 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
       exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
       exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
     end
+
+    describe '#adapter_name' do
+      it "equals to 'file_system'" do
+        @adapter.adapter_name.must_equal 'file_system'
+      end
+    end
   end
 end

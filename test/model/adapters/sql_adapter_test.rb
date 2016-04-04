@@ -1392,5 +1392,11 @@ describe Hanami::Model::Adapters::SqlAdapter do
         exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
       end
     end
+
+    describe '#adapter_name' do
+      it "equals to 'sql'" do
+        @adapter.adapter_name.must_equal 'sql'
+      end
+    end
   end
 end

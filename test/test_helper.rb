@@ -50,6 +50,7 @@ else
   POSTGRES_CONNECTION_STRING = "postgres://localhost/#{ postgres_database }"
 end
 
+MEMORY_CONNECTION_STRING      = "memory://test"
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
 
 if ENV['TRAVIS'] == 'true'

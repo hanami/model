@@ -10,7 +10,7 @@ describe Hanami::Repository do
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
 
   {
-    memory:      [Hanami::Model::Adapters::MemoryAdapter,     nil,                           MAPPER],
+    memory:      [Hanami::Model::Adapters::MemoryAdapter,     MEMORY_CONNECTION_STRING,      MAPPER],
     file_system: [Hanami::Model::Adapters::FileSystemAdapter, FILE_SYSTEM_CONNECTION_STRING, MAPPER],
     sqlite:      [Hanami::Model::Adapters::SqlAdapter,        SQLITE_CONNECTION_STRING,      MAPPER],
     postgres:    [Hanami::Model::Adapters::SqlAdapter,        POSTGRES_CONNECTION_STRING,    MAPPER],
@@ -611,8 +611,8 @@ describe Hanami::Repository do
 
   describe "with memory adapter" do
     before do
-      UserRepository.adapter    = Hanami::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
-      ArticleRepository.adapter = Hanami::Model::Adapters::MemoryAdapter.new(MAPPER, nil)
+      UserRepository.adapter    = Hanami::Model::Adapters::MemoryAdapter.new(MAPPER, MEMORY_CONNECTION_STRING)
+      ArticleRepository.adapter = Hanami::Model::Adapters::MemoryAdapter.new(MAPPER, MEMORY_CONNECTION_STRING)
 
       UserRepository.collection    = :users
       ArticleRepository.collection = :articles
