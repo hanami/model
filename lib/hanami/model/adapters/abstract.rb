@@ -25,6 +25,15 @@ module Hanami
       class NotSupportedError < Hanami::Model::Error
       end
 
+      # It's raised when a URI is nil or empty
+      #
+      # @since x.x.x
+      class MissingURIError < Hanami::Model::Error
+        def initialize
+          super "URI for FileSystemAdapter is nil or empty"
+        end
+      end
+
       # It's raised when an operation is requested to an adapter after it was
       # disconnected.
       #
@@ -92,6 +101,8 @@ module Hanami
           @mapper = mapper
           @uri    = uri
           @options = options
+
+          assert_uri_present! if uri_mandatory?
         end
 
         # Creates or updates a record in the database for the given entity.
@@ -274,6 +285,19 @@ module Hanami
         # @since 0.5.0
         def disconnect
           raise NotImplementedError
+        end
+
+        private
+
+        def assert_uri_present!
+          raise MissingURIError if @uri.nil? || @uri.empty?
+        end
+
+        # Lets subclasses decide if they need a URI.
+        #
+        # @since x.x.x
+        def uri_mandatory?
+          true
         end
       end
     end

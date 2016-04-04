@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe Hanami::Model::Adapters::Abstract do
-  let(:adapter)    { Hanami::Model::Adapters::Abstract.new(mapper) }
+  let(:adapter)    { Hanami::Model::Adapters::Abstract.new(mapper, 'test://uri') }
   let(:mapper)     { Object.new }
   let(:entity)     { Object.new }
   let(:query)      { Object.new }
@@ -82,6 +82,22 @@ describe Hanami::Model::Adapters::Abstract do
   describe '#connection_string' do
     it 'raises error' do
       -> { adapter.connection_string }.must_raise Hanami::Model::Adapters::NotSupportedError
+    end
+  end
+
+  describe 'empty path' do
+    it 'raises MissingURIError' do
+      -> {
+        Hanami::Model::Adapters::Abstract.new(@mapper, nil)
+      }.must_raise(Hanami::Model::Adapters::MissingURIError)
+    end
+  end
+
+  describe 'nil path' do
+    it 'raises MissingURIError' do
+      -> {
+        Hanami::Model::Adapters::Abstract.new(@mapper, nil)
+      }.must_raise(Hanami::Model::Adapters::MissingURIError)
     end
   end
 end
