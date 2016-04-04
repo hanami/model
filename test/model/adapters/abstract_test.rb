@@ -85,19 +85,29 @@ describe Hanami::Model::Adapters::Abstract do
     end
   end
 
-  describe 'empty path' do
+  describe '#adapter_name' do
+    it 'returns demodulized, underscored class name' do
+      adapter.adapter_name.must_equal 'abstract'
+    end
+  end
+
+  describe 'empty uri' do
     it 'raises MissingURIError' do
-      -> {
+      exception = -> {
         Hanami::Model::Adapters::Abstract.new(@mapper, nil)
       }.must_raise(Hanami::Model::Adapters::MissingURIError)
+
+      exception.message.must_equal "URI for `abstract' adapter is nil or empty. Please check env variables like `DATABASE_URL'."
     end
   end
 
   describe 'nil path' do
     it 'raises MissingURIError' do
-      -> {
-        Hanami::Model::Adapters::Abstract.new(@mapper, nil)
+      exception = -> {
+        Hanami::Model::Adapters::Abstract.new(@mapper, "")
       }.must_raise(Hanami::Model::Adapters::MissingURIError)
+
+      exception.message.must_equal "URI for `abstract' adapter is nil or empty. Please check env variables like `DATABASE_URL'."
     end
   end
 end

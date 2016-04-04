@@ -1,4 +1,6 @@
 require 'hanami/utils/basic_object'
+require 'hanami/utils/string'
+require 'hanami/utils/blank'
 
 module Hanami
   module Model
@@ -29,8 +31,8 @@ module Hanami
       #
       # @since x.x.x
       class MissingURIError < Hanami::Model::Error
-        def initialize
-          super "URI for FileSystemAdapter is nil or empty"
+        def initialize(adapter_name)
+          super "URI for `#{ adapter_name }' adapter is nil or empty. Please check env variables like `DATABASE_URL'."
         end
       end
 
@@ -102,7 +104,7 @@ module Hanami
           @uri    = uri
           @options = options
 
-          assert_uri_present! if uri_mandatory?
+          assert_uri_present!
         end
 
         # Creates or updates a record in the database for the given entity.
@@ -287,17 +289,19 @@ module Hanami
           raise NotImplementedError
         end
 
+        # Adapter name
+        #
+        # @return [String] adapter name
+        #
+        # @since x.x.x
+        def adapter_name
+          Utils::String.new(self.class.name).demodulize.underscore.to_s
+        end
+
         private
 
         def assert_uri_present!
-          raise MissingURIError if @uri.nil? || @uri.empty?
-        end
-
-        # Lets subclasses decide if they need a URI.
-        #
-        # @since x.x.x
-        def uri_mandatory?
-          true
+          raise MissingURIError.new(adapter_name) if Utils::Blank.blank?(@uri)
         end
       end
     end

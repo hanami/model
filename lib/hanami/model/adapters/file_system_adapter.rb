@@ -282,18 +282,6 @@ module Hanami
         def _load(contents)
           Marshal.load(contents)
         end
-
-        private
-
-
-        # MemoryAddapter (which this Adapter inherits from) does not need a uri
-        # but this adapter does (to know where to put the files).
-        #
-        # @api private
-        # @since x.x.x
-        def uri_mandatory?
-          true
-        end
       end
     end
   end
