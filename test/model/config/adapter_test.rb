@@ -6,7 +6,7 @@ describe Hanami::Model::Config::Adapter do
   describe 'initialize' do
     it 'sets other adapater options' do
       after_connect_proc = -> {}
-      config =  Hanami::Model::Config::Adapter.new(type: :memory, uri: nil, after_connect: after_connect_proc)
+      config =  Hanami::Model::Config::Adapter.new(type: :memory, uri: MEMORY_CONNECTION_STRING, after_connect: after_connect_proc)
 
       config.options.must_equal({after_connect: after_connect_proc})
     end
@@ -17,7 +17,7 @@ describe Hanami::Model::Config::Adapter do
     let(:adapter) { config.build(mapper) }
 
     describe 'given adapter type is memory' do
-      let(:config) { Hanami::Model::Config::Adapter.new(type: :memory) }
+      let(:config) { Hanami::Model::Config::Adapter.new(type: :memory, uri: MEMORY_CONNECTION_STRING) }
 
       it 'instantiates memory adapter' do
         adapter = config.build(mapper)
