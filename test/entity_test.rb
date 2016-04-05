@@ -62,6 +62,7 @@ describe Hanami::Entity do
     end
 
     it 'returns false for reserved word' do
+      require "json"
       Car.allowed_attribute_name?(:to_json).must_equal false
     end
   end
