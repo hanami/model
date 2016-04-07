@@ -61,6 +61,9 @@ else
   MYSQL_USER    = 'hanami'
 end
 
+TEST_POSTGRES= Hanami::Utils::Blank.blank?(ENV['ADAPTER']) || ENV['ADAPTER'] == 'postgres'
+TEST_MYSQL = Hanami::Utils::Blank.blank?(ENV['ADAPTER']) || ENV['ADAPTER'] == 'mysql'
+
 system "dropdb #{ postgres_database }" rescue nil
 system "createdb #{ postgres_database }" rescue nil
 sleep 1
