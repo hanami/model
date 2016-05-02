@@ -3,8 +3,8 @@ sudo: false
 cache: bundler
 script: 'bundle exec rake test:coverage --trace'
 rvm:
-  - 2.2.4
-  - 2.3.0
+  - 2.2.5
+  - 2.3.1
   - jruby-9.0.5.0
   - ruby-head
   - jruby-head
