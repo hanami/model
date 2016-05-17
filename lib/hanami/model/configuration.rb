@@ -1,5 +1,4 @@
-require 'hanami/model/config/adapter'
-require 'hanami/model/config/mapper'
+require 'hanami/model/loader'
 
 module Hanami
   module Model
@@ -26,19 +25,7 @@ module Hanami
       # @see Hanami::Model::Configuration#schema
       DEFAULT_SCHEMA_PATH = Pathname.new('db/schema.sql').freeze
 
-      # The persistence mapper
-      #
-      # @return [Hanami::Model::Mapper]
-      #
-      # @since 0.2.0
-      attr_reader :mapper
-
-      # An adapter configuration template
-      #
-      # @return [Hanami::Model::Config::Adapter]
-      #
-      # @since 0.2.0
-      attr_reader :adapter_config
+      attr_reader :configuration
 
       # Initialize a configuration instance
       #
@@ -56,12 +43,10 @@ module Hanami
       #
       # @since 0.2.0
       def reset!
-        @adapter = nil
-        @adapter_config = nil
-        @mapper = NullMapper.new
-        @mapper_config = nil
-        @migrations = DEFAULT_MIGRATIONS_PATH
-        @schema = DEFAULT_SCHEMA_PATH
+        @type          = nil
+        @uri           = nil
+        @configuration = nil
+        @repositories  = {}
       end
 
       alias_method :unload!, :reset!
@@ -72,10 +57,15 @@ module Hanami
       #
       # @since 0.2.0
       def load!
-        _build_mapper
-        _build_adapter
+        @repositories = Loader.new(@configuration, connection).run
+      end
 
-        mapper.load!(@adapter)
+      def connection
+        @configuration.gateways[:default].connection
+      end
+
+      def repository(klass)
+        @repositories[:user]
       end
 
       # Register adapter
@@ -111,13 +101,11 @@ module Hanami
       #   Hanami::Model.configuration.adapter_config
       #
       # @since 0.2.0
-      def adapter(options = nil)
-        if options.nil?
-          @adapter_config
-        else
-          _check_adapter_options!(options)
-          @adapter_config ||= Hanami::Model::Config::Adapter.new(options)
-        end
+      def adapter(type, uri)
+        @type = type
+        @uri  = uri
+
+        @configuration = ROM::Configuration.new(@type, @uri)
       end
 
       # Set global persistence mapping

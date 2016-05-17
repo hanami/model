@@ -68,6 +68,38 @@ module Hanami
       configuration.unload!
     end
 
+    def self.rom_container
+      ROM.container(configuration.configuration)
+    end
+
+    class Container
+      def initialize(configuration)
+        @configuration = configuration
+      end
+
+      def repository(klass)
+        @configuration.repository(klass).new(rom_container)
+      end
+
+      private
+
+      def rom_container
+        ROM.container(@configuration.configuration)
+      end
+    end
+
+    def self.container
+      Container.new(configuration)
+    end
+
+    def self.connection
+      configuration.connection
+    end
+
+    def self.repository(klass)
+      configuration.repository(klass)
+    end
+
     # Duplicate Hanami::Model in order to create a new separated instance
     # of the framework.
     #

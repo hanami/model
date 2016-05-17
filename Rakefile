@@ -5,20 +5,23 @@ require 'bundler/gem_tasks'
 Rake::TestTask.new do |t|
   t.pattern = 'test/**/*_test.rb'
   t.libs.push 'test'
+  t.warning = false
 end
 
 Rake::TestTask.new do |t|
   t.name = 'unit'
-  t.test_files = Dir['test/**/*_test.rb'].reject do |path| 
+  t.test_files = Dir['test/**/*_test.rb'].reject do |path|
     path.include?('/integration')
   end
   t.libs.push 'test'
+  t.warning = false
 end
 
 Rake::TestTask.new do |t|
   t.name = 'integration'
   t.pattern = 'test/integration/**/*_test.rb'
   t.libs.push 'test'
+  t.warning = false
 end
 
 namespace :test do

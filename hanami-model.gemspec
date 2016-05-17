@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Hanami::Model::VERSION
   spec.authors       = ['Luca Guidi', 'Trung Lê', 'Alfonso Uceda']
   spec.email         = ['me@lucaguidi.com', 'trung.le@ruby-journal.com', 'uceda73@gmail.com']
-  spec.summary       = %q{A persistence layer for Hanami}
-  spec.description   = %q{A persistence framework with entities, repositories, data mapper and query objects}
+  spec.summary       = 'A persistence layer for Hanami'
+  spec.description   = 'A persistence framework with entities, repositories, data mapper and query objects'
   spec.homepage      = 'http://hanamirb.org'
   spec.license       = 'MIT'
 
@@ -20,9 +20,10 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_runtime_dependency 'hanami-utils', '~> 0.8'
-  spec.add_runtime_dependency 'sequel',       '~> 4.9'
+  spec.add_runtime_dependency 'rom'            # FIXME: add version
+  spec.add_runtime_dependency 'rom-repository' # FIXME: add version
 
   spec.add_development_dependency 'bundler',  '~> 1.6'
   spec.add_development_dependency 'minitest', '~> 5'
-  spec.add_development_dependency 'rake',     '~> 10'
+  spec.add_development_dependency 'rake',     '~> 11'
 end

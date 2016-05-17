@@ -49,7 +49,17 @@ module Hanami
     #     # DOWN strategy is automatically generated
     #   end
     def self.migration(&blk)
-      Sequel.migration(&blk)
+      Migration.new(Sequel.migration(&blk))
+    end
+
+    class Migration
+      def initialize(migration)
+        @migration = migration
+      end
+
+      def run
+        @migration.apply(Model.connection, :up)
+      end
     end
 
     # Database schema migrator
