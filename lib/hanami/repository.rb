@@ -1,4 +1,5 @@
 require 'hanami/model/adapters/null_adapter' # FIXME: remove this require
+require 'hanami/utils/string'
 require 'rom-repository'
 
 module Hanami
@@ -119,8 +120,20 @@ module Hanami
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
   module Repository
+    module ClassMethods
+      def repository_name
+        Utils::String.new(
+          name.gsub(/Repository\z/, '')
+        ).underscore.to_sym
+      end
+    end
+
+    def self.included(base)
+      base.extend ClassMethods
+    end
+
     def initialize(container = Model.container)
-      @repository = container.repository(self)
+      @repository = container.repository(self.class)
     end
 
     def find(id)

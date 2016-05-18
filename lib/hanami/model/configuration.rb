@@ -65,7 +65,7 @@ module Hanami
       end
 
       def repository(klass)
-        @repositories[:user]
+        @repositories[klass.repository_name]
       end
 
       # Register adapter
