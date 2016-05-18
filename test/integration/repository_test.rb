@@ -7,8 +7,7 @@ describe 'Repository' do
       user  = repository.create(name: 'L')
       found = repository.find(user.id)
 
-      # ROM::Struct[User]
-      # user.must_equal(found)
+      user.must_equal(found)
     end
 
     it 'returns nil for missing record' do
@@ -45,8 +44,7 @@ describe 'Repository' do
       repository = UserRepository.new
       user = repository.create(name: 'L')
 
-      # ROM::Struct[User]
-      # user.must_be_instance_of(User)
+      user.must_be_instance_of(User)
       user.id.wont_be_nil
       user.name.must_equal 'L'
     end
@@ -60,8 +58,7 @@ describe 'Repository' do
       user    = repository.create(name: 'L')
       updated = repository.update(user.id, name: 'Luca')
 
-      # ROM::Struct[User]
-      # updated.must_be_instance_of(User)
+      updated.must_be_instance_of(User)
       updated.id.must_equal   user.id
       updated.name.must_equal 'Luca'
     end
@@ -85,8 +82,7 @@ describe 'Repository' do
       user    = repository.create(name: 'L')
       deleted = repository.delete(user.id)
 
-      # ROM::Struct[User]
-      # deleted.must_be_instance_of(User)
+      deleted.must_be_instance_of(User)
       deleted.id.must_equal   user.id
       deleted.name.must_equal 'L'
 

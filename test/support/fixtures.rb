@@ -32,7 +32,7 @@ class UserRepository < Hanami::Repository
     register_as :entity
   end
 
-  commands :create, update: :by_id, delete: :by_id, mapping: :entity
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity
 
   def [](id)
     users.by_id(id).as(:entity).one
@@ -40,7 +40,7 @@ class UserRepository < Hanami::Repository
   alias_method :find, :[]
 
   def all
-    users
+    users.as(:entity)
   end
 end
 
