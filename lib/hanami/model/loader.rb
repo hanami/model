@@ -50,12 +50,8 @@ module Hanami
 
       def define_repository(relation, mapping)
         Class.new(ROM::Repository[relation]) do
-          @relation = relation
-          @mapping  = mapping
-
-          class << self
-            attr_reader :relation, :mapping
-          end
+          defines     :mapping
+          self.mapping mapping
 
           commands :create, update: :by_id, delete: :by_id, mapper: mapping
 
@@ -68,17 +64,7 @@ module Hanami
           end
 
           def collection
-            __send__(relation).as(mapping)
-          end
-
-          private
-
-          def mapping
-            self.class.mapping
-          end
-
-          def relation
-            self.class.relation
+            root.as(self.class.mapping)
           end
         end
       end
