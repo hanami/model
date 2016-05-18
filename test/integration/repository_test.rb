@@ -110,4 +110,17 @@ describe 'Repository' do
 #       found.to_a.must_include user
 #     end
 #   end
+  describe 'associations' do
+    it 'preloads associated records' do
+      repository = UserRepository.new
+
+      user    = repository.create(name: 'L')
+      comment = CommentRepository.new.create(user_id: user.id, text: 'blah')
+
+      found = repository.find_with_comments(user.id)
+
+      found.must_equal user
+      found.comments.must_equal [comment]
+    end
+  end
 end
