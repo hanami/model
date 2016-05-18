@@ -1,6 +1,3 @@
-require 'hanami/utils/kernel'
-require 'hanami/utils/attributes'
-
 module Hanami
   # An object that is defined by its identity.
   # See "Domain Driven Design" by Eric Evans.
