@@ -7,17 +7,18 @@ class Comment
 end
 
 Hanami::Model.configure do
-  adapter :sql, 'sqlite::memory'
+  # adapter :sql, 'sqlite::memory'
+  adapter :sql, 'postgres://localhost/hanami_model'
 end
 
 Hanami::Model.migration do
   change do
-    create_table :users do
+    create_table? :users do
       primary_key :id
       column :name, String
     end
 
-    create_table :comments do
+    create_table? :comments do
       primary_key :id
       foreign_key :user_id, :users, on_delete: :cascade, null: false
       column :text, String
@@ -47,6 +48,7 @@ class UserRepository < Hanami::Repository
   end
 
   commands :create, update: :by_id, delete: :by_id, mapper: :entity
+  relations :comments
 
   def [](id)
     users.by_id(id).as(:entity).one
@@ -58,7 +60,7 @@ class UserRepository < Hanami::Repository
   end
 
   def find_with_comments(id)
-    aggregate(:comments).by_id(id).one
+    aggregate(:comments).where(users__id: id).as(User).one
   end
 end
 

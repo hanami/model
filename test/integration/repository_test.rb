@@ -12,7 +12,7 @@ describe 'Repository' do
 
     it 'returns nil for missing record' do
       repository = UserRepository.new
-      found = repository.find('unknown')
+      found = repository.find('9999999')
 
       found.must_be_nil
     end
