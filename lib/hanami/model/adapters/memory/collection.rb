@@ -104,7 +104,7 @@ module Hanami
           # @api private
           # @since 0.1.0
           def delete(entity)
-            records.delete(entity.id)
+            records.delete(entity[:id])
           end
 
           # Returns all the raw records

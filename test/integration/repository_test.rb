@@ -61,7 +61,7 @@ describe Hanami::Repository do
       end
 
 
-      describe '.persist' do
+      describe '#persist' do
         describe 'when passed a non-persisted entity' do
           let(:unpersisted_user) { User.new(name: 'Don', age: '25') }
 
@@ -107,6 +107,27 @@ describe Hanami::Repository do
             persisted_user = UserRepository.new.persist(unpersisted_user)
             persisted_user.updated_at.must_equal persisted_user.created_at
           end
+
+          it 'works with entity' do
+            article = ArticleRepository.new.persist(Article.new(title: 'Art 1'))
+            article.must_be_kind_of Article
+            article.id.wont_be_nil
+            article.title.must_equal 'Art 1'
+          end
+
+          it 'works with symbol key hash' do
+            article = ArticleRepository.new.persist({ title: 'Art 1' })
+            article.must_be_kind_of Article
+            article.id.wont_be_nil
+            article.title.must_equal 'Art 1'
+          end
+
+          it 'works with string key hash' do
+            article = ArticleRepository.new.persist({ 'title' => 'Art 1' })
+            article.must_be_kind_of Article
+            article.id.wont_be_nil
+            article.title.must_equal 'Art 1'
+          end
         end
 
         describe 'when passed a persisted entity' do
@@ -136,10 +157,51 @@ describe Hanami::Repository do
 
             assert updated_user.updated_at > @updated_at
           end
+
+          it 'works with entity' do
+            article = Article.new(title: 'Art 1')
+            created_article = ArticleRepository.new.create(article)
+            created_article.must_be_kind_of Article
+            created_article.id.wont_be_nil
+            created_article.title = 'Art 2'
+
+            persisted_article = ArticleRepository.new.persist(created_article)
+            persisted_article.must_be_kind_of Article
+            persisted_article.id.must_equal created_article.id
+            persisted_article.title.must_equal 'Art 2'
+          end
+
+          it 'works with symbol key hash' do
+            attributes = Article.new(title: 'Art 1').to_h
+            created_article = ArticleRepository.new.create(attributes)
+            created_article.must_be_kind_of Article
+            created_article.id.wont_be_nil
+            attributes[:id] = created_article.id
+            attributes[:title] = 'Art 2'
+
+            persisted_article = ArticleRepository.new.persist(attributes)
+            persisted_article.must_be_kind_of Article
+            persisted_article.id.must_equal attributes[:id]
+            persisted_article.title.must_equal 'Art 2'
+          end
+
+          it 'works with string key hash' do
+            attributes = Article.new('title' => 'Art 1').to_h
+            created_article = ArticleRepository.new.create(attributes)
+            created_article.must_be_kind_of Article
+            created_article.id.wont_be_nil
+            attributes[:id] = created_article.id
+            attributes[:title] = 'Art 2'
+
+            persisted_article = ArticleRepository.new.persist(attributes)
+            persisted_article.must_be_kind_of Article
+            persisted_article.id.must_equal attributes[:id]
+            persisted_article.title.must_equal 'Art 2'
+          end
         end
       end
 
-      describe '.create' do
+      describe '#create' do
         before do
           @users = [
             UserRepository.new.create(user1),
@@ -169,16 +231,43 @@ describe Hanami::Repository do
           value.must_be_nil
         end
 
+        it 'works with entity' do
+          article = ArticleRepository.new.create(Article.new(title: 'Art 1'))
+          article.must_be_kind_of Article
+          article.id.wont_be_nil
+        end
+
+        it 'works with symbol key hash' do
+          article = ArticleRepository.new.create({ title: 'Art 1' })
+          article.must_be_kind_of Article
+          article.id.wont_be_nil
+        end
+
+        it 'works with string key hash' do
+          article = ArticleRepository.new.create({ 'title' => 'Art 1' })
+          article.must_be_kind_of Article
+          article.id.wont_be_nil
+        end
+
         describe 'when entity is not persisted' do
           let(:unpersisted_user) { User.new(name: 'My', age: '23') }
 
-          it 'assigns and persists created_at attribute' do
+          it 'assigns and persists created_at and updated_at attribute with entity' do
             result = UserRepository.new.create(unpersisted_user)
             result.created_at.wont_be_nil
+            result.updated_at.must_equal result.created_at
           end
 
-          it 'assigns and persists updated_at attribute' do
-            result = UserRepository.new.create(unpersisted_user)
+          it 'assigns and persists created_at and updated_at attribute with symbol key hash' do
+            result = UserRepository.new.create(unpersisted_user.to_h)
+            result.created_at.wont_be_nil
+            result.updated_at.must_equal result.created_at
+          end
+
+          it 'assigns and persists created_at and updated_at attribute with string key hash' do
+            attributes = Hanami::Utils::Hash.new(unpersisted_user.to_h).stringify!
+            result = UserRepository.new.create(attributes)
+            result.created_at.wont_be_nil
             result.updated_at.must_equal result.created_at
           end
         end
@@ -199,7 +288,7 @@ describe Hanami::Repository do
         end
       end
 
-      describe '.update' do
+      describe '#update' do
         before do
           @user1 = UserRepository.new.create(user1)
           @updated_at = @user1.updated_at
@@ -227,9 +316,32 @@ describe Hanami::Repository do
         it 'raises an error when not persisted' do
           -> { UserRepository.new.update(user2) }.must_raise(Hanami::Model::NonPersistedEntityError)
         end
+
+        it 'works with entity' do
+          @user1.name = 'Art 2'
+          saved_user = UserRepository.new.update(@user1)
+          saved_user.must_be_kind_of User
+          saved_user.name.must_equal 'Art 2'
+        end
+
+        it 'works with symbol key hash' do
+          attributes = @user1.to_h
+          attributes[:name] = 'Art 2'
+          saved_user = UserRepository.new.update(attributes)
+          saved_user.must_be_kind_of User
+          saved_user.name.must_equal 'Art 2'
+        end
+
+        it 'works with string key hash' do
+          attributes = Hanami::Utils::Hash.new(@user1.to_h).stringify!
+          attributes['name'] = 'Art 2'
+          saved_user = UserRepository.new.update(attributes)
+          saved_user.must_be_kind_of User
+          saved_user.name.must_equal 'Art 2'
+        end
       end
 
-      describe '.delete' do
+      describe '#delete' do
         before do
           @user = UserRepository.new.create(user)
           UserRepository.new.delete(@user)
@@ -244,9 +356,40 @@ describe Hanami::Repository do
         it 'raises error when the given entity is not persisted' do
           -> { UserRepository.new.delete(user2) }.must_raise(Hanami::Model::NonPersistedEntityError)
         end
+
+        it 'works with entity' do
+          @user = UserRepository.new.create(user)
+          found_user = UserRepository.new.find(@user.id)
+          found_user.must_be_kind_of User
+          found_user.id.wont_be_nil
+
+          UserRepository.new.delete(@user)
+          UserRepository.new.find(@user.id).must_be_nil
+        end
+
+        it 'works with symbol key hash' do
+          @user = UserRepository.new.create(user)
+          found_user = UserRepository.new.find(@user.id)
+          found_user.must_be_kind_of User
+          found_user.id.wont_be_nil
+
+          UserRepository.new.delete(@user.to_h)
+          UserRepository.new.find(@user.id).must_be_nil
+        end
+
+        it 'works with string key hash' do
+          @user = UserRepository.new.create(user)
+          found_user = UserRepository.new.find(@user.id)
+          found_user.must_be_kind_of User
+          found_user.id.wont_be_nil
+
+          attributes = Hanami::Utils::Hash.new(@user.to_h).stringify!
+          UserRepository.new.delete(attributes)
+          UserRepository.new.find(@user.id).must_be_nil
+        end
       end
 
-      describe '.all' do
+      describe '#all' do
         describe 'without data' do
           it 'returns an empty collection' do
             UserRepository.new.all.must_be_empty
@@ -267,7 +410,7 @@ describe Hanami::Repository do
         end
       end
 
-      describe '.find' do
+      describe '#find' do
         describe 'without data' do
           it 'returns nil' do
             UserRepository.new.find(1).must_be_nil
@@ -354,7 +497,7 @@ describe Hanami::Repository do
         end
       end
 
-      describe '.first' do
+      describe '#first' do
         describe 'without data' do
           it 'returns nil' do
             UserRepository.new.first.must_be_nil
@@ -373,7 +516,7 @@ describe Hanami::Repository do
         end
       end
 
-      describe '.last' do
+      describe '#last' do
         describe 'without data' do
           it 'returns nil' do
             UserRepository.new.last.must_be_nil
@@ -392,7 +535,7 @@ describe Hanami::Repository do
         end
       end
 
-      describe '.clear' do
+      describe '#clear' do
         describe 'without data' do
           it 'removes all the records' do
             UserRepository.new.clear
@@ -516,7 +659,7 @@ describe Hanami::Repository do
       UserRepository.adapter.disconnect
     end
 
-    describe '.transaction' do
+    describe '#transaction' do
       it 'if an exception is raised the size of articles is equal to 1' do
         ArticleRepository.new.all.size.must_equal 1
         exception = -> { ArticleRepository.new.transaction do

@@ -2,15 +2,17 @@ require 'test_helper'
 
 describe Hanami::Model::Adapters::FileSystemAdapter do
   before do
-    TestUser = Struct.new(:id, :name, :age) do
+    TestUser = Class.new do
       include Hanami::Entity
+
+      attributes :name, :age
     end
 
     class TestUserRepository
       include Hanami::Repository
     end
 
-    TestDevice = Struct.new(:id) do
+    TestDevice = Class.new do
       include Hanami::Entity
     end
 
@@ -67,8 +69,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
       user   = TestUser.new
       device = TestDevice.new
 
-      user   = @adapter.create(:users, user)
-      device = @adapter.create(:devices, device)
+      user   = @adapter.create(:users, user.to_h)
+      device = @adapter.create(:devices, device.to_h)
 
       @verifier.all(:users).must_equal   [user]
       @verifier.all(:devices).must_equal [device]
@@ -122,7 +124,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
       @user1   = TestUser.new(name: 'L')
       @user2   = TestUser.new(name: 'MG')
       old_data = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
-      @user1   = old_data.persist(collection, @user1)
+      @user1   = old_data.persist(collection, @user1.to_h)
 
       @adapter = Hanami::Model::Adapters::FileSystemAdapter.new(@mapper, FILE_SYSTEM_CONNECTION_STRING)
     end
@@ -132,7 +134,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
     end
 
     it 'writes without erasing old data' do
-      @user2 = @adapter.persist(collection, @user2)
+      @user2 = @adapter.persist(collection, @user2.to_h)
       @adapter.all(collection).must_equal [@user1, @user2]
     end
   end
@@ -146,7 +148,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
       let(:entity) { TestUser.new }
 
       it 'stores the record and assigns an id' do
-        result = @adapter.persist(collection, entity)
+        result = @adapter.persist(collection, entity.to_h)
 
         result.id.wont_be_nil
         @verifier.find(collection, result.id).must_equal result
@@ -155,7 +157,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
     describe 'when the given entity is persisted' do
       before do
-        @entity = @adapter.create(collection, entity)
+        @entity = @adapter.create(collection, entity.to_h)
       end
 
       let(:entity) { TestUser.new }
@@ -165,10 +167,10 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
         id.wont_be_nil
 
         @entity.name = 'L'
-        @adapter.persist(collection, @entity)
+        result = @adapter.persist(collection, @entity.to_h)
 
-        @entity.id.must_equal(id)
-        @verifier.find(collection, @entity.id).name.must_equal @entity.name
+        result.id.must_equal(id)
+        @verifier.find(collection, result.id).name.must_equal @entity.name
       end
     end
   end
@@ -177,7 +179,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
     let(:entity) { TestUser.new }
 
     it 'stores the record and assigns an id' do
-      result = @adapter.create(collection, entity)
+      result = @adapter.create(collection, entity.to_h)
 
       result.id.wont_be_nil
       @verifier.find(collection, result.id).must_equal result
@@ -186,7 +188,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
   describe '#update' do
     before do
-      @entity = @adapter.create(collection, entity)
+      @entity = @adapter.create(collection, entity.to_h)
     end
 
     let(:entity) { TestUser.new(id: nil, name: 'L') }
@@ -195,22 +197,22 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
       id = @entity.id
 
       @entity.name = 'MG'
-      @adapter.update(collection, @entity)
+      result = @adapter.update(collection, @entity.to_h)
 
-      @entity.id.must_equal id
-      @verifier.find(collection, @entity.id).name.must_equal @entity.name
+      result.id.must_equal id
+      @verifier.find(collection, result.id).name.must_equal @entity.name
     end
   end
 
   describe '#delete' do
     before do
-      @adapter.create(collection, entity)
+      @adapter.create(collection, entity.to_h)
     end
 
     let(:entity) { TestUser.new }
 
     it 'removes the given identity' do
-      @adapter.delete(collection, entity)
+      @adapter.delete(collection, entity.to_h)
       @verifier.find(collection, entity.id).must_be_nil
     end
   end
@@ -232,7 +234,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
     describe 'when some records are persisted' do
       before do
-        @entity = @adapter.create(collection, entity)
+        @entity = @adapter.create(collection, entity.to_h)
       end
 
       let(:entity) { TestUser.new }
@@ -249,7 +251,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
     end
 
     before do
-      @entity = @adapter.create(collection, entity)
+      @entity = @adapter.create(collection, entity.to_h)
       @adapter.instance_variable_get(:@collections).fetch(collection).records.store(nil, nil_entity)
     end
 
@@ -282,8 +284,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
     describe 'when some records are persisted' do
       before do
-        @entity1 = @adapter.create(collection, entity1)
-        @entity2 = @adapter.create(collection, entity2)
+        @entity1 = @adapter.create(collection, entity1.to_h)
+        @entity2 = @adapter.create(collection, entity2.to_h)
       end
 
       let(:entity1) { TestUser.new }
@@ -308,8 +310,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
     describe 'when some records are persisted' do
       before do
-        @entity1 = @adapter.create(collection, entity1)
-        @entity2 = @adapter.create(collection, entity2)
+        @entity1 = @adapter.create(collection, entity1.to_h)
+        @entity2 = @adapter.create(collection, entity2.to_h)
       end
 
       let(:entity1) { TestUser.new }
@@ -323,7 +325,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
   describe '#clear' do
     before do
-      @adapter.create(collection, entity)
+      @adapter.create(collection, entity.to_h)
     end
 
     let(:entity) { TestUser.new }
@@ -336,7 +338,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
     it 'resets the id counter' do
       @adapter.clear(collection)
 
-      result = @adapter.create(collection, entity)
+      result = @adapter.create(collection, entity.to_h)
       result.id.must_equal 1
     end
   end
@@ -363,9 +365,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
         end
 
         it 'returns selected records' do
@@ -430,9 +432,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
         end
 
         let(:user3) { TestUser.new(name: 'S', age: 2) }
@@ -487,8 +489,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns selected records' do
@@ -529,9 +531,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, user3)
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, user3.to_h)
         end
 
         let(:user1) { TestUser.new(name: 'L', age: 32) }
@@ -596,8 +598,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns sorted records' do
@@ -624,8 +626,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns sorted records' do
@@ -652,8 +654,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns reverse sorted records' do
@@ -680,9 +682,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, TestUser.new(name: user2.name))
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, TestUser.new(name: user2.name).to_h)
         end
 
         it 'returns only the number of requested records' do
@@ -711,10 +713,10 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
-          @user3 = @adapter.create(collection, user3)
-          @user4 = @adapter.create(collection, user4)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
+          @user3 = @adapter.create(collection, user3.to_h)
+          @user4 = @adapter.create(collection, user4.to_h)
         end
 
         let(:user3) { TestUser.new(name: user2.name, age: 31) }
@@ -746,8 +748,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @user1 = @adapter.create(collection, user1)
-          @user2 = @adapter.create(collection, user2)
+          @user1 = @adapter.create(collection, user1.to_h)
+          @user2 = @adapter.create(collection, user2.to_h)
         end
 
         it 'returns true when there are matched records' do
@@ -785,8 +787,8 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
         end
 
         it 'returns the count of all the records' do
@@ -832,9 +834,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the sum of all the records' do
@@ -880,9 +882,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the average of all the records' do
@@ -928,9 +930,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the average of all the records' do
@@ -976,9 +978,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the maximum of all the records' do
@@ -1024,9 +1026,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the minimum of all the records' do
@@ -1072,9 +1074,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the interval of all the records' do
@@ -1120,9 +1122,9 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
       describe 'with a filled collection' do
         before do
-          @adapter.create(collection, user1)
-          @adapter.create(collection, user2)
-          @adapter.create(collection, TestUser.new(name: 'S'))
+          @adapter.create(collection, user1.to_h)
+          @adapter.create(collection, user2.to_h)
+          @adapter.create(collection, TestUser.new(name: 'S').to_h)
         end
 
         it 'returns the range of all the records' do
@@ -1158,7 +1160,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
 
   describe '#info' do
     before do
-      @adapter.create(collection, TestUser.new)
+      @adapter.create(collection, TestUser.new.to_h)
     end
 
     it 'returns infos per each collection' do
@@ -1172,7 +1174,7 @@ describe Hanami::Model::Adapters::FileSystemAdapter do
     end
 
     it 'raises error' do
-      exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
+      exception = -> { @adapter.create(collection, TestUser.new.to_h) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
       exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
     end
 

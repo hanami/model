@@ -273,8 +273,9 @@ module Hanami
       #   article = ArticleRepository.new.find(23)
       #   article.title # => "Launching Hanami::Model"
       def persist(entity)
-        _touch(entity)
-        adapter.persist(collection, entity)
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
+        _touch(attributes_entity)
+        adapter.persist(collection, attributes_entity)
       end
 
       # Creates a record in the database for the given entity.
@@ -311,9 +312,10 @@ module Hanami
       #   created_article # => nil
       #
       def create(entity)
-        unless _persisted?(entity)
-          _touch(entity)
-          adapter.create(collection, entity)
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
+        unless _persisted?(attributes_entity)
+          _touch(attributes_entity)
+          adapter.create(collection, attributes_entity)
         end
       end
 
@@ -360,9 +362,10 @@ module Hanami
       #
       #   ArticleRepository.new.update(article) # raises Hanami::Model::NonPersistedEntityError
       def update(entity)
-        if _persisted?(entity)
-          _touch(entity)
-          adapter.update(collection, entity)
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
+        if _persisted?(attributes_entity)
+          _touch(attributes_entity)
+          adapter.update(collection, attributes_entity)
         else
           raise Hanami::Model::NonPersistedEntityError
         end
@@ -409,8 +412,9 @@ module Hanami
       #
       #   ArticleRepository.new.delete(article) # raises Hanami::Model::NonPersistedEntityError
       def delete(entity)
-        if _persisted?(entity)
-          adapter.delete(collection, entity)
+        attributes_entity = Utils::Hash.new(entity.to_h).symbolize!
+        if _persisted?(attributes_entity)
+          adapter.delete(collection, attributes_entity)
         else
           raise Hanami::Model::NonPersistedEntityError
         end
@@ -847,7 +851,7 @@ module Hanami
       # @return a boolean value
       # @since 0.3.1
       def _persisted?(entity)
-        !!entity.id
+        !!entity[:id]
       end
 
       # Update timestamps
@@ -859,27 +863,13 @@ module Hanami
       def _touch(entity)
         now = Time.now.utc
 
-        if _has_timestamp?(entity, :created_at)
-          entity.created_at ||= now
+        if entity.has_key?(:created_at)
+          entity[:created_at] ||= now
         end
 
-        if _has_timestamp?(entity, :updated_at)
-          entity.updated_at = now
+        if entity.has_key?(:updated_at)
+          entity[:updated_at] = now
         end
-      end
-
-      # Check if the given entity has the given timestamp
-      #
-      # @param entity [Object, Hanami::Entity] the entity
-      # @param timestamp [Symbol] the timestamp name
-      #
-      # @return [TrueClass,FalseClass]
-      #
-      # @api private
-      # @since 0.3.1
-      def _has_timestamp?(entity, timestamp)
-        entity.respond_to?(timestamp) &&
-          entity.respond_to?("#{ timestamp }=")
       end
     end
   end

@@ -14,7 +14,7 @@ describe Hanami::Model::Mapping::CollectionCoercer do
 
   describe '#to_record' do
     it 'should not return identity column' do
-      coercer.to_record(entity).must_equal(name: 'Tyrion Lannister')
+      coercer.to_record(entity.to_h).must_equal(name: 'Tyrion Lannister')
     end
 
     describe 'new record' do
@@ -22,25 +22,25 @@ describe Hanami::Model::Mapping::CollectionCoercer do
       # https://github.com/hanami/model/issues/155
       it 'ignores unset values' do
         entity = User.new(name: 'Daenerys Targaryen')
-        coercer.to_record(entity).must_equal(name: 'Daenerys Targaryen')
+        coercer.to_record(entity.to_h).must_equal(name: 'Daenerys Targaryen')
       end
 
       it 'forces nil values' do
         entity = User.new(name: 'Daenerys Targaryen', age: nil)
-        coercer.to_record(entity).must_equal(name: 'Daenerys Targaryen')
+        coercer.to_record(entity.to_h).must_equal(name: 'Daenerys Targaryen')
       end
     end
 
     it 'should set keys for nil values when updating' do
       entity = User.new(id: 4, name: 'Daenerys Targaryen', age: nil)
-      coercer.to_record(entity).must_equal(id: 4, name: 'Daenerys Targaryen', age: nil)
+      coercer.to_record(entity.to_h).must_equal(id: 4, name: 'Daenerys Targaryen', age: nil)
     end
 
     describe 'when identity is set' do
       let(:entity) { User.new(id: 3, name: 'Tyrion Lannister') }
 
       it 'should return identity as well' do
-        coercer.to_record(entity).must_equal(id: 3, name: 'Tyrion Lannister', age: nil)
+        coercer.to_record(entity.to_h).must_equal(id: 3, name: 'Tyrion Lannister', age: nil)
       end
     end
   end

@@ -49,47 +49,47 @@ module Hanami
           raise DatabaseAdapterNotFound.new(e.message)
         end
 
-        # Creates a record in the database for the given entity.
+        # Creates a record in the database for the given attributes.
         # It assigns the `id` attribute, in case of success.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id=] the entity to create
+        # @param attributes [#id=] the entity to create
         #
         # @return [Object] the entity
         #
         # @api private
         # @since 0.1.0
-        def create(collection, entity)
+        def create(collection, attributes)
           command(
             query(collection)
-          ).create(entity)
+          ).create(attributes)
         end
 
-        # Updates a record in the database corresponding to the given entity.
+        # Updates a record in the database corresponding to the given attributes.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id] the entity to update
+        # @param attributes [#id] the attributes to update
         #
         # @return [Object] the entity
         #
         # @api private
         # @since 0.1.0
-        def update(collection, entity)
+        def update(collection, attributes)
           command(
-            _find(collection, entity.id)
-          ).update(entity)
+            _find(collection, attributes[:id])
+          ).update(attributes)
         end
 
-        # Deletes a record in the database corresponding to the given entity.
+        # Deletes a record in the database corresponding to the given attributes.
         #
         # @param collection [Symbol] the target collection (it must be mapped).
-        # @param entity [#id] the entity to delete
+        # @param attributes [#id] the attributes to delete
         #
         # @api private
         # @since 0.1.0
-        def delete(collection, entity)
+        def delete(collection, attributes)
           command(
-            _find(collection, entity.id)
+            _find(collection, attributes[:id])
           ).delete
         end
 
