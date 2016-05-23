@@ -127,6 +127,9 @@ describe 'Repository' do
     end
   end
 
+  describe '#transaction' do
+  end
+
   describe 'custom finder' do
     it 'returns records' do
       repository = UserRepository.new
