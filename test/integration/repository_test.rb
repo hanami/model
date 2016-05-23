@@ -86,6 +86,14 @@ describe 'Repository' do
 
       user.comments_count.must_equal 0
     end
+
+    # Bug: https://github.com/hanami/model/issues/272
+    it 'accepts booleans as attributes' do
+      user    = UserRepository.new.create(name: 'L')
+      comment = CommentRepository.new.create(user_id: user.id, text: 'Spam comment', spam: true)
+
+      comment.spam.must_equal true
+    end
   end
 
   describe '#update' do

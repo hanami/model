@@ -24,6 +24,7 @@ Hanami::Model.migration do
       primary_key :id
       foreign_key :user_id, :users, on_delete: :cascade, null: false
       column :text, String
+      column :spam, TrueClass, null: false, default: false
     end
   end
 end.run
