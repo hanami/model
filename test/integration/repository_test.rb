@@ -78,6 +78,14 @@ describe 'Repository' do
     end
 
     it 'automatically touches timestamps'
+
+    # Bug: https://github.com/hanami/model/issues/237
+    it 'respects database defaults' do
+      repository = UserRepository.new
+      user = repository.create(name: 'L')
+
+      user.comments_count.must_equal 0
+    end
   end
 
   describe '#update' do
