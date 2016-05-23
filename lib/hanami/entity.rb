@@ -72,6 +72,11 @@ module Hanami
         id == other.id
     end
 
+    def to_h
+      @attributes.dup
+    end
+    alias_method :to_hash, :to_h
+
     private
 
     attr_reader :attributes

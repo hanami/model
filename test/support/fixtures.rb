@@ -28,10 +28,7 @@ end.run
 
 class UserRepository < Hanami::Repository
   relation(:users) do
-    schema do
-      attribute :id, ROM::SQL::Types::Serial # We can copy these types to Hanami
-      attribute :name, ROM::SQL::Types::String # We can copy these types to Hanami
-
+    schema(infer: true) do
       associate do
         many :comments
       end
@@ -66,11 +63,7 @@ end
 
 class CommentRepository < Hanami::Repository
   relation(:comments) do
-    schema do
-      attribute :id, ROM::SQL::Types::Serial # We can copy these types to Hanami
-      attribute :user_id, ROM::SQL::Types::ForeignKey(:users) # We can copy these types to Hanami
-      attribute :text, ROM::SQL::Types::String # We can copy these types to Hanami
-    end
+    schema(infer: true)
 
     def by_id(id)
       where(id: id)

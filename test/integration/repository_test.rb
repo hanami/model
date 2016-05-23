@@ -120,7 +120,7 @@ describe 'Repository' do
       found = repository.find_with_comments(user.id)
 
       found.must_equal user
-      found.comments.must_equal [comment]
+      found.comments.map(&:to_h).must_equal [comment.to_h]
     end
   end
 end
