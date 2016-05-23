@@ -28,9 +28,37 @@ describe 'Repository' do
   end
 
   describe '#first' do
+    it 'returns first record from table' do
+      repository = UserRepository.new
+      repository.clear
+
+      user = repository.create(name: 'James Hetfield')
+      repository.create(name: 'Tom')
+
+      repository.first.must_equal user
+    end
   end
 
   describe '#last' do
+    it 'returns last record from table' do
+      repository = UserRepository.new
+      repository.clear
+
+      repository.create(name: 'Tom')
+      user = repository.create(name: 'Ella Fitzgerald')
+
+      repository.last.must_equal user
+    end
+  end
+
+  describe '#clear' do
+    it 'clears all the records' do
+      repository = UserRepository.new
+      repository.create(name: 'L')
+
+      repository.clear
+      repository.all.to_a.must_be :empty?
+    end
   end
 
   describe '#execute' do
@@ -63,15 +91,14 @@ describe 'Repository' do
       updated.name.must_equal 'Luca'
     end
 
-    it 'returns nil when record cannot be found'
-    # it 'returns nil when record cannot be found' do
-    #   repository = UserRepository.new
-    #   updated = repository.update('unknown', name: 'Luca')
+    it 'returns nil when record cannot be found' do
+      repository = UserRepository.new
+      updated = repository.update('9999999', name: 'Luca')
 
-    #   updated.must_be_instance_of(User)
-    #   updated.id.must_be_nil
-    #   updated.name.must_be_nil
-    # end
+      updated.must_be_instance_of(User)
+      updated.id.must_be_nil
+      updated.name.must_be_nil
+    end
 
     it 'automatically touches timestamps'
   end
@@ -90,26 +117,26 @@ describe 'Repository' do
       found.must_be_nil
     end
 
-    it 'returns nil when record cannot be found'
-    # it 'returns nil when record cannot be found' do
-    #   repository = UserRepository.new
-    #   deleted = repository.delete('unknown')
+    it 'returns nil when record cannot be found' do
+      repository = UserRepository.new
+      deleted = repository.delete('9999999')
 
-    #   deleted.must_be_instance_of(User)
-    #   deleted.id.must_be_nil
-    #   deleted.name.must_be_nil
-    # end
+      deleted.must_be_instance_of(User)
+      deleted.id.must_be_nil
+      deleted.name.must_be_nil
+    end
   end
 
-#   describe 'custom finder' do
-#     it 'returns records' do
-#       repository = UserRepository.new
-#       user    = repository.create(name: 'L')
-#       found   = repository.by_name('L')
+  describe 'custom finder' do
+    it 'returns records' do
+      repository = UserRepository.new
+      user    = repository.create(name: 'L')
+      found   = repository.by_name('L')
 
-#       found.to_a.must_include user
-#     end
-#   end
+      found.to_a.must_include user
+    end
+  end
+
   describe 'associations' do
     it 'preloads associated records' do
       repository = UserRepository.new

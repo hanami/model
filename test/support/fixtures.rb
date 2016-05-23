@@ -7,8 +7,7 @@ class Comment
 end
 
 Hanami::Model.configure do
-  # adapter :sql, 'sqlite::memory'
-  adapter :sql, 'postgres://localhost/hanami_model'
+  adapter :sql, POSTGRES_CONNECTION_STRING
 end
 
 Hanami::Model.migration do
@@ -56,8 +55,24 @@ class UserRepository < Hanami::Repository
     users.as(:entity)
   end
 
+  def first
+    users.as(:entity).first
+  end
+
+  def last
+    users.order(Sequel.desc(users.primary_key)).as(:entity).first
+  end
+
+  def clear
+    users.delete
+  end
+
   def find_with_comments(id)
     aggregate(:comments).where(users__id: id).as(User).one
+  end
+
+  def by_name(name)
+    users.where(name: name).as(:entity)
   end
 end
 
