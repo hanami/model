@@ -32,8 +32,8 @@ module Database
       end
 
       def initialize
-        extend(JrubyImplementation) if jruby?
         extend(CiImplementation)    if ci?
+        extend(JrubyImplementation) if jruby?
       end
 
       protected

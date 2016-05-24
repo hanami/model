@@ -13,7 +13,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:mysql://#{ENV['HANAMI_DATABASE_USERNAME']}:#{ENV['HANAMI_DATABASE_PASSWORD']}@localhost/#{database_name}?useSSL=false"
+          ENV['HANAMI_DATABASE_URL'] = "jdbc:#{ENV['HANAMI_DATABASE_URL']}"
         end
       end
 
@@ -22,7 +22,8 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] = 'root'
+          ENV['HANAMI_DATABASE_USERNAME'] = 'travis'
+          ENV['HANAMI_DATABASE_URL']      = "mysql://@localhost/#{database_name}?useSSL=false"
         end
       end
 
@@ -31,8 +32,8 @@ module Database
       end
 
       def initialize
-        extend(JrubyImplementation) if jruby?
         extend(CiImplementation)    if ci?
+        extend(JrubyImplementation) if jruby?
       end
 
       protected

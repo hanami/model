@@ -17,6 +17,7 @@ module Database
       def after
         require_relative '../../fixtures/migrations'
         puts "Testing with `#{ENV['HANAMI_DATABASE_ADAPTER']}' adapter (#{ENV['HANAMI_DATABASE_TYPE']}) - jruby: #{jruby?}, ci: #{ci?}"
+        puts "Env: #{ENV.inspect}" if ci?
       end
     end
   end
