@@ -22,7 +22,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] = 'travis'
+          ENV['HANAMI_DATABASE_USERNAME'] = 'root'
         end
       end
 
