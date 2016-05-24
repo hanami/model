@@ -1,7 +1,6 @@
 require 'hanami/model/version'
 require 'hanami/entity'
 require 'rom'
-require 'rom-sql'
 require 'rom-repository'
 
 module Hanami
@@ -78,7 +77,7 @@ module Hanami
   end
 
   # Keep this for allowing specialisations
-  class Relation < ROM::SQL::Relation; end # need to talk to Solnic about this
+  # class Relation < ROM::SQL::Relation; end # need to talk to Solnic about this
 
   class Repository < ROM::Repository::Root
     class << self
