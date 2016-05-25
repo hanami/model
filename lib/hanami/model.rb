@@ -1,4 +1,5 @@
 require 'hanami/model/version'
+require 'hanami/model/plugins'
 require 'hanami/entity'
 require 'rom'
 require 'rom-repository'

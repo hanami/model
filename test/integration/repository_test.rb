@@ -77,7 +77,13 @@ describe 'Repository' do
       user.name.must_equal 'L'
     end
 
-    it 'automatically touches timestamps'
+    it 'automatically touches timestamps' do
+      repository = UserRepository.new
+      user = repository.create(name: 'L')
+
+      user.created_at.must_be_close_to Time.now.utc, 0.01
+      user.updated_at.must_be_close_to Time.now.utc, 0.01
+    end
 
     # Bug: https://github.com/hanami/model/issues/237
     it 'respects database defaults' do
@@ -116,7 +122,15 @@ describe 'Repository' do
       updated.name.must_be_nil
     end
 
-    it 'automatically touches timestamps'
+    it 'automatically touches timestamps' do
+      repository = UserRepository.new
+      user = repository.create(name: 'L')
+      sleep 0.1
+      updated = repository.update(user.id, name: 'Luca')
+
+      updated.created_at.must_be_close_to user.created_at, 0.01
+      updated.updated_at.must_be_close_to Time.now.utc,    0.01
+    end
   end
 
   describe '#delete' do
