@@ -30,11 +30,11 @@ module Hanami
     end
 
     def configure(&block)
-      @config = Configuration.create(&block)
+      @config = Configurator.build(&block)
     end
 
     def configuration
-      @configuration ||= ROM::Configuration.new(config.backend, config.dsn)
+      @configuration ||= Configuration.new(config.backend, config.dsn)
     end
 
     def container
@@ -55,12 +55,25 @@ module Hanami
 
     private
 
-    class Configuration
+    class Configuration < ROM::Configuration
+      attr_reader :mappings
+
+      def initialize(*)
+        super
+        @mappings = {}
+      end
+
+      def define_mappings(root, &blk)
+        @mappings[root] = Mapping.new(&blk)
+      end
+    end
+
+    class Configurator
       attr_reader :backend
       attr_reader :dsn
       attr_reader :directory
 
-      def self.create(&block)
+      def self.build(&block)
         self.new.tap { |config| config.instance_eval(&block) }
       end
 
@@ -73,6 +86,28 @@ module Hanami
 
       def path(path)
         @directory = path
+      end
+    end
+
+    class Mapping
+      def initialize(&blk)
+        @attributes = {}
+        instance_eval(&blk)
+        @processor = Transproc(:rename_keys, @attributes)
+      end
+
+      def model(entity)
+      end
+
+      def register_as(name)
+      end
+
+      def attribute(name, options)
+        @attributes[name] = options.fetch(:from, name)
+      end
+
+      def process(input)
+        @processor[input]
       end
     end
   end
@@ -99,6 +134,7 @@ module Hanami
       def mapping(&block)
         root = self.root
         configuration.mappers { define(root, &block) }
+        configuration.define_mappings(root, &block)
       end
     end
 

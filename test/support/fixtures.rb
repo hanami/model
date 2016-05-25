@@ -6,6 +6,10 @@ class Comment
   include Hanami::Entity
 end
 
+class Operator
+  include Hanami::Entity
+end
+
 class UserRepository < Hanami::Repository
   relation(:users) do
     schema(infer: true) do
@@ -81,6 +85,35 @@ class CommentRepository < Hanami::Repository
   def all
     comments.as(:entity)
   end
+end
+
+class OperatorRepository < Hanami::Repository
+  relation(:t_operator) do
+    schema(infer: true) do
+      # associate do
+      #   many :comments
+      # end
+    end
+
+    def by_id(id)
+      where(operator_id: id)
+    end
+  end
+
+  mapping do
+    model       Operator
+    register_as :entity
+
+    attribute :id,   from: :operator_id
+    attribute :name, from: :s_name
+  end
+
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
+
+  def [](id)
+    t_operator.by_id(id).as(:entity).one
+  end
+  alias_method :find, :[]
 end
 
 Hanami::Model.load!

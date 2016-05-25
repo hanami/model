@@ -16,5 +16,11 @@ Hanami::Model.migration do
       column :text, String
       column :spam, TrueClass, null: false, default: false
     end
+
+    drop_table?   :t_operator
+    create_table? :t_operator do
+      primary_key :operator_id
+      column :s_name, String
+    end
   end
 end.run
