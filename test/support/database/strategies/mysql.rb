@@ -7,7 +7,7 @@ module Database
         protected
 
         def load_dependencies
-          require 'rom-sql'
+          require 'hanami/model/sql'
           require 'jdbc/mysql'
         end
 
@@ -39,7 +39,7 @@ module Database
       protected
 
       def load_dependencies
-        require 'rom-sql'
+        require 'hanami/model/sql'
         require 'mysql2'
       end
 

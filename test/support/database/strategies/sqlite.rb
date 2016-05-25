@@ -8,7 +8,7 @@ module Database
         protected
 
         def load_dependencies
-          require 'rom-sql'
+          require 'hanami/model/sql'
           require 'jdbc/sqlite3'
           Jdbc::SQLite3.load_driver
         end
@@ -38,7 +38,7 @@ module Database
       end
 
       def load_dependencies
-        require 'rom-sql'
+        require 'hanami/model/sql'
         require 'sqlite3'
       end
 

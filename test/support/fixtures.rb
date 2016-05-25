@@ -24,7 +24,7 @@ class UserRepository < Hanami::Repository
     register_as :entity
   end
 
-  commands :create, update: :by_id, delete: :by_id, mapper: :entity
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: :timestamps
   relations :comments
 
   def [](id)
@@ -71,7 +71,7 @@ class CommentRepository < Hanami::Repository
     register_as :entity
   end
 
-  commands :create, update: :by_id, delete: :by_id, mapper: :entity
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: :timestamps
 
   def [](id)
     comments.by_id(id).as(:entity).one

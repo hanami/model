@@ -7,8 +7,9 @@ module Database
         protected
 
         def load_dependencies
-          require 'rom-sql'
+          require 'hanami/model/sql'
           require 'jdbc/postgres'
+
           Jdbc::Postgres.load_driver
         end
 
@@ -39,7 +40,7 @@ module Database
       protected
 
       def load_dependencies
-        require 'rom-sql'
+        require 'hanami/model/sql'
         require 'pg'
       end
 
