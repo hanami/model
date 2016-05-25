@@ -13,7 +13,7 @@ module Hanami
 
           def [](value)
             return value unless timestamps?
-            _touch(@input[value])
+            _touch(@input[value], Time.now)
           end
 
           protected
@@ -29,29 +29,33 @@ module Hanami
           end
         end
 
-        class InputWithCreateTimestamp < InputWithTimestamp
+        class InputWithUpdateTimestamp < InputWithTimestamp
           protected
 
-          def _touch(value)
-            now = Time.now
-            value[:created_at] = value[:updated_at] = now
+          def _touch(value, now)
+            value[:updated_at] = now
             value
           end
         end
 
-        class InputWithUpdateTimestamp < InputWithTimestamp
+        class InputWithCreateTimestamp < InputWithUpdateTimestamp
           protected
 
-          def _touch(value)
-            now = Time.now
-            value[:updated_at] = now
+          def _touch(value, now)
+            super
+            value[:created_at] = now
             value
           end
         end
 
         module ClassMethods
           def build(relation, options = {})
-            plugin = (self < ROM::Commands::Create) ? InputWithCreateTimestamp : InputWithUpdateTimestamp
+            plugin = if self < ROM::Commands::Create
+                       InputWithCreateTimestamp
+                     else
+                       InputWithUpdateTimestamp
+                     end
+
             super(relation, options.merge(input: plugin.new(relation, input)))
           end
         end
