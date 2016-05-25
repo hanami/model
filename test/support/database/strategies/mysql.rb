@@ -23,7 +23,14 @@ module Database
         def export_env
           super
           ENV['HANAMI_DATABASE_USERNAME'] = 'travis'
-          ENV['HANAMI_DATABASE_URL']      = "mysql://@localhost/#{database_name}?useSSL=false"
+          ENV['HANAMI_DATABASE_URL']      = "mysql://localhost/#{database_name}?useSSL=false"
+        end
+
+        private
+
+        def run_command(command)
+          result = system %(mysql -u root -e "#{command}")
+          raise "Failed command:\n#{command}" unless result
         end
       end
 
