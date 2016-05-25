@@ -256,8 +256,8 @@ module Hanami
     #   user = User.new(id: 23, name: 'Luca')
     #   user.inspect # #<User:0x007fa7eefe0b58 @id=nil @name="Luca" @email=nil>
     def inspect
-      attr_list = attribute_names.inject([]) do |res, name|
-        res << "@#{name}=#{read_attribute(name).inspect}"
+      attr_list = attribute_names.map do |name|
+        "@#{name}=#{read_attribute(name).inspect}"
       end.join(' ')
 
       "#<#{self.class.name}:0x00#{(__id__ << 1).to_s(16)} #{attr_list}>"
