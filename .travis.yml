@@ -21,3 +21,5 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+    - env: "DB=mysql"
+      rvm: jruby-9.0.5.0
