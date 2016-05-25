@@ -13,7 +13,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:mysql2://#{ENV['HANAMI_DATABASE_USERNAME']}:#{ENV['HANAMI_DATABASE_PASSWORD']}@localhost/#{database_name}?useSSL=false"
+          ENV['HANAMI_DATABASE_URL'] = "jdbc:mysql://#{ENV['HANAMI_DATABASE_USERNAME']}:#{ENV['HANAMI_DATABASE_PASSWORD']}@localhost/#{database_name}?useSSL=false"
         end
       end
 
