@@ -19,7 +19,7 @@ class UserRepository < Hanami::Repository
     end
 
     def by_id(id)
-      where(id: id)
+      where(primary_key => id)
     end
   end
 
@@ -66,7 +66,7 @@ class CommentRepository < Hanami::Repository
     schema(infer: true)
 
     def by_id(id)
-      where(id: id)
+      where(primary_key => id)
     end
   end
 
@@ -96,7 +96,7 @@ class OperatorRepository < Hanami::Repository
     end
 
     def by_id(id)
-      where(operator_id: id)
+      where(primary_key => id)
     end
   end
 
