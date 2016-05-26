@@ -2,7 +2,11 @@ class User
   include Hanami::Entity
 end
 
-class Comment
+class Author
+  include Hanami::Entity
+end
+
+class Book
   include Hanami::Entity
 end
 
@@ -13,9 +17,6 @@ end
 class UserRepository < Hanami::Repository
   relation(:users) do
     schema(infer: true) do
-      associate do
-        many :comments
-      end
     end
 
     def by_id(id)
@@ -29,7 +30,6 @@ class UserRepository < Hanami::Repository
   end
 
   commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
-  relations :comments
 
   def [](id)
     users.by_id(id).as(:entity).one
@@ -52,18 +52,18 @@ class UserRepository < Hanami::Repository
     users.delete
   end
 
-  def find_with_comments(id)
-    aggregate(:comments).where(users__id: id).as(User).one
-  end
-
   def by_name(name)
     users.where(name: name).as(:entity)
   end
 end
 
-class CommentRepository < Hanami::Repository
-  relation(:comments) do
-    schema(infer: true)
+class AuthorRepository < Hanami::Repository
+  relation(:authors) do
+    schema(infer: true) do
+      associate do
+        many :books
+      end
+    end
 
     def by_id(id)
       where(primary_key => id)
@@ -71,28 +71,57 @@ class CommentRepository < Hanami::Repository
   end
 
   mapping do
-    model       Comment
+    model       Author
     register_as :entity
   end
 
   commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
+  relations :books
 
   def [](id)
-    comments.by_id(id).as(:entity).one
+    authors.by_id(id).as(:entity).one
   end
   alias_method :find, :[]
 
-  def all
-    comments.as(:entity)
+  def find_with_books(id)
+    aggregate(:books).where(authors__id: id).as(Author).one
   end
+end
+
+class BookRepository < Hanami::Repository
+  relation(:books) do
+    schema(infer: true) do
+      # associate do
+      #   many :books
+      # end
+    end
+
+    def by_id(id)
+      where(primary_key => id)
+    end
+  end
+
+  mapping do
+    model       Book
+    register_as :entity
+  end
+
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
+  # relations :books
+
+  def [](id)
+    books.by_id(id).as(:entity).one
+  end
+  alias_method :find, :[]
+
+#   def find_with_books(id)
+#     aggregate(:books).where(authors__id: id).as(Author).one
+#   end
 end
 
 class OperatorRepository < Hanami::Repository
   relation(:t_operator) do
     schema(infer: true) do
-      associate do
-        many :comments
-      end
     end
 
     def by_id(id)

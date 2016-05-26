@@ -95,10 +95,8 @@ describe 'Repository (base)' do
 
     # Bug: https://github.com/hanami/model/issues/272
     it 'accepts booleans as attributes' do
-      user    = UserRepository.new.create(name: 'L')
-      comment = CommentRepository.new.create(user_id: user.id, text: 'Spam comment', spam: true)
-
-      comment.spam.must_equal true
+      user = UserRepository.new.create(name: 'L', active: false)
+      user.active.must_equal false
     end
   end
 
@@ -167,20 +165,6 @@ describe 'Repository (base)' do
       found   = repository.by_name('L')
 
       found.to_a.must_include user
-    end
-  end
-
-  describe 'associations' do
-    it 'preloads associated records' do
-      repository = UserRepository.new
-
-      user    = repository.create(name: 'L')
-      comment = CommentRepository.new.create(user_id: user.id, text: 'blah')
-
-      found = repository.find_with_comments(user.id)
-
-      found.must_equal user
-      found.comments.map(&:to_h).must_equal [comment.to_h]
     end
   end
 end
