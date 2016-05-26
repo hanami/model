@@ -114,6 +114,22 @@ class OperatorRepository < Hanami::Repository
     t_operator.by_id(id).as(:entity).one
   end
   alias_method :find, :[]
+
+  def all
+    t_operator.as(:entity)
+  end
+
+  def first
+    t_operator.as(:entity).first
+  end
+
+  def last
+    t_operator.order(Sequel.desc(t_operator.primary_key)).as(:entity).first
+  end
+
+  def clear
+    t_operator.delete
+  end
 end
 
 Hanami::Model.load!

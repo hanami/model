@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe 'Repository' do
+describe 'Repository (base)' do
   describe '#find' do
     it 'finds record by primary key' do
       repository = UserRepository.new
@@ -182,14 +182,5 @@ describe 'Repository' do
       found.must_equal user
       found.comments.map(&:to_h).must_equal [comment.to_h]
     end
-  end
-
-  it 'creates record with legacy database' do
-    repository = OperatorRepository.new
-    operator = repository.create(name: 'Mary')
-
-    operator.must_be_instance_of(Operator)
-    operator.id.wont_be_nil
-    operator.name.must_equal 'Mary'
   end
 end
