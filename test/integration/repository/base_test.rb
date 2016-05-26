@@ -81,8 +81,8 @@ describe 'Repository (base)' do
       repository = UserRepository.new
       user = repository.create(name: 'L')
 
-      user.created_at.must_be_close_to Time.now.utc, 0.01
-      user.updated_at.must_be_close_to Time.now.utc, 0.01
+      user.created_at.must_be_close_to Time.now.utc, 0.9
+      user.updated_at.must_be_close_to Time.now.utc, 0.9
     end
 
     # Bug: https://github.com/hanami/model/issues/237
@@ -128,8 +128,8 @@ describe 'Repository (base)' do
       sleep 0.1
       updated = repository.update(user.id, name: 'Luca')
 
-      updated.created_at.must_be_close_to user.created_at, 0.01
-      updated.updated_at.must_be_close_to Time.now.utc,    0.01
+      updated.created_at.must_be_close_to user.created_at, 0.9
+      updated.updated_at.must_be_close_to Time.now.utc,    0.9
     end
   end
 
