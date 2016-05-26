@@ -15,7 +15,8 @@ module Hanami
 
         module ClassMethods
           def build(relation, options = {})
-            super(relation, options.merge(input: InputWithMapping.new(relation, input)))
+            input(InputWithMapping.new(relation, input))
+            super(relation, options.merge(input: input))
           end
         end
 

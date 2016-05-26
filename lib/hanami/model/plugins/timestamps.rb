@@ -56,7 +56,8 @@ module Hanami
                        InputWithUpdateTimestamp
                      end
 
-            super(relation, options.merge(input: plugin.new(relation, input)))
+            input(plugin.new(relation, input))
+            super(relation, options.merge(input: input))
           end
         end
 

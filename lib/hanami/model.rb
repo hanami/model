@@ -93,7 +93,7 @@ module Hanami
       def initialize(&blk)
         @attributes = {}
         instance_eval(&blk)
-        @processor = Transproc(:rename_keys, @attributes)
+        @processor = @attributes.empty? ? ::Hash : Transproc(:rename_keys, @attributes)
       end
 
       def model(entity)
