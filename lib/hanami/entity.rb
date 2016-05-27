@@ -140,14 +140,9 @@ module Hanami
       #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
       #
       def attributes(*attrs)
-        return @attributes ||= Set.new unless attrs.any?
-
-        Hanami::Utils::Kernel.Array(attrs).each do |attr|
-          if allowed_attribute_name?(attr)
-            define_attr_accessor(attr)
-            self.attributes << attr
-          end
-        end
+        @attributes ||= Set.new
+        return get_attributes unless attrs.any?
+        set_attributes attrs
       end
 
       # Define setter/getter methods for attributes.
@@ -170,10 +165,21 @@ module Hanami
 
       protected
 
-      # @see Class#inherited
-      def inherited(subclass)
-        subclass.attributes(*attributes)
-        super
+      def get_attributes
+        if self.superclass.respond_to?(:attributes)
+          @attributes + self.superclass.get_attributes
+        else
+          @attributes
+        end
+      end
+
+      def set_attributes(*attrs)
+        Hanami::Utils::Kernel.Array(attrs).each do |attr|
+          if allowed_attribute_name?(attr)
+            define_attr_accessor(attr)
+            @attributes << attr
+          end
+        end
       end
     end
 

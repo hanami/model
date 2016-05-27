@@ -43,6 +43,10 @@ describe Hanami::Entity do
       Car.attributes.must_equal Set.new([:id])
     end
 
+    it 'inherits all ancestor attributes' do
+      CoolNonFictionBook.attributes.must_equal Set.new([:id, :title, :author, :published, :tags, :price, :coolness])
+    end
+
     describe 'params is array' do
       it 'defines attributes' do
         Car.attributes [:model]
