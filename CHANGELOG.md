@@ -5,6 +5,14 @@ A persistence layer for Hanami
 ### Changed
 – [Luca Guidi] Drop support for Ruby 2.0 and 2.1
 
+## v0.6.2 - 2016-06-01
+### Changed
+- [Kjell-Magne Øierud] Ensure inherited entities to expose attributes from base class
+
+## v0.6.1 - 2016-02-05
+### Changed
+- [Hélio Costa e Silva & Pascal Betz] Mapping SQL Adapter's errors as `Hanami::Model` errors
+
 ## v0.6.1 - 2016-02-05
 ### Changed
 - [Hélio Costa e Silva & Pascal Betz] Mapping SQL Adapter's errors as `Hanami::Model` errors
