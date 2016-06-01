@@ -1,6 +1,5 @@
 require 'hanami/utils/basic_object'
 require 'hanami/utils/string'
-require 'hanami/utils/blank'
 
 module Hanami
   module Model
@@ -307,7 +306,7 @@ module Hanami
         private
 
         def assert_uri_present!
-          raise MissingURIError.new(adapter_name) if Utils::Blank.blank?(@uri)
+          raise MissingURIError.new(adapter_name) if @uri.nil? || @uri.to_s =~ /\A[[:space:]]*\z/
         end
       end
     end

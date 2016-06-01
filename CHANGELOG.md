@@ -1,8 +1,12 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v0.6.2.1 - 2016-06-01
+### Fixed
+- [Luca Guidi] Fixed `v0.6.2` (yanked from Rubygems) because `hanami-model.gemspec` was using an unreleased version of `hanami-utils` (`~> 0.8`).
+
 ## v0.6.2 - 2016-06-01
-### Changed
+### Fixed
 - [Kjell-Magne Øierud] Ensure inherited entities to expose attributes from base class
 
 ## v0.6.1 - 2016-02-05
