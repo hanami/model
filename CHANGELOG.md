@@ -1,9 +1,9 @@
 # Hanami::Model
 A persistence layer for Hanami
 
-## v0.7.0 - (unreleased)
+## v0.6.2 - 2016-06-01
 ### Changed
-– [Luca Guidi] Drop support for Ruby 2.0 and 2.1
+- [Kjell-Magne Øierud] Ensure inherited entities to expose attributes from base class
 
 ## v0.6.1 - 2016-02-05
 ### Changed
