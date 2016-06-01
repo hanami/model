@@ -34,7 +34,7 @@ describe Hanami::Model::Adapters::MemoryAdapter do
       end
     end.load!
 
-    @adapter = Hanami::Model::Adapters::MemoryAdapter.new(@mapper)
+    @adapter = Hanami::Model::Adapters::MemoryAdapter.new(@mapper, MEMORY_CONNECTION_STRING)
   end
 
   after do
@@ -1216,6 +1216,12 @@ describe Hanami::Model::Adapters::MemoryAdapter do
       it 'raises error' do
         exception = -> { @adapter.create(collection, TestUser.new) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
         exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
+      end
+    end
+
+    describe '#adapter_name' do
+      it "equals to 'memory'" do
+        @adapter.adapter_name.must_equal 'memory'
       end
     end
   end

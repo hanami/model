@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe Hanami::Model::Adapters::Abstract do
-  let(:adapter)    { Hanami::Model::Adapters::Abstract.new(mapper) }
+  let(:adapter)    { Hanami::Model::Adapters::Abstract.new(mapper, 'test://uri') }
   let(:mapper)     { Object.new }
   let(:entity)     { Object.new }
   let(:query)      { Object.new }
@@ -82,6 +82,32 @@ describe Hanami::Model::Adapters::Abstract do
   describe '#connection_string' do
     it 'raises error' do
       -> { adapter.connection_string }.must_raise Hanami::Model::Adapters::NotSupportedError
+    end
+  end
+
+  describe '#adapter_name' do
+    it 'returns demodulized, underscored class name' do
+      adapter.adapter_name.must_equal 'abstract'
+    end
+  end
+
+  describe 'empty uri' do
+    it 'raises MissingURIError' do
+      exception = -> {
+        Hanami::Model::Adapters::Abstract.new(@mapper, nil)
+      }.must_raise(Hanami::Model::Adapters::MissingURIError)
+
+      exception.message.must_equal "URI for `abstract' adapter is nil or empty. Please check env variables like `DATABASE_URL'."
+    end
+  end
+
+  describe 'nil path' do
+    it 'raises MissingURIError' do
+      exception = -> {
+        Hanami::Model::Adapters::Abstract.new(@mapper, "")
+      }.must_raise(Hanami::Model::Adapters::MissingURIError)
+
+      exception.message.must_equal "URI for `abstract' adapter is nil or empty. Please check env variables like `DATABASE_URL'."
     end
   end
 end

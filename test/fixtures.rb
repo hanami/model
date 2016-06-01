@@ -24,6 +24,9 @@ class UserRepository
   include Hanami::Repository
 end
 
+class SubclassedUserRepository < UserRepository
+end
+
 class UnmappedRepository
   include Hanami::Repository
 end
@@ -31,35 +34,35 @@ end
 class ArticleRepository
   include Hanami::Repository
 
-  def self.rank
+  def rank
     query do
       desc(:comments_count)
     end
   end
 
-  def self.by_user(user)
+  def by_user(user)
     query do
       where(user_id: user.id)
     end
   end
 
-  def self.not_by_user(user)
+  def not_by_user(user)
     exclude by_user(user)
   end
 
-  def self.rank_by_user(user)
+  def rank_by_user(user)
     rank.by_user(user)
   end
 
-  def self.reset_comments_count
+  def reset_comments_count
     execute("UPDATE articles SET comments_count = '0'")
   end
 
-  def self.find_raw
+  def find_raw
     fetch("SELECT * FROM articles")
   end
 
-  def self.each_titles
+  def each_titles
     result = []
 
     fetch("SELECT s_title FROM articles") do |article|
@@ -69,11 +72,20 @@ class ArticleRepository
     result
   end
 
-  def self.map_titles
+  def map_titles
     fetch("SELECT s_title FROM articles").map do |article|
       article[:s_title]
     end
   end
+end
+
+class Robot
+  include Hanami::Entity
+  attributes :name, :build_date
+end
+
+class RobotRepository
+  include Hanami::Repository
 end
 
 [SQLITE_CONNECTION_STRING, POSTGRES_CONNECTION_STRING].each do |conn_string|
@@ -99,7 +111,7 @@ end
     String  :comments_count # Not an error: we're testing String => Integer coercion
     String  :umapped_column
 
-    if conn_string.match(/\Apostgres/)
+    if conn_string.match(/postgres/)
       column :tags, 'text[]'
     else
       column :tags, String
@@ -126,6 +138,15 @@ end
   DB.create_table :countries do
     primary_key :country_id
     String :code
+  end
+
+  if conn_string.match(/postgres/)
+    DB.run('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
+    DB.create_table :robots do
+      column :id, :uuid, :default => Sequel.function(:uuid_generate_v1mc), primary_key: true
+      String :name
+      DateTime :build_date
+    end
   end
 end
 
@@ -163,6 +184,13 @@ MAPPER = Hanami::Model::Mapper.new do
     identity :_id
   end
 
+  collection :robots do
+    entity Robot
+
+    attribute :id, String
+    attribute :name, String
+    attribute :build_date, DateTime
+  end
 end
 
 MAPPER.load!

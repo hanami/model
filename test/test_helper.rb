@@ -5,10 +5,10 @@ if ENV['COVERAGE'] == 'true'
   require 'simplecov'
   require 'coveralls'
 
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov.formatters = [
     SimpleCov::Formatter::HTMLFormatter,
     Coveralls::SimpleCov::Formatter
-  ])
+  ]
 
   SimpleCov.start do
     command_name 'test'
@@ -50,6 +50,7 @@ else
   POSTGRES_CONNECTION_STRING = "postgres://localhost/#{ postgres_database }"
 end
 
+MEMORY_CONNECTION_STRING      = "memory://test"
 FILE_SYSTEM_CONNECTION_STRING = "file:///#{ filesystem }"
 
 if ENV['TRAVIS'] == 'true'

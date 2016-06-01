@@ -1298,7 +1298,7 @@ describe Hanami::Model::Adapters::SqlAdapter do
         raw = "SELECT * FROM users"
 
         result = @adapter.fetch(raw)
-        result.count.must_equal UserRepository.all.count
+        result.count.must_equal UserRepository.new.all.count
 
         user = result.first
         user[:id].must_equal         @user1.id
@@ -1323,7 +1323,7 @@ describe Hanami::Model::Adapters::SqlAdapter do
           records << result_set
         end
 
-        records.count.must_equal UserRepository.all.count
+        records.count.must_equal UserRepository.new.all.count
       end
 
       it 'raises an exception when an invalid sql is provided' do
@@ -1390,6 +1390,12 @@ describe Hanami::Model::Adapters::SqlAdapter do
       it 'raises error' do
         exception = -> { @adapter.create(collection, user1) }.must_raise Hanami::Model::Adapters::DisconnectedAdapterError
         exception.message.must_match "You have tried to perform an operation on a disconnected adapter"
+      end
+    end
+
+    describe '#adapter_name' do
+      it "equals to 'sql'" do
+        @adapter.adapter_name.must_equal 'sql'
       end
     end
   end

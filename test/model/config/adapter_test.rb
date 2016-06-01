@@ -1,11 +1,12 @@
 require 'test_helper'
+require 'hanami/utils'
 
 describe Hanami::Model::Config::Adapter do
 
   describe 'initialize' do
     it 'sets other adapater options' do
       after_connect_proc = -> {}
-      config =  Hanami::Model::Config::Adapter.new(type: :memory, uri: nil, after_connect: after_connect_proc)
+      config =  Hanami::Model::Config::Adapter.new(type: :memory, uri: MEMORY_CONNECTION_STRING, after_connect: after_connect_proc)
 
       config.options.must_equal({after_connect: after_connect_proc})
     end
@@ -16,7 +17,7 @@ describe Hanami::Model::Config::Adapter do
     let(:adapter) { config.build(mapper) }
 
     describe 'given adapter type is memory' do
-      let(:config) { Hanami::Model::Config::Adapter.new(type: :memory) }
+      let(:config) { Hanami::Model::Config::Adapter.new(type: :memory, uri: MEMORY_CONNECTION_STRING) }
 
       it 'instantiates memory adapter' do
         adapter = config.build(mapper)
@@ -37,7 +38,13 @@ describe Hanami::Model::Config::Adapter do
       let(:config) { Hanami::Model::Config::Adapter.new(type: :redis, uri: 'redis://not_exist') }
 
       it 'raises an error' do
-        -> { config.build(mapper) }.must_raise(LoadError)
+        exception = -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
+
+        if Hanami::Utils.jruby?
+          exception.message.must_equal "Cannot find Hanami::Model adapter `Hanami::Model::Adapters::RedisAdapter' (no such file to load -- hanami/model/adapters/redis_adapter)"
+        else
+          exception.message.must_equal "Cannot find Hanami::Model adapter `Hanami::Model::Adapters::RedisAdapter' (cannot load such file -- hanami/model/adapters/redis_adapter)"
+        end
       end
     end
 
@@ -46,7 +53,13 @@ describe Hanami::Model::Config::Adapter do
 
       it 'raises an error' do
         config.stub(:load_adapter, nil) do
-          -> { config.build(mapper) }.must_raise(Hanami::Model::Config::AdapterNotFound)
+          exception = -> { config.build(mapper) }.must_raise(Hanami::Model::Error)
+
+          if RUBY_VERSION >= "2.3" || Hanami::Utils.jruby?
+            exception.message.must_equal "uninitialized constant Hanami::Model::Adapters::RedisAdapter"
+          else
+            exception.message.must_equal "uninitialized constant RedisAdapter"
+          end
         end
       end
     end

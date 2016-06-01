@@ -1,4 +1,6 @@
 require 'hanami/utils/basic_object'
+require 'hanami/utils/string'
+require 'hanami/utils/blank'
 
 module Hanami
   module Model
@@ -23,6 +25,15 @@ module Hanami
       #
       # @since 0.3.0
       class NotSupportedError < Hanami::Model::Error
+      end
+
+      # It's raised when a URI is nil or empty
+      #
+      # @since x.x.x
+      class MissingURIError < Hanami::Model::Error
+        def initialize(adapter_name)
+          super "URI for `#{ adapter_name }' adapter is nil or empty. Please check env variables like `DATABASE_URL'."
+        end
       end
 
       # It's raised when an operation is requested to an adapter after it was
@@ -78,6 +89,12 @@ module Hanami
       #
       # @since 0.1.0
       class Abstract
+        # @since x.x.x
+        # @api private
+        #
+        # @see Hanami::Model::Adapters::Abstract#adapter_name
+        ADAPTER_NAME_SUFFIX = '_adapter'.freeze
+
         # Initialize the adapter
         #
         # @param mapper [Hanami::Model::Mapper] the object that defines the
@@ -92,6 +109,8 @@ module Hanami
           @mapper = mapper
           @uri    = uri
           @options = options
+
+          assert_uri_present!
         end
 
         # Creates or updates a record in the database for the given entity.
@@ -274,6 +293,21 @@ module Hanami
         # @since 0.5.0
         def disconnect
           raise NotImplementedError
+        end
+
+        # Adapter name
+        #
+        # @return [String] adapter name
+        #
+        # @since x.x.x
+        def adapter_name
+          Utils::String.new(self.class.name).demodulize.underscore.to_s.sub(ADAPTER_NAME_SUFFIX, '')
+        end
+
+        private
+
+        def assert_uri_present!
+          raise MissingURIError.new(adapter_name) if Utils::Blank.blank?(@uri)
         end
       end
     end
