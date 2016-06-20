@@ -83,7 +83,7 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "pg_dump -i -s -x -O -T #{ migrations_table } -f #{ escape(schema) } #{ database }"
+          system "pg_dump -s -x -O -T #{ migrations_table } -f #{ escape(schema) } #{ database }"
         end
 
         # @since 0.4.0
