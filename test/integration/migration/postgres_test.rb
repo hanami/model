@@ -44,7 +44,7 @@ describe 'PostgreSQL Database migrations' do
         Sequel.connect(@uri).tables
         exception = -> { Hanami::Model::Migrator.create }.must_raise Hanami::Model::MigrationError
         exception.message.must_include 'createdb: database creation failed'
-        exception.message.must_include 'There is 1 other session using the database'
+        exception.message.must_include 'issues/250'
       end
     end
 
