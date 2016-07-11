@@ -290,7 +290,8 @@ module Hanami
       # @api private
       def self.connection
         Sequel.connect(
-          configuration.adapter.uri
+          configuration.adapter.uri,
+          configuration.adapter.options
         )
       rescue Sequel::AdapterNotFound
         raise MigrationError.new("Current adapter (#{ configuration.adapter.type }) doesn't support SQL database operations.")
