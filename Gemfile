@@ -24,6 +24,7 @@ end
 platforms :jruby do
   gem 'jdbc-sqlite3',  require: false
   gem 'jdbc-postgres', require: false
+  gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master
   gem 'jdbc-mysql',    require: false
 end
 
