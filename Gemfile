@@ -28,7 +28,6 @@ end
 
 platforms :jruby do
   gem 'jdbc-sqlite3',  require: false
-  gem 'jdbc-postgres', require: false
   gem 'jdbc-mysql',    require: false
 end
 
