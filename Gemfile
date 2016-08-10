@@ -20,7 +20,7 @@ platforms :ruby do
   gem 'mysql',   require: false
 end
 
-if RUBY_PLATFORM == java
+if RUBY_PLATFORM == 'java'
   gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master, require: false
 else
   gem 'pg', require: false
