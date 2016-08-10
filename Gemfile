@@ -16,15 +16,19 @@ gem 'rom-sql',        github: 'rom-rb/rom-sql', require: false
 
 platforms :ruby do
   gem 'sqlite3', require: false
-  gem 'pg',      require: false
   gem 'mysql2',  require: false
   gem 'mysql',   require: false
+end
+
+if RUBY_PLATFORM == java
+  gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master, require: false
+else
+  gem 'pg', require: false
 end
 
 platforms :jruby do
   gem 'jdbc-sqlite3',  require: false
   gem 'jdbc-postgres', require: false
-  gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master, require: false
   gem 'jdbc-mysql',    require: false
 end
 
