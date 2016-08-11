@@ -29,7 +29,10 @@ module Hanami
 
           call_db_command('createdb') do |error_message|
             message = if error_message.match(/already exists/)
-              "createdb: database creation failed. There is 1 other session using the database."
+              "createdb: database creation failed. If the database exists, \ 
+               then its console may be open. See this issue for more details:\
+               https://github.com/hanami/model/issues/250\
+              "
             else
               error_message
             end
