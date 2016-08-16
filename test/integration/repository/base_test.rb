@@ -7,7 +7,7 @@ describe 'Repository (base)' do
       user  = repository.create(name: 'L')
       found = repository.find(user.id)
 
-      user.must_equal(found)
+      found.must_equal(user)
     end
 
     it 'returns nil for missing record' do
@@ -115,9 +115,7 @@ describe 'Repository (base)' do
       repository = UserRepository.new
       updated = repository.update('9999999', name: 'Luca')
 
-      updated.must_be_instance_of(User)
-      updated.id.must_be_nil
-      updated.name.must_be_nil
+      updated.must_be_nil
     end
 
     it 'automatically touches timestamps' do
@@ -149,9 +147,7 @@ describe 'Repository (base)' do
       repository = UserRepository.new
       deleted = repository.delete('9999999')
 
-      deleted.must_be_instance_of(User)
-      deleted.id.must_be_nil
-      deleted.name.must_be_nil
+      deleted.must_be_nil
     end
   end
 

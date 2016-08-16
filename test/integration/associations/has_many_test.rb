@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe 'Associations (many)' do
+describe 'Associations (has_many)' do
   it "returns nil if association wasn't preloaded" do
     repository = AuthorRepository.new
     author = repository.create(name: 'L')
@@ -18,6 +18,7 @@ describe 'Associations (many)' do
     found = repository.find_with_books(author.id)
 
     found.must_equal author
+    # found.books.must_equal [book]
     found.books.map(&:to_h).must_equal [book.to_h]
   end
 end

@@ -5,7 +5,7 @@ module Hanami
         class InputWithMapping < WrappingInput
           def initialize(relation, input)
             super
-            @mapping = Hanami::Model.configuration.mappings[relation.name]
+            @mapping = Hanami::Model.configuration.mappings[relation.name.to_sym]
           end
 
           def [](value)

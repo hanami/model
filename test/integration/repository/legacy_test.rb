@@ -89,15 +89,12 @@ describe 'Repository (legacy)' do
       updated.name.must_equal 'Flo'
     end
 
-    it 'returns nil when record cannot be found'
-    # it 'returns nil when record cannot be found' do
-    #   repository = OperatorRepository.new
-    #   updated = repository.update('9999999', name: 'Flo')
+    it 'returns nil when record cannot be found' do
+      repository = OperatorRepository.new
+      updated = repository.update('9999999', name: 'Flo')
 
-    #   updated.must_be_instance_of(Operator)
-    #   updated.id.must_be_nil
-    #   updated.name.must_be_nil
-    # end
+      updated.must_be_nil
+    end
   end
 
   describe '#delete' do
@@ -114,15 +111,12 @@ describe 'Repository (legacy)' do
       found.must_be_nil
     end
 
-    it 'returns nil when record cannot be found'
-    # it 'returns nil when record cannot be found' do
-    #   repository = OperatorRepository.new
-    #   deleted = repository.delete('9999999')
+    it 'returns nil when record cannot be found' do
+      repository = OperatorRepository.new
+      deleted = repository.delete('9999999')
 
-    #   deleted.must_be_instance_of(Operator)
-    #   deleted.id.must_be_nil
-    #   deleted.name.must_be_nil
-    # end
+      deleted.must_be_nil
+    end
   end
 
   describe '#transaction' do

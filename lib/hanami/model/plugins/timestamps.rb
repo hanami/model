@@ -7,7 +7,7 @@ module Hanami
 
           def initialize(relation, input)
             super
-            columns = relation.schema.attributes.keys.sort
+            columns = relation.columns.sort
             @timestamps = (columns & TIMESTAMPS) == TIMESTAMPS
           end
 

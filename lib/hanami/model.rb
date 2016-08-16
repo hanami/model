@@ -1,8 +1,7 @@
 require 'hanami/model/version'
-require 'hanami/model/plugins'
 require 'hanami/entity'
-require 'rom'
 require 'rom-repository'
+require 'hanami/model/plugins'
 
 module Hanami
   class Migration
@@ -17,6 +16,34 @@ module Hanami
 
     def run(direction = :up)
       migration.apply(gateway.connection, direction)
+    end
+  end
+
+  class Repository < ROM::Repository::Root
+    class << self
+      def configuration
+        Hanami::Model.configuration
+      end
+
+      def container
+        Hanami::Model.container
+      end
+
+      def relation(name, &block)
+        configuration.relation(name, &block)
+        relations(name)
+        root(name)
+      end
+
+      def mapping(&block)
+        root = self.root
+        configuration.mappers { define(root, &block) }
+        configuration.define_mappings(root, &block)
+      end
+    end
+
+    def initialize
+      super(self.class.container)
     end
   end
 
@@ -109,37 +136,6 @@ module Hanami
       def process(input)
         @processor[input]
       end
-    end
-  end
-
-  # Keep this for allowing specialisations
-  # class Relation < ROM::SQL::Relation; end # need to talk to Solnic about this
-
-  class Repository < ROM::Repository::Root
-    class << self
-      def configuration
-        Hanami::Model.configuration
-      end
-
-      def container
-        Hanami::Model.container
-      end
-
-      def relation(name, &block)
-        configuration.relation(name, &block)
-        relations(name)
-        root(name)
-      end
-
-      def mapping(&block)
-        root = self.root
-        configuration.mappers { define(root, &block) }
-        configuration.define_mappings(root, &block)
-      end
-    end
-
-    def initialize
-      super(self.class.container)
     end
   end
 end

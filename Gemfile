@@ -6,13 +6,8 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: '0.8.x'
-# gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: '0.6.x'
-
-gem 'rom',            github: 'rom-rb/rom'
-gem 'rom-mapper',     github: 'rom-rb/rom-mapper'
-gem 'rom-repository', github: 'rom-rb/rom-repository'
-gem 'rom-sql',        github: 'rom-rb/rom-sql', require: false
+gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils', branch: '0.8.x'
+gem 'rom-sql',      '~> 0.8'
 
 platforms :ruby do
   gem 'sqlite3', require: false

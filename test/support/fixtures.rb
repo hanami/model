@@ -31,10 +31,9 @@ class UserRepository < Hanami::Repository
 
   commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
 
-  def [](id)
+  def find(id)
     users.by_id(id).as(:entity).one
   end
-  alias_method :find, :[]
 
   def all
     users.as(:entity)
@@ -60,8 +59,8 @@ end
 class AuthorRepository < Hanami::Repository
   relation(:authors) do
     schema(infer: true) do
-      associate do
-        many :books
+      associations do
+        has_many :books
       end
     end
 
@@ -78,10 +77,9 @@ class AuthorRepository < Hanami::Repository
   commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
   relations :books
 
-  def [](id)
+  def find(id)
     authors.by_id(id).as(:entity).one
   end
-  alias_method :find, :[]
 
   def find_with_books(id)
     aggregate(:books).where(authors__id: id).as(Author).one
@@ -91,9 +89,9 @@ end
 class BookRepository < Hanami::Repository
   relation(:books) do
     schema(infer: true) do
-      # associate do
-      #   many :books
-      # end
+      associations do
+        has_many :books
+      end
     end
 
     def by_id(id)
@@ -107,16 +105,10 @@ class BookRepository < Hanami::Repository
   end
 
   commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
-  # relations :books
 
-  def [](id)
+  def find(id)
     books.by_id(id).as(:entity).one
   end
-  alias_method :find, :[]
-
-#   def find_with_books(id)
-#     aggregate(:books).where(authors__id: id).as(Author).one
-#   end
 end
 
 class OperatorRepository < Hanami::Repository
@@ -139,10 +131,9 @@ class OperatorRepository < Hanami::Repository
 
   commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
 
-  def [](id)
+  def find(id)
     t_operator.by_id(id).as(:entity).one
   end
-  alias_method :find, :[]
 
   def all
     t_operator.as(:entity)
