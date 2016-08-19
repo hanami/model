@@ -1,0 +1,8 @@
+Metrics/LineLength:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/MethodMissing:
+  Enabled: false
+Style/PredicateName:
+  Enabled: false

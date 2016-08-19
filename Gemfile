@@ -7,7 +7,7 @@ unless ENV['TRAVIS']
 end
 
 gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils', branch: '0.8.x'
-gem 'rom-sql',      '~> 0.8'
+gem 'rom-sql',      '~> 0.8', require: false, github: 'jodosha/rom-sql', branch: 'one-to-one-and-one-to-many-associate'
 
 platforms :ruby do
   gem 'sqlite3', require: false
