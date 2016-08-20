@@ -70,7 +70,7 @@ class UserRepository
 end
 
 Hanami::Model.configure do
-  adapter type: :sql, uri: 'postgres://localhost/database'
+  adapter type: :sql, uri: 'postgres://username:password@localhost/database'
 
   mapping do
     collection :users do
