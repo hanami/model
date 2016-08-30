@@ -3,6 +3,13 @@ require 'rom-sql'
 module Hanami
   module Model
     module Sql
+      def self.function(name)
+        Sequel.function(name)
+      end
+
+      def self.literal(string)
+        Sequel.lit(string)
+      end
     end
   end
 end

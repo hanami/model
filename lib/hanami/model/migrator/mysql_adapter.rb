@@ -6,6 +6,10 @@ module Hanami
       # @since 0.4.0
       # @api private
       class MySQLAdapter < Adapter
+        # @since x.x.x
+        # @api private
+        PASSWORD = 'MYSQL_PWD'.freeze
+
         # @since 0.4.0
         # @api private
         def create
@@ -37,6 +41,7 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump
+          set_environment_variables
           dump_structure
           dump_migrations_data
         end
@@ -44,27 +49,40 @@ module Hanami
         # @since 0.4.0
         # @api private
         def load
+          set_environment_variables
           load_structure
         end
 
         private
 
+        # @since x.x.x
+        # @api private
+        def set_environment_variables
+          ENV[PASSWORD] = password unless password.nil?
+        end
+
+        # @since x.x.x
+        # @api private
+        def password
+          connection.password
+        end
+
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "mysqldump --user=#{ username } --password=#{ password } --no-data --skip-comments --ignore-table=#{ database }.#{ migrations_table } #{ database } > #{ schema }"
+          system "mysqldump --user=#{ username } --no-data --skip-comments --ignore-table=#{ database }.#{ migrations_table } #{ database } > #{ schema }"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "mysql --user=#{ username } --password=#{ password } #{ database } < #{ escape(schema) }" if schema.exist?
+          system "mysql --user=#{ username } #{ database } < #{ escape(schema) }" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "mysqldump --user=#{ username } --password=#{ password } --skip-comments #{ database } #{ migrations_table } >> #{ schema }"
+          system "mysqldump --user=#{ username } --skip-comments #{ database } #{ migrations_table } >> #{ schema }"
         end
       end
     end

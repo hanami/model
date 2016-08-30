@@ -34,7 +34,7 @@ module Database
       protected
 
       def database_name
-        Pathname.new(__dir__).join('..', 'tmp', 'sqlite', "#{super}.db").to_s
+        Pathname.new(__dir__).join('..', '..', '..', '..', 'tmp', 'sqlite', "#{super}.sqlite3").to_s
       end
 
       def load_dependencies

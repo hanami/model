@@ -49,6 +49,9 @@ module Hanami
 
   # Hanami persistence
   module Model
+    class Error < StandardError
+    end
+
     module_function
 
     class << self
@@ -62,7 +65,7 @@ module Hanami
     end
 
     def configuration
-      @configuration ||= Configuration.new(config.backend, config.dsn)
+      @configuration ||= Configuration.new(config)
     end
 
     def container
@@ -75,6 +78,12 @@ module Hanami
       configuration.instance_eval(&block) if block_given?
       @container = ROM.container(configuration)
       @loaded = true
+    end
+
+    def unload!
+      @configuration = nil
+      @container     = nil
+      @loaded        = false
     end
 
     def migration(&block)
@@ -200,9 +209,28 @@ module Hanami
     class Configuration < ROM::Configuration
       attr_reader :mappings
 
-      def initialize(*)
-        super
-        @mappings = {}
+      def initialize(configurator)
+        super(configurator.backend, configurator.url)
+        @migrations = configurator._migrations
+        @schema     = configurator._schema
+        @mappings   = {}
+      end
+
+      # NOTE: This must be changed when we want to support several adapters at the time
+      def url
+        environment.gateways[:default].connection.url
+      end
+
+      def root
+        Hanami.respond_to?(:root) ? Hanami.root : Pathname.pwd
+      end
+
+      def migrations
+        (@migrations.nil? ? root : root.join(@migrations)).realpath
+      end
+
+      def schema
+        @schema.nil? ? root : root.join(@schema)
       end
 
       def define_mappings(root, &blk)
@@ -212,8 +240,10 @@ module Hanami
 
     class Configurator
       attr_reader :backend
-      attr_reader :dsn
+      attr_reader :url
       attr_reader :directory
+      attr_reader :_migrations
+      attr_reader :_schema
 
       def self.build(&block)
         self.new.tap { |config| config.instance_eval(&block) }
@@ -221,13 +251,21 @@ module Hanami
 
       private
 
-      def adapter(backend, dsn)
+      def adapter(backend, url)
         @backend = backend
-        @dsn = dsn
+        @url = url
       end
 
       def path(path)
         @directory = path
+      end
+
+      def migrations(path)
+        @_migrations = path
+      end
+
+      def schema(path)
+        @_schema = path
       end
     end
 
