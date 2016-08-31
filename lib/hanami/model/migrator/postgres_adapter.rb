@@ -1,6 +1,6 @@
 module Hanami
   module Model
-    module Migrator
+    class Migrator
       # PostgreSQL adapter
       #
       # @since 0.4.0

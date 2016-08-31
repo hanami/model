@@ -6,3 +6,7 @@ Style/MethodMissing:
   Enabled: false
 Style/PredicateName:
   Enabled: false
+Lint/HandleExceptions:
+  Enabled: false
+Lint/IneffectiveAccessModifier:
+  Enabled: false

@@ -1,6 +1,6 @@
 module Hanami
   module Model
-    module Migrator
+    class Migrator
       # Sequel connection wrapper
       #
       # Normalize external adapters interfaces
@@ -8,10 +8,14 @@ module Hanami
       # @since 0.5.0
       # @api private
       class Connection
-        attr_reader :adapter_connection
+        # @since x.x.x
+        # @api private
+        attr_reader :raw
 
-        def initialize(adapter_connection)
-          @adapter_connection = adapter_connection
+        # @since 0.5.0
+        # @api private
+        def initialize(raw)
+          @raw = raw
         end
 
         # Returns DB connection host
@@ -53,7 +57,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def database_type
-          adapter_connection.database_type
+          raw.database_type
         end
 
         # Returns user from DB connection
@@ -81,7 +85,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def uri
-          adapter_connection.uri
+          raw.uri
         end
 
         # Returns DB connection wihout specifying database name
@@ -89,7 +93,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def global_uri
-          adapter_connection.uri.sub(parsed_uri.select(:path).first, '')
+          raw.uri.sub(parsed_uri.select(:path).first, '')
         end
 
         # Returns a boolean telling if a DB connection is from JDBC or not
@@ -97,7 +101,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def jdbc?
-          !adapter_connection.uri.scan('jdbc:').empty?
+          !raw.uri.scan('jdbc:').empty?
         end
 
         # Returns database connection URI instance without JDBC namespace
@@ -105,7 +109,15 @@ module Hanami
         # @since 0.5.0
         # @api private
         def parsed_uri
-          @uri ||= URI.parse(adapter_connection.uri.sub('jdbc:', ''))
+          @uri ||= URI.parse(raw.uri.sub('jdbc:', ''))
+        end
+
+        # Return the database table for the given name
+        #
+        # @since x.x.x
+        # @api private
+        def table(name)
+          raw[name] if raw.tables.include?(name)
         end
 
         private
@@ -125,7 +137,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def opts
-          adapter_connection.opts
+          raw.opts
         end
       end
     end

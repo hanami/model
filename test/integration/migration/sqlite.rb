@@ -3,7 +3,7 @@ describe 'SQLite' do
     @schema     = Pathname.new("#{__dir__}/../../../tmp/schema.sql").expand_path
     @connection = Sequel.connect(ENV['HANAMI_DATABASE_URL'])
 
-    Hanami::Model::Migrator::Adapter.for(@connection).dump
+    Hanami::Model::Migrator::Adapter.for(Hanami::Model.configuration).dump
   end
 
   describe 'columns' do

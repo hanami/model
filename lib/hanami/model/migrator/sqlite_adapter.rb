@@ -2,7 +2,7 @@ require 'pathname'
 
 module Hanami
   module Model
-    module Migrator
+    class Migrator
       # SQLite3 Migrator
       #
       # @since 0.4.0
@@ -28,7 +28,7 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def initialize(connection)
+        def initialize(connection, configuration)
           super
           extend Memory if memory?
         end

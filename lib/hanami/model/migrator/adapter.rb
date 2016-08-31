@@ -3,7 +3,7 @@ require 'shellwords'
 
 module Hanami
   module Model
-    module Migrator
+    class Migrator
       # Migrator base adapter
       #
       # @since 0.4.0
@@ -25,7 +25,9 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def self.for(connection)
+        def self.for(configuration)
+          connection = connection_for(configuration)
+
           case connection.database_type
           when :sqlite
             require 'hanami/model/migrator/sqlite_adapter'
@@ -38,15 +40,28 @@ module Hanami
             MySQLAdapter
           else
             self
-          end.new(connection)
+          end.new(connection, configuration)
+        end
+
+        class << self
+          private
+
+          def connection_for(configuration)
+            Sequel.connect(
+              configuration.url
+            )
+          rescue Sequel::AdapterNotFound
+            raise MigrationError.new("Current adapter (#{configuration.adapter.type}) doesn't support SQL database operations.")
+          end
         end
 
         # Initialize an adapter
         #
         # @since 0.4.0
         # @api private
-        def initialize(connection)
+        def initialize(connection, configuration)
           @connection = Connection.new(connection)
+          @schema     = configuration.schema
         end
 
         # Create database.
@@ -71,6 +86,14 @@ module Hanami
           raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support drop.")
         end
 
+        def migrate(migrations, version)
+          version = Integer(version) unless version.nil?
+
+          Sequel::Migrator.run(connection.raw, migrations, target: version, allow_missing_migration_files: true)
+        rescue Sequel::Migrator::Error => e
+          raise MigrationError.new(e.message)
+        end
+
         # Load database schema.
         # It must be implemented by subclasses.
         #
@@ -87,9 +110,10 @@ module Hanami
         # @since 0.4.0
         # @api private
         def version
-          return unless connection.adapter_connection.tables.include?(MIGRATIONS_TABLE)
+          table = connection.table(MIGRATIONS_TABLE)
+          return if table.nil?
 
-          if record = connection.adapter_connection[MIGRATIONS_TABLE].order(MIGRATIONS_TABLE_VERSION_COLUMN).last
+          if record = table.order(MIGRATIONS_TABLE_VERSION_COLUMN).last
             record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_s
           end
         end
@@ -99,6 +123,10 @@ module Hanami
         # @since 0.5.0
         # @api private
         attr_reader :connection
+
+        # @since 0.4.0
+        # @api private
+        attr_reader :schema
 
         # Returns a database connection
         #
@@ -145,12 +173,6 @@ module Hanami
         # @api private
         def password
           escape connection.password
-        end
-
-        # @since 0.4.0
-        # @api private
-        def schema
-          Model.configuration.schema
         end
 
         # @since 0.4.0
