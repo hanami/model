@@ -1,7 +1,7 @@
 Hanami::Model.migration do
   change do
-    case ENV['HANAMI_DATABASE_TYPE']
-    when 'sqlite'
+    case Database.engine
+    when :sqlite
       create_table :column_types do
         column :integer1, Integer
         column :integer2, :integer
@@ -37,7 +37,7 @@ Hanami::Model.migration do
         column :boolean1, TrueClass
         column :boolean2, FalseClass
       end
-    when 'postgresql'
+    when :postgresql
       execute 'CREATE EXTENSION "uuid-ossp"'
       execute "CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');"
       execute %{
@@ -108,7 +108,7 @@ Hanami::Model.migration do
 
         column :composite1, 'inventory_item', default: Hanami::Model::Sql.literal("ROW('fuzzy dice', 42, 1.99)")
       end
-    when 'mysql'
+    when :mysql
       create_table :column_types do
         column :integer1, Integer
         column :integer2, :integer

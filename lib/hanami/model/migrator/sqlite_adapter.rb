@@ -1,4 +1,5 @@
 require 'pathname'
+require 'hanami/utils'
 
 module Hanami
   module Model

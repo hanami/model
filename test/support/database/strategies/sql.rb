@@ -1,4 +1,5 @@
 require_relative 'abstract'
+require 'hanami/utils/blank'
 
 module Database
   module Strategies
@@ -31,6 +32,12 @@ module Database
       def migrate
         require 'hanami/model/migrator'
         Hanami::Model::Migrator.migrate
+      end
+
+      def credentials
+        [ENV['HANAMI_DATABASE_USERNAME'], ENV['HANAMI_DATABASE_PASSWORD']].reject do |token|
+          Hanami::Utils::Blank.blank?(token)
+        end.join(':')
       end
     end
   end

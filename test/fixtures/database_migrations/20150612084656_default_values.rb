@@ -1,7 +1,7 @@
 Hanami::Model.migration do
   change do
-    case ENV['HANAMI_DATABASE_TYPE']
-    when 'sqlite'
+    case Database.engine
+    when :sqlite
       create_table :default_values do
         column :a, Integer,    default: 23
         column :b, String,     default: 'Hanami'
@@ -16,7 +16,7 @@ Hanami::Model.migration do
         column :k, TrueClass,  default: true
         column :l, FalseClass, default: false
       end
-    when 'postgresql'
+    when :postgresql
       create_table :default_values do
         column :a, Integer,    default: 23
         column :b, String,     default: 'Hanami'
@@ -31,7 +31,7 @@ Hanami::Model.migration do
         column :k, TrueClass,  default: true
         column :l, FalseClass, default: false
       end
-    when 'mysql'
+    when :mysql
       create_table :default_values do
         column :a, Integer,    default: 23
         column :b, String,     default: 'Hanami'

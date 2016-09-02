@@ -1,5 +1,3 @@
-require 'hanami/utils'
-
 module Database
   module Strategies
     class Abstract
@@ -52,11 +50,11 @@ module Database
       private
 
       def jruby?
-        Hanami::Utils.jruby?
+        Platform.jruby?
       end
 
       def ci?
-        ENV['TRAVIS'] == 'true'
+        Platform.ci?
       end
     end
   end

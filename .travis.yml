@@ -6,7 +6,7 @@ after_script: 'echo `env`'
 rvm:
   - 2.2.5
   - 2.3.1
-  - jruby-9.0.5.0
+  - jruby-9.0.1.0
   - ruby-head
   - jruby-head
 env:
@@ -23,4 +23,4 @@ matrix:
     - rvm: ruby-head
     - rvm: jruby-head
     - env: "DB=mysql"
-      rvm: jruby-9.0.5.0
+      rvm: jruby-9.0.1.0

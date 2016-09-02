@@ -77,7 +77,7 @@ describe 'Repository (base)' do
       user.name.must_equal 'L'
     end
 
-    if ENV['HANAMI_DATABASE_TYPE'] == 'sqlite' && Hanami::Utils.jruby?
+    if Database.engine?(:sqlite, :jruby)
       it 'automatically touches timestamps'
     else
       it 'automatically touches timestamps' do
@@ -122,7 +122,7 @@ describe 'Repository (base)' do
       updated.must_be_nil
     end
 
-    if ENV['HANAMI_DATABASE_TYPE'] == 'sqlite' && Hanami::Utils.jruby?
+    if Database.engine?(:sqlite, :jruby)
       it 'automatically touches timestamps'
     else
       it 'automatically touches timestamps' do

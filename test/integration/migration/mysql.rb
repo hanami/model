@@ -390,7 +390,13 @@ describe 'MySQL' do
       name.must_equal :group_id
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+
+      if Platform.ci?
+        options.fetch(:default).must_equal '0'
+      else
+        options.fetch(:default).must_equal nil
+      end
+
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'int(11)'
       options.fetch(:primary_key).must_equal    true
@@ -400,7 +406,13 @@ describe 'MySQL' do
       name.must_equal :position
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+
+      if Platform.ci?
+        options.fetch(:default).must_equal '0'
+      else
+        options.fetch(:default).must_equal nil
+      end
+
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'int(11)'
       options.fetch(:primary_key).must_equal    true

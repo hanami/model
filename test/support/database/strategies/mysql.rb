@@ -13,7 +13,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:mysql://#{ENV['HANAMI_DATABASE_USERNAME']}:#{ENV['HANAMI_DATABASE_PASSWORD']}@localhost/#{database_name}?useSSL=false"
+          ENV['HANAMI_DATABASE_URL'] = "jdbc:mysql://#{credentials}@localhost/#{database_name}?useSSL=false"
         end
       end
 
@@ -54,7 +54,7 @@ module Database
         ENV['HANAMI_DATABASE_TYPE']       = 'mysql'
         ENV['HANAMI_DATABASE_USERNAME'] ||= 'root'
         ENV['HANAMI_DATABASE_PASSWORD'] ||= ''
-        ENV['HANAMI_DATABASE_URL']        = "mysql2://#{ENV['HANAMI_DATABASE_USERNAME']}:#{ENV['HANAMI_DATABASE_PASSWORD']}@localhost/#{database_name}"
+        ENV['HANAMI_DATABASE_URL']        = "mysql2://#{credentials}@localhost/#{database_name}"
       end
 
       def create_database

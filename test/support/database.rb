@@ -1,4 +1,3 @@
-
 module Database
   class Setup
     DEFAULT_ADAPTER = 'sqlite'.freeze
@@ -38,6 +37,15 @@ module Database
         Strategies.strategies
       end
     end
+  end
+
+  def self.engine?(name, engine = :ruby)
+    self.engine == name &&
+      RUBY_ENGINE == engine.to_s
+  end
+
+  def self.engine
+    ENV['HANAMI_DATABASE_TYPE'].to_sym
   end
 end
 

@@ -418,7 +418,13 @@ describe 'PostgreSQL' do
       name.must_equal :c
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     "'-1'::integer"
+
+      if Platform.ci?
+        options.fetch(:default).must_equal "(-1)"
+      else
+        options.fetch(:default).must_equal "'-1'::integer"
+      end
+
       # options.fetch(:ruby_default).must_equal(-1)
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'integer'
