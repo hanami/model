@@ -171,4 +171,36 @@ describe 'Repository (base)' do
       found.to_a.must_include user
     end
   end
+
+  if Database.engine?(:postgresql)
+    describe 'PostgreSQL' do
+      it 'finds record by primary key (UUID)' do
+        repository = SourceFileRepository.new
+        # file  = repository.create(name: 'path/to/file.rb', languages: ['ruby']], metadata: { coverage: 100.0 }, content: 'class Foo; end')
+        file  = repository.create(name: 'path/to/file.rb', languages: Sequel.pg_array(['ruby']), metadata: Sequel.pg_jsonb(coverage: 100.0), content: 'class Foo; end')
+        found = repository.find(file.id)
+
+        found.must_equal(file)
+      end
+
+      it 'returns nil for nil primary key (UUID)' do
+        repository = SourceFileRepository.new
+
+        found = repository.find(nil)
+        found.must_be_nil
+      end
+
+      # FIXME: This raises the following error
+      #
+      #   Sequel::DatabaseError: PG::InvalidTextRepresentation: ERROR:  invalid input syntax for uuid: "9999999"
+      #   LINE 1: ...", "updated_at" FROM "source_files" WHERE ("id" = '9999999')...
+      it 'returns nil for missing record (UUID)'
+      # it 'returns nil for missing record (UUID)' do
+      #   repository = SourceFileRepository.new
+
+      #   found = repository.find('9999999')
+      #   found.must_be_nil
+      # end
+    end
+  end
 end

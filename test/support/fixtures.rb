@@ -14,6 +14,10 @@ class Operator
   include Hanami::Entity
 end
 
+class SourceFile
+  include Hanami::Entity
+end
+
 class UserRepository < Hanami::Repository
   relation(:users) do
     schema(infer: true) do
@@ -195,6 +199,28 @@ class OperatorRepository < Hanami::Repository
 
   def clear
     t_operator.delete
+  end
+end
+
+class SourceFileRepository < Hanami::Repository
+  relation(:source_files) do
+    schema(infer: true) do
+    end
+
+    def by_id(id)
+      where(primary_key => id)
+    end
+  end
+
+  mapping do
+    model       SourceFile
+    register_as :entity
+  end
+
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
+
+  def find(id)
+    root.by_id(id).as(:entity).one
   end
 end
 

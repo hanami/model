@@ -38,7 +38,7 @@ Hanami::Model.migration do
         column :boolean2, FalseClass
       end
     when :postgresql
-      execute 'CREATE EXTENSION "uuid-ossp"'
+      execute 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'
       execute "CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');"
       execute %{
         CREATE TYPE inventory_item AS (
