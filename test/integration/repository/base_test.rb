@@ -176,9 +176,11 @@ describe 'Repository (base)' do
     describe 'PostgreSQL' do
       it 'finds record by primary key (UUID)' do
         repository = SourceFileRepository.new
-        # file  = repository.create(name: 'path/to/file.rb', languages: ['ruby']], metadata: { coverage: 100.0 }, content: 'class Foo; end')
-        file  = repository.create(name: 'path/to/file.rb', languages: Sequel.pg_array(['ruby']), metadata: Sequel.pg_jsonb(coverage: 100.0), content: 'class Foo; end')
+        file  = repository.create(name: 'path/to/file.rb', languages: ['ruby'], metadata: { coverage: 100.0 }, content: 'class Foo; end')
         found = repository.find(file.id)
+
+        file.languages.must_equal ['ruby']
+        file.metadata.must_equal(coverage: 100.0)
 
         found.must_equal(file)
       end

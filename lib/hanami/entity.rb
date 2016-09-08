@@ -1,3 +1,5 @@
+require 'hanami/utils/hash'
+
 module Hanami
   # An object that is defined by its identity.
   # See "Domain Driven Design" by Eric Evans.
@@ -59,7 +61,7 @@ module Hanami
   # @see Hanami::Repository
   module Entity
     def initialize(attributes = nil)
-      @attributes = (attributes || {}).dup.freeze
+      @attributes = Utils::Hash.new((attributes || {}).dup).symbolize!
       freeze
     end
 

@@ -217,7 +217,7 @@ class SourceFileRepository < Hanami::Repository
     register_as :entity
   end
 
-  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:timestamps, :mapping]
 
   def find(id)
     root.by_id(id).as(:entity).one
