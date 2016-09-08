@@ -1,7 +1,5 @@
 require 'sequel'
 require 'sequel/extensions/migration'
-require 'hanami/model/migrator/connection'
-require 'hanami/model/migrator/adapter'
 
 module Hanami
   module Model
@@ -11,61 +9,13 @@ module Hanami
     class MigrationError < Hanami::Model::Error
     end
 
-    # Define a migration
-    #
-    # It must define an up/down strategy to write schema changes (up) and to
-    # rollback them (down).
-    #
-    # We can use <tt>up</tt> and <tt>down</tt> blocks for custom strategies, or
-    # only one <tt>change</tt> block that automatically implements "down" strategy.
-    #
-    # @param blk [Proc] a block that defines up/down or change database migration
-    #
-    # @since 0.4.0
-    #
-    # @example Use up/down blocks
-    #   Hanami::Model.migration do
-    #     up do
-    #       create_table :books do
-    #         primary_key :id
-    #         column :book, String
-    #       end
-    #     end
-    #
-    #     down do
-    #       drop_table :books
-    #     end
-    #   end
-    #
-    # @example Use change block
-    #   Hanami::Model.migration do
-    #     change do
-    #       create_table :books do
-    #         primary_key :id
-    #         column :book, String
-    #       end
-    #     end
-    #
-    #     # DOWN strategy is automatically generated
-    #   end
-    def self.migration(&blk)
-      Migration.new(Sequel.migration(&blk))
-    end
-
-    class Migration
-      def initialize(migration)
-        @migration = migration
-      end
-
-      def run
-        @migration.apply(Model.connection, :up)
-      end
-    end
-
     # Database schema migrator
     #
     # @since 0.4.0
     class Migrator
+      require 'hanami/model/migrator/connection'
+      require 'hanami/model/migrator/adapter'
+
       # Create database defined by current configuration.
       #
       # It's only implemented for the following databases:
