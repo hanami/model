@@ -6,13 +6,11 @@ module Hanami
   # Hanami persistence
   module Model
     require 'hanami/model/version'
+    require 'hanami/model/error'
     require 'hanami/model/configuration'
     require 'hanami/model/configurator'
     require 'hanami/model/mapping'
     require 'hanami/model/plugins'
-
-    class Error < ::StandardError
-    end
 
     module_function
 

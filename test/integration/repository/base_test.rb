@@ -84,8 +84,8 @@ describe 'Repository (base)' do
         repository = UserRepository.new
         user = repository.create(name: 'L')
 
-        user.created_at.must_be_close_to Time.now.utc, 0.9
-        user.updated_at.must_be_close_to Time.now.utc, 0.9
+        user.created_at.must_be_close_to Time.now.utc, 0.9999999
+        user.updated_at.must_be_close_to Time.now.utc, 0.9999999
       end
     end
 
@@ -101,6 +101,93 @@ describe 'Repository (base)' do
     it 'accepts booleans as attributes' do
       user = UserRepository.new.create(name: 'L', active: false)
       user.active.must_equal false
+    end
+
+    it 'raises error when generic database error is raised' do
+      exception = -> { UserRepository.new.create(name: 'L', bogus: 23) }.must_raise(Hanami::Model::DatabaseError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::SQLException: table users has no column named bogus'
+                  when :postgresql
+                    'PG::UndefinedColumn: ERROR:  column "bogus" of relation "users" does not exist'
+                  when :mysql
+                    "Mysql2::Error: Unknown column 'bogus' in 'field list'"
+                  end
+
+      exception.message.must_include message
+    end
+
+    it 'raises error when "not null" database constraint is violated' do
+      exception = -> { UserRepository.new.create(name: 'L', active: nil) }.must_raise(Hanami::Model::NotNullConstraintViolationError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::ConstraintException: NOT NULL constraint failed: users.active'
+                  when :postgresql
+                    'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint'
+                  when :mysql
+                    "Mysql2::Error: Column 'active' cannot be null"
+                  end
+
+      exception.message.must_include message
+    end
+
+    it 'raises error when "unique constraint" is violated' do
+      repository = UserRepository.new
+      repository.create(name: 'Test', email: email = "user@#{SecureRandom.uuid}.test")
+
+      exception = -> { repository.create(name: 'L', email: email) }.must_raise(Hanami::Model::UniqueConstraintViolationError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::ConstraintException: UNIQUE constraint failed: users.email'
+                  when :postgresql
+                    'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"'
+                  when :mysql
+                    "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'"
+                  end
+
+      exception.message.must_include message
+    end
+
+    it 'raises error when "foreign key" constraint is violated' do
+      exception = -> { AvatarRepository.new.create(user_id: 999_999_999) }.must_raise(Hanami::Model::ForeignKeyConstraintViolationError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::ConstraintException: FOREIGN KEY constraint failed'
+                  when :postgresql
+                    'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"'
+                  when :mysql
+                    'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails'
+                  end
+
+      exception.message.must_include message
+    end
+
+    # For MySQL [...] The CHECK clause is parsed but ignored by all storage engines.
+    # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
+    unless Database.engine?(:mysql)
+      it 'raises error when "check" constraint is violated' do
+        exception = -> { UserRepository.new.create(name: 'L', age: 1) }.must_raise(Hanami::Model::CheckConstraintViolationError)
+        message   = case Database.engine
+                    when :sqlite
+                      'SQLite3::ConstraintException: CHECK constraint failed: users'
+                    when :postgresql
+                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"'
+                    end
+
+        exception.message.must_include message
+      end
+
+      it 'raises error when constraint is violated' do
+        exception = -> { UserRepository.new.create(name: 'L', comments_count: -1) }.must_raise(Hanami::Model::CheckConstraintViolationError)
+        message   = case Database.engine
+                    when :sqlite
+                      'SQLite3::ConstraintException: CHECK constraint failed: comments_count_constraint'
+                    when :postgresql
+                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"'
+                    end
+
+        exception.message.must_include message
+      end
     end
   end
 
@@ -131,8 +218,112 @@ describe 'Repository (base)' do
         sleep 0.1
         updated = repository.update(user.id, name: 'Luca')
 
-        updated.created_at.must_be_close_to user.created_at, 0.9
-        updated.updated_at.must_be_close_to Time.now.utc,    0.9
+        updated.created_at.must_be_close_to user.created_at, 0.99999999
+        updated.updated_at.must_be_close_to Time.now.utc,    0.99999999
+      end
+    end
+
+    it 'raises error when generic database error is raised' do
+      repository = UserRepository.new
+      user       = repository.create(name: 'L')
+
+      exception = -> { repository.update(user.id, bogus: 23) }.must_raise(Hanami::Model::DatabaseError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::SQLException: no such column: bogus'
+                  when :postgresql
+                    'PG::UndefinedColumn: ERROR:  column "bogus" of relation "users" does not exist'
+                  when :mysql
+                    "Mysql2::Error: Unknown column 'bogus' in 'field list'"
+                  end
+
+      exception.message.must_include message
+    end
+
+    it 'raises error when "not null" database constraint is violated' do
+      repository = UserRepository.new
+      user       = repository.create(name: 'L')
+
+      exception = -> { repository.update(user.id, active: nil) }.must_raise(Hanami::Model::NotNullConstraintViolationError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::ConstraintException: NOT NULL constraint failed: users.active'
+                  when :postgresql
+                    'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint'
+                  when :mysql
+                    "Mysql2::Error: Column 'active' cannot be null"
+                  end
+
+      exception.message.must_include message
+    end
+
+    it 'raises error when "unique constraint" is violated' do
+      repository = UserRepository.new
+      user       = repository.create(name: 'L')
+      repository.create(name: 'UpdateTest', email: email = "update@#{SecureRandom.uuid}.test")
+
+      exception = -> { repository.update(user.id, email: email) }.must_raise(Hanami::Model::UniqueConstraintViolationError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::ConstraintException: UNIQUE constraint failed: users.email'
+                  when :postgresql
+                    'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"'
+                  when :mysql
+                    "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'"
+                  end
+
+      exception.message.must_include message
+    end
+
+    it 'raises error when "foreign key" constraint is violated' do
+      user       = UserRepository.new.create(name: 'L')
+      repository = AvatarRepository.new
+      avatar     = repository.create(user_id: user.id)
+
+      exception = -> { repository.update(avatar.id, user_id: 999_999_999) }.must_raise(Hanami::Model::ForeignKeyConstraintViolationError)
+      message   = case Database.engine
+                  when :sqlite
+                    'SQLite3::ConstraintException: FOREIGN KEY constraint failed'
+                  when :postgresql
+                    'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"'
+                  when :mysql
+                    'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails'
+                  end
+
+      exception.message.must_include message
+    end
+
+    # For MySQL [...] The CHECK clause is parsed but ignored by all storage engines.
+    # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
+    unless Database.engine?(:mysql)
+      it 'raises error when "check" constraint is violated' do
+        repository = UserRepository.new
+        user       = repository.create(name: 'L')
+
+        exception = -> { repository.update(user.id, age: 17) }.must_raise(Hanami::Model::CheckConstraintViolationError)
+        message   = case Database.engine
+                    when :sqlite
+                      'SQLite3::ConstraintException: CHECK constraint failed: users'
+                    when :postgresql
+                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"'
+                    end
+
+        exception.message.must_include message
+      end
+
+      it 'raises error when constraint is violated' do
+        repository = UserRepository.new
+        user       = repository.create(name: 'L')
+
+        exception = -> { repository.update(user.id, comments_count: -2) }.must_raise(Hanami::Model::CheckConstraintViolationError)
+        message   = case Database.engine
+                    when :sqlite
+                      'SQLite3::ConstraintException: CHECK constraint failed: comments_count_constraint'
+                    when :postgresql
+                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"'
+                    end
+
+        exception.message.must_include message
       end
     end
   end

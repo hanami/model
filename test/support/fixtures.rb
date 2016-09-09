@@ -2,6 +2,10 @@ class User
   include Hanami::Entity
 end
 
+class Avatar
+  include Hanami::Entity
+end
+
 class Author
   include Hanami::Entity
 end
@@ -39,6 +43,42 @@ class UserRepository < Hanami::Repository
     users.by_id(id).as(:entity).one
   end
 
+  def _create_with_rescue(*args)
+    _create_without_rescue(*args)
+  rescue => e
+    raise Hanami::Model::Error.for(e)
+  end
+
+  alias _create_without_rescue create
+  alias create _create_with_rescue
+
+  private :_create_without_rescue
+  private :_create_with_rescue
+
+  def _update_with_rescue(*args)
+    _update_without_rescue(*args)
+  rescue => e
+    raise Hanami::Model::Error.for(e)
+  end
+
+  alias _update_without_rescue update
+  alias update _update_with_rescue
+
+  private :_update_without_rescue
+  private :_update_with_rescue
+
+  def _delete_with_rescue(*args)
+    _delete_without_rescue(*args)
+  rescue => e
+    raise Hanami::Model::Error.for(e)
+  end
+
+  alias _delete_without_rescue delete
+  alias delete _delete_with_rescue
+
+  private :_delete_without_rescue
+  private :_delete_with_rescue
+
   def all
     users.as(:entity)
   end
@@ -58,6 +98,52 @@ class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name).as(:entity)
   end
+end
+
+class AvatarRepository < Hanami::Repository
+  relation(:avatars) do
+    schema(infer: true) do
+    end
+
+    def by_id(id)
+      where(primary_key => id)
+    end
+  end
+
+  mapping do
+    model       Avatar
+    register_as :entity
+  end
+
+  commands :create, update: :by_id, delete: :by_id, mapper: :entity, use: [:mapping, :timestamps]
+
+  def find(id)
+    users.by_id(id).as(:entity).one
+  end
+
+  def _create_with_rescue(*args)
+    _create_without_rescue(*args)
+  rescue => e
+    raise Hanami::Model::Error.for(e)
+  end
+
+  alias _create_without_rescue create
+  alias create _create_with_rescue
+
+  private :_create_without_rescue
+  private :_create_with_rescue
+
+  def _update_with_rescue(*args)
+    _update_without_rescue(*args)
+  rescue => e
+    raise Hanami::Model::Error.for(e)
+  end
+
+  alias _update_without_rescue update
+  alias update _update_with_rescue
+
+  private :_update_without_rescue
+  private :_update_with_rescue
 end
 
 class AuthorRepository < Hanami::Repository

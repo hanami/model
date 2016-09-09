@@ -2,6 +2,7 @@ require 'rom-sql'
 
 module Hanami
   module Model
+    require 'hanami/model/error'
     require 'hanami/model/association'
     require 'hanami/model/migration'
 
@@ -55,6 +56,12 @@ module Hanami
         Sequel.lit(string)
       end
     end
+
+    Error.register(ROM::SQL::DatabaseError,             DatabaseError)
+    Error.register(ROM::SQL::NotNullConstraintError,    NotNullConstraintViolationError)
+    Error.register(ROM::SQL::UniqueConstraintError,     UniqueConstraintViolationError)
+    Error.register(ROM::SQL::CheckConstraintError,      CheckConstraintViolationError)
+    Error.register(ROM::SQL::ForeignKeyConstraintError, ForeignKeyConstraintViolationError)
   end
 end
 
