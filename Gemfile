@@ -7,7 +7,7 @@ unless ENV['TRAVIS']
 end
 
 gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils',    branch: 'master'
-gem 'rom-sql',      '~> 0.8', require: false, github: 'jodosha/rom-sql', branch: 'postgresql-autoinfer'
+gem 'rom-sql',      '~> 0.8', require: false, github: 'jodosha/rom-sql', branch: 'hanami-model-integration'
 
 platforms :ruby do
   gem 'sqlite3', require: false
