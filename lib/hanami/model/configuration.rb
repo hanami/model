@@ -9,13 +9,14 @@ module Hanami
     #
     # @since 0.2.0
     class Configuration < ROM::Configuration
-      attr_reader :mappings
+      attr_reader :repositories, :mappings
 
       def initialize(configurator)
         super(configurator.backend, configurator.url)
-        @migrations = configurator._migrations
-        @schema     = configurator._schema
-        @mappings   = {}
+        @migrations   = configurator._migrations
+        @schema       = configurator._schema
+        @repositories = []
+        @mappings     = {}
       end
 
       # NOTE: This must be changed when we want to support several adapters at the time
