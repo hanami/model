@@ -8,7 +8,6 @@ describe 'MySQL Database migrations' do
   let(:random) { SecureRandom.hex(4) }
 
   # General variables
-  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby? }
   let(:migrations)     { Pathname.new(__dir__ + '/../fixtures/migrations') }
   let(:schema)         { nil }
   let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema) }
@@ -23,185 +22,191 @@ describe 'MySQL Database migrations' do
     migrator.drop rescue nil # rubocop:disable Style/RescueModifier
   end
 
-  %w(mysql mysql2).each do |scheme|
-    describe "MySQL (#{scheme})" do
-      let(:database) { "#{name.gsub(/[^\w]/, '_')}_#{random}" }
-      let(:adapter)  { Hanami::Utils.jruby? ? 'mysql' : scheme }
-      let(:url)      { "#{adapter_prefix}#{adapter}://localhost/#{database}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+  describe 'MySQL' do
+    let(:database) { "#{name.gsub(/[^\w]/, '_')}_#{random}" }
 
-      describe 'create' do
-        before do
-          migrator.create
-        end
+    let(:url) do
+      db = database
 
-        it 'creates the database' do
+      Platform.match do
+        engine(:ruby)  { "mysql2://localhost/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+        engine(:jruby) { "jdbc:mysql://localhost/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}&useSSL=false" }
+      end
+    end
+
+    describe 'create' do
+      before do
+        migrator.create
+      end
+
+      it 'creates the database' do
+        connection = Sequel.connect(url)
+        connection.tables.must_be :empty?
+      end
+
+      it 'raises error if database is busy' do
+        Sequel.connect(url).tables
+        exception = -> { migrator.create }.must_raise Hanami::Model::MigrationError
+        exception.message.must_include 'Database creation failed'
+        exception.message.must_include 'There is 1 other session using the database'
+      end
+    end
+
+    describe 'drop' do
+      before do
+        migrator.create
+      end
+
+      it 'drops the database' do
+        migrator.drop
+
+        -> { Sequel.connect(url).tables }.must_raise Sequel::DatabaseConnectionError
+      end
+
+      it "raises error if database doesn't exist" do
+        migrator.drop # remove the first time
+
+        exception = -> { migrator.drop }.must_raise Hanami::Model::MigrationError
+        exception.message.must_equal "Cannot find database: #{database}"
+      end
+    end
+
+    describe 'migrate' do
+      before do
+        migrator.create
+      end
+
+      describe 'when no migrations' do
+        let(:migrations) { Pathname.new(__dir__ + '/../fixtures/empty_migrations') }
+
+        it "it doesn't alter database" do
+          migrator.migrate
+
           connection = Sequel.connect(url)
           connection.tables.must_be :empty?
         end
-
-        it 'raises error if database is busy' do
-          Sequel.connect(url).tables
-          exception = -> { migrator.create }.must_raise Hanami::Model::MigrationError
-          exception.message.must_include 'Database creation failed'
-          exception.message.must_include 'There is 1 other session using the database'
-        end
       end
 
-      describe 'drop' do
-        before do
-          migrator.create
-        end
+      describe 'when migrations are present' do
+        it 'migrates the database' do
+          migrator.migrate
 
-        it 'drops the database' do
-          migrator.drop
-
-          -> { Sequel.connect(url).tables }.must_raise Sequel::DatabaseConnectionError
-        end
-
-        it "raises error if database doesn't exist" do
-          migrator.drop # remove the first time
-
-          exception = -> { migrator.drop }.must_raise Hanami::Model::MigrationError
-          exception.message.must_equal "Cannot find database: #{database}"
-        end
-      end
-
-      describe 'migrate' do
-        before do
-          migrator.create
-        end
-
-        describe 'when no migrations' do
-          let(:migrations) { Pathname.new(__dir__ + '/../fixtures/empty_migrations') }
-
-          it "it doesn't alter database" do
-            migrator.migrate
-
-            connection = Sequel.connect(url)
-            connection.tables.must_be :empty?
-          end
-        end
-
-        describe 'when migrations are present' do
-          it 'migrates the database' do
-            migrator.migrate
-
-            connection = Sequel.connect(url)
-            connection.tables.wont_be :empty?
-
-            table = connection.schema(:reviews)
-
-            name, options = table[0] # id
-            name.must_equal :id
-
-            options.fetch(:allow_null).must_equal     false
-            options.fetch(:default).must_equal        nil
-            options.fetch(:type).must_equal           :integer
-            options.fetch(:db_type).must_equal        'int(11)'
-            options.fetch(:primary_key).must_equal    true
-            options.fetch(:auto_increment).must_equal true
-
-            name, options = table[1] # title
-            name.must_equal :title
-
-            options.fetch(:allow_null).must_equal     false
-            options.fetch(:default).must_equal        nil
-            options.fetch(:type).must_equal           :string
-            options.fetch(:db_type).must_equal        'varchar(255)'
-            options.fetch(:primary_key).must_equal    false
-
-            name, options = table[2] # rating (second migration)
-            name.must_equal :rating
-
-            options.fetch(:allow_null).must_equal     true
-            options.fetch(:default).must_equal        '0'
-            options.fetch(:type).must_equal           :integer
-            options.fetch(:db_type).must_equal        'int(11)'
-            options.fetch(:primary_key).must_equal    false
-          end
-        end
-
-        describe 'when migrations are ran twice' do
-          before do
-            migrator.migrate
-          end
-
-          it "doesn't alter the schema" do
-            migrator.migrate
-
-            connection = Sequel.connect(url)
-            connection.tables.wont_be :empty?
-            connection.tables.must_equal [:reviews, :schema_migrations]
-          end
-        end
-
-        describe 'migrate down' do
-          before do
-            migrator.migrate
-          end
-
-          it 'migrates the database' do
-            migrator.migrate(version: '20160831073534') # see test/fixtures/migrations
-
-            connection = Sequel.connect(url)
-            connection.tables.wont_be :empty?
-
-            table = connection.schema(:reviews)
-
-            name, options = table[0] # id
-            name.must_equal :id
-
-            options.fetch(:allow_null).must_equal     false
-            options.fetch(:default).must_equal        nil
-            options.fetch(:type).must_equal           :integer
-            options.fetch(:db_type).must_equal        'int(11)'
-            options.fetch(:primary_key).must_equal    true
-            options.fetch(:auto_increment).must_equal true
-
-            name, options = table[1] # title
-            name.must_equal :title
-
-            options.fetch(:allow_null).must_equal     false
-            options.fetch(:default).must_equal        nil
-            options.fetch(:type).must_equal           :string
-            options.fetch(:db_type).must_equal        'varchar(255)'
-            options.fetch(:primary_key).must_equal    false
-
-            name, options = table[2] # rating (rolled back second migration)
-            name.must_be_nil
-            options.must_be_nil
-          end
-        end
-      end
-
-      describe 'apply' do
-        let(:migrations) { target_migrations }
-        let(:schema)     { root.join("schema-#{scheme}-#{random}.sql") }
-
-        before do
-          prepare_migrations_directory
-          migrator.create
-          migrator.apply
-        end
-
-        after do
-          clean_migrations
-        end
-
-        it 'migrates to latest version' do
           connection = Sequel.connect(url)
-          migration  = connection[:schema_migrations].to_a.last
+          connection.tables.wont_be :empty?
 
-          migration.fetch(:filename).must_include('20160831090612') # see test/fixtures/migrations
+          table = connection.schema(:reviews)
+
+          name, options = table[0] # id
+          name.must_equal :id
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :integer
+          options.fetch(:db_type).must_equal        'int(11)'
+          options.fetch(:primary_key).must_equal    true
+          options.fetch(:auto_increment).must_equal true
+
+          name, options = table[1] # title
+          name.must_equal :title
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :string
+          options.fetch(:db_type).must_equal        'varchar(255)'
+          options.fetch(:primary_key).must_equal    false
+
+          name, options = table[2] # rating (second migration)
+          name.must_equal :rating
+
+          options.fetch(:allow_null).must_equal     true
+          options.fetch(:default).must_equal        '0'
+          options.fetch(:type).must_equal           :integer
+          options.fetch(:db_type).must_equal        'int(11)'
+          options.fetch(:primary_key).must_equal    false
+        end
+      end
+
+      describe 'when migrations are ran twice' do
+        before do
+          migrator.migrate
         end
 
-        it 'dumps database schema.sql' do
-          actual = schema.read
+        it "doesn't alter the schema" do
+          migrator.migrate
 
-          actual.must_include %(DROP TABLE IF EXISTS `reviews`;)
+          connection = Sequel.connect(url)
+          connection.tables.wont_be :empty?
+          connection.tables.must_equal [:reviews, :schema_migrations]
+        end
+      end
 
-          actual.must_include %(CREATE TABLE `reviews`)
-          actual.must_include %(`id` int\(11\) NOT NULL AUTO_INCREMENT,)
+      describe 'migrate down' do
+        before do
+          migrator.migrate
+        end
+
+        it 'migrates the database' do
+          migrator.migrate(version: '20160831073534') # see test/fixtures/migrations
+
+          connection = Sequel.connect(url)
+          connection.tables.wont_be :empty?
+
+          table = connection.schema(:reviews)
+
+          name, options = table[0] # id
+          name.must_equal :id
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :integer
+          options.fetch(:db_type).must_equal        'int(11)'
+          options.fetch(:primary_key).must_equal    true
+          options.fetch(:auto_increment).must_equal true
+
+          name, options = table[1] # title
+          name.must_equal :title
+
+          options.fetch(:allow_null).must_equal     false
+          options.fetch(:default).must_equal        nil
+          options.fetch(:type).must_equal           :string
+          options.fetch(:db_type).must_equal        'varchar(255)'
+          options.fetch(:primary_key).must_equal    false
+
+          name, options = table[2] # rating (rolled back second migration)
+          name.must_be_nil
+          options.must_be_nil
+        end
+      end
+    end
+
+    describe 'apply' do
+      let(:migrations) { target_migrations }
+      let(:schema)     { root.join("schema-#{random}.sql") }
+
+      before do
+        prepare_migrations_directory
+        migrator.create
+        migrator.apply
+      end
+
+      after do
+        clean_migrations
+      end
+
+      it 'migrates to latest version' do
+        connection = Sequel.connect(url)
+        migration  = connection[:schema_migrations].to_a.last
+
+        migration.fetch(:filename).must_include('20160831090612') # see test/fixtures/migrations
+      end
+
+      it 'dumps database schema.sql' do
+        actual = schema.read
+
+        actual.must_include %(DROP TABLE IF EXISTS `reviews`;)
+
+        actual.must_include %(CREATE TABLE `reviews`)
+        actual.must_include %(`id` int\(11\) NOT NULL AUTO_INCREMENT,)
 
           actual.must_include %(`title` varchar(255))
 
@@ -229,7 +234,7 @@ describe 'MySQL Database migrations' do
 
       describe 'prepare' do
         let(:migrations) { target_migrations }
-        let(:schema)     { root.join("schema-#{scheme}-#{random}.sql") }
+        let(:schema)     { root.join("schema-#{random}.sql") }
 
         before do
           prepare_migrations_directory
@@ -311,7 +316,6 @@ RUBY
         end
       end
     end
-  end
 
   private
 

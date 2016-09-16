@@ -8,12 +8,18 @@ describe 'Filesystem SQLite Database migrations' do
   let(:random) { SecureRandom.hex }
 
   # General variables
-  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby? }
-  let(:url)            { "#{adapter_prefix}sqlite://#{database}" }
   let(:migrations)     { Pathname.new(__dir__ + '/../fixtures/migrations') }
   let(:schema)         { nil }
   let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema) }
   let(:configuration)  { Hanami::Model::Configuration.new(config) }
+  let(:url) do
+    db = database
+
+    Platform.match do
+      engine(:ruby)  { "sqlite://#{db}" }
+      engine(:jruby) { "jdbc:sqlite://#{db}" }
+    end
+  end
 
   # Variables for `apply` and `prepare`
   let(:root)              { Pathname.new("#{__dir__}/../../tmp").expand_path }

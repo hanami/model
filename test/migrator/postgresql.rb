@@ -8,7 +8,6 @@ describe 'PostgreSQL Database migrations' do
   let(:random) { SecureRandom.hex(4) }
 
   # General variables
-  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby? }
   let(:migrations)     { Pathname.new(__dir__ + '/../fixtures/migrations') }
   let(:schema)         { nil }
   let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema) }
@@ -25,7 +24,15 @@ describe 'PostgreSQL Database migrations' do
 
   describe 'PostgreSQL' do
     let(:database) { "#{name.gsub(/[^\w]/, '_')}_#{random}" }
-    let(:url)      { "#{adapter_prefix}postgresql://127.0.0.1/#{database}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+
+    let(:url) do
+      db = database
+
+      Platform.match do
+        engine(:ruby)  { "postgresql://127.0.0.1/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+        engine(:jruby) { "jdbc:postgresql://127.0.0.1/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+      end
+    end
 
     describe 'create' do
       before do
