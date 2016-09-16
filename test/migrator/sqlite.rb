@@ -39,8 +39,18 @@ describe 'Filesystem SQLite Database migrations' do
         let(:database) { '/usr/bin/create.sqlite3' }
 
         it 'raises an error' do
-          exception = -> { migrator.create }.must_raise Hanami::Model::MigrationError
-          exception.message.must_equal 'Permission denied: /usr/bin/create.sqlite3'
+          error = Platform.match do
+            os(:macos).engine(:jruby) { Java::JavaLang::RuntimeException }
+            default { Hanami::Model::MigrationError }
+          end
+
+          message = Platform.match do
+            os(:macos).engine(:jruby) { 'Unhandled IOException: java.io.IOException: unhandled errno: Operation not permitted' }
+            default { 'Permission denied: /usr/bin/create.sqlite3' }
+          end
+
+          exception = -> { migrator.create }.must_raise error
+          exception.message.must_equal message
         end
       end
     end

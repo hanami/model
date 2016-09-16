@@ -44,6 +44,15 @@ module Hanami
       end
     end
 
+    # Error for Constraint Violation
+    #
+    # @since x.x.x
+    class ConstraintViolationError < Error
+      def initialize(message = 'Constraint has been violated')
+        super
+      end
+    end
+
     # Error for Unique Constraint Violation
     #
     # @since 0.6.1

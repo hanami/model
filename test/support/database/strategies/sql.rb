@@ -39,6 +39,10 @@ module Database
           Hanami::Utils::Blank.blank?(token)
         end.join(':')
       end
+
+      def host
+        ENV['HANAMI_DATABASE_HOST'] || 'localhost'
+      end
     end
   end
 end

@@ -417,13 +417,14 @@ describe 'PostgreSQL' do
       name, options = table[2]
       name.must_equal :c
 
-      options.fetch(:allow_null).must_equal  true
+      options.fetch(:allow_null).must_equal true
 
-      if Platform.ci?
-        options.fetch(:default).must_equal "(-1)"
-      else
-        options.fetch(:default).must_equal "'-1'::integer"
+      expected = Platform.match do
+        os(:linux) { '(-1)' }
+        os(:macos) { "'-1'::integer" }
       end
+
+      options.fetch(:default).must_equal expected
 
       # options.fetch(:ruby_default).must_equal(-1)
       options.fetch(:type).must_equal        :integer

@@ -1,4 +1,5 @@
 require 'rom-sql'
+require 'hanami/utils'
 
 module Hanami
   module Model
@@ -58,10 +59,15 @@ module Hanami
     end
 
     Error.register(ROM::SQL::DatabaseError,             DatabaseError)
+    Error.register(ROM::SQL::ConstraintError,           ConstraintViolationError)
     Error.register(ROM::SQL::NotNullConstraintError,    NotNullConstraintViolationError)
     Error.register(ROM::SQL::UniqueConstraintError,     UniqueConstraintViolationError)
     Error.register(ROM::SQL::CheckConstraintError,      CheckConstraintViolationError)
     Error.register(ROM::SQL::ForeignKeyConstraintError, ForeignKeyConstraintViolationError)
+
+    if Utils.jruby?
+      Error.register(Java::JavaSql::SQLException, DatabaseError)
+    end
   end
 end
 

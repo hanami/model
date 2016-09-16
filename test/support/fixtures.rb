@@ -52,9 +52,6 @@ class UserRepository < Hanami::Repository
   alias _create_without_rescue create
   alias create _create_with_rescue
 
-  private :_create_without_rescue
-  private :_create_with_rescue
-
   def _update_with_rescue(*args)
     _update_without_rescue(*args)
   rescue => e

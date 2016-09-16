@@ -1,6 +1,8 @@
 require 'test_helper'
 
 describe 'Repository (base)' do
+  extend PlatformHelpers
+
   describe '#find' do
     it 'finds record by primary key' do
       repository = UserRepository.new
@@ -77,9 +79,11 @@ describe 'Repository (base)' do
       user.name.must_equal 'L'
     end
 
-    if Database.engine?(:sqlite, :jruby)
+    with_platform(engine: :jruby, db: :sqlite) do
       it 'automatically touches timestamps'
-    else
+    end
+
+    unless_platform(engine: :jruby, db: :sqlite) do
       it 'automatically touches timestamps' do
         repository = UserRepository.new
         user = repository.create(name: 'L')
@@ -104,88 +108,114 @@ describe 'Repository (base)' do
     end
 
     it 'raises error when generic database error is raised' do
-      exception = -> { UserRepository.new.create(name: 'L', bogus: 23) }.must_raise(Hanami::Model::DatabaseError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::SQLException: table users has no column named bogus'
-                  when :postgresql
-                    'PG::UndefinedColumn: ERROR:  column "bogus" of relation "users" does not exist'
-                  when :mysql
-                    "Mysql2::Error: Unknown column 'bogus' in 'field list'"
-                  end
+      error   = Hanami::Model::DatabaseError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::SQLException: table users has no column named bogus' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: table users has no column named bogus' }
 
+        engine(:ruby).db(:postgresql)  { 'PG::UndefinedColumn: ERROR:  column "bogus" of relation "users" does not exist' }
+        engine(:jruby).db(:postgresql) { 'bogus' }
+
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Unknown column 'bogus' in 'field list'" }
+        engine(:jruby).db(:mysql) { 'bogus' }
+      end
+
+      exception = -> { UserRepository.new.create(name: 'L', bogus: 23) }.must_raise(error)
       exception.message.must_include message
     end
 
     it 'raises error when "not null" database constraint is violated' do
-      exception = -> { UserRepository.new.create(name: 'L', active: nil) }.must_raise(Hanami::Model::NotNullConstraintViolationError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::ConstraintException: NOT NULL constraint failed: users.active'
-                  when :postgresql
-                    'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint'
-                  when :mysql
-                    "Mysql2::Error: Column 'active' cannot be null"
-                  end
+      error   = Hanami::Model::NotNullConstraintViolationError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: NOT NULL constraint failed: users.active' }
 
+        engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint' }
+        engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: null value in column "active" violates not-null constraint' }
+
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Column 'active' cannot be null" }
+        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Column 'active' cannot be null" }
+      end
+
+      exception = -> { UserRepository.new.create(name: 'L', active: nil) }.must_raise(error)
       exception.message.must_include message
     end
 
     it 'raises error when "unique constraint" is violated' do
+      email = "user@#{SecureRandom.uuid}.test"
+
+      error   = Hanami::Model::UniqueConstraintViolationError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: UNIQUE constraint failed: users.email' }
+
+        engine(:ruby).db(:postgresql)  { 'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"' }
+        engine(:jruby).db(:postgresql) { %(Java::OrgPostgresqlUtil::PSQLException: ERROR: duplicate key value violates unique constraint "users_email_index"\n  Detail: Key (email)=(#{email}) already exists.)}
+
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'" }
+        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Duplicate entry '#{email}' for key 'users_email_index'" }
+      end
+
       repository = UserRepository.new
-      repository.create(name: 'Test', email: email = "user@#{SecureRandom.uuid}.test")
+      repository.create(name: 'Test', email: email)
 
-      exception = -> { repository.create(name: 'L', email: email) }.must_raise(Hanami::Model::UniqueConstraintViolationError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::ConstraintException: UNIQUE constraint failed: users.email'
-                  when :postgresql
-                    'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"'
-                  when :mysql
-                    "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'"
-                  end
-
+      exception = -> { repository.create(name: 'L', email: email) }.must_raise(error)
       exception.message.must_include message
     end
 
     it 'raises error when "foreign key" constraint is violated' do
-      exception = -> { AvatarRepository.new.create(user_id: 999_999_999) }.must_raise(Hanami::Model::ForeignKeyConstraintViolationError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::ConstraintException: FOREIGN KEY constraint failed'
-                  when :postgresql
-                    'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"'
-                  when :mysql
-                    'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails'
-                  end
+      error   = Hanami::Model::ForeignKeyConstraintViolationError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: FOREIGN KEY constraint failed' }
 
+        engine(:ruby).db(:postgresql)  { 'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
+        engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
+
+        engine(:ruby).db(:mysql)  { 'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails' }
+        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)" }
+      end
+
+      exception = -> { AvatarRepository.new.create(user_id: 999_999_999) }.must_raise(error)
       exception.message.must_include message
     end
 
     # For MySQL [...] The CHECK clause is parsed but ignored by all storage engines.
     # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
-    unless Database.engine?(:mysql)
+    unless_platform(db: :mysql) do
       it 'raises error when "check" constraint is violated' do
-        exception = -> { UserRepository.new.create(name: 'L', age: 1) }.must_raise(Hanami::Model::CheckConstraintViolationError)
-        message   = case Database.engine
-                    when :sqlite
-                      'SQLite3::ConstraintException: CHECK constraint failed: users'
-                    when :postgresql
-                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"'
-                    end
+        error = Platform.match do
+          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
+          default                              { Hanami::Model::CheckConstraintViolationError }
+        end
 
+        message = Platform.match do
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: CHECK constraint failed: users' }
+
+          engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
+          engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "users_age_check"' }
+        end
+
+        exception = -> { UserRepository.new.create(name: 'L', age: 1) }.must_raise(error)
         exception.message.must_include message
       end
 
       it 'raises error when constraint is violated' do
-        exception = -> { UserRepository.new.create(name: 'L', comments_count: -1) }.must_raise(Hanami::Model::CheckConstraintViolationError)
-        message   = case Database.engine
-                    when :sqlite
-                      'SQLite3::ConstraintException: CHECK constraint failed: comments_count_constraint'
-                    when :postgresql
-                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"'
-                    end
+        error = Platform.match do
+          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
+          default                              { Hanami::Model::CheckConstraintViolationError }
+        end
 
+        message = Platform.match do
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: CHECK constraint failed: comments_count_constraint' }
+
+          engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
+          engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "comments_count_constraint"' }
+        end
+
+        exception = -> { UserRepository.new.create(name: 'L', comments_count: -1) }.must_raise(error)
         exception.message.must_include message
       end
     end
@@ -209,9 +239,11 @@ describe 'Repository (base)' do
       updated.must_be_nil
     end
 
-    if Database.engine?(:sqlite, :jruby)
+    with_platform(engine: :jruby, db: :sqlite) do
       it 'automatically touches timestamps'
-    else
+    end
+
+    unless_platform(engine: :jruby, db: :sqlite) do
       it 'automatically touches timestamps' do
         repository = UserRepository.new
         user = repository.create(name: 'L')
@@ -224,105 +256,134 @@ describe 'Repository (base)' do
     end
 
     it 'raises error when generic database error is raised' do
+      error   = Hanami::Model::DatabaseError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::SQLException: no such column: bogus' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: no such column: bogus' }
+
+        engine(:ruby).db(:postgresql)  { 'PG::UndefinedColumn: ERROR:  column "bogus" of relation "users" does not exist' }
+        engine(:jruby).db(:postgresql) { 'bogus' }
+
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Unknown column 'bogus' in 'field list'" }
+        engine(:jruby).db(:mysql) { 'bogus' }
+      end
+
       repository = UserRepository.new
       user       = repository.create(name: 'L')
 
-      exception = -> { repository.update(user.id, bogus: 23) }.must_raise(Hanami::Model::DatabaseError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::SQLException: no such column: bogus'
-                  when :postgresql
-                    'PG::UndefinedColumn: ERROR:  column "bogus" of relation "users" does not exist'
-                  when :mysql
-                    "Mysql2::Error: Unknown column 'bogus' in 'field list'"
-                  end
-
+      exception = -> { repository.update(user.id, bogus: 23) }.must_raise(error)
       exception.message.must_include message
     end
 
-    it 'raises error when "not null" database constraint is violated' do
-      repository = UserRepository.new
-      user       = repository.create(name: 'L')
+    # MySQL doesn't raise an error on CI
+    unless_platform(os: :linux, engine: :ruby, db: :mysql) do
+      it 'raises error when "not null" database constraint is violated' do
+        error   = Hanami::Model::NotNullConstraintViolationError
+        message = Platform.match do
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: NOT NULL constraint failed: users.active' }
 
-      exception = -> { repository.update(user.id, active: nil) }.must_raise(Hanami::Model::NotNullConstraintViolationError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::ConstraintException: NOT NULL constraint failed: users.active'
-                  when :postgresql
-                    'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint'
-                  when :mysql
-                    "Mysql2::Error: Column 'active' cannot be null"
-                  end
+          engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint' }
+          engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: null value in column "active" violates not-null constraint' }
 
-      exception.message.must_include message
+          engine(:ruby).db(:mysql)  { "Mysql2::Error: Column 'active' cannot be null" }
+          engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Column 'active' cannot be null" }
+        end
+
+        repository = UserRepository.new
+        user       = repository.create(name: 'L')
+
+        exception = -> { repository.update(user.id, active: nil) }.must_raise(error)
+        exception.message.must_include message
+      end
     end
 
     it 'raises error when "unique constraint" is violated' do
+      email = "update@#{SecureRandom.uuid}.test"
+
+      error   = Hanami::Model::UniqueConstraintViolationError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: UNIQUE constraint failed: users.email' }
+
+        engine(:ruby).db(:postgresql)  { 'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"' }
+        engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: duplicate key value violates unique constraint "users_email_index"' }
+
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'" }
+        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Duplicate entry '#{email}' for key 'users_email_index'" }
+      end
+
       repository = UserRepository.new
       user       = repository.create(name: 'L')
-      repository.create(name: 'UpdateTest', email: email = "update@#{SecureRandom.uuid}.test")
+      repository.create(name: 'UpdateTest', email: email)
 
-      exception = -> { repository.update(user.id, email: email) }.must_raise(Hanami::Model::UniqueConstraintViolationError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::ConstraintException: UNIQUE constraint failed: users.email'
-                  when :postgresql
-                    'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"'
-                  when :mysql
-                    "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'"
-                  end
-
+      exception = -> { repository.update(user.id, email: email) }.must_raise(error)
       exception.message.must_include message
     end
 
     it 'raises error when "foreign key" constraint is violated' do
+      error   = Hanami::Model::ForeignKeyConstraintViolationError
+      message = Platform.match do
+        engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: FOREIGN KEY constraint failed' }
+
+        engine(:ruby).db(:postgresql)  { 'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
+        engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
+
+        engine(:ruby).db(:mysql)  { 'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails' }
+        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)" }
+      end
+
       user       = UserRepository.new.create(name: 'L')
       repository = AvatarRepository.new
       avatar     = repository.create(user_id: user.id)
 
-      exception = -> { repository.update(avatar.id, user_id: 999_999_999) }.must_raise(Hanami::Model::ForeignKeyConstraintViolationError)
-      message   = case Database.engine
-                  when :sqlite
-                    'SQLite3::ConstraintException: FOREIGN KEY constraint failed'
-                  when :postgresql
-                    'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"'
-                  when :mysql
-                    'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails'
-                  end
-
+      exception = -> { repository.update(avatar.id, user_id: 999_999_999) }.must_raise(error)
       exception.message.must_include message
     end
 
     # For MySQL [...] The CHECK clause is parsed but ignored by all storage engines.
     # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
-    unless Database.engine?(:mysql)
+    unless_platform(db: :mysql) do
       it 'raises error when "check" constraint is violated' do
+        error = Platform.match do
+          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
+          default                              { Hanami::Model::CheckConstraintViolationError }
+        end
+
+        message = Platform.match do
+          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
+          engine(:jruby).db(:sqlite)  { 'Java::JavaSql::SQLException: CHECK constraint failed: users' }
+
+          engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
+          engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "users_age_check"' }
+        end
+
         repository = UserRepository.new
         user       = repository.create(name: 'L')
 
-        exception = -> { repository.update(user.id, age: 17) }.must_raise(Hanami::Model::CheckConstraintViolationError)
-        message   = case Database.engine
-                    when :sqlite
-                      'SQLite3::ConstraintException: CHECK constraint failed: users'
-                    when :postgresql
-                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"'
-                    end
-
+        exception = -> { repository.update(user.id, age: 17) }.must_raise(error)
         exception.message.must_include message
       end
 
       it 'raises error when constraint is violated' do
+        error = Platform.match do
+          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
+          default                              { Hanami::Model::CheckConstraintViolationError }
+        end
+
+        message = Platform.match do
+          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
+          engine(:jruby).db(:sqlite)  { 'Java::JavaSql::SQLException: CHECK constraint failed: comments_count_constraint' }
+
+          engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
+          engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "comments_count_constraint"' }
+        end
+
         repository = UserRepository.new
         user       = repository.create(name: 'L')
 
-        exception = -> { repository.update(user.id, comments_count: -2) }.must_raise(Hanami::Model::CheckConstraintViolationError)
-        message   = case Database.engine
-                    when :sqlite
-                      'SQLite3::ConstraintException: CHECK constraint failed: comments_count_constraint'
-                    when :postgresql
-                      'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"'
-                    end
-
+        exception = -> { repository.update(user.id, comments_count: -2) }.must_raise(error)
         exception.message.must_include message
       end
     end
@@ -363,7 +424,7 @@ describe 'Repository (base)' do
     end
   end
 
-  if Database.engine?(:postgresql)
+  with_platform(db: :postgresql) do
     describe 'PostgreSQL' do
       it 'finds record by primary key (UUID)' do
         repository = SourceFileRepository.new

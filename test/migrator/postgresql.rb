@@ -57,8 +57,13 @@ describe 'PostgreSQL Database migrations' do
         end
 
         it 'raises MigrationError on create' do
+          message = Platform.match do
+            os(:macos).engine(:jruby) { 'Unknown error - createdb' }
+            default                   { 'No such file or directory - createdb' }
+          end
+
           exception = -> { migrator.create }.must_raise Hanami::Model::MigrationError
-          exception.message.must_equal 'No such file or directory - createdb'
+          exception.message.must_equal message
         end
       end
     end

@@ -50,7 +50,7 @@ module Database
       private
 
       def jruby?
-        Platform.jruby?
+        Platform::Engine.engine?(:jruby)
       end
 
       def ci?

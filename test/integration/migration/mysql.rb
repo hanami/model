@@ -389,13 +389,14 @@ describe 'MySQL' do
       name, options = table[0]
       name.must_equal :group_id
 
-      options.fetch(:allow_null).must_equal     false
+      options.fetch(:allow_null).must_equal false
 
-      if Platform.ci?
-        options.fetch(:default).must_equal '0'
-      else
-        options.fetch(:default).must_equal nil
+      expected = Platform.match do
+        os(:linux) { '0' }
+        os(:macos) { nil }
       end
+
+      options.fetch(:default).must_equal expected
 
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'int(11)'
@@ -405,13 +406,14 @@ describe 'MySQL' do
       name, options = table[1]
       name.must_equal :position
 
-      options.fetch(:allow_null).must_equal     false
+      options.fetch(:allow_null).must_equal false
 
-      if Platform.ci?
-        options.fetch(:default).must_equal '0'
-      else
-        options.fetch(:default).must_equal nil
+      expected = Platform.match do
+        os(:linux) { '0' }
+        os(:macos) { nil }
       end
+
+      options.fetch(:default).must_equal expected
 
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'int(11)'

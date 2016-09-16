@@ -15,7 +15,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:postgresql://localhost/#{database_name}"
+          ENV['HANAMI_DATABASE_URL'] = "jdbc:postgresql://#{host}/#{database_name}"
         end
       end
 
@@ -57,7 +57,7 @@ module Database
       def export_env
         super
         ENV['HANAMI_DATABASE_TYPE']     = 'postgresql'
-        ENV['HANAMI_DATABASE_URL']      = "postgres://localhost/#{database_name}"
+        ENV['HANAMI_DATABASE_URL']      = "postgres://#{host}/#{database_name}"
         ENV['HANAMI_DATABASE_USERNAME'] = `whoami`.strip.freeze
       end
 
