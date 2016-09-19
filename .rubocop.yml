@@ -20,3 +20,5 @@ Style/FileName:
   Enabled: false
 Metrics/LineLength:
   Enabled: false
+Style/GuardClause:
+  Enabled: false

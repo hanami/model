@@ -5,7 +5,7 @@ Hanami::Model.migration do
       create_table :default_values do
         column :a, Integer,    default: 23
         column :b, String,     default: 'Hanami'
-        column :c, Fixnum,     default: -1
+        column :c, Fixnum,     default: -1 # rubocop:disable Lint/UnifiedInteger
         column :d, :Bignum,    default: 0
         column :e, Float,      default: 3.14
         column :f, BigDecimal, default: 1.0
@@ -20,7 +20,7 @@ Hanami::Model.migration do
       create_table :default_values do
         column :a, Integer,    default: 23
         column :b, String,     default: 'Hanami'
-        column :c, Fixnum,     default: -1
+        column :c, Fixnum,     default: -1 # rubocop:disable Lint/UnifiedInteger
         column :d, :Bignum,    default: 0
         column :e, Float,      default: 3.14
         column :f, BigDecimal, default: 1.0
@@ -35,7 +35,7 @@ Hanami::Model.migration do
       create_table :default_values do
         column :a, Integer,    default: 23
         column :b, String,     default: 'Hanami'
-        column :c, Fixnum,     default: -1
+        column :c, Fixnum,     default: -1 # rubocop:disable Lint/UnifiedInteger
         column :d, :Bignum,    default: 0
         column :e, Float,      default: 3.14
         column :f, BigDecimal, default: 1.0

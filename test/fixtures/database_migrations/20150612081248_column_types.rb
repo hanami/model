@@ -20,7 +20,7 @@ Hanami::Model.migration do
         column :file1, File
         column :file2, 'blob'
 
-        column :number1, Fixnum
+        column :number1, Fixnum # rubocop:disable Lint/UnifiedInteger
         column :number2, :Bignum
         column :number3, Float
         column :number4, BigDecimal
@@ -68,7 +68,7 @@ Hanami::Model.migration do
         column :file1, File
         column :file2, 'bytea'
 
-        column :number1, Fixnum
+        column :number1, Fixnum # rubocop:disable Lint/UnifiedInteger
         column :number2, :Bignum
         column :number3, Float
         column :number4, BigDecimal
@@ -125,7 +125,7 @@ Hanami::Model.migration do
         column :file1, File
         column :file2, 'blob'
 
-        column :number1, Fixnum
+        column :number1, Fixnum # rubocop:disable Lint/UnifiedInteger
         column :number2, :Bignum
         column :number3, Float
         column :number4, BigDecimal
