@@ -2,6 +2,7 @@ require 'rom-sql'
 require 'hanami/utils'
 
 module Hanami
+  # Hanami::Model migrations
   module Model
     require 'hanami/model/error'
     require 'hanami/model/association'
@@ -48,13 +49,90 @@ module Hanami
       Migration.new(configuration.gateways[:default], &blk)
     end
 
+    # SQL adapter
+    #
+    # @since x.x.x
     module Sql
+      # Returns a SQL fragment that references a database function by the given name
+      # This is useful for database migrations
+      #
+      # @param name [String,Symbol] the function name
+      # @return [String] the SQL fragment
+      #
+      # @since x.x.x
+      #
+      # @example
+      #   Hanami::Model.migration do
+      #     up do
+      #       execute 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'
+      #
+      #       create_table :source_files do
+      #         column :id, 'uuid', primary_key: true, default: Hanami::Model::Sql.function(:uuid_generate_v4)
+      #         # ...
+      #       end
+      #     end
+      #
+      #     down do
+      #       drop_table :source_files
+      #       execute 'DROP EXTENSION "uuid-ossp"'
+      #     end
+      #   end
       def self.function(name)
         Sequel.function(name)
       end
 
+      # Returns a literal SQL fragment for the given SQL fragment.
+      # This is useful for database migrations
+      #
+      # @param string [String] the SQL fragment
+      # @return [String] the literal SQL fragment
+      #
+      # @since x.x.x
+      #
+      # @example
+      #   Hanami::Model.migration do
+      #     up do
+      #       execute %{
+      #         CREATE TYPE inventory_item AS (
+      #           name            text,
+      #           supplier_id     integer,
+      #           price           numeric
+      #         );
+      #       }
+      #
+      #       create_table :items do
+      #         column :item, 'inventory_item', default: Hanami::Model::Sql.literal("ROW('fuzzy dice', 42, 1.99)")
+      #         # ...
+      #       end
+      #     end
+      #
+      #     down do
+      #       drop_table :itmes
+      #       execute 'DROP TYPE inventory_item'
+      #     end
+      #   end
       def self.literal(string)
         Sequel.lit(string)
+      end
+
+      # Returns SQL fragment for ascending order for the given column
+      #
+      # @param column [Symbol] the column name
+      # @return [String] the SQL fragment
+      #
+      # @since x.x.x
+      def self.asc(column)
+        Sequel.asc(column)
+      end
+
+      # Returns SQL fragment for descending order for the given column
+      #
+      # @param column [Symbol] the column name
+      # @return [String] the SQL fragment
+      #
+      # @since x.x.x
+      def self.desc(column)
+        Sequel.desc(column)
       end
     end
 
@@ -65,9 +143,7 @@ module Hanami
     Error.register(ROM::SQL::CheckConstraintError,      CheckConstraintViolationError)
     Error.register(ROM::SQL::ForeignKeyConstraintError, ForeignKeyConstraintViolationError)
 
-    if Utils.jruby?
-      Error.register(Java::JavaSql::SQLException, DatabaseError)
-    end
+    Error.register(Java::JavaSql::SQLException, DatabaseError) if Utils.jruby?
   end
 end
 

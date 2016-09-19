@@ -181,7 +181,7 @@ describe 'MySQL Database migrations' do
 
     describe 'apply' do
       let(:migrations) { target_migrations }
-      let(:schema)     { root.join("schema-#{random}.sql") }
+      let(:schema) { root.join("schema-#{random}.sql") }
 
       before do
         prepare_migrations_directory
@@ -208,52 +208,52 @@ describe 'MySQL Database migrations' do
         actual.must_include %(CREATE TABLE `reviews`)
         actual.must_include %(`id` int\(11\) NOT NULL AUTO_INCREMENT,)
 
-          actual.must_include %(`title` varchar(255))
+        actual.must_include %(`title` varchar(255))
 
-          actual.must_include %(`rating` int\(11\) DEFAULT '0',)
-          actual.must_include %(PRIMARY KEY \(`id`\))
+        actual.must_include %(`rating` int\(11\) DEFAULT '0',)
+        actual.must_include %(PRIMARY KEY \(`id`\))
 
-          actual.must_include %(DROP TABLE IF EXISTS `schema_migrations`;)
+        actual.must_include %(DROP TABLE IF EXISTS `schema_migrations`;)
 
-          actual.must_include %(CREATE TABLE `schema_migrations` \()
+        actual.must_include %(CREATE TABLE `schema_migrations` \()
 
-          actual.must_include %(`filename` varchar(255))
-          actual.must_include %(PRIMARY KEY (`filename`))
+        actual.must_include %(`filename` varchar(255))
+        actual.must_include %(PRIMARY KEY (`filename`))
 
-          actual.must_include %(LOCK TABLES `schema_migrations` WRITE;)
+        actual.must_include %(LOCK TABLES `schema_migrations` WRITE;)
 
-          # actual.must_include %(INSERT INTO `schema_migrations` VALUES \('20150610133853_create_books.rb'\),\('20150610141017_add_price_to_books.rb'\);)
+        # actual.must_include %(INSERT INTO `schema_migrations` VALUES \('20150610133853_create_books.rb'\),\('20150610141017_add_price_to_books.rb'\);)
 
-          actual.must_include %(UNLOCK TABLES;)
-        end
-
-        it 'deletes all the migrations' do
-          target_migrations.children.must_be :empty?
-        end
+        actual.must_include %(UNLOCK TABLES;)
       end
 
-      describe 'prepare' do
-        let(:migrations) { target_migrations }
-        let(:schema)     { root.join("schema-#{random}.sql") }
+      it 'deletes all the migrations' do
+        target_migrations.children.must_be :empty?
+      end
+    end
 
-        before do
-          prepare_migrations_directory
-          migrator.create
-          migrator.migrate
-        end
+    describe 'prepare' do
+      let(:migrations) { target_migrations }
+      let(:schema)     { root.join("schema-#{random}.sql") }
 
-        after do
-          clean_migrations
-        end
+      before do
+        prepare_migrations_directory
+        migrator.create
+        migrator.migrate
+      end
 
-        it 'creates database, loads schema and migrate' do
-          # Simulate already existing schema.sql, without existing database and pending migrations
-          connection = Sequel.connect(url)
-          Hanami::Model::Migrator::Adapter.for(configuration).dump
+      after do
+        clean_migrations
+      end
 
-          migration = target_migrations.join('20160831095616_create_abuses.rb')
-          File.open(migration, 'w+') do |f|
-            f.write <<-RUBY
+      it 'creates database, loads schema and migrate' do
+        # Simulate already existing schema.sql, without existing database and pending migrations
+        connection = Sequel.connect(url)
+        Hanami::Model::Migrator::Adapter.for(configuration).dump
+
+        migration = target_migrations.join('20160831095616_create_abuses.rb')
+        File.open(migration, 'w+') do |f|
+          f.write <<-RUBY
 Hanami::Model.migration do
   change do
     create_table :abuses do
@@ -262,60 +262,60 @@ Hanami::Model.migration do
   end
 end
 RUBY
-          end
-
-          migrator.prepare
-
-          tables = connection.tables
-          tables.must_include(:schema_migrations)
-          tables.must_include(:reviews)
-          tables.must_include(:abuses)
-
-          FileUtils.rm_f migration
         end
 
-        it "works even if schema doesn't exist" do
-          # Simulate no database, no schema and pending migrations
-          FileUtils.rm_f schema
+        migrator.prepare
 
-          migrator.prepare
+        tables = connection.tables
+        tables.must_include(:schema_migrations)
+        tables.must_include(:reviews)
+        tables.must_include(:abuses)
 
-          connection = Sequel.connect(url)
-          connection.tables.must_include(:schema_migrations)
-          connection.tables.must_include(:reviews)
-        end
+        FileUtils.rm_f migration
+      end
 
-        it 'drops the database and recreates it' do
-          migrator.prepare
+      it "works even if schema doesn't exist" do
+        # Simulate no database, no schema and pending migrations
+        FileUtils.rm_f schema
 
-          connection = Sequel.connect(url)
-          connection.tables.must_include(:schema_migrations)
-          connection.tables.must_include(:reviews)
+        migrator.prepare
+
+        connection = Sequel.connect(url)
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:reviews)
+      end
+
+      it 'drops the database and recreates it' do
+        migrator.prepare
+
+        connection = Sequel.connect(url)
+        connection.tables.must_include(:schema_migrations)
+        connection.tables.must_include(:reviews)
+      end
+    end
+
+    describe 'version' do
+      before do
+        migrator.create
+      end
+
+      describe 'when no migrations were ran' do
+        it 'returns nil' do
+          migrator.version.must_be_nil
         end
       end
 
-      describe 'version' do
+      describe 'with migrations' do
         before do
-          migrator.create
+          migrator.migrate
         end
 
-        describe 'when no migrations were ran' do
-          it 'returns nil' do
-            migrator.version.must_be_nil
-          end
-        end
-
-        describe 'with migrations' do
-          before do
-            migrator.migrate
-          end
-
-          it 'returns current database version' do
-            migrator.version.must_equal '20160831090612' # see test/fixtures/migrations
-          end
+        it 'returns current database version' do
+          migrator.version.must_equal '20160831090612' # see test/fixtures/migrations
         end
       end
     end
+  end
 
   private
 

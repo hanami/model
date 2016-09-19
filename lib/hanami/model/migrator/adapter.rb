@@ -25,7 +25,7 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def self.for(configuration)
+        def self.for(configuration) # rubocop:disable Metrics/MethodLength
           connection = connection_for(configuration)
 
           case connection.database_type
@@ -46,6 +46,8 @@ module Hanami
         class << self
           private
 
+          # @since x.x.x
+          # @api private
           def connection_for(configuration)
             Sequel.connect(
               configuration.url
@@ -72,7 +74,7 @@ module Hanami
         #
         # @see Hanami::Model::Migrator.create
         def create
-          raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support create.")
+          raise MigrationError.new("Current adapter (#{connection.database_type}) doesn't support create.")
         end
 
         # Drop database.
@@ -83,7 +85,7 @@ module Hanami
         #
         # @see Hanami::Model::Migrator.drop
         def drop
-          raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support drop.")
+          raise MigrationError.new("Current adapter (#{connection.database_type}) doesn't support drop.")
         end
 
         def migrate(migrations, version)
@@ -102,7 +104,7 @@ module Hanami
         #
         # @see Hanami::Model::Migrator.prepare
         def load
-          raise MigrationError.new("Current adapter (#{ connection.database_type }) doesn't support load.")
+          raise MigrationError.new("Current adapter (#{connection.database_type}) doesn't support load.")
         end
 
         # Database version.
@@ -138,7 +140,6 @@ module Hanami
         #
         # @since 0.5.0
         # @api private
-        #
         def new_connection(global: false)
           uri = global ? connection.global_uri : connection.uri
 

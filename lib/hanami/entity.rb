@@ -21,16 +21,7 @@ module Hanami
   #
   #   class Person
   #     include Hanami::Entity
-  #     attributes :name, :age
   #   end
-  #
-  # When a class includes `Hanami::Entity` it receives the following interface:
-  #
-  #   * #id
-  #   * #id=
-  #   * #initialize(attributes = {})
-  #
-  # `Hanami::Entity` also provides the `.attributes=` for defining attribute accessors for the given names.
   #
   # If we expand the code above in **pure Ruby**, it would be:
   #
@@ -75,9 +66,9 @@ module Hanami
     end
 
     def to_h
-      @attributes.dup
+      @attributes.dup.to_h
     end
-    alias_method :to_hash, :to_h
+    alias to_hash to_h
 
     private
 

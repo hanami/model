@@ -28,11 +28,11 @@ module Hanami
           set_environment_variables
 
           call_db_command('createdb') do |error_message|
-            message = if error_message.match(/already exists/)
-              "createdb: database creation failed. There is 1 other session using the database."
-            else
-              error_message
-            end
+            message = if error_message.match(/already exists/) # rubocop:disable Performance/RedundantMatch
+                        'createdb: database creation failed. There is 1 other session using the database.'
+                      else
+                        error_message
+                      end
 
             raise MigrationError.new(message)
           end
@@ -44,11 +44,11 @@ module Hanami
           set_environment_variables
 
           call_db_command('dropdb') do |error_message|
-            message = if error_message.match(/does not exist/)
-              "Cannot find database: #{ database }"
-            else
-              error_message
-            end
+            message = if error_message.match(/does not exist/) # rubocop:disable Performance/RedundantMatch
+                        "Cannot find database: #{database}"
+                      else
+                        error_message
+                      end
 
             raise MigrationError.new(message)
           end
@@ -83,19 +83,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "pg_dump -s -x -O -T #{ migrations_table } -f #{ escape(schema) } #{ database }"
+          system "pg_dump -s -x -O -T #{migrations_table} -f #{escape(schema)} #{database}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "psql -X -q -f #{ escape(schema) } #{ database }" if schema.exist?
+          system "psql -X -q -f #{escape(schema)} #{database}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "pg_dump -t #{ migrations_table } #{ database } >> #{ escape(schema) }"
+          system "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}"
         end
 
         # @since 0.5.1
@@ -104,10 +104,8 @@ module Hanami
           require 'open3'
 
           begin
-            Open3.popen3(command, database) do |stdin, stdout, stderr, wait_thr|
-              unless wait_thr.value.success? # wait_thr.value is the exit status
-                yield stderr.read
-              end
+            Open3.popen3(command, database) do |_stdin, _stdout, stderr, wait_thr|
+              yield stderr.read unless wait_thr.value.success? # wait_thr.value is the exit status
             end
           rescue SystemCallError => e
             yield e.message

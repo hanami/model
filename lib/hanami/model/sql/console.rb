@@ -3,18 +3,26 @@ require 'uri'
 module Hanami
   module Model
     module Sql
+      # SQL console
+      #
+      # @since x.x.x
+      # @api private
       class Console
         extend Forwardable
 
         def_delegator :console, :connection_string
 
+        # @since x.x.x
+        # @api private
         def initialize(uri)
           @uri = URI.parse(uri)
         end
 
         private
 
-        def console
+        # @since x.x.x
+        # @api private
+        def console # rubocop:disable Metrics/MethodLength
           case @uri.scheme
           when 'sqlite'
             require 'hanami/model/sql/consoles/sqlite'

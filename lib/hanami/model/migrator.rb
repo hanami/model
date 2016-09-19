@@ -36,7 +36,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter :sql, 'postgres://localhost/foo'
       #   end
       #
       #   Hanami::Model::Migrator.create # Creates `foo' database
@@ -66,7 +66,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter :sql, 'postgres://localhost/foo'
       #   end
       #
       #   Hanami::Model::Migrator.drop # Drops `foo' database
@@ -96,7 +96,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #   end
       #
@@ -109,7 +109,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #   end
       #
@@ -154,7 +154,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #     schema     'db/schema.sql'
       #   end
@@ -185,7 +185,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #   end
       #
@@ -197,7 +197,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #     schema     'db/schema.sql'
       #   end

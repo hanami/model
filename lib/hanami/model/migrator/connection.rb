@@ -52,7 +52,7 @@ module Hanami
         #
         # @example
         #   connection.database_type
-        #   # => 'postgres'
+        #     # => 'postgres'
         #
         # @since 0.5.0
         # @api private

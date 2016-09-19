@@ -70,9 +70,22 @@ describe 'Repository (base)' do
   end
 
   describe '#create' do
-    it 'creates record' do
+    it 'creates record from data' do
       repository = UserRepository.new
       user = repository.create(name: 'L')
+
+      user.must_be_instance_of(User)
+      user.id.wont_be_nil
+      user.name.must_equal 'L'
+    end
+
+    it 'creates record from entity' do
+      entity     = User.new(name: 'L')
+      repository = UserRepository.new
+      user = repository.create(entity)
+
+      # It doesn't mutate original entity
+      entity.id.must_be_nil
 
       user.must_be_instance_of(User)
       user.id.wont_be_nil
@@ -174,7 +187,7 @@ describe 'Repository (base)' do
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
 
         engine(:ruby).db(:mysql)  { 'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails' }
-        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)" }
+        engine(:jruby).db(:mysql) { 'Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)' }
       end
 
       exception = -> { AvatarRepository.new.create(user_id: 999_999_999) }.must_raise(error)
@@ -223,10 +236,24 @@ describe 'Repository (base)' do
   end
 
   describe '#update' do
-    it 'updates record' do
+    it 'updates record from data' do
       repository = UserRepository.new
       user    = repository.create(name: 'L')
       updated = repository.update(user.id, name: 'Luca')
+
+      updated.must_be_instance_of(User)
+      updated.id.must_equal   user.id
+      updated.name.must_equal 'Luca'
+    end
+
+    it 'updates record from entity' do
+      entity     = User.new(name: 'Luca')
+      repository = UserRepository.new
+      user       = repository.create(name: 'L')
+      updated    = repository.update(user.id, entity)
+
+      # It doesn't mutate original entity
+      entity.id.must_be_nil
 
       updated.must_be_instance_of(User)
       updated.id.must_equal   user.id
@@ -333,7 +360,7 @@ describe 'Repository (base)' do
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
 
         engine(:ruby).db(:mysql)  { 'Mysql2::Error: Cannot add or update a child row: a foreign key constraint fails' }
-        engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)" }
+        engine(:jruby).db(:mysql) { 'Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)' }
       end
 
       user       = UserRepository.new.create(name: 'L')

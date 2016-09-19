@@ -4,6 +4,8 @@ require 'hanami/repository'
 
 module Hanami
   # Hanami persistence
+  #
+  # @since 0.1.0
   module Model
     require 'hanami/model/version'
     require 'hanami/model/error'
@@ -12,28 +14,53 @@ module Hanami
     require 'hanami/model/mapping'
     require 'hanami/model/plugins'
 
-    module_function
-
     class << self
+      # @since x.x.x
+      # @api private
       attr_reader :config
+
+      # @since x.x.x
+      # @api private
       attr_reader :loaded
+
+      # @since x.x.x
+      # @api private
       alias loaded? loaded
     end
 
-    def configure(&block)
+    # Configure the framework
+    #
+    # @since 0.1.0
+    #
+    # @example
+    #   require 'hanami/model'
+    #
+    #   Hanami::Model.configure do
+    #     adapter :sql, ENV['DATABASE_URL']
+    #
+    #     migrations 'db/migrations'
+    #     schema     'db/schema.sql'
+    #   end
+    def self.configure(&block)
       @config = Configurator.build(&block)
     end
 
-    def configuration
+    # Current configuration
+    #
+    # @since 0.1.0
+    def self.configuration
       @configuration ||= Configuration.new(config)
     end
 
-    def container
+    # @since x.x.x
+    # @api private
+    def self.container
       raise 'Not loaded' unless loaded?
       @container
     end
 
-    def load!(&blk)
+    # @since 0.1.0
+    def self.load!(&blk) # rubocop:disable Metrics/AbcSize
       configuration.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
       configuration.instance_eval(&blk)                            if     block_given?
       configuration.repositories.each(&:load!)

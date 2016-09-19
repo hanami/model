@@ -1,12 +1,22 @@
-Metrics/LineLength:
-  Enabled: false
-Style/RaiseArgs:
-  Enabled: false
-Style/MethodMissing:
-  Enabled: false
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  ExtraDetails: false
 Style/PredicateName:
   Enabled: false
 Lint/HandleExceptions:
   Enabled: false
 Lint/IneffectiveAccessModifier:
+  Enabled: false
+Lint/AssignmentInCondition:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/MethodMissing:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+Metrics/LineLength:
   Enabled: false
