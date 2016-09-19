@@ -21,5 +21,6 @@ platforms :jruby do
   gem 'jdbc-mysql',    require: false
 end
 
-gem 'simplecov', require: false
-gem 'coveralls', require: false
+gem 'simplecov',           require: false
+gem 'coveralls',           require: false
+gem 'rubocop',  '~> 0.43', require: false
