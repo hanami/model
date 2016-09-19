@@ -29,6 +29,14 @@ A persistence layer for Hanami
 - [Luca Guidi] Ensure booleans to be correctly dumped in database
 - [Luca Guidi] Ensure to respect default schema values
 
+## v0.6.2 - 2016-06-01
+### Changed
+- [Kjell-Magne Øierud] Ensure inherited entities to expose attributes from base class
+
+## v0.6.1 - 2016-02-05
+### Changed
+- [Hélio Costa e Silva & Pascal Betz] Mapping SQL Adapter's errors as `Hanami::Model` errors
+
 ## v0.6.1 - 2016-02-05
 ### Changed
 - [Hélio Costa e Silva & Pascal Betz] Mapping SQL Adapter's errors as `Hanami::Model` errors
