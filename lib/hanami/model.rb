@@ -43,6 +43,7 @@ module Hanami
     #   end
     def self.configure(&block)
       @config = Configurator.build(&block)
+      self
     end
 
     # Current configuration
