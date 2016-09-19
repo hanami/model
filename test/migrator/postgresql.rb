@@ -47,8 +47,10 @@ describe 'PostgreSQL Database migrations' do
       it 'raises error if database is busy' do
         Sequel.connect(url).tables
         exception = -> { migrator.create }.must_raise Hanami::Model::MigrationError
-        exception.message.must_include 'createdb: database creation failed'
-        exception.message.must_include 'There is 1 other session using the database'
+
+        exception.message.must_include 'createdb: database creation failed. If the database exists,'
+        exception.message.must_include 'then its console may be open. See this issue for more details:'
+        exception.message.must_include 'https://github.com/hanami/model/issues/250'
       end
 
       describe "when a command isn't available" do
