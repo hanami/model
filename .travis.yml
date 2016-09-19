@@ -1,7 +1,7 @@
 language: ruby
 sudo: false
 cache: bundler
-script: 'bundle exec rake rubocop test:coverage --trace'
+script: 'bundle exec rubocop && bundle exec rake test:coverage --trace'
 after_script: 'echo `env`'
 rvm:
   - 2.3.1
