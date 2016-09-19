@@ -2,8 +2,32 @@
 A persistence layer for Hanami
 
 ## v0.7.0 - (unreleased)
+### Added
+- [Luca Guidi] Experimental support for One-To-Many association (aka `has_many`)
+- [Luca Guidi] Native support for PostgreSQL types like UUID, Array, JSON(B) and Money
+- [Luca Guidi] Repositories instances can access all the relations (eg. `BookRepository` can access `users` relation via `#users`)
+- [Luca Guidi] Automapping for SQL databases
+- [Luca Guidi] Added `Hanami::Model::DatabaseError`
+
 ### Changed
-– [Luca Guidi] Drop support for Ruby 2.0 and 2.1
+- [Luca Guidi] Removed `.attributes` from entity
+- [Luca Guidi] Removed `#fetch`, `#execute` and `#transaction` from repository
+- [Luca Guidi] Removed `mapping` block from `Hanami::Model.configure`
+- [Luca Guidi] Changed `adapter` signature in `Hanami::Model.configure` (use `adapter :sql, ENV['DATABASE_URL']`)
+- [Luca Guidi] Repositories must inherit from `Hanami::Repository` instead of including it
+- [Pascal Betz] Repositories use instance level interface (eg. `BookRepository.new.find` instead of `BookRepository.find`)
+- [Luca Guidi] Repositories now work can accept hash for CRUD operations
+- [Luca Guidi] `Hanami::Repository#create` now accepts: and data (or entity)
+- [Luca Guidi] `Hanami::Repository#update` now accepts two arguments: primary key (`id`) and data (or entity)
+- [Luca Guidi] `Hanami::Repository#delete` now accepts: primary key (`id`)
+- [Luca Guidi] Drop `Hanami::Model::NonPersistedEntityError`, `Hanami::Model::InvalidMappingError`, `Hanami::Model::InvalidCommandError`, `Hanami::Model::InvalidQueryError`
+- [Luca Guidi] Official support for Ruby 2.3 and JRuby 9.0.5.0
+- [Luca Guidi] Drop support for Ruby 2.0, 2.1, 2.2, and JRuby 9.0.0.0
+- [Luca Guidi] Drop support for `mysql` gem in favor of `mysql2`
+
+### Fixed
+- [Luca Guidi] Ensure booleans to be correctly dumped in database
+- [Luca Guidi] Ensure to respect default schema values
 
 ## v0.6.1 - 2016-02-05
 ### Changed
