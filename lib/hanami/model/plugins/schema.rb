@@ -1,21 +1,21 @@
 module Hanami
   module Model
     module Plugins
-      module Mapping
-        class InputWithMapping < WrappingInput
+      module Schema
+        class InputWithSchema < WrappingInput
           def initialize(relation, input)
             super
-            @mapping = Hanami::Model.configuration.mappings[relation.name.to_sym]
+            @schema = relation.schema_hash
           end
 
           def [](value)
-            @mapping.process(@input[value])
+            @schema[value]
           end
         end
 
         module ClassMethods
           def build(relation, options = {})
-            input(InputWithMapping.new(relation, input))
+            input(InputWithSchema.new(relation, input))
             super(relation, options.merge(input: input))
           end
         end

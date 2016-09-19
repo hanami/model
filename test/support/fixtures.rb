@@ -23,23 +23,18 @@ class SourceFile
 end
 
 class UserRepository < Hanami::Repository
-  commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: :entity, use: [:mapping, :timestamps]
-
   def by_name(name)
     users.where(name: name).as(:entity)
   end
 end
 
 class AvatarRepository < Hanami::Repository
-  commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: :entity, use: [:mapping, :timestamps]
 end
 
 class AuthorRepository < Hanami::Repository
   associations do
     has_many :books
   end
-
-  commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: :entity, use: [:mapping, :timestamps]
 
   def find_with_books(id)
     aggregate(:books).where(authors__id: id).as(Author).one
@@ -92,8 +87,6 @@ class BookRepository < Hanami::Repository
   associations do
     belongs_to :author
   end
-
-  commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: :entity, use: [:mapping, :timestamps]
 end
 
 class OperatorRepository < Hanami::Repository
@@ -103,12 +96,9 @@ class OperatorRepository < Hanami::Repository
     attribute :id,   from: :operator_id
     attribute :name, from: :s_name
   end
-
-  commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: :entity, use: [:mapping, :timestamps]
 end
 
 class SourceFileRepository < Hanami::Repository
-  commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: :entity, use: [:timestamps, :mapping]
 end
 
 Hanami::Model.load!

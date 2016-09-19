@@ -8,6 +8,9 @@ require 'hanami/utils/class_attribute'
 
 module Hanami
   class Repository < ROM::Repository::Root
+    MAPPER_NAME = :entity
+    COMMAND_PLUGINS = [:mapping, :timestamps, :schema].freeze
+
     class << self
       def configuration
         Hanami::Model.configuration
@@ -58,7 +61,7 @@ module Hanami
 
         define_mapping do
           model       Utils::Class.load!(e)
-          register_as :entity
+          register_as MAPPER_NAME
           instance_exec(&m) unless m.nil?
         end
 
@@ -76,6 +79,7 @@ module Hanami
         class_attribute :relation
         self.relation = Model::RelationName.new(name)
 
+        commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: MAPPER_NAME, use: COMMAND_PLUGINS
         prepend Commands
       end
 

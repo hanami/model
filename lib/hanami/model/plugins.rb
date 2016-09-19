@@ -8,6 +8,7 @@ module Hanami
       end
 
       require 'hanami/model/plugins/mapping'
+      require 'hanami/model/plugins/schema'
       require 'hanami/model/plugins/timestamps'
     end
   end

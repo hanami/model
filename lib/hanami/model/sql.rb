@@ -76,6 +76,7 @@ Sequel.default_timezone = :utc
 ROM.plugins do
   adapter :sql do
     register :mapping,    Hanami::Model::Plugins::Mapping,    type: :command
+    register :schema,     Hanami::Model::Plugins::Schema,     type: :command
     register :timestamps, Hanami::Model::Plugins::Timestamps, type: :command
   end
 end
