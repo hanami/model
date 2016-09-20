@@ -1,3 +1,4 @@
+require 'rom-sql'
 require 'hanami/model/associations/has_many'
 
 module Hanami
@@ -11,7 +12,7 @@ module Hanami
       #
       # @since x.x.x
       # @api private
-      def self.new(repository, target, subject)
+      def self.build(repository, target, subject)
         case repository.root.associations[target]
         when ROM::SQL::Association::OneToMany then Associations::HasMany
         else

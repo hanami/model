@@ -421,7 +421,7 @@ module Hanami
     # @since x.x.x
     # @api private
     def assoc(target, subject)
-      Hanami::Model::Association.new(self, target, subject)
+      Hanami::Model::Association.build(self, target, subject)
     end
   end
 end
