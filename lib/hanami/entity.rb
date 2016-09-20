@@ -56,8 +56,12 @@ module Hanami
       freeze
     end
 
+    def id
+      attributes.fetch(:id, nil)
+    end
+
     def method_missing(m)
-      attributes.fetch(m, nil)
+      attributes.fetch(m) { super }
     end
 
     def ==(other)
@@ -66,12 +70,16 @@ module Hanami
     end
 
     def to_h
-      @attributes.dup.to_h
+      attributes.deep_dup.to_h
     end
     alias to_hash to_h
 
     private
 
     attr_reader :attributes
+
+    def respond_to_missing?(name, _include_all)
+      attributes.key?(name)
+    end
   end
 end

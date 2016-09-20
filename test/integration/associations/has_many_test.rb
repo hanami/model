@@ -6,7 +6,7 @@ describe 'Associations (has_many)' do
     author = repository.create(name: 'L')
     found  = repository.find(author.id)
 
-    found.books.must_be_nil
+    found.wont_respond_to(:books)
   end
 
   it 'preloads associated records' do
