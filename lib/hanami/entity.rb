@@ -51,33 +51,81 @@ module Hanami
   #
   # @see Hanami::Repository
   module Entity
+    # Instantiate a new entity
+    #
+    # @param attributes [Hash,#to_h,NilClass] data to initialize the entity
+    #
+    # @return [Hanami::Entity] the new entity instance
+    #
+    # @since 0.1.0
     def initialize(attributes = nil)
       @attributes = Utils::Hash.new((attributes || {}).dup).symbolize!
       freeze
     end
 
+    # Entity ID
+    #
+    # @return [Object,NilClass] the ID, if present
+    #
+    # @since x.x.x
     def id
       attributes.fetch(:id, nil)
     end
 
+    # Handle dynamic accessors
+    #
+    # If internal attributes set has the requested key, it returns the linked
+    # value, otherwise it raises a <tt>NoMethodError</tt>
+    #
+    # @since x.x.x
     def method_missing(m)
       attributes.fetch(m) { super }
     end
 
+    # Implement generic equality for entities
+    #
+    # Two entities are equal if they are instances of the same class and they
+    # have the same id.
+    #
+    # @param other [Object] the object of comparison
+    #
+    # @return [FalseClass,TrueClass] the result of the check
+    #
+    # @since 0.1.0
     def ==(other)
       self.class == other.class &&
         id == other.id
     end
 
+    # Implement predictable hashing for hash equality
+    #
+    # @return [Integer] the object hash
+    #
+    # @since x.x.x
+    def hash
+      [self.class, id].hash
+    end
+
+    # Serialize entity to a Hash
+    #
+    # @return [Hash] the result of serialization
+    #
+    # @since 0.1.0
     def to_h
       attributes.deep_dup.to_h
     end
+
+    # @since x.x.x
     alias to_hash to_h
 
     private
 
+    # @since 0.1.0
+    # @api private
     attr_reader :attributes
 
+    # @since x.x.x
+    # @api private
     def respond_to_missing?(name, _include_all)
       attributes.key?(name)
     end

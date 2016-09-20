@@ -112,6 +112,36 @@ describe Hanami::Entity do
     end
   end
 
+  describe '#hash' do
+    it 'returns predictable object hashing' do
+      entity1 = described_class.new(id: 1)
+      entity2 = described_class.new(id: 1)
+
+      assert entity1.hash == entity2.hash, "Expected #{entity1.hash} to equal #{entity2.hash}"
+    end
+
+    it 'returns different object hash for same class but different id' do
+      entity1 = described_class.new(id: 1)
+      entity2 = described_class.new(id: 1000)
+
+      refute entity1.hash == entity2.hash, "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
+    end
+
+    it 'returns different object hash for different class but same id' do
+      entity1 = described_class.new(id: 1)
+      entity2 = Class.new { include Hanami::Entity }.new(id: 1)
+
+      refute entity1.hash == entity2.hash, "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
+    end
+
+    it 'returns different object hash for different class and different id' do
+      entity1 = described_class.new(id: 1)
+      entity2 = Class.new { include Hanami::Entity }.new(id: 2)
+
+      refute entity1.hash == entity2.hash, "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
+    end
+  end
+
   describe '#to_h' do
     it 'serializes attributes into hash' do
       entity = described_class.new(foo: 1, 'bar' => { 'baz' => 2 })
