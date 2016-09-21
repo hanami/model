@@ -263,7 +263,7 @@ module Hanami
         prepend Commands
       end
 
-      configuration.repositories << klass
+      Hanami::Model.repositories << klass
     end
 
     # Extend commands from ROM::Repository with error management

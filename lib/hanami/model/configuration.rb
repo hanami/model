@@ -11,10 +11,6 @@ module Hanami
     class Configuration < ROM::Configuration
       # @since x.x.x
       # @api private
-      attr_reader :repositories
-
-      # @since x.x.x
-      # @api private
       attr_reader :mappings
 
       # @since 0.2.0
@@ -23,7 +19,6 @@ module Hanami
         super(configurator.backend, configurator.url)
         @migrations   = configurator._migrations
         @schema       = configurator._schema
-        @repositories = []
         @mappings     = {}
       end
 

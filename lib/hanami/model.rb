@@ -1,4 +1,5 @@
 require 'rom'
+require 'concurrent'
 require 'hanami/entity'
 require 'hanami/repository'
 
@@ -13,6 +14,10 @@ module Hanami
     require 'hanami/model/configurator'
     require 'hanami/model/mapping'
     require 'hanami/model/plugins'
+
+    # @api private
+    # @since x.x.x
+    @__repositories__ = Concurrent::Array.new
 
     class << self
       # @since x.x.x
@@ -55,6 +60,12 @@ module Hanami
 
     # @since x.x.x
     # @api private
+    def self.repositories
+      @__repositories__
+    end
+
+    # @since x.x.x
+    # @api private
     def self.container
       raise 'Not loaded' unless loaded?
       @container
@@ -64,7 +75,7 @@ module Hanami
     def self.load!(&blk) # rubocop:disable Metrics/AbcSize
       configuration.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
       configuration.instance_eval(&blk)                            if     block_given?
-      configuration.repositories.each(&:load!)
+      repositories.each(&:load!)
 
       @container = ROM.container(configuration)
       @loaded    = true
