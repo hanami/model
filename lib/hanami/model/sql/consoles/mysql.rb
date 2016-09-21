@@ -1,4 +1,4 @@
-require 'shellwords'
+require_relative 'abstract'
 
 module Hanami
   module Model
@@ -8,26 +8,24 @@ module Hanami
         #
         # @since x.x.x
         # @api private
-        class Mysql
+        class Mysql < Abstract
           # @since x.x.x
           # @api private
-          def initialize(uri)
-            @uri = uri
-          end
+          COMMAND = 'mysql'.freeze
 
           # @since x.x.x
           # @api private
           def connection_string
-            str = 'mysql'
-            str << host
-            str << database
-            str << port if port
-            str << username if username
-            str << password if password
-            str
+            concat(command, host, database, port, username, password)
           end
 
           private
+
+          # @since x.x.x
+          # @api private
+          def command
+            COMMAND
+          end
 
           # @since x.x.x
           # @api private
@@ -38,25 +36,25 @@ module Hanami
           # @since x.x.x
           # @api private
           def database
-            " -D #{@uri.path.sub(/^\//, '')}"
+            " -D #{database_name}"
           end
 
           # @since x.x.x
           # @api private
           def port
-            " -P #{@uri.port}" if @uri.port
+            " -P #{@uri.port}" unless @uri.port.nil?
           end
 
           # @since x.x.x
           # @api private
           def username
-            " -u #{@uri.user}" if @uri.user
+            " -u #{@uri.user}" unless @uri.user.nil?
           end
 
           # @since x.x.x
           # @api private
           def password
-            " -p #{@uri.password}" if @uri.password
+            " -p #{@uri.password}" unless @uri.password.nil?
           end
         end
       end

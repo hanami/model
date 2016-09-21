@@ -1,4 +1,4 @@
-require 'shellwords'
+require_relative 'abstract'
 
 module Hanami
   module Model
@@ -8,26 +8,29 @@ module Hanami
         #
         # @since x.x.x
         # @api private
-        class Postgresql
+        class Postgresql < Abstract
           # @since x.x.x
           # @api private
-          def initialize(uri)
-            @uri = uri
-          end
+          COMMAND = 'psql'.freeze
+
+          # @since x.x.x
+          # @api private
+          PASSWORD = 'PGPASSWORD'.freeze
 
           # @since x.x.x
           # @api private
           def connection_string
             configure_password
-            str = 'psql'
-            str << host
-            str << database
-            str << port if port
-            str << username if username
-            str
+            concat(command, host, database, port, username)
           end
 
           private
+
+          # @since x.x.x
+          # @api private
+          def command
+            COMMAND
+          end
 
           # @since x.x.x
           # @api private
@@ -38,25 +41,25 @@ module Hanami
           # @since x.x.x
           # @api private
           def database
-            " -d #{@uri.path.sub(/^\//, '')}"
+            " -d #{database_name}"
           end
 
           # @since x.x.x
           # @api private
           def port
-            " -p #{@uri.port}" if @uri.port
+            " -p #{@uri.port}" unless @uri.port.nil?
           end
 
           # @since x.x.x
           # @api private
           def username
-            " -U #{@uri.user}" if @uri.user
+            " -U #{@uri.user}" unless @uri.user.nil?
           end
 
           # @since x.x.x
           # @api private
           def configure_password
-            ENV['PGPASSWORD'] = @uri.password if @uri.password
+            ENV[PASSWORD] = @uri.password unless @uri.password.nil?
           end
         end
       end
