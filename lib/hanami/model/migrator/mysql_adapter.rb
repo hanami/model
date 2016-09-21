@@ -12,11 +12,14 @@ module Hanami
 
         # @since 0.4.0
         # @api private
-        def create
+        def create # rubocop:disable Metrics/MethodLength
           new_connection(global: true).run %(CREATE DATABASE #{database};)
         rescue Sequel::DatabaseError => e
           message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
-                      'Database creation failed. There is 1 other session using the database'
+                      "Database creation failed. If the database exists, \
+                         then its console may be open. See this issue for more details:\
+                         https://github.com/hanami/model/issues/250\
+                      "
                     else
                       e.message
                     end
