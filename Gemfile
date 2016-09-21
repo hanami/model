@@ -6,6 +6,8 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
+gem 'dry-types', require: false, github: 'dry-rb/dry-types' # FIXME: this is needed until they release 0.9
+
 gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils',    branch: 'master'
 gem 'rom-sql',      '~> 0.8', require: false, github: 'jodosha/rom-sql', branch: 'hanami-model-integration'
 
