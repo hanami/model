@@ -24,7 +24,7 @@ module Hanami
           # @since x.x.x
           # @api private
           def concat(*tokens)
-            tokens.compact.join
+            tokens.join
           end
         end
       end
