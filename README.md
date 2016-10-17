@@ -239,7 +239,7 @@ class UserRepository < Hanami::Repository
     attribute :age,  from: :i_age
   end
 end
-
+```
 **NOTE:** This feature should be used only when **_automapping_** fails because the naming mismatch.
 
 ### Conventions
