@@ -87,11 +87,11 @@ end
 Hanami::Model.load!
 
 user = User.new(name: 'Luca', age: 32)
-user = UserRepository.new.create(user)
+user = UserRepository.create(user)
 
 puts user.id # => 1
 
-u = UserRepository.new.find(user.id)
+u = UserRepository.find(user.id)
 u == user # => true
 ```
 
@@ -554,13 +554,13 @@ user = User.new(name: 'L')
 puts user.created_at # => nil
 puts user.updated_at # => nil
 
-user = UserRepository.new.create(user)
+user = UserRepository.create(user)
 puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
 puts user.updated_at.to_s # => "2015-05-15T10:12:20+00:00"
 
 sleep 3
 user.name = "Luca"
-user      = UserRepository.new.update(user)
+user      = UserRepository.update(user)
 puts user.created_at.to_s # => "2015-05-15T10:12:20+00:00"
 puts user.updated_at.to_s # => "2015-05-15T10:12:23+00:00"
 ```
@@ -604,17 +604,17 @@ user.age = 33
 user.changed?           # => true
 user.changed_attributes # => {:age=>33}
 
-user = UserRepository.new.create(user)
+user = UserRepository.create(user)
 user.changed? # => false
 
 user.update(name: 'Luca')
 user.changed?           # => true
 user.changed_attributes # => {:name=>"Luca"}
 
-user = UserRepository.new.update(user)
+user = UserRepository.update(user)
 user.changed? # => false
 
-result = UserRepository.new.find(user.id)
+result = UserRepository.find(user.id)
 result.changed? # => false
 ```
 
