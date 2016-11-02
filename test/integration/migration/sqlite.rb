@@ -407,7 +407,7 @@ describe 'SQLite' do
       name, options = table[0]
       name.must_equal :group_id
 
-      options.fetch(:allow_null).must_equal     true
+      options.fetch(:allow_null).must_equal     false
       options.fetch(:default).must_equal        nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
@@ -417,7 +417,7 @@ describe 'SQLite' do
       name, options = table[1]
       name.must_equal :position
 
-      options.fetch(:allow_null).must_equal     true
+      options.fetch(:allow_null).must_equal     false
       options.fetch(:default).must_equal        nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
