@@ -4,23 +4,35 @@ describe Hanami::Model::Configuration do
   before do
     database_directory = Pathname.pwd.join('tmp', 'db')
     database_directory.join('migrations').mkpath
+
     FileUtils.touch database_directory.join('schema.sql')
   end
 
   let(:subject) { Hanami::Model::Configuration.new(configurator) }
 
   let(:configurator) do
+    adapter_url = url
+
     Hanami::Model::Configurator.build do
-      adapter :sql, 'postgres://test.host/bookshelf'
+      adapter :sql, adapter_url
 
       migrations 'tmp/db/migrations'
       schema     'tmp/db/schema.sql'
     end
   end
 
+  let(:url) do
+    db = 'tmp/db/bookshelf.sqlite'
+
+    Platform.match do
+      engine(:ruby)  { "sqlite://#{db}" }
+      engine(:jruby) { "jdbc:sqlite://#{db}" }
+    end
+  end
+
   describe '#url' do
     it 'equals to the configured url' do
-      subject.url.must_equal 'postgres://test.host/bookshelf'
+      subject.url.must_equal url
     end
   end
 
@@ -29,7 +41,7 @@ describe Hanami::Model::Configuration do
       connection = subject.connection
 
       connection.must_be_kind_of Sequel::Database
-      connection.url.must_equal 'postgres://test.host/bookshelf'
+      connection.url.must_equal url
     end
   end
 
