@@ -17,7 +17,7 @@ module Hanami
 
     # @api private
     # @since x.x.x
-    @__repositories__ = Concurrent::Array.new
+    @__repositories__ = Concurrent::Array.new # rubocop:disable Style/VariableNumber
 
     class << self
       # @since x.x.x

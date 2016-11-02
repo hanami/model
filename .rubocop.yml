@@ -22,3 +22,6 @@ Metrics/LineLength:
   Enabled: false
 Style/GuardClause:
   Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*.rb" # Minitest syntax generates this false positive
