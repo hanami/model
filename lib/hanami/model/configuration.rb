@@ -27,7 +27,23 @@ module Hanami
       # @since x.x.x
       # @api private
       def url
-        environment.gateways[:default].connection.url
+        connection.url
+      end
+
+      # NOTE: This must be changed when we want to support several adapters at the time
+      #
+      # @since x.x.x
+      # @api private
+      def connection
+        gateway.connection
+      end
+
+      # NOTE: This must be changed when we want to support several adapters at the time
+      #
+      # @since x.x.x
+      # @api private
+      def gateway
+        environment.gateways[:default]
       end
 
       # Root directory
