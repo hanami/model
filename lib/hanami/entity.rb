@@ -1,4 +1,4 @@
-require 'hanami/utils/hash'
+require 'hanami/model/types'
 
 module Hanami
   # An object that is defined by its identity.
@@ -51,15 +51,77 @@ module Hanami
   #
   # @see Hanami::Repository
   module Entity
+    require 'hanami/entity/schema'
+
+    # Syntactic shortcut to reference types in custom schema DSL
+    #
+    # @since x.x.x
+    module Types
+      include Hanami::Model::Types::Schema
+    end
+
+    # Class level interface
+    #
+    # @since x.x.x
+    # @api private
+    module ClassMethods
+      # Define manual entity schema
+      #
+      # With a SQL database this setup happens automatically and you SHOULD NOT
+      # use this DSL. You should use only when you want to customize the automatic
+      # setup.
+      #
+      # If you're working with an entity that isn't "backed" by a SQL table or
+      # with a schema-less database, you may want to manually setup a set of
+      # attributes via this DSL. If you don't do any setup, the entity accepts all
+      # the given attributes.
+      #
+      # @param blk [Proc] the block that defines the attributes
+      #
+      # @since x.x.x
+      #
+      # @see Hanami::Entity
+      def attributes(&blk)
+        self.schema = Schema.new(&blk)
+        @attributes = true
+      end
+
+      # Assign a schema
+      #
+      # @param value [Hanami::Entity::Schema] the schema
+      #
+      # @since x.x.x
+      # @api private
+      def schema=(value)
+        return if defined?(@attributes)
+        @schema = value
+      end
+
+      # @since x.x.x
+      # @api private
+      attr_reader :schema
+    end
+
+    # @since x.x.x
+    # @api private
+    def self.included(klass)
+      klass.class_eval do
+        @schema = Schema.new
+        extend  ClassMethods
+      end
+    end
+
     # Instantiate a new entity
     #
     # @param attributes [Hash,#to_h,NilClass] data to initialize the entity
     #
     # @return [Hanami::Entity] the new entity instance
     #
+    # @raise [TypeError] if the given attributes are invalid
+    #
     # @since 0.1.0
     def initialize(attributes = nil)
-      @attributes = Utils::Hash.new((attributes || {}).dup).symbolize!
+      @attributes = self.class.schema[attributes]
       freeze
     end
 
@@ -78,8 +140,9 @@ module Hanami
     # value, otherwise it raises a <tt>NoMethodError</tt>
     #
     # @since x.x.x
-    def method_missing(m)
-      attributes.fetch(m) { super }
+    def method_missing(m, *)
+      attribute?(m) or super # rubocop:disable Style/AndOr
+      attributes.fetch(m, nil)
     end
 
     # Implement generic equality for entities
@@ -106,6 +169,14 @@ module Hanami
       [self.class, id].hash
     end
 
+    # Freeze the entity
+    #
+    # @since x.x.x
+    def freeze
+      attributes.freeze
+      super
+    end
+
     # Serialize entity to a Hash
     #
     # @return [Hash] the result of serialization
@@ -118,6 +189,16 @@ module Hanami
     # @since x.x.x
     alias to_hash to_h
 
+    protected
+
+    # Check if the attribute is allowed to be read
+    #
+    # @since x.x.x
+    # @api private
+    def attribute?(name)
+      self.class.schema.attribute?(name)
+    end
+
     private
 
     # @since 0.1.0
@@ -127,7 +208,7 @@ module Hanami
     # @since x.x.x
     # @api private
     def respond_to_missing?(name, _include_all)
-      attributes.key?(name)
+      attribute?(name)
     end
   end
 end

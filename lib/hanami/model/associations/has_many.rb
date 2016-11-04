@@ -1,3 +1,5 @@
+require 'hanami/model/types'
+
 module Hanami
   module Model
     module Associations
@@ -6,6 +8,13 @@ module Hanami
       # @since x.x.x
       # @api private
       class HasMany
+        # @since x.x.x
+        # @api private
+        def self.schema_type(entity)
+          type = Sql::Types::Schema::AssociationType.new(entity)
+          Types::Strict::Array.member(type)
+        end
+
         # @since x.x.x
         # @api private
         attr_reader :repository

@@ -17,8 +17,18 @@ module Hanami
       #
       # @since x.x.x
       # @api private
-      def self.new(name)
-        name.sub(SUFFIX, '')
+      def initialize(name)
+        @name = name.sub(SUFFIX, '')
+      end
+
+      # @since x.x.x
+      # @api private
+      def underscore
+        Utils::String.new(@name).underscore.to_sym
+      end
+
+      def to_s
+        @name
       end
     end
   end

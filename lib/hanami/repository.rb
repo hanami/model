@@ -176,12 +176,16 @@ module Hanami
     #
     # @since x.x.x
     # @api private
+    #
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def self.define_mapping
-      m = @mapping
+      self.entity = Utils::Class.load!(entity_name)
       e = entity
+      m = @mapping
 
       blk = lambda do |_|
-        model       Utils::Class.load!(e)
+        model       e
         register_as MAPPER_NAME
         instance_exec(&m) unless m.nil?
       end
@@ -189,7 +193,10 @@ module Hanami
       root = self.root
       configuration.mappers { define(root, &blk) }
       configuration.define_mappings(root, &blk)
+      configuration.register_entity(relation, entity_name.underscore, e)
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     # It defines associations, by adding relations to the repository
     #
@@ -249,12 +256,14 @@ module Hanami
 
     # @since x.x.x
     # @api private
-    def self.inherited(klass)
+    def self.inherited(klass) # rubocop:disable Metrics/MethodLength
       klass.class_eval do
         include Utils::ClassAttribute
 
         class_attribute :entity
-        self.entity = Model::EntityName.new(name)
+
+        class_attribute :entity_name
+        self.entity_name = Model::EntityName.new(name)
 
         class_attribute :relation
         self.relation = Model::RelationName.new(name)

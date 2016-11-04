@@ -6,8 +6,10 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils',    branch: 'master'
-gem 'rom-sql',      '~> 0.8', require: false, github: 'jodosha/rom-sql', branch: 'hanami-model-integration'
+gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils', branch: 'master'
+
+gem 'dry-types', github: 'dry-rb/dry-types', branch: 'master'
+gem 'rom-sql',   github: 'jodosha/rom-sql',  branch: 'hanami-model-integration'
 
 platforms :ruby do
   gem 'sqlite3', require: false

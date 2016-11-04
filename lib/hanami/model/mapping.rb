@@ -7,7 +7,8 @@ module Hanami
     # @since 0.1.0
     class Mapping
       def initialize(&blk)
-        @attributes = {}
+        @attributes   = {}
+        @r_attributes = {}
         instance_eval(&blk)
         @processor = @attributes.empty? ? ::Hash : Transproc(:rename_keys, @attributes)
       end
@@ -19,11 +20,22 @@ module Hanami
       end
 
       def attribute(name, options)
-        @attributes[name] = options.fetch(:from, name)
+        from = options.fetch(:from, name)
+
+        @attributes[name]   = from
+        @r_attributes[from] = name
       end
 
       def process(input)
         @processor[input]
+      end
+
+      def reverse?
+        @r_attributes.any?
+      end
+
+      def translate(attribute)
+        @r_attributes.fetch(attribute)
       end
     end
   end

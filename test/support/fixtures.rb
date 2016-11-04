@@ -22,6 +22,29 @@ class SourceFile
   include Hanami::Entity
 end
 
+class Wharehouse
+  include Hanami::Entity
+
+  attributes do
+    attribute :id,   Types::Int
+    attribute :name, Types::String
+    attribute :code, Types::String.constrained(format: /\Awh\-/)
+  end
+end
+
+class Account
+  include Hanami::Entity
+
+  attributes do
+    attribute :id,         Types::Int
+    attribute :name,       Types::String
+    attribute :codes,      Types::Array(Types::Int)
+    attribute :users,      Types::Array(User)
+    attribute :email,      Types::String.constrained(format: /@/)
+    attribute :created_at, Types::DateTime
+  end
+end
+
 class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name).as(:entity)
@@ -99,6 +122,9 @@ class OperatorRepository < Hanami::Repository
 end
 
 class SourceFileRepository < Hanami::Repository
+end
+
+class WharehouseRepository < Hanami::Repository
 end
 
 Hanami::Model.load!

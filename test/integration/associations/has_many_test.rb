@@ -6,7 +6,7 @@ describe 'Associations (has_many)' do
     author = repository.create(name: 'L')
     found  = repository.find(author.id)
 
-    found.wont_respond_to(:books)
+    found.books.must_equal nil
   end
 
   it 'preloads associated records' do
@@ -18,8 +18,7 @@ describe 'Associations (has_many)' do
     found = repository.find_with_books(author.id)
 
     found.must_equal author
-    # found.books.must_equal [book]
-    found.books.map(&:to_h).must_equal [book.to_h]
+    found.books.must_equal [book]
   end
 
   it 'creates an object with a collection of associated objects'

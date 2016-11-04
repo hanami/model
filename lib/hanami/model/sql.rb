@@ -53,6 +53,9 @@ module Hanami
     #
     # @since x.x.x
     module Sql
+      require 'hanami/model/sql/types'
+      require 'hanami/model/sql/entity/schema'
+
       # Returns a SQL fragment that references a database function by the given name
       # This is useful for database migrations
       #

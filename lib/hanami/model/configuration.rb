@@ -13,6 +13,10 @@ module Hanami
       # @api private
       attr_reader :mappings
 
+      # @since x.x.x
+      # @api private
+      attr_reader :entities
+
       # @since 0.2.0
       # @api private
       def initialize(configurator)
@@ -20,6 +24,7 @@ module Hanami
         @migrations   = configurator._migrations
         @schema       = configurator._schema
         @mappings     = {}
+        @entities     = {}
       end
 
       # NOTE: This must be changed when we want to support several adapters at the time
@@ -72,6 +77,26 @@ module Hanami
       # @api private
       def define_mappings(root, &blk)
         @mappings[root] = Mapping.new(&blk)
+      end
+
+      # @since x.x.x
+      # @api private
+      def register_entity(plural, singular, klass)
+        @entities[plural]   = klass
+        @entities[singular] = klass
+      end
+
+      # @since x.x.x
+      # @api private
+      def define_entities_mappings(container, repositories)
+        return unless defined?(Sql::Entity::Schema)
+
+        repositories.each do |r|
+          relation = r.relation
+          entity   = r.entity
+
+          entity.schema = Sql::Entity::Schema.new(entities, container.relations[relation], mappings.fetch(relation))
+        end
       end
     end
   end

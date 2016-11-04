@@ -78,7 +78,9 @@ module Hanami
       repositories.each(&:load!)
 
       @container = ROM.container(configuration)
-      @loaded    = true
+      configuration.define_entities_mappings(@container, repositories)
+
+      @loaded = true
     end
   end
 end
