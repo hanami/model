@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe Hanami::Model::Sql::Entity::Schema do
-  describe 'automatic' do
+  describe 'mapping' do
     let(:subject) { Operator.schema }
 
     describe '#initialize' do
