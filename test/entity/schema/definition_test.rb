@@ -4,7 +4,7 @@ describe Hanami::Entity::Schema::Definition do
   let(:described_class) { Hanami::Entity::Schema::Definition }
   let(:subject) do
     described_class.new do
-      attribute :id, Hanami::Model::Types::Schema::Int
+      attribute :id, Hanami::Model::Types::Coercible::Int
     end
   end
 
@@ -30,7 +30,7 @@ describe Hanami::Entity::Schema::Definition do
     end
 
     it 'processes attributes' do
-      result = subject.call(id: '1')
+      result = subject.call(id: 1)
 
       result.must_equal(id: 1)
     end

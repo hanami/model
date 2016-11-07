@@ -57,7 +57,7 @@ module Hanami
     #
     # @since x.x.x
     module Types
-      include Hanami::Model::Types::Schema
+      include Hanami::Model::Types
     end
 
     # Class level interface

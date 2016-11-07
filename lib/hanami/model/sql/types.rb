@@ -1,4 +1,5 @@
 require 'hanami/model/types'
+require 'rom/types'
 
 module Hanami
   module Model
@@ -7,12 +8,64 @@ module Hanami
       #
       # @since x.x.x
       module Types
-        include ROM::SQL::Types
+        # include ROM::SQL::Types
+        include Dry::Types.module
 
         # Types for schema definitions
         #
         # @since x.x.x
         module Schema
+          require 'hanami/model/sql/types/schema/coercions'
+
+          String   = Types::Optional::Coercible::String
+
+          Int      = Types::Strict::Nil | Types::Int.constructor(Coercions.method(:int))
+          Float    = Types::Strict::Nil | Types::Float.constructor(Coercions.method(:float))
+          Decimal  = Types::Strict::Nil | Types::Float.constructor(Coercions.method(:decimal))
+
+          Bool     = Types::Strict::Nil | Types::Strict::Bool
+
+          Date     = Types::Strict::Nil | Types::Date.constructor(Coercions.method(:date))
+          DateTime = Types::Strict::Nil | Types::DateTime.constructor(Coercions.method(:datetime))
+          Time     = Types::Strict::Nil | Types::Time.constructor(Coercions.method(:time))
+
+          Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
+          Hash     = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:hash))
+
+          # @since x.x.x
+          # @api private
+          MAPPING = {
+            Types::String.with(meta: {})            => Schema::String,
+            Types::Int.with(meta: {})               => Schema::Int,
+            Types::Float.with(meta: {})             => Schema::Float,
+            Types::Decimal.with(meta: {})           => Schema::Decimal,
+            Types::Bool.with(meta: {})              => Schema::Bool,
+            Types::Date.with(meta: {})              => Schema::Date,
+            Types::DateTime.with(meta: {})          => Schema::DateTime,
+            Types::Time.with(meta: {})              => Schema::Time,
+            Types::Array.with(meta: {})             => Schema::Array,
+            Types::Hash.with(meta: {})              => Schema::Hash,
+            Types::String.optional.with(meta: {})   => Schema::String,
+            Types::Int.optional.with(meta: {})      => Schema::Int,
+            Types::Float.optional.with(meta: {})    => Schema::Float,
+            Types::Decimal.optional.with(meta: {})  => Schema::Decimal,
+            Types::Bool.optional.with(meta: {})     => Schema::Bool,
+            Types::Date.optional.with(meta: {})     => Schema::Date,
+            Types::DateTime.optional.with(meta: {}) => Schema::DateTime,
+            Types::Time.optional.with(meta: {})     => Schema::Time,
+            Types::Array.optional.with(meta: {})    => Schema::Array,
+            Types::Hash.optional.with(meta: {})     => Schema::Hash
+          }.freeze
+
+          # Convert given type into coercible
+          #
+          # @since x.x.x
+          # @api private
+          def self.coercible(type)
+            return type if type.constrained?
+            MAPPING.fetch(type.with(meta: {}), type)
+          end
+
           # Coercer for SQL associations target
           #
           # @since x.x.x

@@ -25,7 +25,7 @@ describe Hanami::Entity do
         entity.id.must_equal    1
         entity.name.must_equal  'Luca'
         entity.books.must_equal books
-        entity.created_at.must_be_close_to(now, 1)
+        entity.created_at.must_be_close_to(now, 2)
       end
 
       it 'accepts object that implements #to_hash' do
@@ -44,7 +44,7 @@ describe Hanami::Entity do
         now    = Time.now
         entity = described_class.new(created_at: now.to_s)
 
-        entity.created_at.must_be_close_to(now, 1)
+        entity.created_at.must_be_close_to(now, 2)
       end
 
       it 'coerces values for array of objects' do
@@ -61,9 +61,9 @@ describe Hanami::Entity do
       it 'raises error if initialized with wrong primitive' do
         exception = lambda do
           described_class.new(id: :foo)
-        end.must_raise(TypeError)
+        end.must_raise(ArgumentError)
 
-        exception.message.must_equal(':foo (Symbol) has invalid type for :id')
+        exception.message.must_equal('comparison of Symbol with 0 failed')
       end
 
       it 'raises error if initialized with wrong array object' do

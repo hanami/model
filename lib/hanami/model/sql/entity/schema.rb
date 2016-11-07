@@ -87,10 +87,9 @@ module Hanami
           # @api private
           def build_attributes(relation, mapping)
             schema = relation.schema.to_h
-            return schema unless mapping.reverse?
-
             schema.each_with_object({}) do |(attribute, type), result|
-              result[mapping.translate(attribute)] = type
+              attribute = mapping.translate(attribute) if mapping.reverse?
+              result[attribute] = coercible(type)
             end
           end
 
@@ -110,6 +109,14 @@ module Hanami
               target       = registry.fetch(name)
               result[name] = Association.lookup(association).schema_type(target)
             end
+          end
+
+          # Converts given ROM type into coercible type for entity attribute
+          #
+          # @since x.x.x
+          # @api private
+          def coercible(type)
+            Types::Schema.coercible(type)
           end
         end
       end

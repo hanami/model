@@ -8,6 +8,25 @@ module Hanami
     module Types
       include ROM::Types
 
+      # @since x.x.x
+      # @api private
+      def self.included(mod)
+        mod.extend(ClassMethods)
+      end
+
+      # Class level interface
+      #
+      # @since x.x.x
+      module ClassMethods
+        # Define an array of given type
+        #
+        # @since x.x.x
+        def Collection(type) # rubocop:disable Style/MethodName
+          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
+          Types::Array.member(type)
+        end
+      end
+
       # Types for schema definitions
       #
       # @since x.x.x
@@ -67,33 +86,11 @@ module Hanami
 
           # @since x.x.x
           # @api private
-          alias object primitive
-        end
+          def object
+            result = primitive
+            return result unless result.respond_to?(:primitive)
 
-        String   = Types::Coercible::String
-        Int      = Types::Coercible::Int
-        Float    = Types::Coercible::Float
-        Decimal  = Types::Coercible::Decimal
-        Array    = Types::Coercible::Array
-        Hash     = Types::Coercible::Hash
-        DateTime = Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
-
-        # @since x.x.x
-        # @api private
-        def self.included(mod)
-          mod.extend(ClassMethods)
-        end
-
-        # Class level interface
-        #
-        # @since x.x.x
-        module ClassMethods
-          # Define an array of given type
-          #
-          # @since x.x.x
-          def Array(type) # rubocop:disable Style/MethodName
-            type = CoercibleType.new(type) unless type.is_a?(Dry::Types::Constructor)
-            Types::Array.member(type)
+            result.primitive
           end
         end
       end

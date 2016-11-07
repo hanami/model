@@ -32,9 +32,9 @@ describe Hanami::Model::Sql::Entity::Schema do
       it 'raises error if the process fails' do
         exception = lambda do
           subject.call(id: :foo)
-        end.must_raise(TypeError)
+        end.must_raise(ArgumentError)
 
-        exception.message.must_equal ':foo (Symbol) has invalid type for :id'
+        exception.message.must_equal 'comparison of Symbol with 0 failed'
       end
     end
 

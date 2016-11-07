@@ -72,7 +72,7 @@ describe Hanami::Entity do
           described_class.new(id: :foo)
         end.must_raise(TypeError)
 
-        exception.message.must_equal("can't convert Symbol into Integer")
+        exception.message.must_equal(':foo (Symbol) has invalid type for :id')
       end
 
       it 'raises error if initialized with wrong array primitive' do

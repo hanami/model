@@ -22,7 +22,7 @@ describe Hanami::Model::Sql::Entity::Schema do
         result = subject.call(id: 1, created_at: now.to_s)
 
         result.fetch(:id).must_equal(1)
-        result.fetch(:created_at).must_be_close_to(now, 1)
+        result.fetch(:created_at).must_be_close_to(now, 2)
       end
 
       it 'ignores unknown attributes' do
@@ -34,9 +34,9 @@ describe Hanami::Model::Sql::Entity::Schema do
       it 'raises error if the process fails' do
         exception = lambda do
           subject.call(id: :foo)
-        end.must_raise(TypeError)
+        end.must_raise(ArgumentError)
 
-        exception.message.must_equal ':foo (Symbol) has invalid type for :id'
+        exception.message.must_equal 'comparison of Symbol with 0 failed'
       end
     end
 

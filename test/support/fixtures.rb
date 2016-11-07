@@ -36,12 +36,12 @@ class Account
   include Hanami::Entity
 
   attributes do
-    attribute :id,         Types::Int
+    attribute :id,         Types::Strict::Int
     attribute :name,       Types::String
-    attribute :codes,      Types::Array(Types::Int)
-    attribute :users,      Types::Array(User)
+    attribute :codes,      Types::Collection(Types::Coercible::Int)
+    attribute :users,      Types::Collection(User)
     attribute :email,      Types::String.constrained(format: /@/)
-    attribute :created_at, Types::DateTime
+    attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
   end
 end
 
