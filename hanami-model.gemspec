@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Luca Guidi', 'Trung Lê', 'Alfonso Uceda']
   spec.email         = ['me@lucaguidi.com', 'trung.le@ruby-journal.com', 'uceda73@gmail.com']
   spec.summary       = 'A persistence layer for Hanami'
-  spec.description   = 'A persistence framework with entities, repositories, data mapper and query objects'
+  spec.description   = 'A persistence framework with entities and repositories'
   spec.homepage      = 'http://hanamirb.org'
   spec.license       = 'MIT'
 
