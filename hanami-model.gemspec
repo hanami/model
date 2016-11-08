@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_runtime_dependency 'hanami-utils',    '~> 0.8'
-  spec.add_runtime_dependency 'rom-sql',         '~> 0.8'
+  spec.add_runtime_dependency 'rom-sql',         '~> 0.9'
   spec.add_runtime_dependency 'rom-repository',  '~> 0.3'
   spec.add_runtime_dependency 'dry-types',       '~> 0.9'
   spec.add_runtime_dependency 'concurrent-ruby', '~> 1.0'
