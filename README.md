@@ -7,9 +7,8 @@ The architecture eases keeping the business logic (entities) separated from deta
 
 It implements the following concepts:
 
-  * [Entity](#entities) - An object defined by its identity.
+  * [Entity](#entities) - A model domain object defined by its identity.
   * [Repository](#repositories) - An object that mediates between the entities and the persistence layer.
-  * [Query](#query) - An object that represents a database query.
 
 Like all the other Hanami components, it can be used as a standalone framework or within a full Hanami application.
 
@@ -33,7 +32,7 @@ Like all the other Hanami components, it can be used as a standalone framework o
 
 ## Rubies
 
-__Hanami::Model__ supports Ruby (MRI) 2.3+ and JRuby 9.0.5.0+
+__Hanami::Model__ supports Ruby (MRI) 2.3+ and JRuby 9.1.5.0+
 
 ## Installation
 
@@ -58,8 +57,7 @@ This class provides a DSL to configure the connection.
 ```ruby
 require 'hanami/model'
 
-class User
-  include Hanami::Entity
+class User < Hanami::Entity
 end
 
 class UserRepository < Hanami::Repository
@@ -87,7 +85,7 @@ repository.delete(user.id)
 
 ### Entities
 
-An object that is defined by its identity.
+A model domain object that is defined by its identity.
 See "Domain Driven Design" by Eric Evans.
 
 An entity is the core of an application, where the part of the domain logic is implemented.
@@ -103,39 +101,9 @@ message passing if you will, which is the quintessence of Object Oriented Progra
 ```ruby
 require 'hanami/model'
 
-class Person
-  include Hanami::Entity
+class Person < Hanami::Entity
 end
 ```
-
-When a class includes `Hanami::Entity` it receives the following interface:
-
-  * `#initialize(attributes = {})`
-  * `#to_h` / `#to_hash`
-
-If we expand the code above in **pure Ruby**, it would be:
-
-```ruby
-class Person
-  def initialize(attributes = {})
-    @attributes = attributes
-  end
-
-  def to_h
-    @attributes
-  end
-  alias to_hash to_h
-end
-```
-
-**Hanami::Model** ships `Hanami::Entity` for developers's convenience.
-
-**Hanami::Model** depends on a narrow and well-defined interface for an Entity - `#initialize(attributes={})`, `#to_h`.
-If your object implements that interface then that object can be used as an Entity in the **Hanami::Model** framework.
-
-However, we suggest to implement this interface by including `Hanami::Entity`, in case that future versions of the framework will expand it.
-
-See [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) for more on interfaces.
 
 ### Repositories
 
@@ -268,8 +236,7 @@ If an entity has the following accessors: `:created_at` and `:updated_at`, they 
 ```ruby
 require 'hanami/model'
 
-class User
-  include Hanami::Entity
+class User < Hanami::Entity
 end
 
 class UserRepository < Hanami::Repository

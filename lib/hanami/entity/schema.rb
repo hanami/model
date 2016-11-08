@@ -2,7 +2,7 @@ require 'hanami/model/types'
 require 'hanami/utils/hash'
 
 module Hanami
-  module Entity
+  class Entity
     # Entity schema is a definition of a set of typed attributes.
     #
     # @since x.x.x

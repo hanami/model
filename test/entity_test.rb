@@ -3,7 +3,7 @@ require 'ostruct'
 
 describe Hanami::Entity do
   let(:described_class) do
-    Class.new { include Hanami::Entity }
+    Class.new(Hanami::Entity)
   end
 
   describe 'equality' do
@@ -60,14 +60,14 @@ describe Hanami::Entity do
 
     it 'returns different object hash for different class but same id' do
       entity1 = described_class.new(id: 1)
-      entity2 = Class.new { include Hanami::Entity }.new(id: 1)
+      entity2 = Class.new(Hanami::Entity).new(id: 1)
 
       refute entity1.hash == entity2.hash, "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
     end
 
     it 'returns different object hash for different class and different id' do
       entity1 = described_class.new(id: 1)
-      entity2 = Class.new { include Hanami::Entity }.new(id: 2)
+      entity2 = Class.new(Hanami::Entity).new(id: 2)
 
       refute entity1.hash == entity2.hash, "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
     end

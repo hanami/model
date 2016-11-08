@@ -50,7 +50,7 @@ module Hanami
   # @since 0.1.0
   #
   # @see Hanami::Repository
-  module Entity
+  class Entity
     require 'hanami/entity/schema'
 
     # Syntactic shortcut to reference types in custom schema DSL
@@ -104,7 +104,7 @@ module Hanami
 
     # @since x.x.x
     # @api private
-    def self.included(klass)
+    def self.inherited(klass)
       klass.class_eval do
         @schema = Schema.new
         extend  ClassMethods

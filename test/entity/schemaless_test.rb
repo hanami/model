@@ -3,7 +3,7 @@ require 'test_helper'
 describe Hanami::Entity do
   describe 'schemaless' do
     let(:described_class) do
-      Class.new { include Hanami::Entity }
+      Class.new(Hanami::Entity)
     end
 
     let(:input) do

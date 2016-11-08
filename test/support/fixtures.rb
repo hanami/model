@@ -1,30 +1,22 @@
-class User
-  include Hanami::Entity
+class User < Hanami::Entity
 end
 
-class Avatar
-  include Hanami::Entity
+class Avatar < Hanami::Entity
 end
 
-class Author
-  include Hanami::Entity
+class Author < Hanami::Entity
 end
 
-class Book
-  include Hanami::Entity
+class Book < Hanami::Entity
 end
 
-class Operator
-  include Hanami::Entity
+class Operator < Hanami::Entity
 end
 
-class SourceFile
-  include Hanami::Entity
+class SourceFile < Hanami::Entity
 end
 
-class Wharehouse
-  include Hanami::Entity
-
+class Wharehouse < Hanami::Entity
   attributes do
     attribute :id,   Types::Int
     attribute :name, Types::String
@@ -32,9 +24,7 @@ class Wharehouse
   end
 end
 
-class Account
-  include Hanami::Entity
-
+class Account < Hanami::Entity
   attributes do
     attribute :id,         Types::Strict::Int
     attribute :name,       Types::String
