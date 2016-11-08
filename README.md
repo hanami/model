@@ -192,8 +192,7 @@ This is a **huge improvement**, because:
 
 Hanami::Model can **_automap_** columns from relations and entities attributes.
 
-However, there could be cases where there is a mismatch between the columns and attributes names.
-This is the case of **legacy databases**.
+However, there are cases where columns and attribute names do not match (mainly **legacy databases**).
 
 ```ruby
 require 'hanami/model'
