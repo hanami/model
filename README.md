@@ -139,7 +139,7 @@ When a class includes `Hanami::Repository`, it will receive the following interf
   * `#clear`            - Delete all the records from the relation
 
 **A relation is a homogenous set of records.**
-It corresponds to a table for a SQL database or to a MongoDB relation.
+It corresponds to a table for a SQL database or to a MongoDB collection.
 
 **All the queries are private**.
 This decision forces developers to define intention revealing API, instead of leaking storage API details outside of a repository.
