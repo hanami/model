@@ -3,6 +3,8 @@ A persistence layer for Hanami
 
 ## v0.7.0 - (unreleased)
 ### Added
+- [Luca Guidi] `Hanami::Entity` defines an automatic schema for SQL databases
+– [Luca Guidi] `Hanami::Entity` attributes schema
 - [Luca Guidi] Experimental support for One-To-Many association (aka `has_many`)
 - [Luca Guidi] Native support for PostgreSQL types like UUID, Array, JSON(B) and Money
 - [Luca Guidi] Repositories instances can access all the relations (eg. `BookRepository` can access `users` relation via `#users`)
@@ -10,11 +12,15 @@ A persistence layer for Hanami
 - [Luca Guidi] Added `Hanami::Model::DatabaseError`
 
 ### Changed
-- [Luca Guidi] Removed `.attributes` from entity
+- [Luca Guidi] Entities are immutable
+- [Luca Guidi] Removed support for Memory and File System adapters
+- [Luca Guidi] Removed support for _dirty tracking_
+- [Luca Guidi] `Hanami::Entity.attributes` method no longer accepts a list of attributes, but a block to optionally define typed attributes
 - [Luca Guidi] Removed `#fetch`, `#execute` and `#transaction` from repository
 - [Luca Guidi] Removed `mapping` block from `Hanami::Model.configure`
 - [Luca Guidi] Changed `adapter` signature in `Hanami::Model.configure` (use `adapter :sql, ENV['DATABASE_URL']`)
 - [Luca Guidi] Repositories must inherit from `Hanami::Repository` instead of including it
+- [Luca Guidi] Entities must inherit from `Hanami::Entity` instead of including it
 - [Pascal Betz] Repositories use instance level interface (eg. `BookRepository.new.find` instead of `BookRepository.find`)
 - [Luca Guidi] Repositories now work can accept hash for CRUD operations
 - [Luca Guidi] `Hanami::Repository#create` now accepts: and data (or entity)
@@ -27,7 +33,8 @@ A persistence layer for Hanami
 
 ### Fixed
 - [Luca Guidi] Ensure booleans to be correctly dumped in database
-- [Luca Guidi] Ensure to respect default schema values
+- [Luca Guidi] Ensure to respect default database schema values
+- [Luca Guidi] Ensure SQL UPDATE to not override non-default primary key
 
 ## v0.6.2 - 2016-06-01
 ### Changed
