@@ -6,7 +6,7 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-gem 'hanami-utils', '~> 0.8', require: false, github: 'hanami/utils', branch: 'master'
+gem 'hanami-utils', '~> 0.9', require: false, github: 'hanami/utils', branch: '0.9.x'
 
 platforms :ruby do
   gem 'sqlite3', require: false
@@ -22,4 +22,4 @@ end
 
 gem 'simplecov',          require: false
 gem 'coveralls',          require: false
-gem 'rubocop', '~> 0.43', require: false
+gem 'rubocop', '~> 0.45', require: false
