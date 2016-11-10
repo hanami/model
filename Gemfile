@@ -6,14 +6,12 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: '0.8.x'
-gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: '0.6.x'
+gem 'hanami-utils', '~> 0.9', require: false, github: 'hanami/utils', branch: '0.9.x'
 
 platforms :ruby do
   gem 'sqlite3', require: false
-  gem 'pg'
-  gem 'mysql2'
-  gem 'mysql'
+  gem 'pg',      require: false
+  gem 'mysql2',  require: false
 end
 
 platforms :jruby do
@@ -22,5 +20,6 @@ platforms :jruby do
   gem 'jdbc-mysql',    require: false
 end
 
-gem 'simplecov', require: false
-gem 'coveralls', require: false
+gem 'simplecov',          require: false
+gem 'coveralls',          require: false
+gem 'rubocop', '~> 0.45', require: false

@@ -1,17 +1,17 @@
 language: ruby
 sudo: false
 cache: bundler
-install: true
-script:
-  - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION; fi'
-  - 'bundle install'
-  - 'bundle exec rake test:coverage'
+script: 'bundle exec rubocop && bundle exec rake test:coverage --trace'
+after_script: 'echo `env`'
 rvm:
-  - 2.2.4
-  - 2.3.0
+  - 2.3.1
+  - jruby-9.1.5.0
   - ruby-head
-  - jruby-9000
   - jruby-head
+env:
+  - DB=sqlite
+  - DB=postgresql
+  - DB=mysql
 
 addons:
   postgresql: '9.4'

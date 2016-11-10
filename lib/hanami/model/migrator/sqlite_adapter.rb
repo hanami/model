@@ -1,8 +1,9 @@
 require 'pathname'
+require 'hanami/utils'
 
 module Hanami
   module Model
-    module Migrator
+    class Migrator
       # SQLite3 Migrator
       #
       # @since 0.4.0
@@ -28,7 +29,7 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def initialize(connection)
+        def initialize(connection, configuration)
           super
           extend Memory if memory?
         end
@@ -39,7 +40,7 @@ module Hanami
           path.dirname.mkpath
           FileUtils.touch(path)
         rescue Errno::EACCES, Errno::EPERM
-          raise MigrationError.new("Permission denied: #{ path.sub(/\A\/\//, '') }")
+          raise MigrationError.new("Permission denied: #{path.sub(/\A\/\//, '')}")
         end
 
         # @since 0.4.0
@@ -47,7 +48,7 @@ module Hanami
         def drop
           path.delete
         rescue Errno::ENOENT
-          raise MigrationError.new("Cannot find database: #{ path.sub(/\A\/\//, '') }")
+          raise MigrationError.new("Cannot find database: #{path.sub(/\A\/\//, '')}")
         end
 
         # @since 0.4.0
@@ -69,7 +70,7 @@ module Hanami
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/(jdbc\:|)sqlite\:\/\//, '')
+            @connection.uri.sub(/\A(jdbc:sqlite:|sqlite:\/\/)/, '')
           )
         end
 
@@ -90,19 +91,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "sqlite3 #{ escape(path) } .schema > #{ escape(schema) }"
+          system "sqlite3 #{escape(path)} .schema > #{escape(schema)}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "sqlite3 #{ escape(path) } < #{ escape(schema) }" if schema.exist?
+          system "sqlite3 #{escape(path)} < #{escape(schema)}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system %(sqlite3 #{ escape(path) } .dump | grep '^INSERT INTO "#{ migrations_table }"' >> #{ escape(schema) })
+          system %(sqlite3 #{escape(path)} .dump | grep '^INSERT INTO "#{migrations_table}"' >> #{escape(schema)})
         end
       end
     end

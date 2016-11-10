@@ -1,172 +1,86 @@
-require 'hanami/model/version'
+require 'rom'
+require 'concurrent'
 require 'hanami/entity'
-require 'hanami/entity/dirty_tracking'
 require 'hanami/repository'
-require 'hanami/model/mapper'
-require 'hanami/model/configuration'
-require 'hanami/model/error'
 
 module Hanami
-  # Model
+  # Hanami persistence
   #
   # @since 0.1.0
   module Model
-    include Utils::ClassAttribute
+    require 'hanami/model/version'
+    require 'hanami/model/error'
+    require 'hanami/model/configuration'
+    require 'hanami/model/configurator'
+    require 'hanami/model/mapping'
+    require 'hanami/model/plugins'
 
-    # Framework configuration
-    #
-    # @since 0.2.0
     # @api private
-    class_attribute :configuration
-    self.configuration = Configuration.new
+    # @since x.x.x
+    @__repositories__ = Concurrent::Array.new # rubocop:disable Style/VariableNumber
 
-    # Configure the framework.
-    # It yields the given block in the context of the configuration
+    class << self
+      # @since x.x.x
+      # @api private
+      attr_reader :config
+
+      # @since x.x.x
+      # @api private
+      attr_reader :loaded
+
+      # @since x.x.x
+      # @api private
+      alias loaded? loaded
+    end
+
+    # Configure the framework
     #
-    # @param blk [Proc] the configuration block
-    #
-    # @since 0.2.0
-    #
-    # @see Hanami::Model
+    # @since 0.1.0
     #
     # @example
     #   require 'hanami/model'
     #
     #   Hanami::Model.configure do
-    #     adapter type: :sql, uri: 'postgres://localhost/database'
+    #     adapter :sql, ENV['DATABASE_URL']
     #
-    #     mapping do
-    #       collection :users do
-    #         entity User
-    #
-    #         attribute :id,   Integer
-    #         attribute :name, String
-    #       end
-    #     end
+    #     migrations 'db/migrations'
+    #     schema     'db/schema.sql'
     #   end
-    #
-    # Adapter MUST follow the convention in which adapter class is inflection of adapter name
-    # The above example has name :sql, thus derived class will be `Hanami::Model::Adapters::SqlAdapter`
-    def self.configure(&blk)
-      configuration.instance_eval(&blk)
+    def self.configure(&block)
+      @config = Configurator.build(&block)
       self
     end
 
-    # Load the framework
+    # Current configuration
     #
-    # @since 0.2.0
-    # @api private
-    def self.load!
-      configuration.load!
+    # @since 0.1.0
+    def self.configuration
+      @configuration ||= Configuration.new(config)
     end
 
-    # Unload the framework
-    #
-    # @since 0.2.0
+    # @since x.x.x
     # @api private
-    def self.unload!
-      configuration.unload!
+    def self.repositories
+      @__repositories__
     end
 
-    # Duplicate Hanami::Model in order to create a new separated instance
-    # of the framework.
-    #
-    # The new instance of the framework will be completely decoupled from the
-    # original. It will inherit the configuration, but all the changes that
-    # happen after the duplication, won't be reflected on the other copies.
-    #
-    # @return [Module] a copy of Hanami::Model
-    #
-    # @since 0.2.0
+    # @since x.x.x
     # @api private
-    #
-    # @example Basic usage
-    #   require 'hanami/model'
-    #
-    #   module MyApp
-    #     Model = Hanami::Model.dupe
-    #   end
-    #
-    #   MyApp::Model == Hanami::Model # => false
-    #
-    #   MyApp::Model.configuration ==
-    #     Hanami::Model.configuration # => false
-    #
-    # @example Inheriting configuration
-    #   require 'hanami/model'
-    #
-    #   Hanami::Model.configure do
-    #     adapter type: :sql, uri: 'sqlite3://uri'
-    #   end
-    #
-    #   module MyApp
-    #     Model = Hanami::Model.dupe
-    #   end
-    #
-    #   module MyApi
-    #     Model = Hanami::Model.dupe
-    #     Model.configure do
-    #       adapter type: :sql, uri: 'postgresql://uri'
-    #     end
-    #   end
-    #
-    #   Hanami::Model.configuration.adapter_config.uri # => 'sqlite3://uri'
-    #   MyApp::Model.configuration.adapter_config.uri # => 'sqlite3://uri'
-    #   MyApi::Model.configuration.adapter_config.uri # => 'postgresql://uri'
-    def self.dupe
-      dup.tap do |duplicated|
-        duplicated.configuration = Configuration.new
-      end
+    def self.container
+      raise 'Not loaded' unless loaded?
+      @container
     end
 
-    # Duplicate the framework and generate modules for the target application
-    #
-    # @param mod [Module] the Ruby namespace of the application
-    # @param blk [Proc] an optional block to configure the framework
-    #
-    # @return [Module] a copy of Hanami::Model
-    #
-    # @since 0.2.0
-    #
-    # @see Hanami::Model#dupe
-    # @see Hanami::Model::Configuration
-    #
-    # @example Basic usage
-    #   require 'hanami/model'
-    #
-    #   module MyApp
-    #     Model = Hanami::Model.dupe
-    #   end
-    #
-    #   # It will:
-    #   #
-    #   # 1. Generate MyApp::Model
-    #   # 2. Generate MyApp::Entity
-    #   # 3. Generate MyApp::Repository
-    #
-    #   MyApp::Model      == Hanami::Model # => false
-    #   MyApp::Repository == Hanami::Repository # => false
-    #
-    # @example Block usage
-    #   require 'hanami/model'
-    #
-    #   module MyApp
-    #     Model = Hanami::Model.duplicate(self) do
-    #       adapter type: :memory, uri: 'memory://localhost'
-    #     end
-    #   end
-    #
-    #   Hanami::Model.configuration.adapter_config # => nil
-    #   MyApp::Model.configuration.adapter_config # => #<Hanami::Model::Config::Adapter:0x007ff0ff0244f8 @type=:memory, @uri="memory://localhost", @class_name="MemoryAdapter">
-    def self.duplicate(mod, &blk)
-      dupe.tap do |duplicated|
-        mod.module_eval %{
-          Entity = Hanami::Entity.dup
-          Repository = Hanami::Repository.dup
-        }
+    # @since 0.1.0
+    def self.load!(&blk) # rubocop:disable Metrics/AbcSize
+      configuration.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
+      configuration.instance_eval(&blk)                            if     block_given?
+      repositories.each(&:load!)
 
-        duplicated.configure(&blk) if block_given?
-      end
+      @container = ROM.container(configuration)
+      configuration.define_entities_mappings(@container, repositories)
+
+      @loaded = true
     end
   end
 end
