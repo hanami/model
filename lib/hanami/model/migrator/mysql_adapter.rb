@@ -1,21 +1,28 @@
 module Hanami
   module Model
-    module Migrator
+    class Migrator
       # MySQL adapter
       #
       # @since 0.4.0
       # @api private
       class MySQLAdapter < Adapter
+        # @since x.x.x
+        # @api private
+        PASSWORD = 'MYSQL_PWD'.freeze
+
         # @since 0.4.0
         # @api private
-        def create
-          new_connection(global: true).run %(CREATE DATABASE #{ database };)
+        def create # rubocop:disable Metrics/MethodLength
+          new_connection(global: true).run %(CREATE DATABASE #{database};)
         rescue Sequel::DatabaseError => e
-          message = if e.message.match(/database exists/)
-            "Database creation failed. There is 1 other session using the database"
-          else
-            e.message
-          end
+          message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
+                      "Database creation failed. If the database exists, \
+                         then its console may be open. See this issue for more details:\
+                         https://github.com/hanami/model/issues/250\
+                      "
+                    else
+                      e.message
+                    end
 
           raise MigrationError.new(message)
         end
@@ -23,13 +30,13 @@ module Hanami
         # @since 0.4.0
         # @api private
         def drop
-          new_connection(global: true).run %(DROP DATABASE #{ database };)
+          new_connection(global: true).run %(DROP DATABASE #{database};)
         rescue Sequel::DatabaseError => e
-          message = if e.message.match(/doesn\'t exist/)
-            "Cannot find database: #{ database }"
-          else
-            e.message
-          end
+          message = if e.message.match(/doesn\'t exist/) # rubocop:disable Performance/RedundantMatch
+                      "Cannot find database: #{database}"
+                    else
+                      e.message
+                    end
 
           raise MigrationError.new(message)
         end
@@ -37,6 +44,7 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump
+          set_environment_variables
           dump_structure
           dump_migrations_data
         end
@@ -44,27 +52,40 @@ module Hanami
         # @since 0.4.0
         # @api private
         def load
+          set_environment_variables
           load_structure
         end
 
         private
 
+        # @since x.x.x
+        # @api private
+        def set_environment_variables
+          ENV[PASSWORD] = password unless password.nil?
+        end
+
+        # @since x.x.x
+        # @api private
+        def password
+          connection.password
+        end
+
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "mysqldump --user=#{ username } --password=#{ password } --no-data --skip-comments --ignore-table=#{ database }.#{ migrations_table } #{ database } > #{ schema }"
+          system "mysqldump --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "mysql --user=#{ username } --password=#{ password } #{ database } < #{ escape(schema) }" if schema.exist?
+          system "mysql --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "mysqldump --user=#{ username } --password=#{ password } --skip-comments #{ database } #{ migrations_table } >> #{ schema }"
+          system "mysqldump --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
         end
       end
     end

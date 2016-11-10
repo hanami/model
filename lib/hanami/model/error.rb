@@ -1,41 +1,54 @@
+require 'concurrent'
+
 module Hanami
   module Model
-
     # Default Error class
     #
     # @since 0.5.1
-    Error = Class.new(::StandardError)
+    class Error < ::StandardError
+      # @api private
+      # @since x.x.x
+      @__mapping__ = Concurrent::Map.new # rubocop:disable Style/VariableNumber
 
-    # Error for non persisted entity
-    # It's raised when we try to update or delete a non persisted entity.
-    #
-    # @since 0.1.0
-    #
-    # @see Hanami::Repository.update
-    NonPersistedEntityError = Class.new(Error)
+      # @api private
+      # @since x.x.x
+      def self.for(exception)
+        mapping.fetch(exception.class, self).new(exception)
+      end
 
-    # Error for invalid mapper configuration
-    # It's raised when mapping is not configured correctly
+      # @api private
+      # @since x.x.x
+      def self.register(external, internal)
+        mapping.put_if_absent(external, internal)
+      end
+
+      # @api private
+      # @since x.x.x
+      def self.mapping
+        @__mapping__
+      end
+    end
+
+    # Generic database error
     #
-    # @since 0.2.0
-    #
-    # @see Hanami::Configuration#mapping
-    InvalidMappingError = Class.new(Error)
+    # @since x.x.x
+    class DatabaseError < Error
+    end
 
     # Error for invalid raw command syntax
     #
     # @since 0.5.0
     class InvalidCommandError < Error
-      def initialize(message = "Invalid command")
+      def initialize(message = 'Invalid command')
         super
       end
     end
 
-    # Error for invalid raw query syntax
+    # Error for Constraint Violation
     #
-    # @since 0.3.1
-    class InvalidQueryError < Error
-      def initialize(message = "Invalid query")
+    # @since x.x.x
+    class ConstraintViolationError < Error
+      def initialize(message = 'Constraint has been violated')
         super
       end
     end
@@ -44,7 +57,7 @@ module Hanami
     #
     # @since 0.6.1
     class UniqueConstraintViolationError < Error
-      def initialize(message = "Unique constraint has been violated")
+      def initialize(message = 'Unique constraint has been violated')
         super
       end
     end
@@ -53,7 +66,7 @@ module Hanami
     #
     # @since 0.6.1
     class ForeignKeyConstraintViolationError < Error
-      def initialize(message = "Foreign key constraint has been violated")
+      def initialize(message = 'Foreign key constraint has been violated')
         super
       end
     end
@@ -62,7 +75,7 @@ module Hanami
     #
     # @since 0.6.1
     class NotNullConstraintViolationError < Error
-      def initialize(message = "NOT NULL constraint has been violated")
+      def initialize(message = 'NOT NULL constraint has been violated')
         super
       end
     end
@@ -71,7 +84,7 @@ module Hanami
     #
     # @since 0.6.1
     class CheckConstraintViolationError < Error
-      def initialize(message = "Check constraint has been violated")
+      def initialize(message = 'Check constraint has been violated')
         super
       end
     end

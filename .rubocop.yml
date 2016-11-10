@@ -1,0 +1,27 @@
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  ExtraDetails: false
+Style/PredicateName:
+  Enabled: false
+Lint/HandleExceptions:
+  Enabled: false
+Lint/IneffectiveAccessModifier:
+  Enabled: false
+Lint/AssignmentInCondition:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/MethodMissing:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*.rb" # Minitest syntax generates this false positive

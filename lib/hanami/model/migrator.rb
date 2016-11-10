@@ -1,7 +1,5 @@
 require 'sequel'
 require 'sequel/extensions/migration'
-require 'hanami/model/migrator/connection'
-require 'hanami/model/migrator/adapter'
 
 module Hanami
   module Model
@@ -11,51 +9,13 @@ module Hanami
     class MigrationError < Hanami::Model::Error
     end
 
-    # Define a migration
-    #
-    # It must define an up/down strategy to write schema changes (up) and to
-    # rollback them (down).
-    #
-    # We can use <tt>up</tt> and <tt>down</tt> blocks for custom strategies, or
-    # only one <tt>change</tt> block that automatically implements "down" strategy.
-    #
-    # @param blk [Proc] a block that defines up/down or change database migration
-    #
-    # @since 0.4.0
-    #
-    # @example Use up/down blocks
-    #   Hanami::Model.migration do
-    #     up do
-    #       create_table :books do
-    #         primary_key :id
-    #         column :book, String
-    #       end
-    #     end
-    #
-    #     down do
-    #       drop_table :books
-    #     end
-    #   end
-    #
-    # @example Use change block
-    #   Hanami::Model.migration do
-    #     change do
-    #       create_table :books do
-    #         primary_key :id
-    #         column :book, String
-    #       end
-    #     end
-    #
-    #     # DOWN strategy is automatically generated
-    #   end
-    def self.migration(&blk)
-      Sequel.migration(&blk)
-    end
-
     # Database schema migrator
     #
     # @since 0.4.0
-    module Migrator
+    class Migrator
+      require 'hanami/model/migrator/connection'
+      require 'hanami/model/migrator/adapter'
+
       # Create database defined by current configuration.
       #
       # It's only implemented for the following databases:
@@ -76,12 +36,14 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter :sql, 'postgres://localhost/foo'
       #   end
       #
       #   Hanami::Model::Migrator.create # Creates `foo' database
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.create
-        adapter(connection).create
+        new.create
       end
 
       # Drop database defined by current configuration.
@@ -104,12 +66,14 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter :sql, 'postgres://localhost/foo'
       #   end
       #
       #   Hanami::Model::Migrator.drop # Drops `foo' database
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.drop
-        adapter(connection).drop
+        new.drop
       end
 
       # Migrate database schema
@@ -132,7 +96,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #   end
       #
@@ -145,7 +109,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #   end
       #
@@ -154,12 +118,10 @@ module Hanami
       #
       #   # Migrate to a specifiy version
       #   Hanami::Model::Migrator.migrate(version: "20150610133853")
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.migrate(version: nil)
-        version = Integer(version) unless version.nil?
-
-        Sequel::Migrator.run(connection, migrations, target: version, allow_missing_migration_files: true) if migrations?
-      rescue Sequel::Migrator::Error => e
-        raise MigrationError.new(e.message)
+        new.migrate(version: version)
       end
 
       # Migrate, dump schema, delete migrations.
@@ -192,7 +154,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #     schema     'db/schema.sql'
       #   end
@@ -200,10 +162,10 @@ module Hanami
       #   # Reads all files from "db/migrations" and apply and delete them.
       #   # It generates an updated version of "db/schema.sql"
       #   Hanami::Model::Migrator.apply
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.apply
-        migrate
-        adapter(connection).dump
-        delete_migrations
+        new.apply
       end
 
       # Prepare database: drop, create, load schema (if any), migrate.
@@ -223,7 +185,7 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #   end
       #
@@ -235,18 +197,17 @@ module Hanami
       #
       #   Hanami::Model.configure do
       #     # ...
-      #     adapter    type: :sql, uri: 'postgres://localhost/foo'
+      #     adapter    :sql, 'postgres://localhost/foo'
       #     migrations 'db/migrations'
       #     schema     'db/schema.sql'
       #   end
       #
       #   Hanami::Model::Migrator.apply   # => updates schema dump
       #   Hanami::Model::Migrator.prepare # => creates `foo', load schema and run pending migrations (if any)
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.prepare
-        drop rescue nil
-        create
-        adapter(connection).load
-        migrate
+        new.prepare
       end
 
       # Return current database version timestamp
@@ -262,39 +223,81 @@ module Hanami
       #   #  20150610133853_create_books.rb
       #
       #   Hanami::Model::Migrator.version # => "20150610133853"
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.version
-        adapter(connection).version
+        new.version
+      end
+
+      # Instantiate a new migrator
+      #
+      # @param configuration [Hanami::Model::Configuration] framework configuration
+      #
+      # @return [Hanami::Model::Migrator] a new instance
+      #
+      # @since x.x.x
+      # @api private
+      def initialize(configuration: self.class.configuration)
+        @configuration = configuration
+        @adapter       = Adapter.for(configuration)
+      end
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.create
+      def create
+        adapter.create
+      end
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.drop
+      def drop
+        adapter.drop
+      end
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.migrate
+      def migrate(version: nil)
+        adapter.migrate(migrations, version) if migrations?
+      end
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.apply
+      def apply
+        migrate
+        adapter.dump
+        delete_migrations
+      end
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.prepare
+      def prepare
+        drop
+      rescue
+      ensure
+        create
+        adapter.load
+        migrate
+      end
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.version
+      def version
+        adapter.version
       end
 
       private
-
-      # Loads an adapter for the given connection
-      #
-      # @since 0.4.0
-      # @api private
-      def self.adapter(connection)
-        Adapter.for(connection)
-      end
-
-      # Delete all the migrations
-      #
-      # @since 0.4.0
-      # @api private
-      def self.delete_migrations
-        migrations.each_child(&:delete)
-      end
-
-      # Database connection
-      #
-      # @since 0.4.0
-      # @api private
-      def self.connection
-        Sequel.connect(
-          configuration.adapter.uri
-        )
-      rescue Sequel::AdapterNotFound
-        raise MigrationError.new("Current adapter (#{ configuration.adapter.type }) doesn't support SQL database operations.")
-      end
 
       # Hanami::Model configuration
       #
@@ -304,20 +307,40 @@ module Hanami
         Model.configuration
       end
 
+      # @since x.x.x
+      # @api private
+      attr_reader :configuration
+
+      # @since x.x.x
+      # @api private
+      attr_reader :connection
+
+      # @since x.x.x
+      # @api private
+      attr_reader :adapter
+
       # Migrations directory
       #
-      # @since 0.4.0
+      # @since x.x.x
       # @api private
-      def self.migrations
+      def migrations
         configuration.migrations
       end
 
       # Check if there are migrations
       #
-      # @since 0.4.0
+      # @since x.x.x
       # @api private
-      def self.migrations?
-        Dir["#{ migrations }/*.rb"].any?
+      def migrations?
+        Dir["#{migrations}/*.rb"].any?
+      end
+
+      # Delete all the migrations
+      #
+      # @since x.x.x
+      # @api private
+      def delete_migrations
+        migrations.each_child(&:delete)
       end
     end
   end

@@ -1,13 +1,17 @@
 language: ruby
 sudo: false
 cache: bundler
-script: 'bundle exec rake test:coverage --trace'
+script: 'bundle exec rubocop && bundle exec rake test:coverage --trace'
+after_script: 'echo `env`'
 rvm:
-  - 2.2.5
   - 2.3.1
-  - jruby-9.0.5.0
+  - jruby-9.1.5.0
   - ruby-head
   - jruby-head
+env:
+  - DB=sqlite
+  - DB=postgresql
+  - DB=mysql
 
 addons:
   postgresql: '9.4'

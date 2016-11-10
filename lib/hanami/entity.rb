@@ -1,5 +1,4 @@
-require 'hanami/utils/kernel'
-require 'hanami/utils/attributes'
+require 'hanami/model/types'
 
 module Hanami
   # An object that is defined by its identity.
@@ -22,16 +21,7 @@ module Hanami
   #
   #   class Person
   #     include Hanami::Entity
-  #     attributes :name, :age
   #   end
-  #
-  # When a class includes `Hanami::Entity` it receives the following interface:
-  #
-  #   * #id
-  #   * #id=
-  #   * #initialize(attributes = {})
-  #
-  # `Hanami::Entity` also provides the `.attributes=` for defining attribute accessors for the given names.
   #
   # If we expand the code above in **pure Ruby**, it would be:
   #
@@ -60,239 +50,165 @@ module Hanami
   # @since 0.1.0
   #
   # @see Hanami::Repository
-  module Entity
-    # Inject the public API into the hosting class.
+  class Entity
+    require 'hanami/entity/schema'
+
+    # Syntactic shortcut to reference types in custom schema DSL
     #
-    # @since 0.1.0
-    #
-    # @example With Object
-    #   require 'hanami/model'
-    #
-    #   class User
-    #     include Hanami::Entity
-    #   end
-    #
-    # @example With Struct
-    #   require 'hanami/model'
-    #
-    #   User = Struct.new(:id, :name) do
-    #     include Hanami::Entity
-    #   end
-    def self.included(base)
-      base.class_eval do
-        extend ClassMethods
-        attributes :id
-      end
+    # @since x.x.x
+    module Types
+      include Hanami::Model::Types
     end
 
+    # Class level interface
+    #
+    # @since x.x.x
+    # @api private
     module ClassMethods
-      # (Re)defines getters, setters and initialization for the given attributes.
+      # Define manual entity schema
       #
-      # These attributes can match the database columns, but this isn't a
-      # requirement. The mapper used by the relative repository will translate
-      # these names automatically.
+      # With a SQL database this setup happens automatically and you SHOULD NOT
+      # use this DSL. You should use only when you want to customize the automatic
+      # setup.
       #
-      # An entity can work with attributes not configured in the mapper, but
-      # of course they will be ignored when the entity will be persisted.
+      # If you're working with an entity that isn't "backed" by a SQL table or
+      # with a schema-less database, you may want to manually setup a set of
+      # attributes via this DSL. If you don't do any setup, the entity accepts all
+      # the given attributes.
       #
-      # Please notice that the required `id` attribute is automatically defined
-      # and can be omitted in the arguments.
+      # @param blk [Proc] the block that defines the attributes
       #
-      # @param attrs [Array<Symbol>] a set of arbitrary attribute names
+      # @since x.x.x
       #
-      # @since 0.2.0
-      #
-      # @see Hanami::Repository
-      # @see Hanami::Model::Mapper
-      #
-      # @example
-      #   require 'hanami/model'
-      #
-      #   class User
-      #     include Hanami::Entity
-      #     attributes :name, :age
-      #   end
-      #   User.attributes => #<Set: {:id, :name, :age}>
-      #
-      # @example Given params is array of attributes
-      #   require 'hanami/model'
-      #
-      #   class User
-      #     include Hanami::Entity
-      #     attributes [:name, :age]
-      #   end
-      #   User.attributes => #<Set: {:id, :name, :age}>
-      #
-      # @example Extend entity
-      #   require 'hanami/model'
-      #
-      #   class User
-      #     include Hanami::Entity
-      #     attributes :name
-      #   end
-      #
-      #   class DeletedUser < User
-      #     include Hanami::Entity
-      #     attributes :deleted_at
-      #   end
-      #
-      #   User.attributes => #<Set: {:id, :name}>
-      #   DeletedUser.attributes => #<Set: {:id, :name, :deleted_at}>
-      #
-      def attributes(*attrs)
-        return @attributes ||= Set.new unless attrs.any?
-
-        Hanami::Utils::Kernel.Array(attrs).each do |attr|
-          if allowed_attribute_name?(attr)
-            define_attr_accessor(attr)
-            self.attributes << attr
-          end
-        end
+      # @see Hanami::Entity
+      def attributes(&blk)
+        self.schema = Schema.new(&blk)
+        @attributes = true
       end
 
-      # Define setter/getter methods for attributes.
+      # Assign a schema
       #
-      # @param attr [Symbol] an attribute name
+      # @param value [Hanami::Entity::Schema] the schema
       #
-      # @since 0.3.1
+      # @since x.x.x
       # @api private
-      def define_attr_accessor(attr)
-        attr_accessor(attr)
+      def schema=(value)
+        return if defined?(@attributes)
+        @schema = value
       end
 
-      # Check if attr_reader define the given attribute
-      #
-      # @since 0.5.1
+      # @since x.x.x
       # @api private
-      def allowed_attribute_name?(name)
-        !instance_methods.include?(name)
-      end
+      attr_reader :schema
+    end
 
-      protected
-
-      # @see Class#inherited
-      def inherited(subclass)
-        subclass.attributes(*attributes)
-        super
+    # @since x.x.x
+    # @api private
+    def self.inherited(klass)
+      klass.class_eval do
+        @schema = Schema.new
+        extend  ClassMethods
       end
     end
 
-    # Defines a generic, inefficient initializer, in case that the attributes
-    # weren't explicitly defined with `.attributes=`.
+    # Instantiate a new entity
     #
-    # @param attributes [Hash] a set of attribute names and values
+    # @param attributes [Hash,#to_h,NilClass] data to initialize the entity
     #
-    # @raise NoMethodError in case the given attributes are trying to set unknown
-    #   or private methods.
+    # @return [Hanami::Entity] the new entity instance
+    #
+    # @raise [TypeError] if the given attributes are invalid
     #
     # @since 0.1.0
-    #
-    # @see .attributes
-    def initialize(attributes = {})
-      attributes.each do |k, v|
-        setter = "#{ k }="
-        public_send(setter, v) if respond_to?(setter)
-      end
+    def initialize(attributes = nil)
+      @attributes = self.class.schema[attributes]
+      freeze
     end
 
-    # Overrides the equality Ruby operator
+    # Entity ID
     #
-    # Two entities are considered equal if they are instances of the same class
-    # and if they have the same #id.
+    # @return [Object,NilClass] the ID, if present
+    #
+    # @since x.x.x
+    def id
+      attributes.fetch(:id, nil)
+    end
+
+    # Handle dynamic accessors
+    #
+    # If internal attributes set has the requested key, it returns the linked
+    # value, otherwise it raises a <tt>NoMethodError</tt>
+    #
+    # @since x.x.x
+    def method_missing(m, *)
+      attribute?(m) or super # rubocop:disable Style/AndOr
+      attributes.fetch(m, nil)
+    end
+
+    # Implement generic equality for entities
+    #
+    # Two entities are equal if they are instances of the same class and they
+    # have the same id.
+    #
+    # @param other [Object] the object of comparison
+    #
+    # @return [FalseClass,TrueClass] the result of the check
     #
     # @since 0.1.0
     def ==(other)
       self.class == other.class &&
-         self.id == other.id
+        id == other.id
     end
 
-    # Return the hash of attributes
+    # Implement predictable hashing for hash equality
     #
-    # @since 0.2.0
+    # @return [Integer] the object hash
     #
-    # @example
-    #   require 'hanami/model'
-    #   class User
-    #     include Hanami::Entity
-    #     attributes :name
-    #   end
+    # @since x.x.x
+    def hash
+      [self.class, id].hash
+    end
+
+    # Freeze the entity
     #
-    #   user = User.new(id: 23, name: 'Luca')
-    #   user.to_h # => { :id => 23, :name => "Luca" }
+    # @since x.x.x
+    def freeze
+      attributes.freeze
+      super
+    end
+
+    # Serialize entity to a Hash
+    #
+    # @return [Hash] the result of serialization
+    #
+    # @since 0.1.0
     def to_h
-      Hash[attribute_names.map { |a| [a, read_attribute(a)] }]
+      attributes.deep_dup.to_h
     end
 
-    # Return the set of attribute names
-    #
-    # @since 0.5.1
-    #
-    # @example
-    #   require 'hanami/model'
-    #   class User
-    #     include Hanami::Entity
-    #     attributes :name
-    #   end
-    #
-    #   user = User.new(id: 23, name: 'Luca')
-    #   user.attribute_names # #<Set: {:id, :name}>
-    def attribute_names
-      self.class.attributes
-    end
+    # @since x.x.x
+    alias to_hash to_h
 
-    # Return the contents of the entity as a nicely formatted string.
-    #
-    # Display all attributes of the entity for inspection (even if they are nil)
-    #
-    # @since 0.5.1
-    #
-    # @example
-    #   require 'hanami/model'
-    #   class User
-    #     include Hanami::Entity
-    #     attributes :name, :email
-    #   end
-    #
-    #   user = User.new(id: 23, name: 'Luca')
-    #   user.inspect # #<User:0x007fa7eefe0b58 @id=nil @name="Luca" @email=nil>
-    def inspect
-      attr_list = attribute_names.inject([]) do |res, name|
-        res << "@#{name}=#{read_attribute(name).inspect}"
-      end.join(' ')
+    protected
 
-      "#<#{self.class.name}:0x00#{(__id__ << 1).to_s(16)} #{attr_list}>"
-    end
-
-    alias_method :to_s, :inspect
-
-    # Set attributes for entity
+    # Check if the attribute is allowed to be read
     #
-    # @since 0.2.0
-    #
-    # @example
-    #   require 'hanami/model'
-    #   class User
-    #     include Hanami::Entity
-    #     attributes :name
-    #   end
-    #
-    #   user = User.new(name: 'Lucca')
-    #   user.update(name: 'Luca')
-    #   user.name # => 'Luca'
-    def update(attributes={})
-      attributes.each do |attribute, value|
-        public_send("#{attribute}=", value)
-      end
+    # @since x.x.x
+    # @api private
+    def attribute?(name)
+      self.class.schema.attribute?(name)
     end
 
     private
 
-    # Return the value by attribute name
-    #
-    # @since 0.5.1
+    # @since 0.1.0
     # @api private
-    def read_attribute(attr_name)
-      public_send(attr_name)
+    attr_reader :attributes
+
+    # @since x.x.x
+    # @api private
+    def respond_to_missing?(name, _include_all)
+      attribute?(name)
     end
   end
 end
