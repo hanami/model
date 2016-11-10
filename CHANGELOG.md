@@ -35,6 +35,7 @@ A persistence layer for Hanami
 - [Luca Guidi] Ensure booleans to be correctly dumped in database
 - [Luca Guidi] Ensure to respect default database schema values
 - [Luca Guidi] Ensure SQL UPDATE to not override non-default primary key
+- [James Hamilton] Print appropriate error message when trying to create a PostgreSQL database that is already existing
 
 ## v0.6.2 - 2016-06-01
 ### Changed
