@@ -384,7 +384,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.as(:entity)
+      root.as(:entity).to_a
     end
 
     # Returns the first record for the relation
