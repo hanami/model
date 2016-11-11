@@ -22,8 +22,8 @@ A persistence layer for Hanami
 - [Luca Guidi] Repositories must inherit from `Hanami::Repository` instead of including it
 - [Luca Guidi] Entities must inherit from `Hanami::Entity` instead of including it
 - [Pascal Betz] Repositories use instance level interface (eg. `BookRepository.new.find` instead of `BookRepository.find`)
-- [Luca Guidi] Repositories now work can accept hash for CRUD operations
-- [Luca Guidi] `Hanami::Repository#create` now accepts: and data (or entity)
+- [Luca Guidi] Repositories now accept hashes for CRUD operations
+- [Luca Guidi] `Hanami::Repository#create` now accepts: hash (or entity)
 - [Luca Guidi] `Hanami::Repository#update` now accepts two arguments: primary key (`id`) and data (or entity)
 - [Luca Guidi] `Hanami::Repository#delete` now accepts: primary key (`id`)
 - [Luca Guidi] Drop `Hanami::Model::NonPersistedEntityError`, `Hanami::Model::InvalidMappingError`, `Hanami::Model::InvalidCommandError`, `Hanami::Model::InvalidQueryError`
