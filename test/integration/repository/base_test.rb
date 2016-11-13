@@ -25,7 +25,8 @@ describe 'Repository (base)' do
       repository = UserRepository.new
       user = repository.create(name: 'L')
 
-      repository.all.to_a.must_include user
+      repository.all.must_be_instance_of Array
+      repository.all.must_include user
     end
   end
 
@@ -59,7 +60,7 @@ describe 'Repository (base)' do
       repository.create(name: 'L')
 
       repository.clear
-      repository.all.to_a.must_be :empty?
+      repository.all.must_be :empty?
     end
   end
 

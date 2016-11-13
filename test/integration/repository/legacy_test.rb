@@ -23,7 +23,8 @@ describe 'Repository (legacy)' do
       repository = OperatorRepository.new
       operator = repository.create(name: 'F')
 
-      repository.all.to_a.must_include operator
+      repository.all.must_be_instance_of Array
+      repository.all.must_include operator
     end
   end
 
@@ -57,7 +58,7 @@ describe 'Repository (legacy)' do
       repository.create(name: 'F')
 
       repository.clear
-      repository.all.to_a.must_be :empty?
+      repository.all.must_be :empty?
     end
   end
 
