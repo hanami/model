@@ -7,23 +7,23 @@ module Hanami
     # @since 0.5.1
     class Error < ::StandardError
       # @api private
-      # @since x.x.x
+      # @since 0.7.0
       @__mapping__ = Concurrent::Map.new # rubocop:disable Style/VariableNumber
 
       # @api private
-      # @since x.x.x
+      # @since 0.7.0
       def self.for(exception)
         mapping.fetch(exception.class, self).new(exception)
       end
 
       # @api private
-      # @since x.x.x
+      # @since 0.7.0
       def self.register(external, internal)
         mapping.put_if_absent(external, internal)
       end
 
       # @api private
-      # @since x.x.x
+      # @since 0.7.0
       def self.mapping
         @__mapping__
       end
@@ -31,7 +31,7 @@ module Hanami
 
     # Generic database error
     #
-    # @since x.x.x
+    # @since 0.7.0
     class DatabaseError < Error
     end
 
@@ -46,7 +46,7 @@ module Hanami
 
     # Error for Constraint Violation
     #
-    # @since x.x.x
+    # @since 0.7.0
     class ConstraintViolationError < Error
       def initialize(message = 'Constraint has been violated')
         super

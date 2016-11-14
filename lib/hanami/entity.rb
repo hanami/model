@@ -55,14 +55,14 @@ module Hanami
 
     # Syntactic shortcut to reference types in custom schema DSL
     #
-    # @since x.x.x
+    # @since 0.7.0
     module Types
       include Hanami::Model::Types
     end
 
     # Class level interface
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     module ClassMethods
       # Define manual entity schema
@@ -78,7 +78,7 @@ module Hanami
       #
       # @param blk [Proc] the block that defines the attributes
       #
-      # @since x.x.x
+      # @since 0.7.0
       #
       # @see Hanami::Entity
       def attributes(&blk)
@@ -90,19 +90,19 @@ module Hanami
       #
       # @param value [Hanami::Entity::Schema] the schema
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def schema=(value)
         return if defined?(@attributes)
         @schema = value
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :schema
     end
 
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.inherited(klass)
       klass.class_eval do
@@ -129,7 +129,7 @@ module Hanami
     #
     # @return [Object,NilClass] the ID, if present
     #
-    # @since x.x.x
+    # @since 0.7.0
     def id
       attributes.fetch(:id, nil)
     end
@@ -139,7 +139,7 @@ module Hanami
     # If internal attributes set has the requested key, it returns the linked
     # value, otherwise it raises a <tt>NoMethodError</tt>
     #
-    # @since x.x.x
+    # @since 0.7.0
     def method_missing(m, *)
       attribute?(m) or super # rubocop:disable Style/AndOr
       attributes.fetch(m, nil)
@@ -164,14 +164,14 @@ module Hanami
     #
     # @return [Integer] the object hash
     #
-    # @since x.x.x
+    # @since 0.7.0
     def hash
       [self.class, id].hash
     end
 
     # Freeze the entity
     #
-    # @since x.x.x
+    # @since 0.7.0
     def freeze
       attributes.freeze
       super
@@ -186,14 +186,14 @@ module Hanami
       attributes.deep_dup.to_h
     end
 
-    # @since x.x.x
+    # @since 0.7.0
     alias to_hash to_h
 
     protected
 
     # Check if the attribute is allowed to be read
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def attribute?(name)
       self.class.schema.attribute?(name)
@@ -205,7 +205,7 @@ module Hanami
     # @api private
     attr_reader :attributes
 
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def respond_to_missing?(name, _include_all)
       attribute?(name)

@@ -6,7 +6,7 @@ module Hanami
       # @since 0.4.0
       # @api private
       class MySQLAdapter < Adapter
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         PASSWORD = 'MYSQL_PWD'.freeze
 
@@ -58,13 +58,13 @@ module Hanami
 
         private
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def set_environment_variables
           ENV[PASSWORD] = password unless password.nil?
         end
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def password
           connection.password

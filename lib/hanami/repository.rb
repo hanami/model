@@ -113,7 +113,7 @@ module Hanami
     # reference for it. Example: <tt>BookRepository</tt> references <tt>Book</tt>
     # as <tt>:entity</tt>.
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     #
     # @see Hanami::Repository.inherited
@@ -122,7 +122,7 @@ module Hanami
 
     # Plugins for database commands
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     #
     # @see Hanami::Model::Plugins
@@ -130,7 +130,7 @@ module Hanami
 
     # Configuration
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.configuration
       Hanami::Model.configuration
@@ -138,7 +138,7 @@ module Hanami
 
     # Container
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.container
       Hanami::Model.container
@@ -149,7 +149,7 @@ module Hanami
     #
     # It auto-infers the underlying database table.
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.define_relation # rubocop:disable Metrics/MethodLength
       a = @associations
@@ -174,7 +174,7 @@ module Hanami
     #
     # It's also responsible to associate table columns to entity attributes.
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     #
     # rubocop:disable Metrics/MethodLength
@@ -200,7 +200,7 @@ module Hanami
 
     # It defines associations, by adding relations to the repository
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     #
     # @see Hanami::Model::Associations::Dsl
@@ -212,7 +212,7 @@ module Hanami
     #
     # NOTE: This is an experimental feature
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     #
     # @example
@@ -229,7 +229,7 @@ module Hanami
     #
     # NOTE: This should be used **only** when there is a name mismatch (eg. in legacy databases).
     #
-    # @since x.x.x
+    # @since 0.7.0
     #
     # @example
     #   class BookRepository < Hanami::Repository
@@ -246,7 +246,7 @@ module Hanami
 
     # Define relations, mapping and associations
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.load!
       define_relation
@@ -254,7 +254,7 @@ module Hanami
       define_associations
     end
 
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.inherited(klass) # rubocop:disable Metrics/MethodLength
       klass.class_eval do
@@ -277,7 +277,7 @@ module Hanami
 
     # Extend commands from ROM::Repository with error management
     #
-    # @since x.x.x
+    # @since 0.7.0
     module Commands
       # Create a new record
       #
@@ -285,7 +285,7 @@ module Hanami
       #
       # @raise [Hanami::Model::Error] an error in case the command fails
       #
-      # @since x.x.x
+      # @since 0.7.0
       #
       # @example Create From Hash
       #   user = UserRepository.new.create(name: 'Luca')
@@ -308,7 +308,7 @@ module Hanami
       #
       # @raise [Hanami::Model::Error] an error in case the command fails
       #
-      # @since x.x.x
+      # @since 0.7.0
       #
       # @example Update From Data
       #   repository = UserRepository.new
@@ -337,7 +337,7 @@ module Hanami
       #
       # @raise [Hanami::Model::Error] an error in case the command fails
       #
-      # @since x.x.x
+      # @since 0.7.0
       #
       # @example
       #   repository = UserRepository.new
@@ -355,7 +355,7 @@ module Hanami
     #
     # @return [Hanami::Repository] the new instance
     #
-    # @since x.x.x
+    # @since 0.7.0
     def initialize
       super(self.class.container)
     end
@@ -364,7 +364,7 @@ module Hanami
     #
     # @return [Hanami::Entity,NilClass] the entity, if found
     #
-    # @since x.x.x
+    # @since 0.7.0
     #
     # @example
     #   repository = UserRepository.new
@@ -379,7 +379,7 @@ module Hanami
     #
     # @return [Array<Hanami::Entity>] all the entities
     #
-    # @since x.x.x
+    # @since 0.7.0
     #
     # @example
     #   UserRepository.new.all
@@ -391,7 +391,7 @@ module Hanami
     #
     # @return [Hanami::Entity,NilClass] first entity, if any
     #
-    # @since x.x.x
+    # @since 0.7.0
     #
     # @example
     #   UserRepository.new.first
@@ -403,7 +403,7 @@ module Hanami
     #
     # @return [Hanami::Entity,NilClass] last entity, if any
     #
-    # @since x.x.x
+    # @since 0.7.0
     #
     # @example
     #   UserRepository.new.last
@@ -413,7 +413,7 @@ module Hanami
 
     # Deletes all the records from the relation
     #
-    # @since x.x.x
+    # @since 0.7.0
     #
     # @example
     #   UserRepository.new.clear
@@ -427,7 +427,7 @@ module Hanami
     #
     # NOTE: This is an experimental feature
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def assoc(target, subject)
       Hanami::Model::Association.build(self, target, subject)

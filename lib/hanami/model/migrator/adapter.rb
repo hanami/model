@@ -46,7 +46,7 @@ module Hanami
         class << self
           private
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def connection_for(configuration)
             Sequel.connect(

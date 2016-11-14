@@ -13,7 +13,7 @@ module Hanami
         # Hanami looks at the database columns, associations and potentially to
         # the mapping in the repository (optional, only for legacy databases).
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         #
         # @see Hanami::Entity::Schema
@@ -29,7 +29,7 @@ module Hanami
           #
           # @return [Hanami::Model::Sql::Entity::Schema] the schema
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def initialize(registry, relation, mapping)
             attributes  = build(registry, relation, mapping)
@@ -44,7 +44,7 @@ module Hanami
           #
           # @return [TrueClass,FalseClass] the result of the check
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def attribute?(name)
             attributes.key?(name)
@@ -52,7 +52,7 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           attr_reader :attributes
 
@@ -66,7 +66,7 @@ module Hanami
           #
           # @return [Dry::Types::Constructor] the inner schema
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def build(registry, relation, mapping)
             build_attributes(relation, mapping).merge(
@@ -83,7 +83,7 @@ module Hanami
           #
           # @return [Hash] a set of attributes
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def build_attributes(relation, mapping)
             schema = relation.schema.to_h
@@ -102,7 +102,7 @@ module Hanami
           #
           # @return [Hash] attributes with associations
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def build_associations(registry, associations)
             associations.each_with_object({}) do |(name, association), result|
@@ -113,7 +113,7 @@ module Hanami
 
           # Converts given ROM type into coercible type for entity attribute
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def coercible(type)
             Types::Schema.coercible(type)

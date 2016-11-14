@@ -2,18 +2,18 @@ module Hanami
   module Model
     # Database migration
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     class Migration
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :gateway
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :migration
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def initialize(gateway, &block)
         @gateway = gateway
@@ -21,7 +21,7 @@ module Hanami
         freeze
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def run(direction = :up)
         migration.apply(gateway.connection, direction)

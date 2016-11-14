@@ -51,7 +51,7 @@ module Hanami
 
     # SQL adapter
     #
-    # @since x.x.x
+    # @since 0.7.0
     module Sql
       require 'hanami/model/sql/types'
       require 'hanami/model/sql/entity/schema'
@@ -62,7 +62,7 @@ module Hanami
       # @param name [String,Symbol] the function name
       # @return [String] the SQL fragment
       #
-      # @since x.x.x
+      # @since 0.7.0
       #
       # @example
       #   Hanami::Model.migration do
@@ -90,7 +90,7 @@ module Hanami
       # @param string [String] the SQL fragment
       # @return [String] the literal SQL fragment
       #
-      # @since x.x.x
+      # @since 0.7.0
       #
       # @example
       #   Hanami::Model.migration do
@@ -123,7 +123,7 @@ module Hanami
       # @param column [Symbol] the column name
       # @return [String] the SQL fragment
       #
-      # @since x.x.x
+      # @since 0.7.0
       def self.asc(column)
         Sequel.asc(column)
       end
@@ -133,7 +133,7 @@ module Hanami
       # @param column [Symbol] the column name
       # @return [String] the SQL fragment
       #
-      # @since x.x.x
+      # @since 0.7.0
       def self.desc(column)
         Sequel.desc(column)
       end

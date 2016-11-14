@@ -5,7 +5,7 @@ module Hanami
   class Entity
     # Entity schema is a definition of a set of typed attributes.
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     #
     # @example SQL Automatic Setup
@@ -58,10 +58,10 @@ module Hanami
     class Schema
       # Schemaless entities logic
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       class Schemaless
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def initialize
           freeze
@@ -71,7 +71,7 @@ module Hanami
         #
         # @return [Hash]
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def call(attributes)
           if attributes.nil?
@@ -81,7 +81,7 @@ module Hanami
           end
         end
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def attribute?(_name)
           true
@@ -90,21 +90,21 @@ module Hanami
 
       # Schema definition
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       class Definition
         # Schema DSL
         #
-        # @since x.x.x
+        # @since 0.7.0
         class Dsl
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def self.build(&blk)
             attributes = new(&blk).to_h
             [attributes, Hanami::Model::Types::Coercible::Hash.schema(attributes)]
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def initialize(&blk)
             @attributes = {}
@@ -116,12 +116,12 @@ module Hanami
           # @param name [Symbol] the attribute name
           # @param type [Dry::Types::Definition] the attribute type
           #
-          # @since x.x.x
+          # @since 0.7.0
           def attribute(name, type)
             @attributes[name] = type
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def to_h
             @attributes
@@ -134,7 +134,7 @@ module Hanami
         #
         # @return [Hanami::Entity::Schema::Dsl] the DSL
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def initialize(&blk)
           raise LocalJumpError unless block_given?
@@ -149,7 +149,7 @@ module Hanami
         #
         # @raise [TypeError] if the process fails
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def call(attributes)
           schema.call(attributes)
@@ -163,7 +163,7 @@ module Hanami
         #
         # @return [TrueClass,FalseClass] the result of the check
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def attribute?(name)
           attributes.key?(name)
@@ -171,11 +171,11 @@ module Hanami
 
         private
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         attr_reader :schema
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         attr_reader :attributes
       end
@@ -186,7 +186,7 @@ module Hanami
       #
       # @return [Hanami::Entity::Schema] the schema
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def initialize(&blk)
         @schema = if block_given?
@@ -202,7 +202,7 @@ module Hanami
       #
       # @raise [TypeError] if the process fails
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def call(attributes)
         Utils::Hash.new(
@@ -210,7 +210,7 @@ module Hanami
         ).symbolize!
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       alias [] call
 
@@ -220,7 +220,7 @@ module Hanami
       #
       # @return [TrueClass,FalseClass] the result of the check
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def attribute?(name)
         schema.attribute?(name)
@@ -228,7 +228,7 @@ module Hanami
 
       protected
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :schema
     end

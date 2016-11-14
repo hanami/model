@@ -6,18 +6,18 @@ module Hanami
       module Consoles
         # PostgreSQL adapter
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class Postgresql < Abstract
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           COMMAND = 'psql'.freeze
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           PASSWORD = 'PGPASSWORD'.freeze
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def connection_string
             configure_password
@@ -26,37 +26,37 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def command
             COMMAND
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def host
             " -h #{@uri.host}"
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def database
             " -d #{database_name}"
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def port
             " -p #{@uri.port}" unless @uri.port.nil?
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def username
             " -U #{@uri.user}" unless @uri.user.nil?
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def configure_password
             ENV[PASSWORD] = @uri.password unless @uri.password.nil?

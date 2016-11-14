@@ -3,15 +3,15 @@ module Hanami
     module Plugins
       # Transform input values into database specific types (primitives).
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       module Schema
         # Takes the input and applies the values transformations.
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class InputWithSchema < WrappingInput
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def initialize(relation, input)
             super
@@ -20,7 +20,7 @@ module Hanami
 
           # Processes the input
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def [](value)
             @schema[@input[value]]
@@ -29,12 +29,12 @@ module Hanami
 
         # Class interface
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         module ClassMethods
           # Builds the input processor
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def build(relation, options = {})
             input(InputWithSchema.new(relation, input))
@@ -42,7 +42,7 @@ module Hanami
           end
         end
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def self.included(klass)
           super

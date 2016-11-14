@@ -3,23 +3,23 @@ module Hanami
     module Plugins
       # Automatically set/update timestamp columns for create/update commands
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       module Timestamps
         # Takes the input and applies the timestamp transformation.
         # This is an "abstract class", please look at the subclasses for
         # specific behaviors.
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class InputWithTimestamp < WrappingInput
           # Conventional timestamp names
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           TIMESTAMPS = [:created_at, :updated_at].freeze
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def initialize(relation, input)
             super
@@ -29,7 +29,7 @@ module Hanami
 
           # Processes the input
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def [](value)
             return value unless timestamps?
@@ -38,7 +38,7 @@ module Hanami
 
           protected
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def _touch(_value)
             raise NotImplementedError
@@ -46,7 +46,7 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def timestamps?
             @timestamps
@@ -55,12 +55,12 @@ module Hanami
 
         # Updates <tt>updated_at</tt> timestamp for update commands
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class InputWithUpdateTimestamp < InputWithTimestamp
           protected
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def _touch(value, now)
             value[:updated_at] = now
@@ -70,12 +70,12 @@ module Hanami
 
         # Sets <tt>created_at</tt> and <tt>updated_at</tt> timestamps for create commands
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class InputWithCreateTimestamp < InputWithUpdateTimestamp
           protected
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def _touch(value, now)
             super
@@ -86,12 +86,12 @@ module Hanami
 
         # Class interface
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         module ClassMethods
           # Build an input processor according to the current command (create or update).
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def build(relation, options = {})
             plugin = if self < ROM::Commands::Create
@@ -105,7 +105,7 @@ module Hanami
           end
         end
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def self.included(klass)
           super

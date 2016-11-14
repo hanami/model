@@ -7,14 +7,14 @@ module Hanami
       module Consoles
         # SQLite adapter
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class Sqlite < Abstract
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           COMMAND = 'sqlite3'.freeze
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def connection_string
             concat(command, ' ', host, database)
@@ -22,19 +22,19 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def command
             COMMAND
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def host
             @uri.host unless @uri.host.nil?
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def database
             Shellwords.escape(@uri.path)
