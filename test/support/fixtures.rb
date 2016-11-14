@@ -35,6 +35,9 @@ class Account < Hanami::Entity
   end
 end
 
+class Product < Hanami::Entity
+end
+
 class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name).as(:entity)
@@ -115,6 +118,9 @@ class SourceFileRepository < Hanami::Repository
 end
 
 class WharehouseRepository < Hanami::Repository
+end
+
+class ProductRepository < Hanami::Repository
 end
 
 Hanami::Model.load!

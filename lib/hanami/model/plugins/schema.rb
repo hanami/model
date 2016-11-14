@@ -23,7 +23,7 @@ module Hanami
           # @since x.x.x
           # @api private
           def [](value)
-            @schema[value]
+            @schema[@input[value]]
           end
         end
 

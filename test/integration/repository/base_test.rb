@@ -484,6 +484,18 @@ describe 'Repository (base)' do
       #   found = repository.find('9999999')
       #   found.must_be_nil
       # end
+      describe "when timestamps aren't enabled" do
+        it 'writes the proper PG types' do
+          repository = ProductRepository.new
+
+          product = repository.create(name: 'NeoVim', categories: ['software'])
+          found   = repository.find(product.id)
+
+          product.categories.must_equal(['software'])
+
+          found.must_equal(product)
+        end
+      end
     end
   end
 end

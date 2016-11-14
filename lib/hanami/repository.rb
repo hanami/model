@@ -126,7 +126,7 @@ module Hanami
     # @api private
     #
     # @see Hanami::Model::Plugins
-    COMMAND_PLUGINS = [:mapping, :timestamps, :schema].freeze
+    COMMAND_PLUGINS = [:schema, :mapping, :timestamps].freeze
 
     # Configuration
     #
