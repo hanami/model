@@ -41,9 +41,18 @@ module Hanami
           @repository = repository
           @source     = source
           @target     = target
-          @subject    = subject.to_h
+          @subject    = subject.to_hash unless subject.nil?
           @scope      = scope || _build_scope
           freeze
+        end
+
+        # @since 0.7.0
+        # @api private
+        def create(data)
+          entity.new(
+            command(:create, aggregate(target), use: [:timestamps])
+              .call(data)
+          )
         end
 
         # @since 0.7.0
@@ -108,8 +117,20 @@ module Hanami
 
         # @since 0.7.0
         # @api private
+        def entity
+          repository.class.entity
+        end
+
+        # @since 0.7.0
+        # @api private
         def relation(name)
           repository.relations[name]
+        end
+
+        # @since 0.7.0
+        # @api private
+        def aggregate(name)
+          repository.aggregate(name)
         end
 
         # @since 0.7.0
@@ -163,9 +184,9 @@ module Hanami
         # @since 0.7.0
         # @api private
         def _build_scope
-          relation(target)
-            .where(foreign_key => subject.fetch(primary_key))
-            .as(Repository::MAPPER_NAME)
+          result = relation(target)
+          result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
+          result.as(Repository::MAPPER_NAME)
         end
 
         # @since 0.7.0

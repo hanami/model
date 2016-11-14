@@ -384,7 +384,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.as(:entity)
+      root.as(:entity).to_a
     end
 
     # Returns the first record for the relation
@@ -429,7 +429,7 @@ module Hanami
     #
     # @since 0.7.0
     # @api private
-    def assoc(target, subject)
+    def assoc(target, subject = nil)
       Hanami::Model::Association.build(self, target, subject)
     end
   end
