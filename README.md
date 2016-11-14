@@ -129,25 +129,29 @@ This architecture has several advantages:
 
 When a class includes `Hanami::Repository`, it will receive the following interface:
 
-  * `#create(data)`     – Create a record for the given data (or entity)
-  * `#update(id, data)` – Update the record corresponding to the given id by setting the given data (or entity)
-  * `#delete(id)`       – Delete the record corresponding to the given id
-  * `#all`              - Fetch all the entities from the relation
-  * `#find`             - Fetch an entity from the relation by primary key
-  * `#first`            - Fetch the first entity from the relation
-  * `#last`             - Fetch the last entity from the relation
-  * `#clear`            - Delete all the records from the relation
+  * `#create(data)`            – Create a record for the given data (or entity)
+  * `#update(id, data)`        – Update the record corresponding to the given id by setting the given data (or entity)
+  * `#delete(id)`              – Delete the record corresponding to the given id
+  * `#all`                     - Fetch all the entities from the relation
+  * `#find`                    - Fetch an entity from the relation by primary key
+  * `#first`                   - Fetch the first entity from the relation
+  * `#last`                    - Fetch the last entity from the relation
+  * `#clear`                   - Delete all the records from the relation
+  * `#query` (aliased as `#q`) - Returns a database relation for inline queries (only for testing purposes)
 
 **A relation is a homogenous set of records.**
 It corresponds to a table for a SQL database or to a MongoDB collection.
 
-**All the queries are private**.
-This decision forces developers to define intention revealing API, instead of leaking storage API details outside of a repository.
+#### Private Queries
+
+**All the queries SHOULD be private**.
+While there is a way to query the database outside from a repository, this is **strongly discouraged**.
+For maintenance reasons, you SHOULD define intention revealing API, instead of leaking storage API details outside of a repository.
 
 Look at the following code:
 
 ```ruby
-ArticleRepository.new.where(author_id: 23).order(:published_at).limit(8)
+ArticleRepository.new.q.where(author_id: 23).order(:published_at).limit(8)
 ```
 
 This is **bad** for a variety of reasons:
@@ -187,6 +191,25 @@ This is a **huge improvement**, because:
   * The caller can be easily tested in isolation. It's just a matter of stubbing this method.
 
   * If we change the storage, the callers aren't affected.
+
+#### Inline Queries
+
+[Private queries](#private-queries) are a strong guidance to write maintanable code.
+But when interacting with Hanami console or writing unit tests, it can be convenient to access to inline queries.
+
+```ruby
+RSpec.describe ArticleRepository do
+  it "creates draft articles" do
+    repository = described_class.new
+    draft      = repository.create_draft(title: "Introducing Hanami")
+
+    drafts = repository.q.where(state: 'draft').where(title: "Introducing Hanami")
+    expect(drafts).to include(draft)
+  end
+end
+```
+
+Inline queries **SHOULD NOT** be used outside of testing code.
 
 ### Mapping
 
