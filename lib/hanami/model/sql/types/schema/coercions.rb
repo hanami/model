@@ -7,7 +7,7 @@ module Hanami
         module Schema
           # Coercions for schema types
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           #
           # rubocop:disable Metrics/MethodLength
@@ -20,7 +20,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.int(arg)
               case arg
@@ -41,7 +41,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.float(arg)
               case arg
@@ -62,7 +62,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.decimal(arg)
               case arg
@@ -85,7 +85,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.date(arg)
               case arg
@@ -108,7 +108,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.datetime(arg)
               case arg
@@ -131,7 +131,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.time(arg)
               case arg
@@ -156,7 +156,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.array(arg)
               case arg
@@ -177,7 +177,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def self.hash(arg)
               case arg

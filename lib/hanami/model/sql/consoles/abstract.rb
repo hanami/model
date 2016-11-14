@@ -4,10 +4,10 @@ module Hanami
       module Consoles
         # Abstract adapter
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class Abstract
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def initialize(uri)
             @uri = uri
@@ -15,13 +15,13 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def database_name
             @uri.path.sub(/^\//, '')
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def concat(*tokens)
             tokens.join

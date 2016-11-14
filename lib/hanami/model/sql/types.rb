@@ -6,14 +6,13 @@ module Hanami
     module Sql
       # Types definitions for SQL databases
       #
-      # @since x.x.x
+      # @since 0.7.0
       module Types
-        # include ROM::SQL::Types
         include Dry::Types.module
 
         # Types for schema definitions
         #
-        # @since x.x.x
+        # @since 0.7.0
         module Schema
           require 'hanami/model/sql/types/schema/coercions'
 
@@ -32,7 +31,7 @@ module Hanami
           Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
           Hash     = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:hash))
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           MAPPING = {
             Types::String.with(meta: {})            => Schema::String,
@@ -59,7 +58,7 @@ module Hanami
 
           # Convert given type into coercible
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def self.coercible(type)
             return type if type.constrained?
@@ -68,7 +67,7 @@ module Hanami
 
           # Coercer for SQL associations target
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           class AssociationType < Hanami::Model::Types::Schema::CoercibleType
             # Check if value can be coerced
@@ -77,13 +76,13 @@ module Hanami
             #
             # @return [TrueClass,FalseClass] the result of the check
             #
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def valid?(value)
               value.inspect =~ /\[#{primitive}\]/ || super
             end
 
-            # @since x.x.x
+            # @since 0.7.0
             # @api private
             def success(*args)
               result(Dry::Types::Result::Success, primitive.new(args.first.to_h))

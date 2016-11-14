@@ -9,11 +9,11 @@ module Hanami
     #
     # @since 0.2.0
     class Configuration < ROM::Configuration
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :mappings
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :entities
 
@@ -29,7 +29,7 @@ module Hanami
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def url
         connection.url
@@ -37,7 +37,7 @@ module Hanami
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def connection
         gateway.connection
@@ -45,7 +45,7 @@ module Hanami
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def gateway
         environment.gateways[:default]
@@ -73,20 +73,20 @@ module Hanami
         @schema.nil? ? root : root.join(@schema)
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def define_mappings(root, &blk)
         @mappings[root] = Mapping.new(&blk)
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def register_entity(plural, singular, klass)
         @entities[plural]   = klass
         @entities[singular] = klass
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def define_entities_mappings(container, repositories)
         return unless defined?(Sql::Entity::Schema)

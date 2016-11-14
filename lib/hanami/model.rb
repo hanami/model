@@ -16,19 +16,19 @@ module Hanami
     require 'hanami/model/plugins'
 
     # @api private
-    # @since x.x.x
+    # @since 0.7.0
     @__repositories__ = Concurrent::Array.new # rubocop:disable Style/VariableNumber
 
     class << self
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :config
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :loaded
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       alias loaded? loaded
     end
@@ -58,13 +58,13 @@ module Hanami
       @configuration ||= Configuration.new(config)
     end
 
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.repositories
       @__repositories__
     end
 
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     def self.container
       raise 'Not loaded' unless loaded?

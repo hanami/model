@@ -3,23 +3,23 @@ module Hanami
     module Associations
       # Auto-infer relations linked to repository's associations
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       class Dsl
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def initialize(repository, &blk)
           @repository = repository
           instance_eval(&blk)
         end
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def has_many(relation, *)
           @repository.__send__(:relations, relation)
         end
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def belongs_to(*)
         end

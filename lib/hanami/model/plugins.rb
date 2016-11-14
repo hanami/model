@@ -2,15 +2,15 @@ module Hanami
   module Model
     # Plugins to extend read/write operations from/to the database
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     module Plugins
       # Wrapping input
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       class WrappingInput
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def initialize(_relation, input)
           @input = input || Hash

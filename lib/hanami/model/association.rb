@@ -6,12 +6,12 @@ module Hanami
   module Model
     # Association factory
     #
-    # @since x.x.x
+    # @since 0.7.0
     # @api private
     class Association
       # Instantiate an association
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def self.build(repository, target, subject)
         lookup(repository.root.associations[target])
@@ -20,7 +20,7 @@ module Hanami
 
       # Translate ROM SQL associations into Hanami::Model associations
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def self.lookup(association)
         case association

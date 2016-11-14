@@ -5,14 +5,14 @@ module Hanami
     module Sql
       # SQL console
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       class Console
         extend Forwardable
 
         def_delegator :console, :connection_string
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def initialize(uri)
           @uri = URI.parse(uri)
@@ -20,7 +20,7 @@ module Hanami
 
         private
 
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def console # rubocop:disable Metrics/MethodLength
           case @uri.scheme

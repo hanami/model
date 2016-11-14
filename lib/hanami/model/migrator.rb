@@ -235,14 +235,14 @@ module Hanami
       #
       # @return [Hanami::Model::Migrator] a new instance
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def initialize(configuration: self.class.configuration)
         @configuration = configuration
         @adapter       = Adapter.for(configuration)
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       #
       # @see Hanami::Model::Migrator.create
@@ -250,7 +250,7 @@ module Hanami
         adapter.create
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       #
       # @see Hanami::Model::Migrator.drop
@@ -258,7 +258,7 @@ module Hanami
         adapter.drop
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       #
       # @see Hanami::Model::Migrator.migrate
@@ -266,7 +266,7 @@ module Hanami
         adapter.migrate(migrations, version) if migrations?
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       #
       # @see Hanami::Model::Migrator.apply
@@ -276,7 +276,7 @@ module Hanami
         delete_migrations
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       #
       # @see Hanami::Model::Migrator.prepare
@@ -289,7 +289,7 @@ module Hanami
         migrate
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       #
       # @see Hanami::Model::Migrator.version
@@ -307,21 +307,21 @@ module Hanami
         Model.configuration
       end
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :configuration
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :connection
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       attr_reader :adapter
 
       # Migrations directory
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def migrations
         configuration.migrations
@@ -329,7 +329,7 @@ module Hanami
 
       # Check if there are migrations
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def migrations?
         Dir["#{migrations}/*.rb"].any?
@@ -337,7 +337,7 @@ module Hanami
 
       # Delete all the migrations
       #
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def delete_migrations
         migrations.each_child(&:delete)

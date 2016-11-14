@@ -4,11 +4,11 @@ module Hanami
   module Model
     # Types definitions
     #
-    # @since x.x.x
+    # @since 0.7.0
     module Types
       include ROM::Types
 
-      # @since x.x.x
+      # @since 0.7.0
       # @api private
       def self.included(mod)
         mod.extend(ClassMethods)
@@ -16,11 +16,11 @@ module Hanami
 
       # Class level interface
       #
-      # @since x.x.x
+      # @since 0.7.0
       module ClassMethods
         # Define an array of given type
         #
-        # @since x.x.x
+        # @since 0.7.0
         def Collection(type) # rubocop:disable Style/MethodName
           type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
           Types::Array.member(type)
@@ -29,11 +29,11 @@ module Hanami
 
       # Types for schema definitions
       #
-      # @since x.x.x
+      # @since 0.7.0
       module Schema
         # Coercer for objects within custom schema definition
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         class CoercibleType < Dry::Types::Definition
           # Coerce given value into the wrapped object type
@@ -44,7 +44,7 @@ module Hanami
           #
           # @raise [TypeError] if value can't be coerced
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def call(value)
             if valid?(value)
@@ -63,7 +63,7 @@ module Hanami
           #
           # @return [TrueClass,FalseClass] the result of the check
           #
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def valid?(value)
             value.is_a?(object) ||
@@ -84,7 +84,7 @@ module Hanami
             end
           end
 
-          # @since x.x.x
+          # @since 0.7.0
           # @api private
           def object
             result = primitive

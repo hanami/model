@@ -8,7 +8,7 @@ module Hanami
       # @since 0.5.0
       # @api private
       class Connection
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         attr_reader :raw
 
@@ -114,7 +114,7 @@ module Hanami
 
         # Return the database table for the given name
         #
-        # @since x.x.x
+        # @since 0.7.0
         # @api private
         def table(name)
           raw[name] if raw.tables.include?(name)
