@@ -253,7 +253,7 @@ puts user.created_at.to_s # => "2016-09-19 13:40:13 UTC"
 puts user.updated_at.to_s # => "2016-09-19 13:40:13 UTC"
 
 sleep 3
-user = UserRepository.new.update(user.id, age: 34)
+user = repository.update(user.id, age: 34)
 puts user.created_at.to_s # => "2016-09-19 13:40:13 UTC"
 puts user.updated_at.to_s # => "2016-09-19 13:40:16 UTC"
 ```
