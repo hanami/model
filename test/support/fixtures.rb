@@ -52,6 +52,10 @@ class AuthorRepository < Hanami::Repository
     has_many :books
   end
 
+  def create_with_books(data)
+    assoc(:books).create(data)
+  end
+
   def find_with_books(id)
     aggregate(:books).where(authors__id: id).as(Author).one
   end

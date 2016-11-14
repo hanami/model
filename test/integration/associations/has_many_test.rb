@@ -21,13 +21,16 @@ describe 'Associations (has_many)' do
     found.books.must_equal [book]
   end
 
-  it 'creates an object with a collection of associated objects'
-  # it 'creates an object with a collection of associated objects' do
-  #   repository = AuthorRepository.new
-  #   author = repository.create_with_books(name: 'Henry Thoreau', books: [{ title: 'Walden' }])
+  it 'creates an object with a collection of associated objects' do
+    repository = AuthorRepository.new
+    author = repository.create_with_books(name: 'Henry Thoreau', books: [{ title: 'Walden' }])
 
-  #   author.name.must_equal 'Fowler'
-  # end
+    author.must_be_instance_of(Author)
+    author.name.must_equal 'Henry Thoreau'
+    author.books.must_be_instance_of(Array)
+    author.books.first.must_be_instance_of(Book)
+    author.books.first.title.must_equal('Walden')
+  end
 
   ##############################################################################
   # OPERATIONS                                                                 #
