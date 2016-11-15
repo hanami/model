@@ -1,7 +1,7 @@
 # Hanami::Model
 A persistence layer for Hanami
 
-## v0.7.0 - (unreleased)
+## v0.7.0 - 2016-11-15
 ### Added
 - [Luca Guidi] `Hanami::Entity` defines an automatic schema for SQL databases
 – [Luca Guidi] `Hanami::Entity` attributes schema
