@@ -207,7 +207,7 @@ class UserRepository < Hanami::Repository
   end
 end
 ```
-**NOTE:** This feature should be used only when **_automapping_** fails because the naming mismatch.
+**NOTE:** This feature should be used only when **_automapping_** fails because of the naming mismatch.
 
 ### Conventions
 
@@ -216,7 +216,7 @@ end
 ### Thread safety
 
 **Hanami::Model**'s is thread safe during the runtime, but it isn't during the loading process.
-The mapper compiles some code internally, be sure to safely load it before your application starts.
+The mapper compiles some code internally, so be sure to safely load it before your application starts.
 
 ```ruby
 Mutex.new.synchronize do
@@ -224,7 +224,7 @@ Mutex.new.synchronize do
 end
 ```
 
-**This is not necessary, when Hanami::Model is used within a Hanami application.**
+**This is not necessary when Hanami::Model is used within a Hanami application.**
 
 ## Features
 
