@@ -423,6 +423,69 @@ module Hanami
 
     private
 
+    # Gives access to low level connection in order to perform specific
+    # operations for the current database.
+    #
+    # NOTE: Please note that using `#connection` will limit the portability of
+    # the repository in case you want to switch the database/adapter.
+    # For instance, if you fetch data with a raw SQL query, then it would be
+    # impossible to use a Redis database without changing that query.
+    #
+    # NOTE: In order to use `#connection`, please read the API docs of your
+    # current adapter.
+    # In case you're using a SQL database, please check Sequel (`sequel` gem)
+    # API docs.
+    #
+    # @return [Object] A raw connection, the type depends on the current adapter
+    #
+    # @since x.x.x
+    #
+    # @example Fetch data with raw SQL
+    #   class UserRepository < Hanami::Repository
+    #     def find_all
+    #       connection.fetch('SELECT * FROM users').to_a
+    #     end
+    #   end
+    #
+    #   repository = UserRepository.new
+    #   users      = repository.find_all
+    #
+    #   users.class # => Array
+    #   users.first # => {:id=>1, :name=>"Luca", :age=>34, :created_at=>2016-12-02 08:05:56 UTC, :updated_at=>2016-12-02 08:05:56 UTC}
+    #
+    #   # NOTE that `#fetch` is only available for SQL adapter
+    #
+    # @example Count records
+    #   class UserRepository < Hanami::Repository
+    #     def count
+    #       users.count
+    #     end
+    #
+    #     def count_with_connection
+    #       connection[:users].count
+    #     end
+    #
+    #     def active_users
+    #       users.where(active: true)
+    #     end
+    #
+    #     def count_active_users
+    #       active_users.count
+    #     end
+    #   end
+    #
+    #   repository = UserRepository.new
+    #
+    #   repository.count # => 100
+    #   repository.count_with_connection # => 100
+    #
+    #   repository.count_active_users # => 82
+    #
+    #   # NOTE that `connection#[]` is only available for SQL adapter
+    def connection
+      container.gateways[root.gateway].connection
+    end
+
     # Returns an association
     #
     # NOTE: This is an experimental feature

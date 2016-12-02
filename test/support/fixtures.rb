@@ -42,6 +42,30 @@ class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name).as(:entity)
   end
+
+  def find_all_by_manual_query
+    connection.fetch('select * from users').to_a
+  end
+
+  def active_users
+    users.where(active: true)
+  end
+
+  def count
+    users.count
+  end
+
+  def count_with_connection
+    connection[:users].count
+  end
+
+  def count_active_users
+    active_users.count
+  end
+
+  def reset_comments_count
+    connection.execute('UPDATE users SET comments_count = 0')
+  end
 end
 
 class AvatarRepository < Hanami::Repository

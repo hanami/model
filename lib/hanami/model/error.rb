@@ -8,7 +8,7 @@ module Hanami
     class Error < ::StandardError
       # @api private
       # @since 0.7.0
-      @__mapping__ = Concurrent::Map.new # rubocop:disable Style/VariableNumber
+      @__mapping__ = Concurrent::Map.new
 
       # @api private
       # @since 0.7.0
