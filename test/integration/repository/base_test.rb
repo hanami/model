@@ -3,6 +3,15 @@ require 'test_helper'
 describe 'Repository (base)' do
   extend PlatformHelpers
 
+  describe 'relation' do
+    it 'allows to materialize relation with count' do
+      repository = UserRepository.new
+      count      = repository.count
+
+      count.must_be_kind_of(Integer)
+    end
+  end
+
   describe '#find' do
     it 'finds record by primary key' do
       repository = UserRepository.new
@@ -64,10 +73,35 @@ describe 'Repository (base)' do
     end
   end
 
-  describe '#execute' do
-  end
+  describe '#connection' do
+    it 'is a private method' do
+      repository = UserRepository.new
+      exception  = -> { repository.connection }.must_raise(NoMethodError)
 
-  describe '#fetch' do
+      exception.message.must_include "private method `connection' called for"
+    end
+
+    it 'exposes raw connection' do
+      repository = UserRepository.new
+      data       = repository.find_all_by_manual_query
+      user       = data.first
+
+      user.must_be_kind_of(Hash)
+    end
+
+    it 'allows low level operations, only valid for the current adapter' do
+      repository = UserRepository.new
+      count      = repository.count_with_connection
+
+      count.must_be_kind_of(Integer)
+    end
+
+    it 'allows to run commands' do
+      repository = UserRepository.new
+      repository.reset_comments_count
+
+      repository.first.comments_count.must_equal 0
+    end
   end
 
   describe '#create' do
@@ -451,6 +485,13 @@ describe 'Repository (base)' do
       found   = repository.by_name('L')
 
       found.to_a.must_include user
+    end
+
+    it 'allows to materialize custom finders with count' do
+      repository = UserRepository.new
+      count      = repository.count_active_users
+
+      count.must_be_kind_of(Integer)
     end
   end
 

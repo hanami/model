@@ -25,3 +25,7 @@ Style/GuardClause:
 Metrics/BlockLength:
   Exclude:
     - "test/**/*.rb" # Minitest syntax generates this false positive
+Bundler/OrderedGems:
+  Enabled: false
+Style/EmptyMethod:
+  Enabled: false
