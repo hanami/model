@@ -63,7 +63,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def _touch(value, now)
-            value[:updated_at] = now
+            value[:updated_at] ||= now
             value
           end
         end
@@ -79,7 +79,7 @@ module Hanami
           # @api private
           def _touch(value, now)
             super
-            value[:created_at] = now
+            value[:created_at] ||= now
             value
           end
         end
