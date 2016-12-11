@@ -74,11 +74,13 @@ module Hanami
         # @since 0.7.0
         # @api private
         def call(attributes)
-          if attributes.nil?
-            {}
-          else
-            attributes.dup
-          end
+          attributes = if attributes.nil?
+                         {}
+                       else
+                         attributes.dup
+                       end
+
+          Utils::Hash.new(attributes).symbolize!
         end
 
         # @since 0.7.0
@@ -205,9 +207,8 @@ module Hanami
       # @since 0.7.0
       # @api private
       def call(attributes)
-        Utils::Hash.new(
-          schema.call(attributes)
-        ).symbolize!
+        attributes = schema.call(attributes)
+        Utils::Hash.new(attributes)
       end
 
       # @since 0.7.0

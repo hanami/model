@@ -29,6 +29,7 @@ class Account < Hanami::Entity
     attribute :id,         Types::Strict::Int
     attribute :name,       Types::String
     attribute :codes,      Types::Collection(Types::Coercible::Int)
+    attribute :owner,      Types::Entity(User)
     attribute :users,      Types::Collection(User)
     attribute :email,      Types::String.constrained(format: /@/)
     attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })

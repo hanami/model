@@ -67,6 +67,21 @@ describe Hanami::Entity do
         end
       end
 
+      it 'coerces a single value' do
+        entity = described_class.new(owner: { name: 'L' })
+
+        entity.owner.must_be_kind_of(User)
+        entity.owner.name.must_equal 'L'
+      end
+
+      it 'accepts correct type for single value' do
+        user = User.new(name: 'L')
+        entity = described_class.new(owner: user)
+
+        entity.owner.must_be_kind_of(User)
+        entity.owner.name.must_equal user.name
+      end
+
       it 'raises error if initialized with wrong primitive' do
         exception = lambda do
           described_class.new(id: :foo)
@@ -110,7 +125,7 @@ describe Hanami::Entity do
       it 'returns nil if not present in attributes' do
         entity = described_class.new
 
-        entity.id.must_equal nil
+        assert_nil entity.id
       end
     end
 
