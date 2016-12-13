@@ -10,16 +10,19 @@ module Hanami
         # @api private
         PASSWORD = 'MYSQL_PWD'.freeze
 
+        # @since x.x.x
+        # @api private
+        DB_CREATION_ERROR = 'Database creation failed. If the database exists, ' \
+                            'then its console may be open. See this issue for more details: ' \
+                            'https://github.com/hanami/model/issues/250'.freeze
+
         # @since 0.4.0
         # @api private
         def create # rubocop:disable Metrics/MethodLength
           new_connection(global: true).run %(CREATE DATABASE #{database};)
         rescue Sequel::DatabaseError => e
           message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
-                      "Database creation failed. If the database exists, \
-                         then its console may be open. See this issue for more details:\
-                         https://github.com/hanami/model/issues/250\
-                      "
+                      DB_CREATION_ERROR
                     else
                       e.message
                     end
