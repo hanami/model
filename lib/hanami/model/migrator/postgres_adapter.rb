@@ -22,6 +22,12 @@ module Hanami
         # @api private
         PASSWORD = 'PGPASSWORD'.freeze
 
+        # @since x.x.x
+        # @api private
+        DB_CREATION_ERROR = 'createdb: database creation failed. If the database exists, ' \
+                            'then its console may be open. See this issue for more details: ' \
+                            'https://github.com/hanami/model/issues/250'.freeze
+
         # @since 0.4.0
         # @api private
         def create # rubocop:disable Metrics/MethodLength
@@ -29,10 +35,7 @@ module Hanami
 
           call_db_command('createdb') do |error_message|
             message = if error_message.match(/already exists/) # rubocop:disable Performance/RedundantMatch
-                        "createdb: database creation failed. If the database exists, \
-                         then its console may be open. See this issue for more details:\
-                         https://github.com/hanami/model/issues/250\
-                        "
+                        DB_CREATION_ERROR
                       else
                         error_message
                       end
