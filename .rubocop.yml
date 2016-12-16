@@ -1,27 +1,21 @@
-AllCops:
-  DisplayCopNames: true
-  DisplayStyleGuide: true
-  ExtraDetails: false
-Style/PredicateName:
+# Please keep AllCops, Bundler, Style, Metrics groups and then order cops
+# alphabetically
+inherit_from:
+  - https://raw.githubusercontent.com/hanami/hanami/master/.rubocop.yml
+Lint/AssignmentInCondition:
   Enabled: false
 Lint/HandleExceptions:
   Enabled: false
 Lint/IneffectiveAccessModifier:
   Enabled: false
-Lint/AssignmentInCondition:
-  Enabled: false
-Style/RaiseArgs:
-  Enabled: false
-Style/MethodMissing:
-  Enabled: false
-Style/RegexpLiteral:
-  Enabled: false
-Style/FileName:
-  Enabled: false
-Metrics/LineLength:
-  Enabled: false
-Style/GuardClause:
-  Enabled: false
 Metrics/BlockLength:
   Exclude:
     - "test/**/*.rb" # Minitest syntax generates this false positive
+Style/FileName:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/MethodMissing:
+  Enabled: false
+Style/PredicateName:
+  Enabled: false
