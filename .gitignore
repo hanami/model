@@ -2,13 +2,16 @@
 *.rbc
 .bundle
 .config
-.yardoc
+.DS_Store
+.greenbar
 .ruby-version
-Gemfile.lock
-InstalledFiles
+.yardoc
+.rubocop-*
 _yardoc
 coverage
 doc/
+Gemfile.lock
+InstalledFiles
 lib/bundler/man
 pkg
 rdoc
@@ -16,5 +19,3 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
-.greenbar
-.DS_Store
