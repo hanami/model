@@ -141,7 +141,7 @@ module Hanami
     #
     # @since 0.7.0
     def method_missing(m, *)
-      attribute?(m) or super # rubocop:disable Style/AndOr
+      attribute?(m) or super
       attributes.fetch(m, nil)
     end
 

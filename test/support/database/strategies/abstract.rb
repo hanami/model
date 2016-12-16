@@ -42,7 +42,7 @@ module Database
           adapter ENV['HANAMI_DATABASE_ADAPTER'].to_sym, ENV['HANAMI_DATABASE_URL']
         end
 
-        returing == Hanami::Model or raise 'Hanami::Model.configure should return Hanami::Model' # rubocop:disable Style/AndOr
+        returing == Hanami::Model or raise 'Hanami::Model.configure should return Hanami::Model'
       end
 
       def after
