@@ -18,7 +18,7 @@ module Hanami
 
         # @since 0.4.0
         # @api private
-        def create # rubocop:disable Metrics/MethodLength
+        def create
           new_connection(global: true).run %(CREATE DATABASE #{database};)
         rescue Sequel::DatabaseError => e
           message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch

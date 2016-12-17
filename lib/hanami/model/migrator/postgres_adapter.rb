@@ -30,7 +30,7 @@ module Hanami
 
         # @since 0.4.0
         # @api private
-        def create # rubocop:disable Metrics/MethodLength
+        def create
           set_environment_variables
 
           call_db_command('createdb') do |error_message|
