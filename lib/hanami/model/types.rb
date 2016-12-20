@@ -18,11 +18,15 @@ module Hanami
       #
       # @since 0.7.0
       module ClassMethods
+        def Entity(type) # rubocop:disable Style/MethodName
+          Schema::CoercibleType.wrap_unless_dry_type(type)
+        end
+
         # Define an array of given type
         #
         # @since 0.7.0
         def Collection(type) # rubocop:disable Style/MethodName
-          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
+          type = Schema::CoercibleType.wrap_unless_dry_type(type)
           Types::Array.member(type)
         end
       end
@@ -36,6 +40,15 @@ module Hanami
         # @since 0.7.0
         # @api private
         class CoercibleType < Dry::Types::Definition
+          # Wraps a given type, unless it already is a dry type
+          #
+          # @since x.x.x
+          # @api private
+          def self.wrap_unless_dry_type(type)
+            return type if type.is_a?(Dry::Types::Definition)
+            new(type)
+          end
+
           # Coerce given value into the wrapped object type
           #
           # @param value [Object] the value
