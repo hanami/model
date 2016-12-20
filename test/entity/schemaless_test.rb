@@ -79,7 +79,7 @@ describe Hanami::Entity do
       it 'serializes attributes into hash' do
         entity = described_class.new(foo: 1, 'bar' => { 'baz' => 2 })
 
-        entity.to_h.must_equal Hash[foo: 1, bar: { 'baz' => 2 }]
+        entity.to_h.must_equal Hash[foo: 1, bar: { baz: 2 }]
       end
 
       it 'must be an instance of ::Hash' do
