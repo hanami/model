@@ -105,6 +105,34 @@ describe 'Repository (base)' do
         user.created_at.must_be_close_to Time.now.utc, 2
         user.updated_at.must_be_close_to Time.now.utc, 2
       end
+
+      it 'respects given timestamps' do
+        repository = UserRepository.new
+        given_time = Time.new(2010, 1, 1, 12, 0, 0, '+00:00')
+
+        user = repository.create(name: 'L', created_at: given_time, updated_at: given_time)
+
+        user.created_at.must_be_close_to given_time, 2
+        user.updated_at.must_be_close_to given_time, 2
+      end
+
+      it 'can update timestamps' do
+        repository = UserRepository.new
+        user = repository.create(name: 'L')
+        user.created_at.must_be_close_to Time.now.utc, 2
+        user.updated_at.must_be_close_to Time.now.utc, 2
+
+        given_time = Time.new(2010, 1, 1, 12, 0, 0, '+00:00')
+        updated = repository.update(
+          user.id,
+          created_at: given_time,
+          updated_at: given_time
+        )
+
+        updated.name.must_equal 'L'
+        updated.created_at.must_be_close_to given_time, 2
+        updated.updated_at.must_be_close_to given_time, 2
+      end
     end
 
     # Bug: https://github.com/hanami/model/issues/237
