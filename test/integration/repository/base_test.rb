@@ -64,10 +64,19 @@ describe 'Repository (base)' do
     end
   end
 
-  describe '#execute' do
-  end
+  describe 'relation' do
+    describe 'read' do
+      it 'reads records from the database given a raw query string' do
+        repository = UserRepository.new
+        repository.create(name: 'L')
 
-  describe '#fetch' do
+        users = repository.find_all_by_manual_query
+        users.must_be_kind_of(Array)
+
+        user = users.first
+        user.must_be_kind_of(User)
+      end
+    end
   end
 
   describe '#create' do

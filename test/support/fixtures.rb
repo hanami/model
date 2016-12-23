@@ -42,6 +42,10 @@ class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name).as(:entity)
   end
+
+  def find_all_by_manual_query
+    users.read("select * from users").as(:entity).to_a
+  end
 end
 
 class AvatarRepository < Hanami::Repository
