@@ -39,8 +39,10 @@ module Database
       end
 
       def migrate
-        require 'hanami/model/migrator'
-        Hanami::Model::Migrator.migrate
+        TestIO.with_stdout do
+          require 'hanami/model/migrator'
+          Hanami::Model::Migrator.migrate
+        end
       end
 
       def credentials

@@ -2,7 +2,7 @@ require 'ostruct'
 
 describe 'Filesystem SQLite Database migrations' do
   let(:migrator) do
-    Hanami::Model::Migrator.new(configuration: configuration)
+    Hanami::Model::Migrator.new(configuration: configuration, stream: TestIO.stream)
   end
 
   let(:random) { SecureRandom.hex }
@@ -236,7 +236,7 @@ describe 'Filesystem SQLite Database migrations' do
       it 'creates database, loads schema and migrate' do
         # Simulate already existing schema.sql, without existing database and pending migrations
         connection = Sequel.connect(url)
-        Hanami::Model::Migrator::Adapter.for(configuration).dump
+        Hanami::Model::Migrator::Adapter.for(configuration, TestIO.stream).dump
 
         migration = target_migrations.join('20160831095616_create_abuses.rb')
         File.open(migration, 'w+') do |f|
