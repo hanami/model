@@ -258,6 +258,25 @@ puts user.created_at.to_s # => "2016-09-19 13:40:13 UTC"
 puts user.updated_at.to_s # => "2016-09-19 13:40:16 UTC"
 ```
 
+## Configuration
+
+### Logging
+
+In order to log database operations, you can configure a logger:
+
+```ruby
+Hanami::Model.configure do
+  # ...
+  logger "log/development.log", level: :debug
+end
+```
+
+It accepts the following arguments:
+
+  * `stream`: a Ruby StringIO object - it can be `$stdout` or a path to file (eg. `"log/development.log"`) - Defaults to `$stdout`
+  * `:level`: logging level - it can be: `:debug`, `:info`, `:warn`, `:info`, `:warn`, `:error`, `:fatal`, `:unknown` - Defaults to `:debug`
+  * `:formatter`: logging formatter - it can be: `:default` or `:json` - Defaults to `:default`
+
 ## Versioning
 
 __Hanami::Model__ uses [Semantic Versioning 2.0.0](http://semver.org)
