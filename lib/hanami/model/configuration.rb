@@ -17,12 +17,17 @@ module Hanami
       # @api private
       attr_reader :entities
 
+      # @since x.x.x
+      # @api private
+      attr_reader :logger
+
       # @since 0.2.0
       # @api private
       def initialize(configurator)
         super(configurator.backend, configurator.url)
         @migrations   = configurator._migrations
         @schema       = configurator._schema
+        @logger       = configurator._logger
         @mappings     = {}
         @entities     = {}
       end
