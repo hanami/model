@@ -78,9 +78,12 @@ module Hanami
       repositories.each(&:load!)
 
       @container = ROM.container(configuration)
+
       configuration.define_entities_mappings(@container, repositories)
 
       @loaded = true
+    rescue => e
+      raise Hanami::Model::Error.for(e)
     end
   end
 end

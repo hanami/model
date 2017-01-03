@@ -88,5 +88,14 @@ module Hanami
         super
       end
     end
+
+    # Unknown database type error for repository auto-mapping
+    #
+    # @since x.x.x
+    class UnknownDatabaseTypeError < Error
+      def initialize(message)
+        super
+      end
+    end
   end
 end
