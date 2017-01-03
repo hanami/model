@@ -412,7 +412,7 @@ describe 'SQLite' do
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
       options.fetch(:primary_key).must_equal    true
-      options.fetch(:auto_increment).must_equal true
+      options.fetch(:auto_increment).must_equal false
 
       name, options = table[1]
       name.must_equal :position
@@ -422,7 +422,7 @@ describe 'SQLite' do
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
       options.fetch(:primary_key).must_equal    true
-      options.fetch(:auto_increment).must_equal true
+      options.fetch(:auto_increment).must_equal false
     end
 
     it 'defines primary key (via #column primary_key: true)' do
