@@ -25,10 +25,20 @@ module Hanami
       # @api private
       attr_reader :_schema
 
+      # @since x.x.x
+      # @api private
+      attr_reader :callbacks
+
       # @since 0.7.0
       # @api private
       def self.build(&block)
         new.tap { |config| config.instance_eval(&block) }
+      end
+
+      # @since x.x.x
+      # @api private
+      def initialize
+        @callbacks = Hash[before: [], after: []]
       end
 
       private
@@ -56,6 +66,12 @@ module Hanami
       # @api private
       def schema(path)
         @_schema = path
+      end
+
+      # @since x.x.x
+      # @api private
+      def before(&blk)
+        callbacks[:before] << blk
       end
     end
   end

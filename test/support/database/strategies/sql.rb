@@ -20,6 +20,10 @@ module Database
           adapter    ENV['HANAMI_DATABASE_ADAPTER'].to_sym, ENV['HANAMI_DATABASE_URL']
           migrations Dir.pwd + '/test/fixtures/database_migrations'
           schema     Dir.pwd + '/tmp/schema.sql'
+
+          before do |connection|
+            connection.extension(:pg_enum) if Database.engine?(:postgresql)
+          end
         end
       end
 
