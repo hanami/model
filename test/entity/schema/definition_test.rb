@@ -46,7 +46,12 @@ describe Hanami::Entity::Schema::Definition do
         subject.call(id: :foo)
       end.must_raise(TypeError)
 
-      exception.message.must_equal "can't convert Symbol into Integer"
+      message = Platform.match do
+        os(:macos).engine(:jruby) { "no implicit conversion of Symbol into Integer" }
+        default                   { "can't convert Symbol into Integer" }
+      end
+
+      exception.message.must_equal message
     end
   end
 
