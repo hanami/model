@@ -1,6 +1,7 @@
 require_relative 'abstract'
 require 'hanami/utils/blank'
 require 'pathname'
+require 'stringio'
 
 module Database
   module Strategies
@@ -29,6 +30,8 @@ module Database
           logger     ENV['HANAMI_DATABASE_LOGGER'], level: :debug
           migrations Dir.pwd + '/test/fixtures/database_migrations'
           schema     Dir.pwd + '/tmp/schema.sql'
+
+          migrations_logger ENV['HANAMI_DATABASE_LOGGER']
         end
       end
 

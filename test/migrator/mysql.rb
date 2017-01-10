@@ -2,7 +2,7 @@ require 'ostruct'
 
 describe 'MySQL Database migrations' do
   let(:migrator) do
-    Hanami::Model::Migrator.new(configuration: configuration, stream: TestIO.stream)
+    Hanami::Model::Migrator.new(configuration: configuration)
   end
 
   let(:random) { SecureRandom.hex(4) }
@@ -10,7 +10,7 @@ describe 'MySQL Database migrations' do
   # General variables
   let(:migrations)     { Pathname.new(__dir__ + '/../fixtures/migrations') }
   let(:schema)         { nil }
-  let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema) }
+  let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema, _migrations_logger: Hanami::Model::Migrator::Logger.new(ENV['HANAMI_DATABASE_LOGGER'])) }
   let(:configuration)  { Hanami::Model::Configuration.new(config) }
 
   # Variables for `apply` and `prepare`
@@ -250,7 +250,7 @@ describe 'MySQL Database migrations' do
       it 'creates database, loads schema and migrate' do
         # Simulate already existing schema.sql, without existing database and pending migrations
         connection = Sequel.connect(url)
-        Hanami::Model::Migrator::Adapter.for(configuration, TestIO.stream).dump
+        Hanami::Model::Migrator::Adapter.for(configuration).dump
 
         migration = target_migrations.join('20160831095616_create_abuses.rb')
         File.open(migration, 'w+') do |f|

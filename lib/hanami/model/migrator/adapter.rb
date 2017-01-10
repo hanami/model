@@ -1,6 +1,5 @@
 require 'uri'
 require 'shellwords'
-require 'hanami/model/migrator/logger'
 
 module Hanami
   module Model
@@ -26,8 +25,8 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def self.for(configuration, stream) # rubocop:disable Metrics/MethodLength
-          connection = connection_for(configuration, stream)
+        def self.for(configuration) # rubocop:disable Metrics/MethodLength
+          connection = connection_for(configuration)
 
           case connection.database_type
           when :sqlite
@@ -49,10 +48,10 @@ module Hanami
 
           # @since 0.7.0
           # @api private
-          def connection_for(configuration, stream)
+          def connection_for(configuration)
             Sequel.connect(
               configuration.url,
-              loggers: [Hanami::Model::Migrator::Logger.new(stream)]
+              loggers: [configuration.migrations_logger]
             )
           rescue Sequel::AdapterNotFound
             raise MigrationError.new("Current adapter (#{configuration.adapter.type}) doesn't support SQL database operations.")
