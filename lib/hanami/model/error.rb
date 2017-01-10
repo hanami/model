@@ -93,9 +93,6 @@ module Hanami
     #
     # @since x.x.x
     class UnknownDatabaseTypeError < Error
-      def initialize(message)
-        super
-      end
     end
   end
 end
