@@ -21,15 +21,20 @@ module Hanami
       # @api private
       attr_reader :logger
 
+      # @since x.x.x
+      # @api private
+      attr_reader :migrations_logger
+
       # @since 0.2.0
       # @api private
       def initialize(configurator)
         super(configurator.backend, configurator.url)
-        @migrations   = configurator._migrations
-        @schema       = configurator._schema
-        @logger       = configurator._logger
-        @mappings     = {}
-        @entities     = {}
+        @migrations        = configurator._migrations
+        @schema            = configurator._schema
+        @logger            = configurator._logger
+        @migrations_logger = configurator._migrations_logger
+        @mappings          = {}
+        @entities          = {}
       end
 
       # NOTE: This must be changed when we want to support several adapters at the time

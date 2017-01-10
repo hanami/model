@@ -237,9 +237,9 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      def initialize(configuration: self.class.configuration, stream: $stdout)
+      def initialize(configuration: self.class.configuration)
         @configuration = configuration
-        @adapter       = Adapter.for(configuration, stream)
+        @adapter       = Adapter.for(configuration)
       end
 
       # @since 0.7.0

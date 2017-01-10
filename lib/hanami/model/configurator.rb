@@ -29,6 +29,10 @@ module Hanami
       # @api private
       attr_reader :_logger
 
+      # @since x.x.x
+      # @api private
+      attr_reader :_migrations_logger
+
       # @since 0.7.0
       # @api private
       def self.build(&block)
@@ -69,6 +73,13 @@ module Hanami
 
         opts = options.merge(stream: stream)
         @_logger = Hanami::Logger.new('hanami.model', opts)
+      end
+
+      # @since x.x.x
+      # @api private
+      def migrations_logger(stream = $stdout)
+        require 'hanami/model/migrator/logger'
+        @_migrations_logger = Hanami::Model::Migrator::Logger.new(stream)
       end
     end
   end
