@@ -274,7 +274,7 @@ end
 It accepts the following arguments:
 
   * `stream`: a Ruby StringIO object - it can be `$stdout` or a path to file (eg. `"log/development.log"`) - Defaults to `$stdout`
-  * `:level`: logging level - it can be: `:debug`, `:info`, `:warn`, `:info`, `:warn`, `:error`, `:fatal`, `:unknown` - Defaults to `:debug`
+  * `:level`: logging level - it can be: `:debug`, `:info`, `:warn`, `:error`, `:fatal`, `:unknown` - Defaults to `:debug`
   * `:formatter`: logging formatter - it can be: `:default` or `:json` - Defaults to `:default`
 
 ## Versioning
