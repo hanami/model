@@ -80,7 +80,12 @@ describe Hanami::Entity do
           described_class.new(codes: [Object.new])
         end.must_raise(TypeError)
 
-        exception.message.must_equal("can't convert Object into Integer")
+        message = Platform.match do
+          os(:macos).engine(:jruby) { "no implicit conversion of Object into Integer" }
+          default                   { "can't convert Object into Integer" }
+        end
+
+        exception.message.must_equal(message)
       end
 
       it "raises error if type constraint isn't honored" do
