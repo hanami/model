@@ -32,7 +32,7 @@ module Hanami
         @migrations        = configurator._migrations
         @schema            = configurator._schema
         @logger            = configurator._logger
-        @migrations_logger = configurator._migrations_logger
+        @migrations_logger = configurator.migrations_logger
         @mappings          = {}
         @entities          = {}
       end
