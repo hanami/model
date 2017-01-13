@@ -145,6 +145,7 @@ module Hanami
     Error.register(ROM::SQL::UniqueConstraintError,     UniqueConstraintViolationError)
     Error.register(ROM::SQL::CheckConstraintError,      CheckConstraintViolationError)
     Error.register(ROM::SQL::ForeignKeyConstraintError, ForeignKeyConstraintViolationError)
+    Error.register(ROM::SQL::UnknownDBTypeError,        UnknownDatabaseTypeError)
 
     Error.register(Java::JavaSql::SQLException, DatabaseError) if Utils.jruby?
   end
