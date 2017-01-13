@@ -64,10 +64,19 @@ describe 'Repository (base)' do
     end
   end
 
-  describe '#execute' do
-  end
+  describe 'relation' do
+    describe 'read' do
+      it 'reads records from the database given a raw query string' do
+        repository = UserRepository.new
+        repository.create(name: 'L')
 
-  describe '#fetch' do
+        users = repository.find_all_by_manual_query
+        users.must_be_kind_of(Array)
+
+        user = users.first
+        user.must_be_kind_of(User)
+      end
+    end
   end
 
   describe '#create' do
@@ -104,6 +113,34 @@ describe 'Repository (base)' do
 
         user.created_at.must_be_close_to Time.now.utc, 2
         user.updated_at.must_be_close_to Time.now.utc, 2
+      end
+
+      it 'respects given timestamps' do
+        repository = UserRepository.new
+        given_time = Time.new(2010, 1, 1, 12, 0, 0, '+00:00')
+
+        user = repository.create(name: 'L', created_at: given_time, updated_at: given_time)
+
+        user.created_at.must_be_close_to given_time, 2
+        user.updated_at.must_be_close_to given_time, 2
+      end
+
+      it 'can update timestamps' do
+        repository = UserRepository.new
+        user = repository.create(name: 'L')
+        user.created_at.must_be_close_to Time.now.utc, 2
+        user.updated_at.must_be_close_to Time.now.utc, 2
+
+        given_time = Time.new(2010, 1, 1, 12, 0, 0, '+00:00')
+        updated = repository.update(
+          user.id,
+          created_at: given_time,
+          updated_at: given_time
+        )
+
+        updated.name.must_equal 'L'
+        updated.created_at.must_be_close_to given_time, 2
+        updated.updated_at.must_be_close_to given_time, 2
       end
     end
 
@@ -143,7 +180,7 @@ describe 'Repository (base)' do
       error   = Hanami::Model::NotNullConstraintViolationError
       message = Platform.match do
         engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: NOT NULL constraint failed: users.active' }
+        engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_NOTNULL]  A NOT NULL constraint failed (NOT NULL constraint failed: users.active)' }
 
         engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint' }
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: null value in column "active" violates not-null constraint' }
@@ -162,7 +199,7 @@ describe 'Repository (base)' do
       error   = Hanami::Model::UniqueConstraintViolationError
       message = Platform.match do
         engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: UNIQUE constraint failed: users.email' }
+        engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_UNIQUE]  A UNIQUE constraint failed (UNIQUE constraint failed: users.email)' }
 
         engine(:ruby).db(:postgresql)  { 'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"' }
         engine(:jruby).db(:postgresql) { %(Java::OrgPostgresqlUtil::PSQLException: ERROR: duplicate key value violates unique constraint "users_email_index"\n  Detail: Key (email)=(#{email}) already exists.) }
@@ -182,7 +219,7 @@ describe 'Repository (base)' do
       error   = Hanami::Model::ForeignKeyConstraintViolationError
       message = Platform.match do
         engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: FOREIGN KEY constraint failed' }
+        engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_FOREIGNKEY]  A foreign key constraint failed (FOREIGN KEY constraint failed)' }
 
         engine(:ruby).db(:postgresql)  { 'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
@@ -206,7 +243,7 @@ describe 'Repository (base)' do
 
         message = Platform.match do
           engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-          engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: CHECK constraint failed: users' }
+          engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: users)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "users_age_check"' }
@@ -224,7 +261,7 @@ describe 'Repository (base)' do
 
         message = Platform.match do
           engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-          engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: CHECK constraint failed: comments_count_constraint' }
+          engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: comments_count_constraint)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "comments_count_constraint"' }
@@ -311,7 +348,7 @@ describe 'Repository (base)' do
         error   = Hanami::Model::NotNullConstraintViolationError
         message = Platform.match do
           engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-          engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: NOT NULL constraint failed: users.active' }
+          engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_NOTNULL]  A NOT NULL constraint failed (NOT NULL constraint failed: users.active)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint' }
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: null value in column "active" violates not-null constraint' }
@@ -334,7 +371,7 @@ describe 'Repository (base)' do
       error   = Hanami::Model::UniqueConstraintViolationError
       message = Platform.match do
         engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: UNIQUE constraint failed: users.email' }
+        engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_UNIQUE]  A UNIQUE constraint failed (UNIQUE constraint failed: users.email)' }
 
         engine(:ruby).db(:postgresql)  { 'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"' }
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: duplicate key value violates unique constraint "users_email_index"' }
@@ -355,7 +392,7 @@ describe 'Repository (base)' do
       error   = Hanami::Model::ForeignKeyConstraintViolationError
       message = Platform.match do
         engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
-        engine(:jruby).db(:sqlite) { 'Java::JavaSql::SQLException: FOREIGN KEY constraint failed' }
+        engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_FOREIGNKEY]  A foreign key constraint failed (FOREIGN KEY constraint failed)' }
 
         engine(:ruby).db(:postgresql)  { 'PG::ForeignKeyViolation: ERROR:  insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: insert or update on table "avatars" violates foreign key constraint "avatars_user_id_fkey"' }
@@ -383,7 +420,7 @@ describe 'Repository (base)' do
 
         message = Platform.match do
           engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
-          engine(:jruby).db(:sqlite)  { 'Java::JavaSql::SQLException: CHECK constraint failed: users' }
+          engine(:jruby).db(:sqlite)  { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: users)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "users_age_check"' }
@@ -404,7 +441,7 @@ describe 'Repository (base)' do
 
         message = Platform.match do
           engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
-          engine(:jruby).db(:sqlite)  { 'Java::JavaSql::SQLException: CHECK constraint failed: comments_count_constraint' }
+          engine(:jruby).db(:sqlite)  { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: comments_count_constraint)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "comments_count_constraint"' }

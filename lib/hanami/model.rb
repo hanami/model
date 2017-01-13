@@ -73,14 +73,18 @@ module Hanami
 
     # @since 0.1.0
     def self.load!(&blk) # rubocop:disable Metrics/AbcSize
+      configuration.gateway.use_logger(configuration.logger)       unless configuration.logger.nil?
       configuration.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
       configuration.instance_eval(&blk)                            if     block_given?
       repositories.each(&:load!)
 
       @container = ROM.container(configuration)
+
       configuration.define_entities_mappings(@container, repositories)
 
       @loaded = true
+    rescue => e
+      raise Hanami::Model::Error.for(e)
     end
   end
 end

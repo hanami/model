@@ -10,7 +10,7 @@ describe 'Filesystem SQLite Database migrations' do
   # General variables
   let(:migrations)     { Pathname.new(__dir__ + '/../fixtures/migrations') }
   let(:schema)         { nil }
-  let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema) }
+  let(:config)         { OpenStruct.new(backend: :sql, url: url, _migrations: migrations, _schema: schema, _migrations_logger: Hanami::Model::Migrator::Logger.new(ENV['HANAMI_DATABASE_LOGGER'])) }
   let(:configuration)  { Hanami::Model::Configuration.new(config) }
   let(:url) do
     db = database
