@@ -23,6 +23,7 @@ module Hanami
         super(configurator.backend, configurator.url)
         @migrations   = configurator._migrations
         @schema       = configurator._schema
+        @callbacks    = configurator.callbacks
         @mappings     = {}
         @entities     = {}
       end
@@ -96,6 +97,14 @@ module Hanami
           entity   = r.entity
 
           entity.schema = Sql::Entity::Schema.new(entities, container.relations[relation], mappings.fetch(relation))
+        end
+      end
+
+      # @since x.x.x
+      # @api private
+      def run_before_callbacks
+        @callbacks[:before].each do |cb|
+          cb.call(connection)
         end
       end
     end
