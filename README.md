@@ -127,7 +127,7 @@ This architecture has several advantages:
 
   * Multiple data sources can easily coexist in an application
 
-When a class includes `Hanami::Repository`, it will receive the following interface:
+When a class inherits from `Hanami::Repository`, it will receive the following interface:
 
   * `#create(data)`     – Create a record for the given data (or entity)
   * `#update(id, data)` – Update the record corresponding to the given id by setting the given data (or entity)
