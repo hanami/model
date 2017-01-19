@@ -15,7 +15,7 @@ module Hanami
           # @api private
           def initialize(relation, input)
             super
-            @schema = relation.schema_hash
+            @schema = relation.input_schema
           end
 
           # Processes the input
