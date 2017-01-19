@@ -3,6 +3,7 @@ gemspec
 
 gem 'rom', git: 'https://github.com/rom-rb/rom.git', branch: 'master'
 gem 'rom-sql', git: 'https://github.com/rom-rb/rom-sql.git', branch: 'master'
+gem 'rom-repository', git: 'https://github.com/rom-rb/rom-repository.git', branch: 'master'
 
 unless ENV['TRAVIS']
   gem 'byebug', require: false, platforms: :mri
@@ -10,7 +11,6 @@ unless ENV['TRAVIS']
 end
 
 gem 'hanami-utils', '~> 1.0.0.beta1', require: false, github: 'hanami/utils', branch: '1.0.x'
-gem 'sequel', github: 'jeremyevans/sequel'
 
 platforms :ruby do
   gem 'sqlite3', require: false
