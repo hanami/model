@@ -42,6 +42,10 @@ module Database
   def self.engine
     ENV['HANAMI_DATABASE_TYPE'].to_sym
   end
+
+  def self.engine?(name)
+    engine == name.to_sym
+  end
 end
 
 Database::Setup.new.run

@@ -535,5 +535,22 @@ describe 'Repository (base)' do
         end
       end
     end
+
+    describe 'enum database type' do
+      it 'allows to write data' do
+        repository = ColorRepository.new
+        color = repository.create(name: 'red')
+
+        color.must_be_kind_of(Color)
+        color.name.must_equal 'red'
+      end
+
+      it 'raises error if the value is not included in the enum' do
+        repository = ColorRepository.new
+
+        exception = -> { repository.create(name: 'grey') }.must_raise(Hanami::Model::Error)
+        exception.message.must_equal %("grey" (String) has invalid type for :name)
+      end
+    end
   end
 end
