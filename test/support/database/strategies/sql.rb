@@ -24,7 +24,7 @@ module Database
         ENV['HANAMI_DATABASE_LOGGER']  = logger.to_s
       end
 
-      def configure
+      def configure # rubocop:disable Metrics/AbcSize
         Hanami::Model.configure do
           adapter    ENV['HANAMI_DATABASE_ADAPTER'].to_sym, ENV['HANAMI_DATABASE_URL']
           logger     ENV['HANAMI_DATABASE_LOGGER'], level: :debug
@@ -32,6 +32,10 @@ module Database
           schema     Dir.pwd + '/tmp/schema.sql'
 
           migrations_logger ENV['HANAMI_DATABASE_LOGGER']
+
+          gateway do |g|
+            g.connection.extension(:pg_enum) if Database.engine?(:postgresql)
+          end
         end
       end
 

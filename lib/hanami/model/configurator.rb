@@ -29,6 +29,10 @@ module Hanami
       # @api private
       attr_reader :_logger
 
+      # @since x.x.x
+      # @api private
+      attr_reader :_gateway
+
       # @since 0.7.0
       # @api private
       def self.build(&block)
@@ -76,6 +80,12 @@ module Hanami
 
         opts = options.merge(stream: stream)
         @_logger = Hanami::Logger.new('hanami.model', opts)
+      end
+
+      # @since x.x.x
+      # @api private
+      def gateway(&blk)
+        @_gateway = blk
       end
     end
   end
