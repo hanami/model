@@ -6,7 +6,7 @@ after_script: 'echo `env`'
 rvm:
   - 2.3.3
   - 2.4.0
-  - jruby-9.1.5.0
+  - jruby-9.1.6.0
   - ruby-head
   - jruby-head
 env:
