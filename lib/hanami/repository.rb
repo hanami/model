@@ -151,19 +151,13 @@ module Hanami
     #
     # @since 0.7.0
     # @api private
-    def self.define_relation # rubocop:disable Metrics/MethodLength
+    def self.define_relation
       a = @associations
 
       configuration.relation(relation) do
         schema(infer: true) do
           associations(&a) unless a.nil?
         end
-
-        # rubocop:disable Lint/NestedMethodDefinition
-        def by_primary_key(id)
-          where(primary_key => id)
-        end
-        # rubocop:enable Lint/NestedMethodDefinition
       end
 
       relations(relation)
@@ -268,7 +262,7 @@ module Hanami
         class_attribute :relation
         self.relation = Model::RelationName.new(name)
 
-        commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: MAPPER_NAME, use: COMMAND_PLUGINS
+        commands :create, update: :by_pk, delete: :by_pk, mapper: MAPPER_NAME, use: COMMAND_PLUGINS
         prepend Commands
       end
 
@@ -372,7 +366,7 @@ module Hanami
     #
     #   user       = repository.find(user.id)
     def find(id)
-      root.by_primary_key(id).as(:entity).one
+      root.by_pk(id).as(:entity).one unless id.nil?
     end
 
     # Return all the records for the relation

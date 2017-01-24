@@ -12,11 +12,53 @@ describe 'Repository (base)' do
       found.must_equal(user)
     end
 
+    it 'returns nil when nil is given' do
+      repository = UserRepository.new
+      repository.create(name: 'L')
+      found = repository.find(nil)
+
+      found.must_be_nil
+    end
+
     it 'returns nil for missing record' do
       repository = UserRepository.new
       found = repository.find('9999999')
 
       found.must_be_nil
+    end
+
+    # See https://github.com/hanami/model/issues/374
+    describe 'with non-autoincrement primary key' do
+      before do
+        repository.clear
+      end
+
+      let(:repository) { LabelRepository.new }
+      let(:id)         { 1 }
+
+      it 'finds record by id' do
+        label = repository.create(id: id)
+        found = repository.find(id)
+
+        found.must_equal label
+      end
+
+      it 'returns nil when nil is given' do
+        repository.create(id: id)
+        found = repository.find(nil)
+
+        found.must_be_nil
+      end
+
+      it 'returns nil when nil is given and more than one records are in the table' do
+        (1..2).each do |id|
+          repository.create(id: id)
+        end
+
+        found = repository.find(nil)
+
+        found.must_be_nil
+      end
     end
   end
 
