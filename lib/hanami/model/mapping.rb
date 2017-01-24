@@ -1,4 +1,4 @@
-require 'transproc'
+require 'transproc/all'
 
 module Hanami
   module Model
@@ -6,11 +6,19 @@ module Hanami
     #
     # @since 0.1.0
     class Mapping
+      extend Transproc::Registry
+
+      import Transproc::HashTransformations
+
       def initialize(&blk)
         @attributes   = {}
         @r_attributes = {}
         instance_eval(&blk)
-        @processor = @attributes.empty? ? ::Hash : Transproc(:rename_keys, @attributes)
+        @processor = @attributes.empty? ? ::Hash : t(:rename_keys, @attributes)
+      end
+
+      def t(name, *args)
+        self.class[name, *args]
       end
 
       def model(entity)
