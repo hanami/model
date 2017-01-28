@@ -113,7 +113,7 @@ module Hanami
       # @since x.x.x
       # @api private
       def configure_gateway
-        @gateway_config.call(gateway)
+        @gateway_config.call(gateway) unless @gateway_config.nil?
       end
     end
   end
