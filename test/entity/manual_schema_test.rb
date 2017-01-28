@@ -81,8 +81,8 @@ describe Hanami::Entity do
         end.must_raise(TypeError)
 
         message = Platform.match do
-          os(:macos).engine(:jruby) { "no implicit conversion of Object into Integer" }
-          default                   { "can't convert Object into Integer" }
+          engine(:jruby) { "no implicit conversion of Object into Integer" }
+          default        { "can't convert Object into Integer" }
         end
 
         exception.message.must_equal(message)

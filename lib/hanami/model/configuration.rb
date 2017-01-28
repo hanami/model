@@ -31,6 +31,7 @@ module Hanami
         super(configurator.backend, configurator.url)
         @migrations        = configurator._migrations
         @schema            = configurator._schema
+        @gateway_config    = configurator._gateway
         @logger            = configurator._logger
         @migrations_logger = configurator.migrations_logger
         @mappings          = {}
@@ -107,6 +108,12 @@ module Hanami
 
           entity.schema = Sql::Entity::Schema.new(entities, container.relations[relation], mappings.fetch(relation))
         end
+      end
+
+      # @since x.x.x
+      # @api private
+      def configure_gateway
+        @gateway_config.call(gateway) unless @gateway_config.nil?
       end
     end
   end
