@@ -58,14 +58,6 @@ describe Hanami::Entity do
         end
       end
 
-      it 'raises error if initialized with wrong primitive' do
-        exception = lambda do
-          described_class.new(id: :foo)
-        end.must_raise(ArgumentError)
-
-        exception.message.must_equal('comparison of Symbol with 0 failed')
-      end
-
       it 'raises error if initialized with wrong array object' do
         object    = Object.new
         exception = lambda do
