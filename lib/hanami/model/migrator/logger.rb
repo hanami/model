@@ -18,7 +18,7 @@ module Hanami
           # @since x.x.x
           # @api private
           def _format(hash)
-            "[migration] [#{hash.fetch(:severity)}] #{hash.fetch(:message)}\n"
+            "[hanami] [#{hash.fetch(:severity)}] #{hash.fetch(:message)}\n"
           end
         end
 
