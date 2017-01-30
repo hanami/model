@@ -115,6 +115,13 @@ module Hanami
       def configure_gateway
         @gateway_config.call(gateway) unless @gateway_config.nil?
       end
+
+      # @since x.x.x
+      # @api private
+      def logger=(value)
+        return if value.nil?
+        gateway.use_logger(@logger = value)
+      end
     end
   end
 end
