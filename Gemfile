@@ -1,10 +1,6 @@
 source 'https://rubygems.org'
 gemspec
 
-gem 'rom', git: 'https://github.com/rom-rb/rom.git', branch: 'master'
-gem 'rom-sql', git: 'https://github.com/rom-rb/rom-sql.git', branch: 'master'
-gem 'rom-repository', git: 'https://github.com/rom-rb/rom-repository.git', branch: 'master'
-
 unless ENV['TRAVIS']
   gem 'byebug', require: false, platforms: :mri
   gem 'yard',   require: false
