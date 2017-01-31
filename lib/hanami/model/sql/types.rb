@@ -60,9 +60,10 @@ module Hanami
           #
           # @since 0.7.0
           # @api private
-          def self.coercible(type)
-            return type if type.constrained?
-            MAPPING.fetch(type.with(meta: {}), type)
+          def self.coercible(attribute)
+            return attribute if attribute.constrained?
+            # TODO: figure out a better way of inferring coercions from schema types
+            MAPPING.fetch(attribute.type.with(meta: {}), attribute)
           end
 
           # Coercer for SQL associations target
