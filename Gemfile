@@ -7,7 +7,6 @@ unless ENV['TRAVIS']
 end
 
 gem 'hanami-utils', '~> 1.0.0.beta1', require: false, github: 'hanami/utils', branch: '1.0.x'
-gem 'sequel', git: 'https://github.com/jeremyevans/sequel.git', branch: 'master'
 
 platforms :ruby do
   gem 'sqlite3', require: false

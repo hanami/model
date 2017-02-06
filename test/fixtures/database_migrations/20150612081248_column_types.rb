@@ -91,13 +91,11 @@ Hanami::Model.migration do
 
         column :money1, 'money'
 
-        # FIXME: enable again when rom-sql will support enums
-        # column :enum1, 'mood'
+        column :enum1, 'mood'
 
-        # FIXME: enable again when rom-sql will support geometric types
-        # column :geometric1, 'point'
-        # column :geometric2, 'line'
-        # column :geometric3, 'circle', default: '<(15,15), 1>'
+        column :geometric1, 'point'
+        column :geometric2, 'line'
+        column :geometric3, 'circle', default: '<(15,15), 1>'
 
         column :net1, 'cidr', default: '192.168/24'
 
@@ -108,8 +106,7 @@ Hanami::Model.migration do
         column :json1, 'json'
         column :json2, 'jsonb'
 
-        # FIXME: enable again when rom-sql will custom types
-        # column :composite1, 'inventory_item', default: Hanami::Model::Sql.literal("ROW('fuzzy dice', 42, 1.99)")
+        column :composite1, 'inventory_item', default: Hanami::Model::Sql.literal("ROW('fuzzy dice', 42, 1.99)")
       end
     when :mysql
       create_table :column_types do

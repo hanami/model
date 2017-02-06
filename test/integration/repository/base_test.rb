@@ -547,9 +547,13 @@ describe 'Repository (base)' do
 
       it 'raises error if the value is not included in the enum' do
         repository = ColorRepository.new
+        message    = Platform.match do
+          engine(:ruby)  { %(PG::InvalidTextRepresentation: ERROR:  invalid input value for enum rainbow: "grey") }
+          engine(:jruby) { %(Java::OrgPostgresqlUtil::PSQLException: ERROR: invalid input value for enum rainbow: "grey") }
+        end
 
         exception = -> { repository.create(name: 'grey') }.must_raise(Hanami::Model::Error)
-        exception.message.must_equal %("grey" (String) has invalid type for :name)
+        exception.message.must_include message
       end
     end
   end

@@ -8,7 +8,7 @@ module Hanami
     # via `Hanami::Model.configure`.
     #
     # @since 0.2.0
-    class Configuration #< ROM::Configuration
+    class Configuration
       # @since 0.7.0
       # @api private
       attr_reader :mappings
@@ -30,7 +30,6 @@ module Hanami
       def initialize(configurator)
         @backend = configurator.backend
         @url = configurator.url
-        # super(configurator.backend, configurator.url)
         @migrations        = configurator._migrations
         @schema            = configurator._schema
         @gateway_config    = configurator._gateway
@@ -124,7 +123,7 @@ module Hanami
       end
 
       def rom
-        @rom ||= ROM::Configuration.new(@backend, @url)
+        @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
       end
 
       def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize
