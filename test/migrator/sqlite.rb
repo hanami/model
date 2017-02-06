@@ -59,6 +59,15 @@ describe 'Filesystem SQLite Database migrations' do
           exception.message.must_equal message
         end
       end
+
+      describe 'when the path is relative' do
+        let(:database) { 'create.sqlite3' }
+
+        it 'creates the database' do
+          migrator.create
+          assert File.exist?(database), "Expected database #{database} to exist"
+        end
+      end
     end
 
     describe 'drop' do

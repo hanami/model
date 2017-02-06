@@ -70,7 +70,7 @@ module Hanami
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/\A(jdbc:sqlite:|sqlite:\/\/)/, '')
+            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, '')
           )
         end
 
