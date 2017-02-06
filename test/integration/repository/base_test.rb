@@ -36,28 +36,11 @@ describe 'Repository (base)' do
       let(:repository) { LabelRepository.new }
       let(:id)         { 1 }
 
-      it 'finds record by id' do
-        label = repository.create(id: id)
-        found = repository.find(id)
-
-        found.must_equal label
-      end
-
-      it 'returns nil when nil is given' do
+      it 'raises error' do
         repository.create(id: id)
-        found = repository.find(nil)
 
-        found.must_be_nil
-      end
-
-      it 'returns nil when nil is given and more than one records are in the table' do
-        (1..2).each do |id|
-          repository.create(id: id)
-        end
-
-        found = repository.find(nil)
-
-        found.must_be_nil
+        exception = -> { repository.find(id) }.must_raise(Hanami::Model::UnknownPrimaryKeyError)
+        exception.message.must_equal "Can't find primary key for `labels' table"
       end
     end
   end

@@ -384,6 +384,9 @@ module Hanami
     #
     # @return [Hanami::Entity,NilClass] the entity, if found
     #
+    # @raise [Hanami::Model::UnknownPrimaryKeyError] if the table doesn't
+    #   define a primary key
+    #
     # @since 0.7.0
     #
     # @example
@@ -392,7 +395,9 @@ module Hanami
     #
     #   user       = repository.find(user.id)
     def find(id)
-      root.by_pk(id).as(:entity).one unless id.nil?
+      root.by_pk(id).as(:entity).one
+    rescue KeyError
+      raise Hanami::Model::UnknownPrimaryKeyError.new(self.class.relation)
     end
 
     # Return all the records for the relation
