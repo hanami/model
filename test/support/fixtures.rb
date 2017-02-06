@@ -136,8 +136,10 @@ end
 
 class ColorRepository < Hanami::Repository
   schema do
-    attribute :id, Hanami::Model::Sql::Types::Int
-    attribute :name, Hanami::Model::Sql::Types::String
+    attribute :id,         Hanami::Model::Sql::Types::Int
+    attribute :name,       Hanami::Model::Sql::Types::String
+    attribute :created_at, Hanami::Model::Sql::Types::DateTime
+    attribute :updated_at, Hanami::Model::Sql::Types::DateTime
   end
 end
 
