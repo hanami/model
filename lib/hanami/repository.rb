@@ -230,6 +230,27 @@ module Hanami
       @associations = blk
     end
 
+    # Declare database schema
+    #
+    # NOTE: This should be used **only** when Hanami can't find a corresponding Ruby type for your column.
+    #
+    # @since x.x.x
+    #
+    # @example
+    #   # In this example `name` is a PostgreSQL Enum type that we want to treat like a string.
+    #
+    #   class ColorRepository < Hanami::Repository
+    #     schema do
+    #       attribute :id,         Hanami::Model::Sql::Types::Int
+    #       attribute :name,       Hanami::Model::Sql::Types::String
+    #       attribute :created_at, Hanami::Model::Sql::Types::DateTime
+    #       attribute :updated_at, Hanami::Model::Sql::Types::DateTime
+    #     end
+    #   end
+    def self.schema(&blk)
+      @schema = blk
+    end
+
     # Declare mapping between database columns and entity's attributes
     #
     # NOTE: This should be used **only** when there is a name mismatch (eg. in legacy databases).
@@ -247,10 +268,6 @@ module Hanami
     #   end
     def self.mapping(&blk)
       @mapping = blk
-    end
-
-    def self.schema(&blk)
-      @schema = blk
     end
 
     # Define relations, mapping and associations
