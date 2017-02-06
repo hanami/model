@@ -135,6 +135,10 @@ class ProductRepository < Hanami::Repository
 end
 
 class ColorRepository < Hanami::Repository
+  schema do
+    attribute :id, Hanami::Model::Sql::Types::Int
+    attribute :name, Hanami::Model::Sql::Types::String
+  end
 end
 
 Hanami::Model.load!

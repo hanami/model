@@ -153,10 +153,15 @@ module Hanami
     # @api private
     def self.define_relation # rubocop:disable Metrics/MethodLength
       a = @associations
+      s = @schema
 
       configuration.relation(relation) do
-        schema(infer: true) do
-          associations(&a) unless a.nil?
+        if s.nil?
+          schema(infer: true) do
+            associations(&a) unless a.nil?
+          end
+        else
+          schema(&s)
         end
 
         # rubocop:disable Lint/NestedMethodDefinition
@@ -242,6 +247,10 @@ module Hanami
     #   end
     def self.mapping(&blk)
       @mapping = blk
+    end
+
+    def self.schema(&blk)
+      @schema = blk
     end
 
     # Define relations, mapping and associations
