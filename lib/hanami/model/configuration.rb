@@ -8,7 +8,7 @@ module Hanami
     # via `Hanami::Model.configure`.
     #
     # @since 0.2.0
-    class Configuration < ROM::Configuration
+    class Configuration #< ROM::Configuration
       # @since 0.7.0
       # @api private
       attr_reader :mappings
@@ -28,7 +28,9 @@ module Hanami
       # @since 0.2.0
       # @api private
       def initialize(configurator)
-        super(configurator.backend, configurator.url)
+        @backend = configurator.backend
+        @url = configurator.url
+        # super(configurator.backend, configurator.url)
         @migrations        = configurator._migrations
         @schema            = configurator._schema
         @gateway_config    = configurator._gateway
@@ -42,9 +44,7 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      def url
-        connection.url
-      end
+      attr_reader :url
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
@@ -59,7 +59,7 @@ module Hanami
       # @since 0.7.0
       # @api private
       def gateway
-        environment.gateways[:default]
+        gateways[:default]
       end
 
       # Root directory
@@ -121,6 +121,32 @@ module Hanami
       def logger=(value)
         return if value.nil?
         gateway.use_logger(@logger = value)
+      end
+
+      def rom
+        @rom ||= ROM::Configuration.new(@backend, @url)
+      end
+
+      def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize
+        rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
+        rom.instance_eval(&blk)                            if     block_given?
+        configure_gateway
+        repositories.each(&:load!)
+        self.logger = logger
+
+        container = ROM.container(rom)
+        define_entities_mappings(container, repositories)
+        container
+      rescue => e
+        raise Hanami::Model::Error.for(e)
+      end
+
+      def method_missing(method_name, *args, &blk)
+        if rom.respond_to?(method_name)
+          rom.__send__(method_name, *args, &blk)
+        else
+          super
+        end
       end
     end
   end
