@@ -153,10 +153,15 @@ module Hanami
     # @api private
     def self.define_relation
       a = @associations
+      s = @schema
 
       configuration.relation(relation) do
-        schema(infer: true) do
-          associations(&a) unless a.nil?
+        if s.nil?
+          schema(infer: true) do
+            associations(&a) unless a.nil?
+          end
+        else
+          schema(&s)
         end
       end
 
@@ -217,6 +222,27 @@ module Hanami
     #   end
     def self.associations(&blk)
       @associations = blk
+    end
+
+    # Declare database schema
+    #
+    # NOTE: This should be used **only** when Hanami can't find a corresponding Ruby type for your column.
+    #
+    # @since x.x.x
+    #
+    # @example
+    #   # In this example `name` is a PostgreSQL Enum type that we want to treat like a string.
+    #
+    #   class ColorRepository < Hanami::Repository
+    #     schema do
+    #       attribute :id,         Hanami::Model::Sql::Types::Int
+    #       attribute :name,       Hanami::Model::Sql::Types::String
+    #       attribute :created_at, Hanami::Model::Sql::Types::DateTime
+    #       attribute :updated_at, Hanami::Model::Sql::Types::DateTime
+    #     end
+    #   end
+    def self.schema(&blk)
+      @schema = blk
     end
 
     # Declare mapping between database columns and entity's attributes

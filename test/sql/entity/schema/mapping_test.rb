@@ -28,14 +28,6 @@ describe Hanami::Model::Sql::Entity::Schema do
 
         result.must_equal({})
       end
-
-      it 'raises error if the process fails' do
-        exception = lambda do
-          subject.call(id: :foo)
-        end.must_raise(ArgumentError)
-
-        exception.message.must_equal 'comparison of Symbol with 0 failed'
-      end
     end
 
     describe '#attribute?' do
