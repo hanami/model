@@ -151,7 +151,7 @@ module Hanami
     #
     # @since 0.7.0
     # @api private
-    def self.define_relation
+    def self.define_relation # rubocop:disable Metrics/MethodLength
       a = @associations
       s = @schema
 
