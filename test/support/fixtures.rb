@@ -41,6 +41,9 @@ end
 class Color < Hanami::Entity
 end
 
+class Label < Hanami::Entity
+end
+
 class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name).as(:entity)
@@ -141,6 +144,9 @@ class ColorRepository < Hanami::Repository
     attribute :created_at, Hanami::Model::Sql::Types::DateTime
     attribute :updated_at, Hanami::Model::Sql::Types::DateTime
   end
+end
+
+class LabelRepository < Hanami::Repository
 end
 
 Hanami::Model.load!

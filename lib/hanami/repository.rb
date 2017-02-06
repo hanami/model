@@ -163,12 +163,6 @@ module Hanami
         else
           schema(&s)
         end
-
-        # rubocop:disable Lint/NestedMethodDefinition
-        def by_primary_key(id)
-          where(primary_key => id)
-        end
-        # rubocop:enable Lint/NestedMethodDefinition
       end
 
       relations(relation)
@@ -294,7 +288,7 @@ module Hanami
         class_attribute :relation
         self.relation = Model::RelationName.new(name)
 
-        commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: MAPPER_NAME, use: COMMAND_PLUGINS
+        commands :create, update: :by_pk, delete: :by_pk, mapper: MAPPER_NAME, use: COMMAND_PLUGINS
         prepend Commands
       end
 
@@ -390,6 +384,9 @@ module Hanami
     #
     # @return [Hanami::Entity,NilClass] the entity, if found
     #
+    # @raise [Hanami::Model::UnknownPrimaryKeyError] if the table doesn't
+    #   define a primary key
+    #
     # @since 0.7.0
     #
     # @example
@@ -398,7 +395,9 @@ module Hanami
     #
     #   user       = repository.find(user.id)
     def find(id)
-      root.by_primary_key(id).as(:entity).one
+      root.by_pk(id).as(:entity).one
+    rescue KeyError
+      raise Hanami::Model::UnknownPrimaryKeyError.new(self.class.relation)
     end
 
     # Return all the records for the relation

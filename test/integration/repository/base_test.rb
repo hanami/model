@@ -12,11 +12,36 @@ describe 'Repository (base)' do
       found.must_equal(user)
     end
 
+    it 'returns nil when nil is given' do
+      repository = UserRepository.new
+      repository.create(name: 'L')
+      found = repository.find(nil)
+
+      found.must_be_nil
+    end
+
     it 'returns nil for missing record' do
       repository = UserRepository.new
       found = repository.find('9999999')
 
       found.must_be_nil
+    end
+
+    # See https://github.com/hanami/model/issues/374
+    describe 'with non-autoincrement primary key' do
+      before do
+        repository.clear
+      end
+
+      let(:repository) { LabelRepository.new }
+      let(:id)         { 1 }
+
+      it 'raises error' do
+        repository.create(id: id)
+
+        exception = -> { repository.find(id) }.must_raise(Hanami::Model::UnknownPrimaryKeyError)
+        exception.message.must_equal "Can't find primary key for `labels' table"
+      end
     end
   end
 
