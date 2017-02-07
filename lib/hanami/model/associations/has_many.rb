@@ -186,7 +186,7 @@ module Hanami
         def _build_scope
           result = relation(target)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
-          result.as(Repository::MAPPER_NAME)
+          result.as(Model::MappedRelation.mapper_name)
         end
 
         # @since 0.7.0
