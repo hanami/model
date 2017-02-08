@@ -514,6 +514,14 @@ describe 'Repository (base)' do
 
       found.to_a.must_include user
     end
+
+    it 'uses root relation' do
+      repository = UserRepository.new
+      user    = repository.create(name: 'L')
+      found   = repository.by_name_with_root('L')
+
+      found.to_a.must_include user
+    end
   end
 
   with_platform(db: :postgresql) do
