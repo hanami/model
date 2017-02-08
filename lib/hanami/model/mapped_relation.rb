@@ -25,8 +25,13 @@ module Hanami
 
       # @since x.x.x
       # @api private
+      attr_reader :unmapped
+
+      # @since x.x.x
+      # @api private
       def initialize(relation)
-        super(relation.as(self.class.mapper_name))
+        @unmapped = relation
+        super(unmapped.as(self.class.mapper_name))
       end
     end
   end
