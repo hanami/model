@@ -49,10 +49,6 @@ class UserRepository < Hanami::Repository
     users.where(name: name)
   end
 
-  def by_name_with_unmapped_relation(name)
-    users.unmapped.where(name: name).as(:entity)
-  end
-
   def find_all_by_manual_query
     users.read("select * from users").to_a
   end
