@@ -46,11 +46,15 @@ end
 
 class UserRepository < Hanami::Repository
   def by_name(name)
-    users.where(name: name).as(:entity)
+    users.where(name: name)
+  end
+
+  def by_name_with_root(name)
+    root.where(name: name).as(:entity)
   end
 
   def find_all_by_manual_query
-    users.read("select * from users").as(:entity).to_a
+    users.read("select * from users").to_a
   end
 end
 
