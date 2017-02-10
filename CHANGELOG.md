@@ -1,6 +1,24 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.0.0.beta1 (unreleased)
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 2.4
+- [Luca Guidi] Introduced `Repository#read` to fetch from database with raw SQL string
+- [Luca Guidi] Introduced `Repository.schema` to manually configure the schema of a database table. This is useful for legacy databases where Hanami::Model autoinferring doesn't map correctly the schema.
+- [Luca Guidi & Alfonso Uceda] Added `Hanami::Model::Configuration#gateway` to configure gateway and the raw connection
+- [Luca Guidi] Added `Hanami::Model::Configuration#logger` to configure a logger
+- [Luca Guidi] Database operations (including migrations) print informations to standard output
+
+### Fixed
+- [Thorbjørn Hermansen] Ensure repository to not override given timestamps
+- [Luca Guidi] Raise `Hanami::Model::UnknownPrimaryKeyError` if `Repository#find` is ran against a database w/o a primary key
+- [Alfonso Uceda] Ensure SQLite databases to be used on JRuby when the database path is in the same directory of the Ruby script (eg. `./test.sqlite`)
+
+### Changed
+- [Luca Guidi] Automap the main relation in a repository, by removing the need of use `.as(:entity)`
+- [Luca Guidi] Raise an `Hanami::Model::UnknownDatabaseTypeError` when the application is loaded and there is an unknown column type in the database
+
 ## v0.7.0 - 2016-11-15
 ### Added
 - [Luca Guidi] `Hanami::Entity` defines an automatic schema for SQL databases
