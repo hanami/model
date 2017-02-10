@@ -98,10 +98,7 @@ module Hanami
     # Unknown primary key error
     #
     # @since 1.0.0.beta1
-    class UnknownPrimaryKeyError < Error
-      def initialize(relation)
-        super("Can't find primary key for `#{relation}' table")
-      end
+    class MissingPrimaryKeyError < Error
     end
   end
 end

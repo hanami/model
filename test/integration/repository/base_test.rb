@@ -39,8 +39,8 @@ describe 'Repository (base)' do
       it 'raises error' do
         repository.create(id: id)
 
-        exception = -> { repository.find(id) }.must_raise(Hanami::Model::UnknownPrimaryKeyError)
-        exception.message.must_equal "Can't find primary key for `labels' table"
+        exception = -> { repository.find(id) }.must_raise(Hanami::Model::MissingPrimaryKeyError)
+        exception.message.must_equal "Missing primary key for :labels"
       end
     end
   end

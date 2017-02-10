@@ -12,7 +12,7 @@ A persistence layer for Hanami
 
 ### Fixed
 - [Thorbjørn Hermansen] Ensure repository to not override given timestamps
-- [Luca Guidi] Raise `Hanami::Model::UnknownPrimaryKeyError` if `Repository#find` is ran against a database w/o a primary key
+- [Luca Guidi] Raise `Hanami::Model::MissingPrimaryKeyError` if `Repository#find` is ran against a database w/o a primary key
 - [Alfonso Uceda] Ensure SQLite databases to be used on JRuby when the database path is in the same directory of the Ruby script (eg. `./test.sqlite`)
 
 ### Changed
