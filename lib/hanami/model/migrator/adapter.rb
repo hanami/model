@@ -26,7 +26,7 @@ module Hanami
         # @since 0.4.0
         # @api private
         def self.for(configuration) # rubocop:disable Metrics/MethodLength
-          connection = connection_for(configuration)
+          connection = Connection.new(configuration)
 
           case connection.database_type
           when :sqlite
@@ -40,31 +40,15 @@ module Hanami
             MySQLAdapter
           else
             self
-          end.new(connection, configuration)
-        end
-
-        class << self
-          private
-
-          # @since 0.7.0
-          # @api private
-          def connection_for(configuration)
-            Sequel.connect(
-              configuration.url,
-              loggers: [configuration.migrations_logger]
-            )
-          rescue Sequel::AdapterNotFound
-            raise MigrationError.new("Current adapter (#{configuration.adapter.type}) doesn't support SQL database operations.")
-          end
+          end.new(connection)
         end
 
         # Initialize an adapter
         #
         # @since 0.4.0
         # @api private
-        def initialize(connection, configuration)
-          @connection = Connection.new(connection)
-          @schema     = configuration.schema
+        def initialize(connection)
+          @connection = connection
         end
 
         # Create database.
@@ -129,7 +113,9 @@ module Hanami
 
         # @since 0.4.0
         # @api private
-        attr_reader :schema
+        def schema
+          connection.schema
+        end
 
         # Returns a database connection
         #

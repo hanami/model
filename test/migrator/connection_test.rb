@@ -2,12 +2,11 @@ require 'test_helper'
 require 'hanami/model/migrator/connection'
 
 describe Hanami::Model::Migrator::Connection do
-  let(:connection) { Hanami::Model::Migrator::Connection.new(adapter_connection) }
+  let(:connection) { Hanami::Model::Migrator::Connection.new(hanami_model_configuration) }
 
-  let(:adapter_connection) do
+  let(:hanami_model_configuration) do
     OpenStruct.new(
-      uri: 'postgresql://postgres:s3cr3T@127.0.0.1:5432/database',
-      opts: { user: 'postgres', password: 's3cr3T' }
+      url: 'postgresql://postgres:s3cr3T@127.0.0.1:5432/database'
     )
   end
 
@@ -29,25 +28,10 @@ describe Hanami::Model::Migrator::Connection do
     end
   end
 
-  describe '#user' do
-    it 'returns configured user' do
-      connection.user.wont_equal nil
-      connection.user.must_equal 'postgres'
-    end
-  end
-
-  describe '#password' do
-    it 'returns configured password' do
-      connection.password.wont_equal nil
-      connection.password.must_equal 's3cr3T'
-    end
-  end
-
   describe 'when jdbc connection' do
-    let(:adapter_connection) do
+    let(:hanami_model_configuration) do
       OpenStruct.new(
-        uri: 'jdbc:postgresql://127.0.0.1:5432/database?user=postgres&password=s3cr3T',
-        opts: {}
+        url: 'jdbc:postgresql://127.0.0.1:5432/database?user=postgres&password=s3cr3T'
       )
     end
 
@@ -78,8 +62,8 @@ describe Hanami::Model::Migrator::Connection do
       end
 
       describe 'when there is no user option' do
-        let(:adapter_connection) do
-          OpenStruct.new(uri: 'jdbc:postgresql://127.0.0.1/database', opts: {})
+        let(:hanami_model_configuration) do
+          OpenStruct.new(url: 'jdbc:postgresql://127.0.0.1/database')
         end
 
         it 'returns nil' do
@@ -95,8 +79,8 @@ describe Hanami::Model::Migrator::Connection do
       end
 
       describe 'when there is no password option' do
-        let(:adapter_connection) do
-          OpenStruct.new(uri: 'jdbc:postgresql://127.0.0.1/database', opts: {})
+        let(:hanami_model_configuration) do
+          OpenStruct.new(url: 'jdbc:postgresql://127.0.0.1/database')
         end
 
         it 'returns nil' do

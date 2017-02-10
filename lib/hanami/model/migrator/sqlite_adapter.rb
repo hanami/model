@@ -29,7 +29,7 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def initialize(connection, configuration)
+        def initialize(configuration)
           super
           extend Memory if memory?
         end

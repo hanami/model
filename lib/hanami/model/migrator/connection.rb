@@ -8,14 +8,23 @@ module Hanami
       # @since 0.5.0
       # @api private
       class Connection
-        # @since 0.7.0
-        # @api private
-        attr_reader :raw
-
         # @since 0.5.0
         # @api private
-        def initialize(raw)
-          @raw = raw
+        def initialize(configuration)
+          @configuration = configuration
+        end
+
+        # @since 0.7.0
+        # @api private
+        def raw
+          @raw ||= begin
+                     Sequel.connect(
+                       configuration.url,
+                       loggers: [configuration.migrations_logger]
+                     )
+                   rescue Sequel::AdapterNotFound
+                     raise MigrationError.new("Current adapter (#{configuration.adapter.type}) doesn't support SQL database operations.")
+                   end
         end
 
         # Returns DB connection host
@@ -25,7 +34,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def host
-          @host ||= opts.fetch(:host, parsed_uri.host)
+          @host ||= parsed_uri.host
         end
 
         # Returns DB connection port
@@ -35,7 +44,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def port
-          @port ||= opts.fetch(:port, parsed_uri.port)
+          @port ||= parsed_uri.port
         end
 
         # Returns DB name from conenction
@@ -45,7 +54,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def database
-          @database ||= opts.fetch(:database, parsed_uri.path[1..-1])
+          @database ||= parsed_uri.path[1..-1]
         end
 
         # Returns DB type
@@ -57,7 +66,14 @@ module Hanami
         # @since 0.5.0
         # @api private
         def database_type
-          raw.database_type
+          case uri
+          when /sqlite/
+            :sqlite
+          when /postgres/
+            :postgres
+          when /mysql/
+            :mysql
+          end
         end
 
         # Returns user from DB connection
@@ -67,7 +83,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def user
-          @user ||= opts.fetch(:user, parsed_opt('user'))
+          @user ||= parsed_opt('user')
         end
 
         # Returns user from DB connection
@@ -77,7 +93,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def password
-          @password ||= opts.fetch(:password, parsed_opt('password'))
+          @password ||= parsed_opt('password')
         end
 
         # Returns DB connection URI directly from adapter
@@ -85,7 +101,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def uri
-          raw.uri
+          @configuration.url
         end
 
         # Returns DB connection wihout specifying database name
@@ -93,7 +109,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def global_uri
-          raw.uri.sub(parsed_uri.select(:path).first, '')
+          uri.sub(parsed_uri.select(:path).first, '')
         end
 
         # Returns a boolean telling if a DB connection is from JDBC or not
@@ -101,7 +117,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def jdbc?
-          !raw.uri.scan('jdbc:').empty?
+          !uri.scan('jdbc:').empty?
         end
 
         # Returns database connection URI instance without JDBC namespace
@@ -109,7 +125,11 @@ module Hanami
         # @since 0.5.0
         # @api private
         def parsed_uri
-          @uri ||= URI.parse(raw.uri.sub('jdbc:', ''))
+          @uri ||= URI.parse(uri.sub('jdbc:', ''))
+        end
+
+        def schema
+          configuration.schema
         end
 
         # Return the database table for the given name
@@ -122,6 +142,10 @@ module Hanami
 
         private
 
+        # @since 1.0.0.beta1
+        # @api private
+        attr_reader :configuration
+
         # Returns a value of a given query string param
         #
         # @param option [String] which option from database connection will be extracted from URI
@@ -130,14 +154,6 @@ module Hanami
         # @api private
         def parsed_opt(option)
           parsed_uri.to_s.match(/[\?|\&]#{ option }=(\w+)\&?/).to_a.last
-        end
-
-        # Fetch connection options from adapter
-        #
-        # @since 0.5.0
-        # @api private
-        def opts
-          raw.opts
         end
       end
     end
