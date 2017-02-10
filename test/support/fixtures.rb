@@ -41,13 +41,20 @@ end
 class Color < Hanami::Entity
 end
 
+class Label < Hanami::Entity
+end
+
 class UserRepository < Hanami::Repository
   def by_name(name)
-    users.where(name: name).as(:entity)
+    users.where(name: name)
+  end
+
+  def by_name_with_root(name)
+    root.where(name: name).as(:entity)
   end
 
   def find_all_by_manual_query
-    users.read("select * from users").as(:entity).to_a
+    users.read("select * from users").to_a
   end
 end
 
@@ -135,6 +142,15 @@ class ProductRepository < Hanami::Repository
 end
 
 class ColorRepository < Hanami::Repository
+  schema do
+    attribute :id,         Hanami::Model::Sql::Types::Int
+    attribute :name,       Hanami::Model::Sql::Types::String
+    attribute :created_at, Hanami::Model::Sql::Types::DateTime
+    attribute :updated_at, Hanami::Model::Sql::Types::DateTime
+  end
+end
+
+class LabelRepository < Hanami::Repository
 end
 
 Hanami::Model.load!

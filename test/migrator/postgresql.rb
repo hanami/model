@@ -297,7 +297,6 @@ ALTER TABLE ONLY schema_migrations
 
       it 'creates database, loads schema and migrate' do
         # Simulate already existing schema.sql, without existing database and pending migrations
-        connection = Sequel.connect(url)
         Hanami::Model::Migrator::Adapter.for(configuration).dump
 
         migration = target_migrations.join('20160831095616_create_abuses.rb')
@@ -315,6 +314,7 @@ end
 
         migrator.prepare
 
+        connection = Sequel.connect(url)
         tables = connection.tables
         tables.must_include(:schema_migrations)
         tables.must_include(:reviews)

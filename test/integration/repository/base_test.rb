@@ -12,11 +12,36 @@ describe 'Repository (base)' do
       found.must_equal(user)
     end
 
+    it 'returns nil when nil is given' do
+      repository = UserRepository.new
+      repository.create(name: 'L')
+      found = repository.find(nil)
+
+      found.must_be_nil
+    end
+
     it 'returns nil for missing record' do
       repository = UserRepository.new
       found = repository.find('9999999')
 
       found.must_be_nil
+    end
+
+    # See https://github.com/hanami/model/issues/374
+    describe 'with non-autoincrement primary key' do
+      before do
+        repository.clear
+      end
+
+      let(:repository) { LabelRepository.new }
+      let(:id)         { 1 }
+
+      it 'raises error' do
+        repository.create(id: id)
+
+        exception = -> { repository.find(id) }.must_raise(Hanami::Model::MissingPrimaryKeyError)
+        exception.message.must_equal "Missing primary key for :labels"
+      end
     end
   end
 
@@ -489,6 +514,14 @@ describe 'Repository (base)' do
 
       found.to_a.must_include user
     end
+
+    it 'uses root relation' do
+      repository = UserRepository.new
+      user    = repository.create(name: 'L')
+      found   = repository.by_name_with_root('L')
+
+      found.to_a.must_include user
+    end
   end
 
   with_platform(db: :postgresql) do
@@ -547,9 +580,13 @@ describe 'Repository (base)' do
 
       it 'raises error if the value is not included in the enum' do
         repository = ColorRepository.new
+        message    = Platform.match do
+          engine(:ruby)  { %(PG::InvalidTextRepresentation: ERROR:  invalid input value for enum rainbow: "grey") }
+          engine(:jruby) { %(Java::OrgPostgresqlUtil::PSQLException: ERROR: invalid input value for enum rainbow: "grey") }
+        end
 
         exception = -> { repository.create(name: 'grey') }.must_raise(Hanami::Model::Error)
-        exception.message.must_equal %("grey" (String) has invalid type for :name)
+        exception.message.must_include message
       end
     end
   end

@@ -1,6 +1,7 @@
 require 'rom-repository'
 require 'hanami/model/entity_name'
 require 'hanami/model/relation_name'
+require 'hanami/model/mapped_relation'
 require 'hanami/model/associations/dsl'
 require 'hanami/model/association'
 require 'hanami/utils/class'
@@ -107,19 +108,6 @@ module Hanami
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
   class Repository < ROM::Repository::Root
-    # Mapper name.
-    #
-    # With ROM mapping there is a link between the entity class and a generic
-    # reference for it. Example: <tt>BookRepository</tt> references <tt>Book</tt>
-    # as <tt>:entity</tt>.
-    #
-    # @since 0.7.0
-    # @api private
-    #
-    # @see Hanami::Repository.inherited
-    # @see Hanami::Repository.define_mapping
-    MAPPER_NAME = :entity
-
     # Plugins for database commands
     #
     # @since 0.7.0
@@ -151,24 +139,33 @@ module Hanami
     #
     # @since 0.7.0
     # @api private
-    def self.define_relation # rubocop:disable Metrics/MethodLength
+    #
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
+    def self.define_relation
       a = @associations
+      s = @schema
 
       configuration.relation(relation) do
-        schema(infer: true) do
-          associations(&a) unless a.nil?
+        if s.nil?
+          schema(infer: true) do
+            associations(&a) unless a.nil?
+          end
+        else
+          schema(&s)
         end
-
-        # rubocop:disable Lint/NestedMethodDefinition
-        def by_primary_key(id)
-          where(primary_key => id)
-        end
-        # rubocop:enable Lint/NestedMethodDefinition
       end
 
       relations(relation)
       root(relation)
+      class_eval %{
+        def #{relation}
+          Hanami::Model::MappedRelation.new(@#{relation})
+        end
+      }
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     # Defines the ampping between a database table and an entity.
     #
@@ -186,7 +183,7 @@ module Hanami
 
       blk = lambda do |_|
         model       e
-        register_as MAPPER_NAME
+        register_as Model::MappedRelation.mapper_name
         instance_exec(&m) unless m.nil?
       end
 
@@ -223,6 +220,27 @@ module Hanami
     #   end
     def self.associations(&blk)
       @associations = blk
+    end
+
+    # Declare database schema
+    #
+    # NOTE: This should be used **only** when Hanami can't find a corresponding Ruby type for your column.
+    #
+    # @since 1.0.0.beta1
+    #
+    # @example
+    #   # In this example `name` is a PostgreSQL Enum type that we want to treat like a string.
+    #
+    #   class ColorRepository < Hanami::Repository
+    #     schema do
+    #       attribute :id,         Hanami::Model::Sql::Types::Int
+    #       attribute :name,       Hanami::Model::Sql::Types::String
+    #       attribute :created_at, Hanami::Model::Sql::Types::DateTime
+    #       attribute :updated_at, Hanami::Model::Sql::Types::DateTime
+    #     end
+    #   end
+    def self.schema(&blk)
+      @schema = blk
     end
 
     # Declare mapping between database columns and entity's attributes
@@ -268,7 +286,7 @@ module Hanami
         class_attribute :relation
         self.relation = Model::RelationName.new(name)
 
-        commands :create, update: :by_primary_key, delete: :by_primary_key, mapper: MAPPER_NAME, use: COMMAND_PLUGINS
+        commands :create, update: :by_pk, delete: :by_pk, mapper: Model::MappedRelation.mapper_name, use: COMMAND_PLUGINS
         prepend Commands
       end
 
@@ -364,6 +382,9 @@ module Hanami
     #
     # @return [Hanami::Entity,NilClass] the entity, if found
     #
+    # @raise [Hanami::Model::MissingPrimaryKeyError] if the table doesn't
+    #   define a primary key
+    #
     # @since 0.7.0
     #
     # @example
@@ -372,7 +393,9 @@ module Hanami
     #
     #   user       = repository.find(user.id)
     def find(id)
-      root.by_primary_key(id).as(:entity).one
+      root.by_pk(id).as(:entity).one
+    rescue => e
+      raise Hanami::Model::Error.for(e)
     end
 
     # Return all the records for the relation

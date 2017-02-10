@@ -10,7 +10,7 @@ module Hanami
         # @api private
         PASSWORD = 'MYSQL_PWD'.freeze
 
-        # @since x.x.x
+        # @since 1.0.0.beta1
         # @api private
         DB_CREATION_ERROR = 'Database creation failed. If the database exists, ' \
                             'then its console may be open. See this issue for more details: ' \

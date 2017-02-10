@@ -15,7 +15,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:sqlite:#{database_name}"
+          ENV['HANAMI_DATABASE_URL'] = "jdbc:sqlite://#{database_name}"
         end
       end
 

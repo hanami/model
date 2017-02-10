@@ -29,7 +29,7 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def initialize(connection, configuration)
+        def initialize(configuration)
           super
           extend Memory if memory?
         end
@@ -70,7 +70,7 @@ module Hanami
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/\A(jdbc:sqlite:|sqlite:\/\/)/, '')
+            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, '')
           )
         end
 
