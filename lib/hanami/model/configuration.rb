@@ -17,11 +17,11 @@ module Hanami
       # @api private
       attr_reader :entities
 
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       attr_reader :logger
 
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       attr_reader :migrations_logger
 
@@ -109,23 +109,27 @@ module Hanami
         end
       end
 
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       def configure_gateway
         @gateway_config.call(gateway) unless @gateway_config.nil?
       end
 
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       def logger=(value)
         return if value.nil?
         gateway.use_logger(@logger = value)
       end
 
+      # @since 1.0.0.beta1
+      # @api private
       def rom
         @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
       end
 
+      # @since 1.0.0.beta1
+      # @api private
       def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize
         rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
         rom.instance_eval(&blk)                            if     block_given?
@@ -140,6 +144,8 @@ module Hanami
         raise Hanami::Model::Error.for(e)
       end
 
+      # @since 1.0.0.beta1
+      # @api private
       def method_missing(method_name, *args, &blk)
         if rom.respond_to?(method_name)
           rom.__send__(method_name, *args, &blk)

@@ -91,13 +91,13 @@ module Hanami
 
     # Unknown database type error for repository auto-mapping
     #
-    # @since x.x.x
+    # @since 1.0.0.beta1
     class UnknownDatabaseTypeError < Error
     end
 
     # Unknown primary key error
     #
-    # @since x.x.x
+    # @since 1.0.0.beta1
     class UnknownPrimaryKeyError < Error
       def initialize(relation)
         super("Can't find primary key for `#{relation}' table")

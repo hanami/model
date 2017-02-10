@@ -4,7 +4,7 @@ module Hanami
     #
     # It eliminates the need of use #as for repository queries
     #
-    # @since x.x.x
+    # @since 1.0.0.beta1
     # @api private
     class MappedRelation < SimpleDelegator
       # Mapper name.
@@ -13,17 +13,17 @@ module Hanami
       # reference for it. Example: <tt>BookRepository</tt> references <tt>Book</tt>
       # as <tt>:entity</tt>.
       #
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       MAPPER_NAME = :entity
 
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       def self.mapper_name
         MAPPER_NAME
       end
 
-      # @since x.x.x
+      # @since 1.0.0.beta1
       # @api private
       def initialize(relation)
         super(relation.as(self.class.mapper_name))
