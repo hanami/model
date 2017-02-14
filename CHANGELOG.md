@@ -1,7 +1,7 @@
 # Hanami::Model
 A persistence layer for Hanami
 
-## v1.0.0.beta1 (unreleased)
+## v1.0.0.beta1 - 2017-02-14
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 2.4
 - [Luca Guidi] Introduced `Repository#read` to fetch from database with raw SQL string
