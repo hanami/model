@@ -83,7 +83,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def user
-          @user ||= parsed_opt('user') || raw.user
+          @user ||= parsed_opt('user') || parsed_uri.user
         end
 
         # Returns user from DB connection
@@ -93,7 +93,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def password
-          @password ||= parsed_opt('password') || raw.password
+          @password ||= parsed_opt('password') || parsed_uri.password
         end
 
         # Returns DB connection URI directly from adapter
