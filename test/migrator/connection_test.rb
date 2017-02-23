@@ -31,28 +31,24 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#host' do
       it 'returns configured host' do
-        connection.host.wont_equal nil
         connection.host.must_equal '127.0.0.1'
       end
     end
 
     describe '#port' do
       it 'returns configured port' do
-        connection.port.wont_equal nil
         connection.port.must_equal 5432
       end
     end
 
     describe '#database' do
       it 'returns configured database' do
-        connection.database.wont_equal nil
         connection.database.must_equal 'database'
       end
     end
 
     describe '#user' do
       it 'returns configured user' do
-        connection.user.wont_equal nil
         connection.user.must_equal 'postgres'
       end
 
@@ -69,7 +65,6 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#password' do
       it 'returns configured password' do
-        connection.password.wont_equal nil
         connection.password.must_equal 's3cr3T'
       end
 
@@ -100,21 +95,18 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#host' do
       it 'returns configured host' do
-        connection.host.wont_equal nil
         connection.host.must_equal '127.0.0.1'
       end
     end
 
     describe '#port' do
       it 'returns configured port' do
-        connection.port.wont_equal nil
         connection.port.must_equal 5432
       end
     end
 
     describe '#user' do
       it 'returns configured user' do
-        connection.user.wont_equal nil
         connection.user.must_equal 'postgres'
       end
 
@@ -131,7 +123,6 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#password' do
       it 'returns configured password' do
-        connection.password.wont_equal nil
         connection.password.must_equal 's3cr3T'
       end
 
@@ -148,7 +139,6 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#database' do
       it 'returns configured database' do
-        connection.database.wont_equal nil
         connection.database.must_equal 'database'
       end
     end
