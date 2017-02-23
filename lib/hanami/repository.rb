@@ -274,9 +274,13 @@ module Hanami
 
     # @since 0.7.0
     # @api private
-    def self.inherited(klass) # rubocop:disable Metrics/MethodLength
+    #
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
+    def self.inherited(klass)
       klass.class_eval do
         include Utils::ClassAttribute
+        auto_struct true
 
         class_attribute :entity
 
@@ -292,6 +296,8 @@ module Hanami
 
       Hanami::Model.repositories << klass
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     # Extend commands from ROM::Repository with error management
     #
