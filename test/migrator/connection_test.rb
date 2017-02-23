@@ -4,27 +4,79 @@ require 'hanami/model/migrator/connection'
 describe Hanami::Model::Migrator::Connection do
   let(:connection) { Hanami::Model::Migrator::Connection.new(hanami_model_configuration) }
 
-  let(:hanami_model_configuration) do
-    OpenStruct.new(
-      url: 'postgresql://postgres:s3cr3T@127.0.0.1:5432/database'
-    )
-  end
-
-  describe '#jdbc?' do
-    it 'returns false' do
-      connection.jdbc?.must_equal false
+  describe 'when not a jdbc connection' do
+    let(:hanami_model_configuration) do
+      OpenStruct.new(
+        url: 'postgresql://postgres:s3cr3T@127.0.0.1:5432/database'
+      )
     end
-  end
 
-  describe '#global_uri' do
-    it 'returns connection URI without database' do
-      connection.global_uri.scan('database').empty?.must_equal true
+    describe '#jdbc?' do
+      it 'returns false' do
+        connection.jdbc?.must_equal false
+      end
     end
-  end
 
-  describe '#parsed_uri?' do
-    it 'returns an URI instance' do
-      connection.parsed_uri.must_be_kind_of URI
+    describe '#global_uri' do
+      it 'returns connection URI without database' do
+        connection.global_uri.scan('database').empty?.must_equal true
+      end
+    end
+
+    describe '#parsed_uri?' do
+      it 'returns an URI instance' do
+        connection.parsed_uri.must_be_kind_of URI
+      end
+    end
+
+    describe '#host' do
+      it 'returns configured host' do
+        connection.host.must_equal '127.0.0.1'
+      end
+    end
+
+    describe '#port' do
+      it 'returns configured port' do
+        connection.port.must_equal 5432
+      end
+    end
+
+    describe '#database' do
+      it 'returns configured database' do
+        connection.database.must_equal 'database'
+      end
+    end
+
+    describe '#user' do
+      it 'returns configured user' do
+        connection.user.must_equal 'postgres'
+      end
+
+      describe 'when there is no user option' do
+        let(:hanami_model_configuration) do
+          OpenStruct.new(url: 'postgresql://127.0.0.1:5432/database')
+        end
+
+        it 'returns nil' do
+          connection.user.must_equal nil
+        end
+      end
+    end
+
+    describe '#password' do
+      it 'returns configured password' do
+        connection.password.must_equal 's3cr3T'
+      end
+
+      describe 'when there is no password option' do
+        let(:hanami_model_configuration) do
+          OpenStruct.new(url: 'postgresql://127.0.0.1/database')
+        end
+
+        it 'returns nil' do
+          connection.password.must_equal nil
+        end
+      end
     end
   end
 
@@ -43,21 +95,18 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#host' do
       it 'returns configured host' do
-        connection.host.wont_equal nil
         connection.host.must_equal '127.0.0.1'
       end
     end
 
     describe '#port' do
       it 'returns configured port' do
-        connection.port.wont_equal nil
         connection.port.must_equal 5432
       end
     end
 
     describe '#user' do
       it 'returns configured user' do
-        connection.user.wont_equal nil
         connection.user.must_equal 'postgres'
       end
 
@@ -74,7 +123,6 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#password' do
       it 'returns configured password' do
-        connection.password.wont_equal nil
         connection.password.must_equal 's3cr3T'
       end
 
@@ -91,7 +139,6 @@ describe Hanami::Model::Migrator::Connection do
 
     describe '#database' do
       it 'returns configured database' do
-        connection.database.wont_equal nil
         connection.database.must_equal 'database'
       end
     end
