@@ -51,6 +51,16 @@ describe 'MySQL Database migrations' do
         exception.message.must_include 'then its console may be open. See this issue for more details:'
         exception.message.must_include 'https://github.com/hanami/model/issues/250'
       end
+
+      # See https://github.com/hanami/model/issues/381
+      describe 'when database name contains a dash' do
+        let(:database) { "db-name-create_#{random}" }
+
+        it 'creates the database' do
+          connection = Sequel.connect(url)
+          connection.tables.must_be :empty?
+        end
+      end
     end
 
     describe 'drop' do
@@ -69,6 +79,17 @@ describe 'MySQL Database migrations' do
 
         exception = -> { migrator.drop }.must_raise Hanami::Model::MigrationError
         exception.message.must_equal "Cannot find database: #{database}"
+      end
+
+      # See https://github.com/hanami/model/issues/381
+      describe 'when database name contains a dash' do
+        let(:database) { "db-name-drop_#{random}" }
+
+        it 'drops the database' do
+          migrator.drop
+
+          -> { Sequel.connect(url).tables }.must_raise Sequel::DatabaseConnectionError
+        end
       end
     end
 
