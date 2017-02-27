@@ -425,7 +425,7 @@ module Hanami
     # @example
     #   UserRepository.new.first
     def first
-      root.as(:entity).first
+      root.as(:entity).limit(1).one
     end
 
     # Returns the last record for the relation
@@ -437,7 +437,7 @@ module Hanami
     # @example
     #   UserRepository.new.last
     def last
-      root.order(Model::Sql.desc(root.primary_key)).as(:entity).first
+      root.as(:entity).limit(1).reverse.one
     end
 
     # Deletes all the records from the relation
