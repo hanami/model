@@ -274,9 +274,13 @@ module Hanami
 
     # @since 0.7.0
     # @api private
-    def self.inherited(klass) # rubocop:disable Metrics/MethodLength
+    #
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
+    def self.inherited(klass)
       klass.class_eval do
         include Utils::ClassAttribute
+        auto_struct true
 
         class_attribute :entity
 
@@ -292,6 +296,8 @@ module Hanami
 
       Hanami::Model.repositories << klass
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     # Extend commands from ROM::Repository with error management
     #
@@ -419,7 +425,7 @@ module Hanami
     # @example
     #   UserRepository.new.first
     def first
-      root.as(:entity).first
+      root.as(:entity).limit(1).one
     end
 
     # Returns the last record for the relation
@@ -431,7 +437,7 @@ module Hanami
     # @example
     #   UserRepository.new.last
     def last
-      root.order(Model::Sql.desc(root.primary_key)).as(:entity).first
+      root.as(:entity).limit(1).reverse.one
     end
 
     # Deletes all the records from the relation
