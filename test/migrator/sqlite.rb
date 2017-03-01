@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'securerandom'
 
 describe 'Filesystem SQLite Database migrations' do
   let(:migrator) do
