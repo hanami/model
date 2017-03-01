@@ -115,7 +115,7 @@ describe Hanami::Model::Migrator::Connection do
         end
 
         it 'raises an error' do
-          -> { connection.port }.must_raise TypeError
+          connection.port.must_equal nil
         end
       end
     end
