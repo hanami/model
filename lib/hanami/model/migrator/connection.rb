@@ -34,7 +34,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def host
-          @host ||= parsed_uri.host
+          @host ||= parsed_uri.host || parsed_opt('host')
         end
 
         # Returns DB connection port
@@ -44,7 +44,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def port
-          @port ||= parsed_uri.port
+          @port ||= parsed_uri.port || parsed_opt('port').to_i.nonzero?
         end
 
         # Returns DB name from conenction
