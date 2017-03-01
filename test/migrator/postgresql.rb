@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'securerandom'
 
 describe 'PostgreSQL Database migrations' do
   let(:migrator) do

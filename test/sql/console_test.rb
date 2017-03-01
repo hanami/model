@@ -16,6 +16,11 @@ describe Hanami::Model::Sql::Console do
         console = Hanami::Model::Sql::Console.new("postgres://#{uri}").send(:console)
         console.must_be_kind_of(Hanami::Model::Sql::Consoles::Postgresql)
       end
+
+      it 'postgresql:// uri returns an instance of Console::Postgresql' do
+        console = Hanami::Model::Sql::Console.new("postgresql://#{uri}").send(:console)
+        console.must_be_kind_of(Hanami::Model::Sql::Consoles::Postgresql)
+      end
     when :mysql
       it 'mysql:// uri returns an instance of Console::Mysql' do
         console = Hanami::Model::Sql::Console.new("mysql://#{uri}").send(:console)

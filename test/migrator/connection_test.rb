@@ -78,6 +78,47 @@ describe Hanami::Model::Migrator::Connection do
         end
       end
     end
+
+    # See https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING
+    describe 'when connection components in uri params' do
+      let(:hanami_model_configuration) do
+        OpenStruct.new(
+          url: 'postgresql:///mydb?host=localhost&port=6433&user=postgres&password=testpasswd'
+        )
+      end
+
+      it 'returns configured database' do
+        connection.database.must_equal 'mydb'
+      end
+
+      it 'returns configured user' do
+        connection.user.must_equal 'postgres'
+      end
+
+      it 'returns configured password' do
+        connection.password.must_equal 'testpasswd'
+      end
+
+      it 'returns configured host' do
+        connection.host.must_equal 'localhost'
+      end
+
+      it 'returns configured port' do
+        connection.port.must_equal 6433
+      end
+
+      describe 'with blank port' do
+        let(:hanami_model_configuration) do
+          OpenStruct.new(
+            url: 'postgresql:///mydb?host=localhost&port=&user=postgres&password=testpasswd'
+          )
+        end
+
+        it 'raises an error' do
+          connection.port.must_equal nil
+        end
+      end
+    end
   end
 
   describe 'when jdbc connection' do

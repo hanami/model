@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'securerandom'
 
 describe 'Repository (base)' do
   extend PlatformHelpers

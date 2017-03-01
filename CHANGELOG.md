@@ -2,9 +2,13 @@
 A persistence layer for Hanami
 
 ## v1.0.0.beta2 - 2017-03-02
+### Added
+- [Semyon Pupkov] Allow to define Postgres connection URL as `"postgresql:///mydb?host=localhost&port=6433&user=postgres&password=testpasswd"`
+
 ### Fixed
 - [Marcello Rocha] Fixed migrations MySQL detection of username and password
 - [Luca Guidi] Fixed migrations creation/drop of a MySQL database with a dash in the name
+- [Semyon Pupkov] Ensure `db console` to work when Postgres connection URL is defined with `"postgresql://"` scheme
 
 ## v1.0.0.beta1 - 2017-02-14
 ### Added
