@@ -103,7 +103,7 @@ describe Hanami::Model::Migrator::Connection do
       end
 
       it 'returns configured port' do
-        connection.port.must_equal '6433'
+        connection.port.must_equal 6433
       end
     end
   end
