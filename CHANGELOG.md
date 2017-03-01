@@ -1,6 +1,11 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.0.0.beta2 - 2017-03-02
+### Fixed
+- [Marcello Rocha] Fixed migrations MySQL detection of username and password
+- [Luca Guidi] Fixed migrations creation/drop of a MySQL database with a dash in the name
+
 ## v1.0.0.beta1 - 2017-02-14
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 2.4
