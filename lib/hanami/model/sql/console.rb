@@ -27,7 +27,7 @@ module Hanami
           when 'sqlite'
             require 'hanami/model/sql/consoles/sqlite'
             Sql::Consoles::Sqlite.new(@uri)
-          when 'postgres'
+          when 'postgres', 'postgresql'
             require 'hanami/model/sql/consoles/postgresql'
             Sql::Consoles::Postgresql.new(@uri)
           when 'mysql', 'mysql2'
