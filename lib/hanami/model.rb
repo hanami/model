@@ -77,8 +77,27 @@ module Hanami
       @loaded    = true
     end
 
+    # Disconnect from the database
+    #
+    # This is useful for reboot applications in production and to ensure that
+    # the framework prunes stale connections.
+    #
     # @since x.x.x
-    # @api private
+    #
+    # @example With Full Stack Hanami Project
+    #   # config/puma.rb
+    #   # ...
+    #   on_worker_boot do
+    #     Hanami.boot
+    #   end
+    #
+    # @example With Standalone Hanami::Model
+    #   # config/puma.rb
+    #   # ...
+    #   on_worker_boot do
+    #     Hanami::Model.disconnect
+    #     Hanami::Model.load!
+    #   end
     def self.disconnect
       configuration.connection && configuration.connection.disconnect
     end
