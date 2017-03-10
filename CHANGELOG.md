@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.0.0.beta3 (unreleased)
+### Added
+- [Luca Guidi] Introduced `Hanami::Model.disconnect` to disconnect all the active database connections
+
 ## v1.0.0.beta2 - 2017-03-02
 ### Added
 - [Semyon Pupkov] Allow to define Postgres connection URL as `"postgresql:///mydb?host=localhost&port=6433&user=postgres&password=testpasswd"`
