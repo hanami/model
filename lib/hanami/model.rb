@@ -76,5 +76,11 @@ module Hanami
       @container = configuration.load!(repositories, &blk)
       @loaded    = true
     end
+
+    # @since x.x.x
+    # @api private
+    def self.disconnect
+      configuration.connection && configuration.connection.disconnect
+    end
   end
 end
