@@ -39,6 +39,8 @@ module Hanami
     #
     # @since 0.5.0
     class InvalidCommandError < Error
+      # @since 0.5.0
+      # @api private
       def initialize(message = 'Invalid command')
         super
       end
@@ -48,6 +50,8 @@ module Hanami
     #
     # @since 0.7.0
     class ConstraintViolationError < Error
+      # @since 0.7.0
+      # @api private
       def initialize(message = 'Constraint has been violated')
         super
       end
@@ -57,6 +61,8 @@ module Hanami
     #
     # @since 0.6.1
     class UniqueConstraintViolationError < Error
+      # @since 0.6.1
+      # @api private
       def initialize(message = 'Unique constraint has been violated')
         super
       end
@@ -66,6 +72,8 @@ module Hanami
     #
     # @since 0.6.1
     class ForeignKeyConstraintViolationError < Error
+      # @since 0.6.1
+      # @api private
       def initialize(message = 'Foreign key constraint has been violated')
         super
       end
@@ -75,6 +83,8 @@ module Hanami
     #
     # @since 0.6.1
     class NotNullConstraintViolationError < Error
+      # @since 0.6.1
+      # @api private
       def initialize(message = 'NOT NULL constraint has been violated')
         super
       end
@@ -84,6 +94,8 @@ module Hanami
     #
     # @since 0.6.1
     class CheckConstraintViolationError < Error
+      # @since 0.6.1
+      # @api private
       def initialize(message = 'Check constraint has been violated')
         super
       end

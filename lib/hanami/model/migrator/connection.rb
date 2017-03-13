@@ -128,6 +128,7 @@ module Hanami
           @uri ||= URI.parse(uri.sub('jdbc:', ''))
         end
 
+        # @api private
         def schema
           configuration.schema
         end
