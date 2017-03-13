@@ -73,6 +73,8 @@ module Hanami
           raise MigrationError.new("Current adapter (#{connection.database_type}) doesn't support drop.")
         end
 
+        # @since 0.4.0
+        # @api private
         def migrate(migrations, version)
           version = Integer(version) unless version.nil?
 

@@ -11,8 +11,7 @@ module Hanami
     # @example SQL Automatic Setup
     #  require 'hanami/model'
     #
-    #   class Account
-    #     include Hanami::Entity
+    #   class Account < Hanami::Entity
     #   end
     #
     #   account = Account.new(name: "Acme Inc.")
@@ -24,9 +23,7 @@ module Hanami
     # @example Non-SQL Manual Setup
     #   require 'hanami/model'
     #
-    #   class Account
-    #     include Hanami::Entity
-    #
+    #   class Account < Hanami::Entity
     #     attributes do
     #       attribute :id,         Types::Int
     #       attribute :name,       Types::String
@@ -46,8 +43,7 @@ module Hanami
     # @example Schemaless Entity
     #   require 'hanami/model'
     #
-    #   class Account
-    #     include Hanami::Entity
+    #   class Account < Hanami::Entity
     #   end
     #
     #   account = Account.new(name: "Acme Inc.")
@@ -117,6 +113,26 @@ module Hanami
           # @param type [Dry::Types::Definition] the attribute type
           #
           # @since 0.7.0
+          #
+          # @example
+          #   require 'hanami/model'
+          #
+          #   class Account < Hanami::Entity
+          #     attributes do
+          #       attribute :id,         Types::Int
+          #       attribute :name,       Types::String
+          #       attribute :codes,      Types::Array(Types::Int)
+          #       attribute :users,      Types::Array(User)
+          #       attribute :email,      Types::String.constrained(format: /@/)
+          #       attribute :created_at, Types::DateTime
+          #     end
+          #   end
+          #
+          #   account = Account.new(name: "Acme Inc.")
+          #   account.name # => "Acme Inc."
+          #
+          #   account = Account.new(foo: "bar")
+          #   account.foo # => NoMethodError
           def attribute(name, type)
             @attributes[name] = type
           end

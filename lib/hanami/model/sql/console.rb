@@ -10,6 +10,8 @@ module Hanami
       class Console
         extend Forwardable
 
+        # @since 0.7.0
+        # @api private
         def_delegator :console, :connection_string
 
         # @since 0.7.0

@@ -3,6 +3,9 @@ require 'concurrent'
 require 'hanami/entity'
 require 'hanami/repository'
 
+# Hanami
+#
+# @since 0.1.0
 module Hanami
   # Hanami persistence
   #
