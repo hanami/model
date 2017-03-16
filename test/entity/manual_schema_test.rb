@@ -98,7 +98,7 @@ describe Hanami::Entity do
 
       it "doesn't override manual defined schema" do
         exception = lambda do
-          Wharehouse.new(code: 'foo')
+          Warehouse.new(code: 'foo')
         end.must_raise(TypeError)
 
         exception.message.must_equal '"foo" (String) has invalid type for :code'

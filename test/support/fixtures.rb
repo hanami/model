@@ -16,7 +16,7 @@ end
 class SourceFile < Hanami::Entity
 end
 
-class Wharehouse < Hanami::Entity
+class Warehouse < Hanami::Entity
   attributes do
     attribute :id,   Types::Int
     attribute :name, Types::String
@@ -135,7 +135,7 @@ end
 class SourceFileRepository < Hanami::Repository
 end
 
-class WharehouseRepository < Hanami::Repository
+class WarehouseRepository < Hanami::Repository
 end
 
 class ProductRepository < Hanami::Repository
