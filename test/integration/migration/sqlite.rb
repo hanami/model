@@ -462,5 +462,75 @@ describe 'SQLite' do
     it 'defines column constraint and check' do
       @schema.read.must_include %(CREATE TABLE `table_constraints` (`age` integer, `role` varchar(255), CONSTRAINT `age_constraint` CHECK (`age` > 18), CHECK (role IN("contributor", "manager", "owner")));)
     end
+
+    it 'alters table' do
+      table = @connection.schema(:songs)
+
+      name, options = table[0]
+      name.must_equal :primary_title
+
+      options.fetch(:allow_null).must_equal     true
+      options.fetch(:default).must_equal        "'Unknown title'"
+      options.fetch(:type).must_equal           :string
+      options.fetch(:db_type).must_equal        'varchar(255)'
+      options.fetch(:primary_key).must_equal    false
+
+      name, options = table[1]
+      name.must_equal :cover
+
+      options.fetch(:allow_null).must_equal     true
+      options.fetch(:default).must_equal        nil
+      options.fetch(:type).must_equal           :blob
+      options.fetch(:db_type).must_equal        'blob'
+      options.fetch(:primary_key).must_equal    false
+
+      indexes = @connection.indexes(:songs)
+
+      indexes.fetch(:songs_artist_id_index, nil).must_be_nil
+
+      index = indexes.fetch(:songs_album_id_index)
+      index.fetch(:unique).must_equal           false
+      index.fetch(:columns).must_equal          [:album_id]
+
+      name, options = table[2]
+      name.must_equal :id
+
+      options.fetch(:allow_null).must_equal     false
+      options.fetch(:default).must_equal        nil
+      options.fetch(:type).must_equal           :integer
+      options.fetch(:db_type).must_equal        'integer'
+      options.fetch(:primary_key).must_equal    true
+      options.fetch(:auto_increment).must_equal true
+
+      name, options = table[3]
+      name.must_equal :downloads_count
+
+      options.fetch(:allow_null).must_equal     true
+      options.fetch(:default).must_equal        nil
+      options.fetch(:type).must_equal           :integer
+      options.fetch(:db_type).must_equal        'integer'
+      options.fetch(:primary_key).must_equal    false
+
+      name, options = table[4]
+      name.must_equal :album_id
+
+      options.fetch(:allow_null).must_equal     true
+      options.fetch(:default).must_equal        nil
+      options.fetch(:type).must_equal           :integer
+      options.fetch(:db_type).must_equal        'integer'
+      options.fetch(:primary_key).must_equal    false
+
+      foreign_keys = @connection.foreign_key_list(:songs)
+      foreign_keys.length.must_equal 1
+      foreign_key = foreign_keys.last
+      foreign_key.fetch(:columns).must_equal   [:album_id]
+      foreign_key.fetch(:table).must_equal     :albums
+      foreign_key.fetch(:key).must_equal       nil
+      foreign_key.fetch(:on_update).must_equal :no_action
+      foreign_key.fetch(:on_delete).must_equal :cascade
+
+      #@schema.read.must_include 'CONSTRAINT title_min_length CHECK ((length(primary_title) > 2))'
+      #@schema.read.wont_include 'CONSTRAINT useless_min_length'
+    end
   end
 end
