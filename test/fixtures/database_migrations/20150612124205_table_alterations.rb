@@ -28,8 +28,8 @@ Hanami::Model.migration do
 
       add_foreign_key :album_id, :albums, on_delete: :cascade
       add_index :album_id
-      drop_index :artist_id
 
+      # drop_index :artist_id
       drop_foreign_key :artist_id
 
       add_constraint(:title_min_length) { length(primary_title) > 2 }
