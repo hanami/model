@@ -1,7 +1,7 @@
 Hanami::Model.migration do
   change do
-    drop_table?   :wharehouses
-    create_table? :wharehouses do
+    drop_table?   :warehouses
+    create_table? :warehouses do
       primary_key :id
       column :name,       String
       column :code,       String
