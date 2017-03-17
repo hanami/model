@@ -529,6 +529,7 @@ describe 'SQLite' do
       foreign_key.fetch(:on_update).must_equal :no_action
       foreign_key.fetch(:on_delete).must_equal :cascade
 
+      #@schema.read.must_include 'ADD CONSTRAINT songs_album_id_primary_title_key UNIQUE (album_id, primary_title);'
       #@schema.read.must_include 'CONSTRAINT title_min_length CHECK ((length(primary_title) > 2))'
       #@schema.read.wont_include 'CONSTRAINT useless_min_length'
     end
