@@ -1,7 +1,7 @@
 # Hanami::Model
 A persistence layer for Hanami
 
-## v1.0.0.beta3 (unreleased)
+## v1.0.0.beta3 - 2017-03-17
 ### Added
 - [Luca Guidi] Introduced `Hanami::Model.disconnect` to disconnect all the active database connections
 
