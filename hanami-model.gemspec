@@ -6,8 +6,8 @@ require 'hanami/model/version'
 Gem::Specification.new do |spec|
   spec.name          = 'hanami-model'
   spec.version       = Hanami::Model::VERSION
-  spec.authors       = ['Luca Guidi', 'Trung Lê', 'Alfonso Uceda']
-  spec.email         = ['me@lucaguidi.com', 'trung.le@ruby-journal.com', 'uceda73@gmail.com']
+  spec.authors       = ['Luca Guidi']
+  spec.email         = ['me@lucaguidi.com']
   spec.summary       = 'A persistence layer for Hanami'
   spec.description   = 'A persistence framework with entities and repositories'
   spec.homepage      = 'http://hanamirb.org'
