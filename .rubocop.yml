@@ -19,3 +19,7 @@ Style/MethodMissing:
   Enabled: false
 Style/PredicateName:
   Enabled: false
+Style/SymbolArray:
+  Enabled: false
+Style/IndentHeredoc:
+  Enabled: false
