@@ -6,8 +6,8 @@ require 'hanami/model/version'
 Gem::Specification.new do |spec|
   spec.name          = 'hanami-model'
   spec.version       = Hanami::Model::VERSION
-  spec.authors       = ['Luca Guidi', 'Trung Lê', 'Alfonso Uceda']
-  spec.email         = ['me@lucaguidi.com', 'trung.le@ruby-journal.com', 'uceda73@gmail.com']
+  spec.authors       = ['Luca Guidi']
+  spec.email         = ['me@lucaguidi.com']
   spec.summary       = 'A persistence layer for Hanami'
   spec.description   = 'A persistence framework with entities and repositories'
   spec.homepage      = 'http://hanamirb.org'
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.3.0'
 
-  spec.add_runtime_dependency 'hanami-utils',    '~> 1.0.0.beta'
+  spec.add_runtime_dependency 'hanami-utils',    '~> 1.0.0.rc1'
   spec.add_runtime_dependency 'rom-sql',         '~> 1.1'
   spec.add_runtime_dependency 'rom-repository',  '~> 1.2'
   spec.add_runtime_dependency 'dry-types',       '~> 0.9'
