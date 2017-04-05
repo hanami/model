@@ -103,13 +103,13 @@ module Hanami
 
     # Unknown database type error for repository auto-mapping
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     class UnknownDatabaseTypeError < Error
     end
 
     # Unknown primary key error
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     class MissingPrimaryKeyError < Error
     end
   end

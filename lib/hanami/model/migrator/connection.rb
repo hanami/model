@@ -143,7 +143,7 @@ module Hanami
 
         private
 
-        # @since 1.0.0.beta1
+        # @since 1.0.0
         # @api private
         attr_reader :configuration
 
