@@ -226,7 +226,7 @@ module Hanami
     #
     # NOTE: This should be used **only** when Hanami can't find a corresponding Ruby type for your column.
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     #
     # @example
     #   # In this example `name` is a PostgreSQL Enum type that we want to treat like a string.

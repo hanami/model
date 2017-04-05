@@ -25,11 +25,11 @@ module Hanami
       # @api private
       attr_reader :_schema
 
-      # @since 1.0.0.beta1
+      # @since 1.0.0
       # @api private
       attr_reader :_logger
 
-      # @since 1.0.0.beta1
+      # @since 1.0.0
       # @api private
       attr_reader :_gateway
 
@@ -39,7 +39,7 @@ module Hanami
         new.tap { |config| config.instance_eval(&block) }
       end
 
-      # @since 1.0.0.beta1
+      # @since 1.0.0
       # @api private
       def migrations_logger(stream = $stdout)
         require 'hanami/model/migrator/logger'
@@ -73,7 +73,7 @@ module Hanami
         @_schema = path
       end
 
-      # @since 1.0.0.beta1
+      # @since 1.0.0
       # @api private
       def logger(stream, options = {})
         require 'hanami/logger'
@@ -82,7 +82,7 @@ module Hanami
         @_logger = Hanami::Logger.new('hanami.model', opts)
       end
 
-      # @since 1.0.0.beta1
+      # @since 1.0.0
       # @api private
       def gateway(&blk)
         @_gateway = blk
