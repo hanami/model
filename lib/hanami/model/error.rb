@@ -60,7 +60,7 @@ module Hanami
     # Error for Unique Constraint Violation
     #
     # @since 0.6.1
-    class UniqueConstraintViolationError < Error
+    class UniqueConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
       def initialize(message = 'Unique constraint has been violated')
@@ -71,7 +71,7 @@ module Hanami
     # Error for Foreign Key Constraint Violation
     #
     # @since 0.6.1
-    class ForeignKeyConstraintViolationError < Error
+    class ForeignKeyConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
       def initialize(message = 'Foreign key constraint has been violated')
@@ -82,7 +82,7 @@ module Hanami
     # Error for Not Null Constraint Violation
     #
     # @since 0.6.1
-    class NotNullConstraintViolationError < Error
+    class NotNullConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
       def initialize(message = 'NOT NULL constraint has been violated')
@@ -93,7 +93,7 @@ module Hanami
     # Error for Check Constraint Violation raised by Sequel
     #
     # @since 0.6.1
-    class CheckConstraintViolationError < Error
+    class CheckConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
       def initialize(message = 'Check constraint has been violated')
