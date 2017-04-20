@@ -34,6 +34,8 @@ module Hanami
         # @api private
         attr_reader :scope
 
+        # @since x.x.x
+        # @api private
         def initialize(repository, source, target, subject, scope = nil)
           @repository = repository
           @source     = source
@@ -43,12 +45,48 @@ module Hanami
           freeze
         end
 
+        def one
+          scope.one
+        end
+
+        def to_a
+          scope.to_a
+        end
+
         private
 
         # @since x.x.x
         # @api private
+        def container
+          repository.container
+        end
+
+        # @since x.x.x
+        # @api private
+        def primary_key
+          association_keys.first
+        end
+
+        # @since x.x.x
+        # @api private
         def relation(name)
-          repository.relations[Hanami::Utils::String.pluralize(name)]
+          repository.relations[Hanami::Utils::String.new(name).pluralize]
+        end
+
+        # @since x.x.x
+        # @api private
+        def foreign_key
+          association_keys.last
+        end
+
+        # Returns primary key and foreign key
+        #
+        # @since x.x.x
+        # @api private
+        def association_keys
+          relation(source)
+            .associations[target]
+            .__send__(:join_key_map, container.relations)
         end
 
         # @since x.x.x
