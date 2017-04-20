@@ -135,7 +135,7 @@ describe 'PostgreSQL Database migrations' do
           name, options = table[1] # title
           name.must_equal :title
 
-          options.fetch(:allow_null).must_equal     false
+          options.fetch(:allow_null).must_equal false
           options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :string
           options.fetch(:db_type).must_equal        'text'
@@ -193,7 +193,7 @@ describe 'PostgreSQL Database migrations' do
           name, options = table[1] # title
           name.must_equal :title
 
-          options.fetch(:allow_null).must_equal     false
+          options.fetch(:allow_null).must_equal false
           options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :string
           options.fetch(:db_type).must_equal        'text'
