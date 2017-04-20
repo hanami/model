@@ -223,7 +223,7 @@ module Hanami
       def call(attributes)
         Utils::Hash.new(
           schema.call(attributes)
-        ).deep_symbolize!
+        ).symbolize!
       end
 
       # @since 0.7.0
