@@ -118,7 +118,7 @@ describe 'Filesystem SQLite Database migrations' do
           name.must_equal :id
 
           options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :integer
           options.fetch(:db_type).must_equal        'integer'
           options.fetch(:primary_key).must_equal    true
@@ -128,7 +128,7 @@ describe 'Filesystem SQLite Database migrations' do
           name.must_equal :title
 
           options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :string
           options.fetch(:db_type).must_equal        'varchar(255)'
           options.fetch(:primary_key).must_equal    false
@@ -175,7 +175,7 @@ describe 'Filesystem SQLite Database migrations' do
           name.must_equal :id
 
           options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :integer
           options.fetch(:db_type).must_equal        'integer'
           options.fetch(:primary_key).must_equal    true
@@ -185,7 +185,7 @@ describe 'Filesystem SQLite Database migrations' do
           name.must_equal :title
 
           options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :string
           options.fetch(:db_type).must_equal        'varchar(255)'
           options.fetch(:primary_key).must_equal    false

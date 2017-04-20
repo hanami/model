@@ -14,7 +14,7 @@ describe 'SQLite' do
       name.must_equal :integer1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'integer'
       options.fetch(:primary_key).must_equal false
@@ -23,7 +23,7 @@ describe 'SQLite' do
       name.must_equal :integer2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'integer'
       options.fetch(:primary_key).must_equal false
@@ -32,7 +32,7 @@ describe 'SQLite' do
       name.must_equal :integer3
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'integer'
       options.fetch(:primary_key).must_equal false
@@ -41,7 +41,7 @@ describe 'SQLite' do
       name.must_equal :string1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'varchar(255)'
       options.fetch(:primary_key).must_equal false
@@ -50,7 +50,7 @@ describe 'SQLite' do
       name.must_equal :string2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'string'
       options.fetch(:primary_key).must_equal false
@@ -59,7 +59,7 @@ describe 'SQLite' do
       name.must_equal :string3
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'string'
       options.fetch(:primary_key).must_equal false
@@ -68,7 +68,7 @@ describe 'SQLite' do
       name.must_equal :string4
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'varchar(3)'
       options.fetch(:primary_key).must_equal false
@@ -77,7 +77,7 @@ describe 'SQLite' do
       name.must_equal :string5
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'varchar(50)'
       options.fetch(:max_length).must_equal  50
@@ -87,7 +87,7 @@ describe 'SQLite' do
       name.must_equal :string6
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'char(255)'
       options.fetch(:primary_key).must_equal false
@@ -96,7 +96,7 @@ describe 'SQLite' do
       name.must_equal :string7
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'char(64)'
       options.fetch(:max_length).must_equal  64
@@ -106,7 +106,7 @@ describe 'SQLite' do
       name.must_equal :string8
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'text'
       options.fetch(:primary_key).must_equal false
@@ -115,7 +115,7 @@ describe 'SQLite' do
       name.must_equal :file1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :blob
       options.fetch(:db_type).must_equal     'blob'
       options.fetch(:primary_key).must_equal false
@@ -124,7 +124,7 @@ describe 'SQLite' do
       name.must_equal :file2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :blob
       options.fetch(:db_type).must_equal     'blob'
       options.fetch(:primary_key).must_equal false
@@ -133,7 +133,7 @@ describe 'SQLite' do
       name.must_equal :number1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'integer'
       options.fetch(:primary_key).must_equal false
@@ -142,7 +142,7 @@ describe 'SQLite' do
       name.must_equal :number2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'bigint'
       options.fetch(:primary_key).must_equal false
@@ -151,7 +151,7 @@ describe 'SQLite' do
       name.must_equal :number3
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :float
       options.fetch(:db_type).must_equal     'double precision'
       options.fetch(:primary_key).must_equal false
@@ -160,7 +160,7 @@ describe 'SQLite' do
       name.must_equal :number4
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :decimal
       options.fetch(:db_type).must_equal     'numeric'
       options.fetch(:primary_key).must_equal false
@@ -169,7 +169,7 @@ describe 'SQLite' do
       name.must_equal :number5
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       # options.fetch(:type).must_equal        :decimal
       options.fetch(:db_type).must_equal     'numeric(10)'
       options.fetch(:primary_key).must_equal false
@@ -178,7 +178,7 @@ describe 'SQLite' do
       name.must_equal :number6
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :decimal
       options.fetch(:db_type).must_equal     'numeric(10, 2)'
       options.fetch(:primary_key).must_equal false
@@ -187,7 +187,7 @@ describe 'SQLite' do
       name.must_equal :number7
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :decimal
       options.fetch(:db_type).must_equal     'numeric'
       options.fetch(:primary_key).must_equal false
@@ -196,7 +196,7 @@ describe 'SQLite' do
       name.must_equal :date1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :date
       options.fetch(:db_type).must_equal     'date'
       options.fetch(:primary_key).must_equal false
@@ -205,7 +205,7 @@ describe 'SQLite' do
       name.must_equal :date2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :datetime
       options.fetch(:db_type).must_equal     'timestamp'
       options.fetch(:primary_key).must_equal false
@@ -214,7 +214,7 @@ describe 'SQLite' do
       name.must_equal :time1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :datetime
       options.fetch(:db_type).must_equal     'timestamp'
       options.fetch(:primary_key).must_equal false
@@ -223,7 +223,7 @@ describe 'SQLite' do
       name.must_equal :time2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :time
       options.fetch(:db_type).must_equal     'time'
       options.fetch(:primary_key).must_equal false
@@ -232,7 +232,7 @@ describe 'SQLite' do
       name.must_equal :boolean1
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :boolean
       options.fetch(:db_type).must_equal     'boolean'
       options.fetch(:primary_key).must_equal false
@@ -241,7 +241,7 @@ describe 'SQLite' do
       name.must_equal :boolean2
 
       options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :boolean
       options.fetch(:db_type).must_equal     'boolean'
       options.fetch(:primary_key).must_equal false
@@ -394,7 +394,7 @@ describe 'SQLite' do
       name.must_equal :id
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
       options.fetch(:primary_key).must_equal    true
@@ -408,7 +408,7 @@ describe 'SQLite' do
       name.must_equal :group_id
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
       options.fetch(:primary_key).must_equal    true
@@ -418,7 +418,7 @@ describe 'SQLite' do
       name.must_equal :position
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
       options.fetch(:primary_key).must_equal    true
@@ -432,7 +432,7 @@ describe 'SQLite' do
       name.must_equal :name
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :string
       options.fetch(:db_type).must_equal        'varchar(255)'
       options.fetch(:primary_key).must_equal    true
@@ -446,7 +446,7 @@ describe 'SQLite' do
       name.must_equal :artist_id
 
       options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'integer'
       options.fetch(:primary_key).must_equal    false
@@ -454,7 +454,7 @@ describe 'SQLite' do
       foreign_key = @connection.foreign_key_list(:albums).first
       foreign_key.fetch(:columns).must_equal   [:artist_id]
       foreign_key.fetch(:table).must_equal     :artists
-      foreign_key.fetch(:key).must_equal       nil
+      foreign_key.fetch(:key).must_be_nil
       foreign_key.fetch(:on_update).must_equal :no_action
       foreign_key.fetch(:on_delete).must_equal :cascade
     end

@@ -5,7 +5,7 @@ describe Hanami::Model::Sql::Types::Schema::String do
 
   it 'returns nil for nil' do
     input = nil
-    described_class[input].must_equal input
+    described_class[input].must_be_nil
   end
 
   it 'coerces string' do
