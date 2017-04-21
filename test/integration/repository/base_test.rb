@@ -533,7 +533,7 @@ describe 'Repository (base)' do
         found = repository.find(file.id)
 
         file.languages.must_equal ['ruby']
-        file.metadata.must_equal(coverage: 100.0)
+        file.metadata.must_equal('coverage' => 100.0)
 
         found.must_equal(file)
       end
