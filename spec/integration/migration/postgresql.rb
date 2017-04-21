@@ -1,6 +1,6 @@
 require 'test_helper'
 
-RSpec.describe 'PostgreSQL' do
+RSpec.shared_examples 'migration_integration_postgresql' do
   before do
     @schema = Pathname.new("#{__dir__}/../../../tmp/schema.sql").expand_path
     @connection = Sequel.connect(ENV['HANAMI_DATABASE_URL'])

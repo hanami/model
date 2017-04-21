@@ -1,6 +1,7 @@
 require 'test_helper'
 require 'hanami/model/migrator'
+require_relative "./migrator/#{Database.engine}.rb"
 
 describe Hanami::Model::Migrator do
-  # load "spec/migrator/#{Database.engine}.rb"
+  include_examples "migrator_#{Database.engine}"
 end

@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'securerandom'
 
-describe 'MySQL Database migrations' do
+RSpec.shared_examples 'migrator_mysql' do
   let(:migrator) do
     Hanami::Model::Migrator.new(configuration: configuration)
   end
@@ -24,7 +24,7 @@ describe 'MySQL Database migrations' do
   end
 
   describe 'MySQL' do
-    let(:database) { "#{name.gsub(/[^\w]/, '_')}_#{random}" }
+    let(:database) { "mysql_#{random}" }
 
     let(:url) do
       db = database
@@ -90,7 +90,7 @@ describe 'MySQL Database migrations' do
         it 'drops the database' do
           migrator.drop
 
-          expect { Sequel.connect(url).tables }.to_raise(Sequel::DatabaseConnectionError)
+          expect { Sequel.connect(url).tables }.to raise_error(Sequel::DatabaseConnectionError)
         end
       end
     end
@@ -101,7 +101,7 @@ describe 'MySQL Database migrations' do
       end
 
       describe 'when no migrations' do
-        let(:migrations) { Pathname.new(__dir__ + '/../fixtures/empty_migrations') }
+        let(:migrations) { Pathname.new(__dir__ + '/../support/fixtures/empty_migrations') }
 
         it "it doesn't alter database" do
           migrator.migrate
@@ -121,32 +121,32 @@ describe 'MySQL Database migrations' do
           table = connection.schema(:reviews)
 
           name, options = table[0] # id
-          name.to eq(:id)
+          expect(name).to eq(:id)
 
-          options.fetch(:allow_null).to eq(false)
-          options.fetch(:default).to be_nil
-          options.fetch(:type).to eq(:integer)
-          options.fetch(:db_type).to eq('int(11)')
-          options.fetch(:primary_key).to eq(true)
-          options.fetch(:auto_increment).to eq(true)
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:integer)
+          expect(options.fetch(:db_type)).to eq('int(11)')
+          expect(options.fetch(:primary_key)).to eq(true)
+          expect(options.fetch(:auto_increment)).to eq(true)
 
           name, options = table[1] # title
-          name.to eq(:title)
+          expect(name).to eq(:title)
 
-          options.fetch(:allow_null).to eq(false)
-          options.fetch(:default).to be_nil
-          options.fetch(:type).to eq(:string)
-          options.fetch(:db_type).to eq('varchar(255)')
-          options.fetch(:primary_key).to eq(false)
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:string)
+          expect(options.fetch(:db_type)).to eq('varchar(255)')
+          expect(options.fetch(:primary_key)).to eq(false)
 
           name, options = table[2] # rating (second migration)
-          name.to eq(:rating)
+          expect(name).to eq(:rating)
 
-          options.fetch(:allow_null).to eq(true)
-          options.fetch(:default).to eq('0')
-          options.fetch(:type).to eq(:integer)
-          options.fetch(:db_type).to eq('int(11)')
-          options.fetch(:primary_key).to eq(false)
+          expect(options.fetch(:allow_null)).to eq(true)
+          expect(options.fetch(:default)).to eq('0')
+          expect(options.fetch(:type)).to eq(:integer)
+          expect(options.fetch(:db_type)).to eq('int(11)')
+          expect(options.fetch(:primary_key)).to eq(false)
         end
       end
 
@@ -170,7 +170,7 @@ describe 'MySQL Database migrations' do
         end
 
         it 'migrates the database' do
-          migrator.migrate(version: '20160831073534') # see test/fixtures/migrations
+          migrator.migrate(version: '20160831073534') # see spec/support/fixtures/migrations
 
           connection = Sequel.connect(url)
           expect(connection.tables).to_not be_empty
@@ -178,23 +178,23 @@ describe 'MySQL Database migrations' do
           table = connection.schema(:reviews)
 
           name, options = table[0] # id
-          name.to eq(:id)
+          expect(name).to eq(:id)
 
-          options.fetch(:allow_null).to eq(false)
-          options.fetch(:default).to be_nil
-          options.fetch(:type).to eq(:integer)
-          options.fetch(:db_type).to eq('int(11)')
-          options.fetch(:primary_key).to eq(true)
-          options.fetch(:auto_increment).to eq(true)
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:integer)
+          expect(options.fetch(:db_type)).to eq('int(11)')
+          expect(options.fetch(:primary_key)).to eq(true)
+          expect(options.fetch(:auto_increment)).to eq(true)
 
           name, options = table[1] # title
-          name.to eq(:title)
+          expect(name).to eq(:title)
 
-          options.fetch(:allow_null).to eq(false)
-          options.fetch(:default).to be_nil
-          options.fetch(:type).to eq(:string)
-          options.fetch(:db_type).to eq('varchar(255)')
-          options.fetch(:primary_key).to eq(false)
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:string)
+          expect(options.fetch(:db_type)).to eq('varchar(255)')
+          expect(options.fetch(:primary_key)).to eq(false)
 
           name, options = table[2] # rating (rolled back second migration)
           expect(name).to be_nil
@@ -221,7 +221,7 @@ describe 'MySQL Database migrations' do
         connection = Sequel.connect(url)
         migration = connection[:schema_migrations].to_a.last
 
-        expect(migration.fetch(:filename)).to include('20160831090612') # see test/fixtures/migrations
+        expect(migration.fetch(:filename)).to include('20160831090612') # see spec/support/fixtures/migrations
       end
 
       it 'dumps database schema.sql' do
@@ -335,7 +335,7 @@ RUBY
         end
 
         it 'returns current database version' do
-          migrator.version.to eq('20160831090612') # see test/fixtures/migrations)
+          expect(migrator.version).to eq('20160831090612') # see spec/support/fixtures/migrations)
         end
       end
     end

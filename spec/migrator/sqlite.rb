@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'securerandom'
 
-describe 'Filesystem SQLite Database migrations' do
+RSpec.shared_examples 'migrator_sqlite' do
   let(:migrator) do
     Hanami::Model::Migrator.new(configuration: configuration)
   end
@@ -39,7 +39,7 @@ describe 'Filesystem SQLite Database migrations' do
     describe 'create' do
       it 'creates the database' do
         migrator.create
-        expect(File.exist?(database)).to be_true, "Expected database #{database} to exist"
+        expect(File.exist?(database)).to be_truthy, "Expected database #{database} to exist"
       end
 
       describe "when it doesn't have write permissions" do
@@ -65,7 +65,7 @@ describe 'Filesystem SQLite Database migrations' do
 
         it 'creates the database' do
           migrator.create
-          expect(File.exist?(database)).to be_true, "Expected database #{database} to exist"
+          expect(File.exist?(database)).to be_truthy, "Expected database #{database} to exist"
         end
       end
     end
@@ -77,7 +77,7 @@ describe 'Filesystem SQLite Database migrations' do
 
       it 'drops the database' do
         migrator.drop
-        expect(File.exist?(database)).to be_false, "Expected database #{database} to NOT exist"
+        expect(File.exist?(database)).to be_falsey, "Expected database #{database} to NOT exist"
       end
 
       it "raises error if database doesn't exist" do
@@ -94,7 +94,7 @@ describe 'Filesystem SQLite Database migrations' do
       end
 
       describe 'when no migrations' do
-        let(:migrations) { Pathname.new(__dir__ + '/../fixtures/empty_migrations') }
+        let(:migrations) { Pathname.new(__dir__ + '/../support/fixtures/empty_migrations') }
 
         it "it doesn't alter database" do
           migrator.migrate
@@ -109,7 +109,7 @@ describe 'Filesystem SQLite Database migrations' do
           migrator.migrate
 
           connection = Sequel.connect(url)
-          connection.tables.wont_be :empty?
+          expect(connection.tables).to_not be_empty
 
           table = connection.schema(:reviews)
 
@@ -152,7 +152,7 @@ describe 'Filesystem SQLite Database migrations' do
           migrator.migrate
 
           connection = Sequel.connect(url)
-          connection.tables.wont_be :empty?
+          expect(connection.tables).to_not be_empty
           expect(connection.tables).to eq([:schema_migrations, :reviews])
         end
       end
@@ -163,10 +163,10 @@ describe 'Filesystem SQLite Database migrations' do
         end
 
         it 'migrates the database' do
-          migrator.migrate(version: '20160831073534') # see test/fixtures/migrations
+          migrator.migrate(version: '20160831073534') # see spec/support/fixtures/migrations
 
           connection = Sequel.connect(url)
-          connection.tables.wont_be :empty?
+          expect(connection.tables).to_not be_empty
 
           table = connection.schema(:reviews)
 
@@ -213,7 +213,7 @@ describe 'Filesystem SQLite Database migrations' do
         connection = Sequel.connect(url)
         migration = connection[:schema_migrations].to_a.last
 
-        expect(migration.fetch(:filename)).to include('20160831090612') # see test/fixtures/migrations
+        expect(migration.fetch(:filename)).to include('20160831090612') # see spec/support/fixtures/migrations
       end
 
       it 'dumps database schema.sql' do
@@ -303,7 +303,7 @@ RUBY
         end
 
         it 'returns current database version' do
-          expect(migrator.version).to eq('20160831090612') # see test/fixtures/migrations)
+          expect(migrator.version).to eq('20160831090612') # see spec/support/fixtures/migrations)
         end
       end
     end
