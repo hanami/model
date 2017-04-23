@@ -19,8 +19,7 @@ module Hanami
   # @example With Hanami::Entity
   #   require 'hanami/model'
   #
-  #   class Person
-  #     include Hanami::Entity
+  #   class Person < Hanami::Entity
   #   end
   #
   # If we expand the code above in **pure Ruby**, it would be:
