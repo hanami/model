@@ -19,8 +19,7 @@ module Hanami
   # @example
   #   require 'hanami/model'
   #
-  #   class Article
-  #     include Hanami::Entity
+  #   class Article < Hanami::Entity
   #   end
   #
   #   # valid
