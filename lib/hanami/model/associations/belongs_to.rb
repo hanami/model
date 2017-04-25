@@ -45,6 +45,10 @@ module Hanami
           freeze
         end
 
+        def one
+          scope.one
+        end
+
         private
 
         # @since x.x.x
@@ -102,8 +106,8 @@ module Hanami
         # @since x.x.x
         # @api private
         def association_keys
-          relation(target)
-            .associations[source]
+          relation(source)
+            .associations[target]
             .__send__(:join_key_map, container.relations)
         end
 

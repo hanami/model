@@ -73,7 +73,7 @@ module Hanami
           if attributes.nil?
             {}
           else
-            attributes.dup
+            Utils::Hash.new(attributes.dup).deep_symbolize!
           end
         end
 
