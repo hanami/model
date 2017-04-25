@@ -20,15 +20,4 @@ describe 'Associations (belongs_To)' do
     found.must_equal book
     found.author.must_equal author
   end
-
-  it 'returns an author entity' do
-    skip('Still implementing')
-    repository = BookRepository.new
-    book       = repository.create_with_author(title: "L'Aiguille creuse", author: { name: 'Maurice Leblanc' })
-
-    book.must_be_instance_of(Book)
-    book.title.must_equal "L'Aiguille creuse"
-    book.author.must_be_instance_of(Author)
-    book.author.title.must_equal('Maurice Leblanc')
-  end
 end
