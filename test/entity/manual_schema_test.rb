@@ -120,12 +120,12 @@ describe Hanami::Entity do
         )
 
         entity.visitor.must_equal(
-          'user_agent' => 'w3m/0.5.3', 'language' => { 'en' => 0.9 }
+          user_agent: 'w3m/0.5.3', language: { en: 0.9 }
         )
         entity.page_info.must_equal(
           name: 'landing page',
           scroll_depth: 0.7,
-          meta: { 'version' => '0.8.3', updated_at: 1_492_769_467_000 }
+          meta: { version: '0.8.3', updated_at: 1_492_769_467_000 }
         )
       end
     end
