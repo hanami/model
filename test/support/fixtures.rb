@@ -35,6 +35,20 @@ class Account < Hanami::Entity
   end
 end
 
+class PageVisit < Hanami::Entity
+  attributes do
+    attribute :id,        Types::Strict::Int
+    attribute :start,     Types::DateTime
+    attribute :end,       Types::DateTime
+    attribute :visitor,   Types::Hash
+    attribute :page_info, Types::Hash.symbolized(
+      name: Types::Coercible::String,
+      scroll_depth: Types::Coercible::Float,
+      meta: Types::Hash
+    )
+  end
+end
+
 class Product < Hanami::Entity
 end
 

@@ -103,6 +103,31 @@ describe Hanami::Entity do
 
         exception.message.must_equal '"foo" (String) has invalid type for :code'
       end
+
+      it 'symbolizes nested hash keys according to schema' do
+        entity = PageVisit.new(
+          id: 42,
+          start: DateTime.now,
+          end: (Time.now + 53).to_datetime,
+          visitor: {
+            'user_agent' => 'w3m/0.5.3', 'language' => { 'en' => 0.9 }
+          },
+          page_info: {
+            'name' => 'landing page',
+            scroll_depth: 0.7,
+            'meta' => { 'version' => '0.8.3', updated_at: 1_492_769_467_000 }
+          }
+        )
+
+        entity.visitor.must_equal(
+          'user_agent' => 'w3m/0.5.3', 'language' => { 'en' => 0.9 }
+        )
+        entity.page_info.must_equal(
+          name: 'landing page',
+          scroll_depth: 0.7,
+          meta: { 'version' => '0.8.3', updated_at: 1_492_769_467_000 }
+        )
+      end
     end
 
     describe '#id' do
