@@ -72,7 +72,7 @@ module Hanami
   #   #  * If we change the storage, we are forced to change the code of the
   #   #    caller(s).
   #
-  #   ArticleRepository.new.where(author_id: 23).order(:published_at).limit(8)
+  #   ArticleRepository.new.q.where(author_id: 23).order(:published_at).limit(8)
   #
   #
   #
@@ -383,6 +383,26 @@ module Hanami
       super(self.class.container)
     end
 
+    # Expose the relation for inline queries.
+    #
+    # NOTE: this should be used only in console or for testing code, we strongly
+    # discourage to use it in production code.
+    #
+    # @return [ROM::Repository::RelationProxy] the database relation
+    #
+    # @since 0.7.0
+    #
+    # @example Inline Query
+    #   UserRepository.new.query.where(...)
+    #   # or
+    #   UserRepository.new.q.where(...)
+    def query
+      root.as(:entity)
+    end
+
+    # @since 0.7.0
+    alias q query
+
     # Find by primary key
     #
     # @return [Hanami::Entity,NilClass] the entity, if found
@@ -412,7 +432,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.as(:entity).to_a
+      query.to_a
     end
 
     # Returns the first record for the relation

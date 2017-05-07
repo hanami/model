@@ -46,6 +46,24 @@ describe 'Repository (base)' do
     end
   end
 
+  describe '#query' do
+    it 'exposes database relation' do
+      repository = UserRepository.new
+      user = repository.create(name: 'L')
+
+      records = repository.query.where(name: 'L').to_a
+      records.must_include user
+    end
+
+    it 'is aliased as q' do
+      repository = UserRepository.new
+      user = repository.create(name: 'L')
+
+      records = repository.q.where(name: 'L').to_a
+      records.must_include user
+    end
+  end
+
   describe '#all' do
     it 'returns all the records' do
       repository = UserRepository.new

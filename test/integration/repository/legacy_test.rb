@@ -18,6 +18,24 @@ describe 'Repository (legacy)' do
     end
   end
 
+  describe '#query' do
+    it 'exposes database relation' do
+      repository = OperatorRepository.new
+      operator = repository.create(s_name: 'F')
+
+      records = repository.query.where(s_name: 'F').to_a
+      records.must_include operator
+    end
+
+    it 'is aliased as q' do
+      repository = OperatorRepository.new
+      operator = repository.create(s_name: 'F')
+
+      records = repository.q.where(s_name: 'F').to_a
+      records.must_include operator
+    end
+  end
+
   describe '#all' do
     it 'returns all the records' do
       repository = OperatorRepository.new
