@@ -1,4 +1,5 @@
 require 'hanami/utils/string'
+require 'hanami/utils/hash'
 
 module Hanami
   module Model
@@ -184,7 +185,9 @@ module Hanami
               when ::Hash
                 arg
               when ->(a) { a.respond_to?(:to_hash) }
-                ::Kernel.Hash(arg)
+                Utils::Hash.deep_symbolize(
+                  ::Kernel.Hash(arg)
+                )
               else
                 raise ArgumentError.new("invalid value for Hash(): #{arg.inspect}")
               end

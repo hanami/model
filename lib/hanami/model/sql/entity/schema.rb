@@ -47,9 +47,7 @@ module Hanami
           # @since 1.0.1
           # @api private
           def call(attributes)
-            Utils::Hash.new(
-              schema.call(attributes)
-            ).deep_symbolize!
+            schema.call(attributes)
           end
 
           # @since 1.0.1
