@@ -12,12 +12,12 @@ module Hanami
     # @api private
     class RelationName < EntityName
       # @param name [Class,String] the class or its name
-      # @return [Symbol] the relation name
+      # @return [String] the relation name
       #
       # @since 0.7.0
       # @api private
       def self.new(name)
-        Utils::String.new(super).underscore.pluralize.to_sym
+        Utils::String.new(super).underscore.pluralize
       end
     end
   end

@@ -282,12 +282,15 @@ module Hanami
         auto_struct true
 
         class_attribute :entity
-
         class_attribute :entity_name
-        self.entity_name = Model::EntityName.new(name)
-
         class_attribute :relation
-        self.relation = Model::RelationName.new(name)
+
+        def self.relation=(name)
+          @relation = name.to_sym
+        end
+
+        self.entity_name = Model::EntityName.new(name)
+        self.relation    = Model::RelationName.new(name)
 
         commands :create, update: :by_pk, delete: :by_pk, mapper: Model::MappedRelation.mapper_name, use: COMMAND_PLUGINS
         prepend Commands
