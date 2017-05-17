@@ -106,7 +106,7 @@ module Hanami
   # @see Hanami::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  class Repository < ROM::Repository::Root
+  class Repository < ROM::Repository::Root # rubocop:disable Metrics/ClassLength
     # Plugins for database commands
     #
     # @since 0.7.0
