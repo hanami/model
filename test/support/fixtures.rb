@@ -13,6 +13,9 @@ end
 class Operator < Hanami::Entity
 end
 
+class AccessToken < Hanami::Entity
+end
+
 class SourceFile < Hanami::Entity
 end
 
@@ -144,6 +147,10 @@ class OperatorRepository < Hanami::Repository
     attribute :id,   from: :operator_id
     attribute :name, from: :s_name
   end
+end
+
+class AccessTokenRepository < Hanami::Repository
+  self.relation = "tokens"
 end
 
 class SourceFileRepository < Hanami::Repository
