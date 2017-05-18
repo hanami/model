@@ -28,7 +28,7 @@ module Database
         Hanami::Model.configure do
           adapter    ENV['HANAMI_DATABASE_ADAPTER'].to_sym, ENV['HANAMI_DATABASE_URL']
           logger     ENV['HANAMI_DATABASE_LOGGER'], level: :debug
-          migrations Dir.pwd + '/test/fixtures/database_migrations'
+          migrations Dir.pwd + '/spec/support/fixtures/database_migrations'
           schema     Dir.pwd + '/tmp/schema.sql'
 
           migrations_logger ENV['HANAMI_DATABASE_LOGGER']
