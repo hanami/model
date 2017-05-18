@@ -51,7 +51,7 @@ describe Hanami::Entity do
       it 'returns nil if not present in attributes' do
         entity = described_class.new
 
-        entity.id.must_equal nil
+        entity.id.must_be_nil
       end
     end
 
@@ -65,13 +65,13 @@ describe Hanami::Entity do
       it 'returns nil for unknown methods' do
         entity = described_class.new
 
-        entity.foo.must_equal nil
+        entity.foo.must_be_nil
       end
 
       it 'returns nil for #attributes' do
         entity = described_class.new
 
-        entity.attributes.must_equal nil
+        entity.attributes.must_be_nil
       end
     end
 

@@ -58,7 +58,7 @@ describe Hanami::Model::Migrator::Connection do
         end
 
         it 'returns nil' do
-          connection.user.must_equal nil
+          connection.user.must_be_nil
         end
       end
     end
@@ -74,7 +74,7 @@ describe Hanami::Model::Migrator::Connection do
         end
 
         it 'returns nil' do
-          connection.password.must_equal nil
+          connection.password.must_be_nil
         end
       end
     end
@@ -115,7 +115,7 @@ describe Hanami::Model::Migrator::Connection do
         end
 
         it 'raises an error' do
-          connection.port.must_equal nil
+          connection.port.must_be_nil
         end
       end
     end
@@ -157,7 +157,7 @@ describe Hanami::Model::Migrator::Connection do
         end
 
         it 'returns nil' do
-          connection.user.must_equal nil
+          connection.user.must_be_nil
         end
       end
     end
@@ -173,7 +173,7 @@ describe Hanami::Model::Migrator::Connection do
         end
 
         it 'returns nil' do
-          connection.password.must_equal nil
+          connection.password.must_be_nil
         end
       end
     end

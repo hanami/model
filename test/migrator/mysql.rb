@@ -122,8 +122,8 @@ describe 'MySQL Database migrations' do
           name, options = table[0] # id
           name.must_equal :id
 
-          options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:allow_null).must_equal false
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :integer
           options.fetch(:db_type).must_equal        'int(11)'
           options.fetch(:primary_key).must_equal    true
@@ -132,8 +132,8 @@ describe 'MySQL Database migrations' do
           name, options = table[1] # title
           name.must_equal :title
 
-          options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:allow_null).must_equal false
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :string
           options.fetch(:db_type).must_equal        'varchar(255)'
           options.fetch(:primary_key).must_equal    false
@@ -179,8 +179,8 @@ describe 'MySQL Database migrations' do
           name, options = table[0] # id
           name.must_equal :id
 
-          options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:allow_null).must_equal false
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :integer
           options.fetch(:db_type).must_equal        'int(11)'
           options.fetch(:primary_key).must_equal    true
@@ -189,8 +189,8 @@ describe 'MySQL Database migrations' do
           name, options = table[1] # title
           name.must_equal :title
 
-          options.fetch(:allow_null).must_equal     false
-          options.fetch(:default).must_equal        nil
+          options.fetch(:allow_null).must_equal false
+          options.fetch(:default).must_be_nil
           options.fetch(:type).must_equal           :string
           options.fetch(:db_type).must_equal        'varchar(255)'
           options.fetch(:primary_key).must_equal    false

@@ -33,7 +33,7 @@ describe "Hanami::Model.disconnect" do
 
   it "doesn't disconnect from the database when not connected yet" do
     Hanami::Model.configuration.stub(:connection, nil) do
-      Hanami::Model.disconnect.must_equal nil
+      Hanami::Model.disconnect.must_be_nil
     end
   end
 end

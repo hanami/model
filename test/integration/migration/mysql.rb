@@ -13,8 +13,8 @@ describe 'MySQL' do
       name, options = table[0]
       name.must_equal :integer1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'int(11)'
       options.fetch(:primary_key).must_equal false
@@ -22,8 +22,8 @@ describe 'MySQL' do
       name, options = table[1]
       name.must_equal :integer2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'int(11)'
       options.fetch(:primary_key).must_equal false
@@ -31,8 +31,8 @@ describe 'MySQL' do
       name, options = table[2]
       name.must_equal :integer3
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'int(11)'
       options.fetch(:primary_key).must_equal false
@@ -40,8 +40,8 @@ describe 'MySQL' do
       name, options = table[3]
       name.must_equal :string1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'varchar(255)'
       options.fetch(:primary_key).must_equal false
@@ -49,8 +49,8 @@ describe 'MySQL' do
       name, options = table[4]
       name.must_equal :string2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'varchar(3)'
       options.fetch(:primary_key).must_equal false
@@ -58,8 +58,8 @@ describe 'MySQL' do
       name, options = table[5]
       name.must_equal :string5
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'varchar(50)'
       options.fetch(:max_length).must_equal  50
@@ -68,8 +68,8 @@ describe 'MySQL' do
       name, options = table[6]
       name.must_equal :string6
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'char(255)'
       options.fetch(:primary_key).must_equal false
@@ -77,8 +77,8 @@ describe 'MySQL' do
       name, options = table[7]
       name.must_equal :string7
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'char(64)'
       options.fetch(:max_length).must_equal  64
@@ -87,8 +87,8 @@ describe 'MySQL' do
       name, options = table[8]
       name.must_equal :string8
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :string
       options.fetch(:db_type).must_equal     'text'
       options.fetch(:primary_key).must_equal false
@@ -96,8 +96,8 @@ describe 'MySQL' do
       name, options = table[9]
       name.must_equal :file1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :blob
       options.fetch(:db_type).must_equal     'blob'
       options.fetch(:primary_key).must_equal false
@@ -105,8 +105,8 @@ describe 'MySQL' do
       name, options = table[10]
       name.must_equal :file2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :blob
       options.fetch(:db_type).must_equal     'blob'
       options.fetch(:primary_key).must_equal false
@@ -114,8 +114,8 @@ describe 'MySQL' do
       name, options = table[11]
       name.must_equal :number1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'int(11)'
       options.fetch(:primary_key).must_equal false
@@ -123,8 +123,8 @@ describe 'MySQL' do
       name, options = table[12]
       name.must_equal :number2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'bigint(20)'
       options.fetch(:primary_key).must_equal false
@@ -132,8 +132,8 @@ describe 'MySQL' do
       name, options = table[13]
       name.must_equal :number3
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :float
       options.fetch(:db_type).must_equal     'double'
       options.fetch(:primary_key).must_equal false
@@ -141,8 +141,8 @@ describe 'MySQL' do
       name, options = table[14]
       name.must_equal :number4
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'decimal(10,0)'
       options.fetch(:primary_key).must_equal false
@@ -150,8 +150,8 @@ describe 'MySQL' do
       name, options = table[15]
       name.must_equal :number5
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       # options.fetch(:type).must_equal        :decimal
       options.fetch(:db_type).must_equal     'decimal(10,0)'
       options.fetch(:primary_key).must_equal false
@@ -159,8 +159,8 @@ describe 'MySQL' do
       name, options = table[16]
       name.must_equal :number6
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :decimal
       options.fetch(:db_type).must_equal     'decimal(10,2)'
       options.fetch(:primary_key).must_equal false
@@ -168,8 +168,8 @@ describe 'MySQL' do
       name, options = table[17]
       name.must_equal :number7
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :integer
       options.fetch(:db_type).must_equal     'decimal(10,0)'
       options.fetch(:primary_key).must_equal false
@@ -177,8 +177,8 @@ describe 'MySQL' do
       name, options = table[18]
       name.must_equal :date1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :date
       options.fetch(:db_type).must_equal     'date'
       options.fetch(:primary_key).must_equal false
@@ -186,8 +186,8 @@ describe 'MySQL' do
       name, options = table[19]
       name.must_equal :date2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :datetime
       options.fetch(:db_type).must_equal     'datetime'
       options.fetch(:primary_key).must_equal false
@@ -195,8 +195,8 @@ describe 'MySQL' do
       name, options = table[20]
       name.must_equal :time1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :datetime
       options.fetch(:db_type).must_equal     'datetime'
       options.fetch(:primary_key).must_equal false
@@ -204,8 +204,8 @@ describe 'MySQL' do
       name, options = table[21]
       name.must_equal :time2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :time
       options.fetch(:db_type).must_equal     'time'
       options.fetch(:primary_key).must_equal false
@@ -213,8 +213,8 @@ describe 'MySQL' do
       name, options = table[22]
       name.must_equal :boolean1
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :boolean
       options.fetch(:db_type).must_equal     'tinyint(1)'
       options.fetch(:primary_key).must_equal false
@@ -222,8 +222,8 @@ describe 'MySQL' do
       name, options = table[23]
       name.must_equal :boolean2
 
-      options.fetch(:allow_null).must_equal  true
-      options.fetch(:default).must_equal     nil
+      options.fetch(:allow_null).must_equal true
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal        :boolean
       options.fetch(:db_type).must_equal     'tinyint(1)'
       options.fetch(:primary_key).must_equal false
@@ -375,8 +375,8 @@ describe 'MySQL' do
       name, options = table[0]
       name.must_equal :id
 
-      options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:allow_null).must_equal false
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'int(11)'
       options.fetch(:primary_key).must_equal    true
@@ -427,8 +427,8 @@ describe 'MySQL' do
       name, options = table[0]
       name.must_equal :name
 
-      options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:allow_null).must_equal false
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :string
       options.fetch(:db_type).must_equal        'varchar(255)'
       options.fetch(:primary_key).must_equal    true
@@ -441,8 +441,8 @@ describe 'MySQL' do
       name, options = table[1]
       name.must_equal :artist_id
 
-      options.fetch(:allow_null).must_equal     false
-      options.fetch(:default).must_equal        nil
+      options.fetch(:allow_null).must_equal false
+      options.fetch(:default).must_be_nil
       options.fetch(:type).must_equal           :integer
       options.fetch(:db_type).must_equal        'int(11)'
       options.fetch(:primary_key).must_equal    false

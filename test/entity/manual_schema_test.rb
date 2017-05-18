@@ -140,7 +140,7 @@ describe Hanami::Entity do
       it 'returns nil if not present in attributes' do
         entity = described_class.new
 
-        entity.id.must_equal nil
+        entity.id.must_be_nil
       end
     end
 
