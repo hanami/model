@@ -1,5 +1,3 @@
-require 'test_helper'
-
 RSpec.describe 'Repository (legacy)' do
   describe '#find' do
     it 'finds record by primary key' do

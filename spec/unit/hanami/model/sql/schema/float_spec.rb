@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Float do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Float" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Float }
+
   let(:input) do
     Class.new do
       def to_f

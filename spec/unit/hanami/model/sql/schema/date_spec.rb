@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Date do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Date" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Date }
+
   let(:input) do
     Class.new do
       def to_date

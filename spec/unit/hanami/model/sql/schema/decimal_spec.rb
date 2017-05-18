@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Decimal do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Decimal" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Decimal }
+
   let(:input) do
     Class.new do
       def to_d

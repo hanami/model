@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Int do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Int" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Int }
+
   let(:input) do
     Class.new do
       def to_int

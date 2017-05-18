@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Bool do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Bool" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Bool }
+
   it 'returns nil for nil' do
     input = nil
     expect(described_class[input]).to eq(input)

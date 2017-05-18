@@ -1,6 +1,6 @@
-require 'hanami/utils/hash'
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Hash" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Hash }
 
-RSpec.describe Hanami::Model::Sql::Types::Schema::Hash do
   let(:input) do
     Class.new do
       def to_hash
@@ -75,10 +75,5 @@ RSpec.describe Hanami::Model::Sql::Types::Schema::Hash do
   it 'coerces hash' do
     input = {}
     expect(described_class[input]).to eq(input)
-  end
-
-  it 'coerces Hanami hash' do
-    input = Hanami::Utils::Hash.new({})
-    expect(described_class[input]).to eq(input.to_h)
   end
 end

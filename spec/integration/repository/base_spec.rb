@@ -1,4 +1,3 @@
-require 'test_helper'
 require 'securerandom'
 
 RSpec.describe 'Repository (base)' do
@@ -52,7 +51,7 @@ RSpec.describe 'Repository (base)' do
         access_token = repository.create(token: "123")
         found        = repository.find(access_token.id)
 
-        found.must_equal(access_token)
+        expect(found).to eq(access_token)
       end
     end
   end

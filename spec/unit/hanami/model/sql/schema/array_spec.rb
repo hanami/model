@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Array do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Array" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Array }
+
   let(:input) do
     Class.new do
       def to_ary

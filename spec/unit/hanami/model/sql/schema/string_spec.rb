@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::String do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::String" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::String }
+
   it 'returns nil for nil' do
     input = nil
     expect(described_class[input]).to eq(input)

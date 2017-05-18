@@ -1,4 +1,6 @@
-RSpec.describe Hanami::Model::Sql::Types::Schema::Time do
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Time" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Time }
+
   let(:input) do
     Class.new do
       def to_time

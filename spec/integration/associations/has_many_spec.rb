@@ -1,5 +1,3 @@
-require 'test_helper'
-
 RSpec.describe 'Associations (has_many)' do
   it "returns nil if association wasn't preloaded" do
     repository = AuthorRepository.new
