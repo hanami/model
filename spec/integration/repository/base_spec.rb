@@ -44,6 +44,17 @@ RSpec.describe 'Repository (base)' do
           .to raise_error(Hanami::Model::MissingPrimaryKeyError, "Missing primary key for :labels")
       end
     end
+
+    # See https://github.com/hanami/model/issues/399
+    describe 'with custom relation' do
+      it 'finds record by primary key' do
+        repository = AccessTokenRepository.new
+        access_token = repository.create(token: "123")
+        found        = repository.find(access_token.id)
+
+        found.must_equal(access_token)
+      end
+    end
   end
 
   describe '#all' do
