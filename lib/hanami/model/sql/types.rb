@@ -29,7 +29,7 @@ module Hanami
           Time     = Types::Strict::Nil | Types::Time.constructor(Coercions.method(:time))
 
           Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
-          Hash     = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:hash))
+          Hash     = Types::Strict::Nil | Types::Hash.constructor(Coercions.method(:hash))
 
           # @since 0.7.0
           # @api private
@@ -66,7 +66,18 @@ module Hanami
             type      = attribute.type
             unwrapped = type.optional? ? type.right : type
 
-            MAPPING.fetch(unwrapped.pristine, attribute)
+            # NOTE: In the future rom-sql should be able to always return Ruby
+            # types instead of Sequel types. When that will happen we can get
+            # rid of this logic in the block and to fallback to:
+            #
+            #  MAPPING.fetch(unwrapped.pristine, attribute)
+            MAPPING.fetch(unwrapped.pristine) do
+              if defined?(ROM::SQL::Types::PG::JSONB) && unwrapped.pristine == ROM::SQL::Types::PG::JSONB
+                Schema::Hash
+              else
+                attribute
+              end
+            end
           end
 
           # Coercer for SQL associations target

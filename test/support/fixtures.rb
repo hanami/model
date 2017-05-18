@@ -13,6 +13,9 @@ end
 class Operator < Hanami::Entity
 end
 
+class AccessToken < Hanami::Entity
+end
+
 class SourceFile < Hanami::Entity
 end
 
@@ -32,6 +35,20 @@ class Account < Hanami::Entity
     attribute :users,      Types::Collection(User)
     attribute :email,      Types::String.constrained(format: /@/)
     attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
+  end
+end
+
+class PageVisit < Hanami::Entity
+  attributes do
+    attribute :id,        Types::Strict::Int
+    attribute :start,     Types::DateTime
+    attribute :end,       Types::DateTime
+    attribute :visitor,   Types::Hash
+    attribute :page_info, Types::Hash.symbolized(
+      name: Types::Coercible::String,
+      scroll_depth: Types::Coercible::Float,
+      meta: Types::Hash
+    )
   end
 end
 
@@ -130,6 +147,10 @@ class OperatorRepository < Hanami::Repository
     attribute :id,   from: :operator_id
     attribute :name, from: :s_name
   end
+end
+
+class AccessTokenRepository < Hanami::Repository
+  self.relation = "tokens"
 end
 
 class SourceFileRepository < Hanami::Repository

@@ -182,7 +182,7 @@ module Hanami
     #
     # @since 0.1.0
     def to_h
-      attributes.deep_dup.to_h
+      Utils::Hash.deep_dup(attributes)
     end
 
     # @since 0.7.0
