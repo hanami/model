@@ -1,6 +1,6 @@
 RSpec.shared_examples 'migration_integration_sqlite' do
   before do
-    @schema = Pathname.new("#{__dir__}/../../../tmp/schema.sql").expand_path
+    @schema = Pathname.new("#{__dir__}/../../../../../tmp/schema.sql").expand_path
     @connection = Sequel.connect(ENV['HANAMI_DATABASE_URL'])
 
     Hanami::Model::Migrator::Adapter.for(Hanami::Model.configuration).dump
