@@ -100,8 +100,8 @@ module Hanami
                        InputWithUpdateTimestamp
                      end
 
-            input(plugin.new(relation, input))
-            super(relation, options.merge(input: input))
+            wrapped_input = plugin.new(relation, options.fetch(:input) { input })
+            super(relation, options.merge(input: wrapped_input))
           end
         end
 
