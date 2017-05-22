@@ -1,14 +1,11 @@
-require 'hanami/model/migrator/connection'
-
 RSpec.describe Hanami::Model::Migrator::Connection do
+  extend PlatformHelpers
+
   let(:connection) { Hanami::Model::Migrator::Connection.new(hanami_model_configuration) }
 
   describe 'when not a jdbc connection' do
-    let(:hanami_model_configuration) do
-      OpenStruct.new(
-        url: 'postgresql://postgres:s3cr3T@127.0.0.1:5432/database'
-      )
-    end
+    let(:hanami_model_configuration) { OpenStruct.new(url: url) }
+    let(:url) { "postgresql://postgres:s3cr3T@127.0.0.1:5432/database" }
 
     describe '#jdbc?' do
       it 'returns false' do
@@ -74,6 +71,34 @@ RSpec.describe Hanami::Model::Migrator::Connection do
 
         it 'returns nil' do
           expect(connection.password).to be_nil
+        end
+      end
+    end
+
+    describe "#raw" do
+      let(:url) { ENV['HANAMI_DATABASE_URL'] }
+
+      with_platform(db: :sqlite) do
+        context "when sqlite" do
+          it "returns raw sequel connection" do
+            expect(connection.raw).to be_kind_of(Sequel::SQLite::Database)
+          end
+        end
+      end
+
+      with_platform(db: :postgresql) do
+        context "when postgres" do
+          it "returns raw sequel connection" do
+            expect(connection.raw).to be_kind_of(Sequel::Postgres::Database)
+          end
+        end
+      end
+
+      with_platform(db: :mysql) do
+        context "when mysql" do
+          it "returns raw sequel connection" do
+            expect(connection.raw).to be_kind_of(Sequel::Mysql2::Database)
+          end
         end
       end
     end

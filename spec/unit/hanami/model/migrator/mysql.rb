@@ -36,17 +36,26 @@ RSpec.shared_examples 'migrator_mysql' do
     end
 
     describe 'create' do
-      before do
-        migrator.create
-      end
-
       it 'creates the database' do
+        migrator.create
+
         connection = Sequel.connect(url)
         expect(connection.tables).to be_empty
       end
 
+      it "raises error when can't connect to database" do
+        expect(Sequel).to receive(:connect).at_least(:once).and_raise(Sequel::DatabaseError.new("ouch"))
+
+        expect { migrator.create }.to raise_error do |error|
+          expect(error).to be_a(Hanami::Model::MigrationError)
+          expect(error.message).to eq("ouch")
+        end
+      end
+
       it 'raises error if database is busy' do
+        migrator.create
         Sequel.connect(url).tables
+
         expect { migrator.create }.to raise_error do |error|
           expect(error).to be_a(Hanami::Model::MigrationError)
           expect(error.message).to include('Database creation failed. If the database exists,')
@@ -60,6 +69,8 @@ RSpec.shared_examples 'migrator_mysql' do
         let(:database) { "db-name-create_#{random}" }
 
         it 'creates the database' do
+          migrator.create
+
           connection = Sequel.connect(url)
           expect(connection.tables).to be_empty
         end
@@ -81,6 +92,15 @@ RSpec.shared_examples 'migrator_mysql' do
 
         expect { migrator.drop }
           .to raise_error(Hanami::Model::MigrationError, "Cannot find database: #{database}")
+      end
+
+      it "raises error when can't connect to database" do
+        expect(Sequel).to receive(:connect).at_least(:once).and_raise(Sequel::DatabaseError.new("ouch"))
+
+        expect { migrator.drop }.to raise_error do |error|
+          expect(error).to be_a(Hanami::Model::MigrationError)
+          expect(error.message).to eq("ouch")
+        end
       end
 
       # See https://github.com/hanami/model/issues/381
