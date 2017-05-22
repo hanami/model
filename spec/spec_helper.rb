@@ -25,6 +25,7 @@ end
 $LOAD_PATH.unshift 'lib'
 require 'hanami/model'
 
+require_relative './support/coverage'
 require_relative './support/test_io'
 require_relative './support/platform'
 require_relative './support/database'
