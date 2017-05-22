@@ -1,12 +1,10 @@
-require 'test_helper'
-
-describe 'Associations (belongs_To)' do
+RSpec.describe 'Associations (belongs_To)' do
   it "returns nil if association wasn't preloaded" do
     repository = BookRepository.new
     book       = repository.create(name: 'L')
     found      = repository.find(book.id)
 
-    found.author.must_equal nil
+    expect(found.author).to be(nil)
   end
 
   it 'preloads the associated record' do
@@ -14,8 +12,9 @@ describe 'Associations (belongs_To)' do
     author = AuthorRepository.new.create(name: 'Michel Foucault')
     book   = repository.create(author_id: author.id, title: 'Surveiller et punir')
     found = repository.find_with_author(book.id)
-    found.must_equal book
-    found.author.must_equal author
+
+    expect(found).to eq(book)
+    expect(found.author).to eq(author)
   end
 
   it 'returns an author' do
@@ -24,6 +23,6 @@ describe 'Associations (belongs_To)' do
     book   = repository.create(author_id: author.id, title: "L'Aguille Creuse")
     found = repository.author_for(book)
 
-    found.must_equal author
+    expect(found).to eq(author)
   end
 end

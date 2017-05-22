@@ -45,29 +45,13 @@ module Hanami
           freeze
         end
 
+        # @since x.x.x
+        # @api private
         def one
           scope.one
         end
 
         private
-
-        # @since x.x.x
-        # @api private
-        def command(target, relation, options = {})
-          repository.command(target, relation, options)
-        end
-
-        # @since x.x.x
-        # @api private
-        def aggregate(name)
-          repository.aggregate(name)
-        end
-
-        # @since x.x.x
-        # @api private
-        def entity
-          repository.class.entity
-        end
 
         # @since x.x.x
         # @api private
@@ -91,14 +75,6 @@ module Hanami
         # @api private
         def foreign_key
           association_keys.last
-        end
-
-        # @since x.x.x
-        # @api private
-        def associate(data)
-          relation(source)
-            .associations[target]
-            .associate(container.relations, data, subject)
         end
 
         # Returns primary key and foreign key
