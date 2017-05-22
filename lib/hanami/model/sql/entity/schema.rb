@@ -38,6 +38,22 @@ module Hanami
             freeze
           end
 
+          # Process attributes
+          #
+          # @param attributes [#to_hash] the attributes hash
+          #
+          # @raise [TypeError] if the process fails
+          #
+          # @since 1.0.1
+          # @api private
+          def call(attributes)
+            schema.call(attributes)
+          end
+
+          # @since 1.0.1
+          # @api private
+          alias [] call
+
           # Check if the attribute is known
           #
           # @param name [Symbol] the attribute name

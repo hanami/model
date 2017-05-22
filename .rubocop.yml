@@ -11,6 +11,7 @@ Lint/IneffectiveAccessModifier:
 Metrics/BlockLength:
   Exclude:
     - "test/**/*.rb" # Minitest syntax generates this false positive
+    - "spec/**/*.rb"
 Style/FileName:
   Enabled: false
 Style/GuardClause:
