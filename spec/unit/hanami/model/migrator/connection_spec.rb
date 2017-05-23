@@ -81,7 +81,12 @@ RSpec.describe Hanami::Model::Migrator::Connection do
       with_platform(db: :sqlite) do
         context "when sqlite" do
           it "returns raw sequel connection" do
-            expect(connection.raw).to be_kind_of(Sequel::SQLite::Database)
+            expected = Platform.match do
+              engine(:ruby)  { Sequel::SQLite::Database }
+              engine(:jruby) { Sequel::JDBC::Database }
+            end
+
+            expect(connection.raw).to be_kind_of(expected)
           end
         end
       end
@@ -89,7 +94,12 @@ RSpec.describe Hanami::Model::Migrator::Connection do
       with_platform(db: :postgresql) do
         context "when postgres" do
           it "returns raw sequel connection" do
-            expect(connection.raw).to be_kind_of(Sequel::Postgres::Database)
+            expected = Platform.match do
+              engine(:ruby)  { Sequel::Postgres::Database }
+              engine(:jruby) { Sequel::JDBC::Database }
+            end
+
+            expect(connection.raw).to be_kind_of(expected)
           end
         end
       end
@@ -97,7 +107,12 @@ RSpec.describe Hanami::Model::Migrator::Connection do
       with_platform(db: :mysql) do
         context "when mysql" do
           it "returns raw sequel connection" do
-            expect(connection.raw).to be_kind_of(Sequel::Mysql2::Database)
+            expected = Platform.match do
+              engine(:ruby)  { Sequel::Mysql2::Database }
+              engine(:jruby) { Sequel::JDBC::Database }
+            end
+
+            expect(connection.raw).to be_kind_of(expected)
           end
         end
       end
