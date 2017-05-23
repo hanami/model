@@ -6,6 +6,7 @@ require 'hanami/model/associations/dsl'
 require 'hanami/model/association'
 require 'hanami/utils/class'
 require 'hanami/utils/class_attribute'
+require 'hanami/utils/io'
 
 module Hanami
   # Mediates between the entities and the persistence layer, by offering an API
@@ -281,12 +282,18 @@ module Hanami
         include Utils::ClassAttribute
         auto_struct true
 
+        @associations = nil
+        @mapping      = nil
+        @schema       = nil
+
         class_attribute :entity
         class_attribute :entity_name
         class_attribute :relation
 
-        def self.relation=(name)
-          @relation = name.to_sym
+        Hanami::Utils::IO.silence_warnings do
+          def self.relation=(name)
+            @relation = name.to_sym
+          end
         end
 
         self.entity_name = Model::EntityName.new(name)
