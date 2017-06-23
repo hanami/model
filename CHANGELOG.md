@@ -1,6 +1,12 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.0.1 - 2017-06-23
+### Fixed
+- [Kai Kuchenbecker & Marcello Rocha & Luca Guidi] Ensure `Hanami::Entity#initialize` to not serialize (into `Hash`) other entities passed as an argument
+- [Luca Guidi] Let `Hanami::Repository.relation=` to accept strings as an argument
+- [Nikita Shilnikov] Prevent stack-overflow when `Hanami::Repository#update` is called thousand times
+
 ## v1.0.0 - 2017-04-06
 
 ## v1.0.0.rc1 - 2017-03-31
