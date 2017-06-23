@@ -85,7 +85,7 @@ module Hanami
     # This is useful for reboot applications in production and to ensure that
     # the framework prunes stale connections.
     #
-    # @since x.x.x
+    # @since 1.0.0
     #
     # @example With Full Stack Hanami Project
     #   # config/puma.rb
