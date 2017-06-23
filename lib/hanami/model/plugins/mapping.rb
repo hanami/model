@@ -37,8 +37,8 @@ module Hanami
           # @since 0.7.0
           # @api private
           def build(relation, options = {})
-            input(InputWithMapping.new(relation, input))
-            super(relation, options.merge(input: input))
+            wrapped_input = InputWithMapping.new(relation, options.fetch(:input) { input })
+            super(relation, options.merge(input: wrapped_input))
           end
         end
 

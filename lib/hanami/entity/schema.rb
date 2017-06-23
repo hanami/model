@@ -73,7 +73,7 @@ module Hanami
           if attributes.nil?
             {}
           else
-            attributes.dup
+            Utils::Hash.deep_symbolize(attributes.to_hash.dup)
           end
         end
 
@@ -221,9 +221,9 @@ module Hanami
       # @since 0.7.0
       # @api private
       def call(attributes)
-        Utils::Hash.new(
+        Utils::Hash.deep_symbolize(
           schema.call(attributes)
-        ).deep_symbolize!
+        )
       end
 
       # @since 0.7.0

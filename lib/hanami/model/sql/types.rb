@@ -29,31 +29,31 @@ module Hanami
           Time     = Types::Strict::Nil | Types::Time.constructor(Coercions.method(:time))
 
           Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
-          Hash     = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:hash))
+          Hash     = Types::Strict::Nil | Types::Hash.constructor(Coercions.method(:hash))
 
           # @since 0.7.0
           # @api private
           MAPPING = {
-            Types::String.with(meta: {})            => Schema::String,
-            Types::Int.with(meta: {})               => Schema::Int,
-            Types::Float.with(meta: {})             => Schema::Float,
-            Types::Decimal.with(meta: {})           => Schema::Decimal,
-            Types::Bool.with(meta: {})              => Schema::Bool,
-            Types::Date.with(meta: {})              => Schema::Date,
-            Types::DateTime.with(meta: {})          => Schema::DateTime,
-            Types::Time.with(meta: {})              => Schema::Time,
-            Types::Array.with(meta: {})             => Schema::Array,
-            Types::Hash.with(meta: {})              => Schema::Hash,
-            Types::String.optional.with(meta: {})   => Schema::String,
-            Types::Int.optional.with(meta: {})      => Schema::Int,
-            Types::Float.optional.with(meta: {})    => Schema::Float,
-            Types::Decimal.optional.with(meta: {})  => Schema::Decimal,
-            Types::Bool.optional.with(meta: {})     => Schema::Bool,
-            Types::Date.optional.with(meta: {})     => Schema::Date,
-            Types::DateTime.optional.with(meta: {}) => Schema::DateTime,
-            Types::Time.optional.with(meta: {})     => Schema::Time,
-            Types::Array.optional.with(meta: {})    => Schema::Array,
-            Types::Hash.optional.with(meta: {})     => Schema::Hash
+            Types::String.pristine            => Schema::String,
+            Types::Int.pristine               => Schema::Int,
+            Types::Float.pristine             => Schema::Float,
+            Types::Decimal.pristine           => Schema::Decimal,
+            Types::Bool.pristine              => Schema::Bool,
+            Types::Date.pristine              => Schema::Date,
+            Types::DateTime.pristine          => Schema::DateTime,
+            Types::Time.pristine              => Schema::Time,
+            Types::Array.pristine             => Schema::Array,
+            Types::Hash.pristine              => Schema::Hash,
+            Types::String.optional.pristine   => Schema::String,
+            Types::Int.optional.pristine      => Schema::Int,
+            Types::Float.optional.pristine    => Schema::Float,
+            Types::Decimal.optional.pristine  => Schema::Decimal,
+            Types::Bool.optional.pristine     => Schema::Bool,
+            Types::Date.optional.pristine     => Schema::Date,
+            Types::DateTime.optional.pristine => Schema::DateTime,
+            Types::Time.optional.pristine     => Schema::Time,
+            Types::Array.optional.pristine    => Schema::Array,
+            Types::Hash.optional.pristine     => Schema::Hash
           }.freeze
 
           # Convert given type into coercible
@@ -62,8 +62,22 @@ module Hanami
           # @api private
           def self.coercible(attribute)
             return attribute if attribute.constrained?
-            # TODO: figure out a better way of inferring coercions from schema types
-            MAPPING.fetch(attribute.type.with(meta: {}), attribute)
+
+            type      = attribute.type
+            unwrapped = type.optional? ? type.right : type
+
+            # NOTE: In the future rom-sql should be able to always return Ruby
+            # types instead of Sequel types. When that will happen we can get
+            # rid of this logic in the block and to fallback to:
+            #
+            #  MAPPING.fetch(unwrapped.pristine, attribute)
+            MAPPING.fetch(unwrapped.pristine) do
+              if defined?(ROM::SQL::Types::PG::JSONB) && unwrapped.pristine == ROM::SQL::Types::PG::JSONB
+                Schema::Hash
+              else
+                attribute
+              end
+            end
           end
 
           # Coercer for SQL associations target

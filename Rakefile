@@ -1,44 +1,16 @@
 require 'rake'
-require 'rake/testtask'
 require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
 
-Rake::TestTask.new do |t|
-  t.pattern = 'test/**/*_test.rb'
-  t.libs.push 'test'
-  t.warning = false
-end
-
-Rake::TestTask.new do |t|
-  t.name = 'unit'
-  t.test_files = Dir['test/**/*_test.rb'].reject do |path|
-    path.include?('/integration')
+namespace :spec do
+  RSpec::Core::RakeTask.new(:all) do |task|
+    task.pattern = FileList['spec/**/*_spec.rb']
   end
-  t.libs.push 'test'
-  t.warning = false
-end
 
-Rake::TestTask.new do |t|
-  t.name = 'integration'
-  t.pattern = 'test/integration/**/*_test.rb'
-  t.libs.push 'test'
-  t.warning = false
-end
-
-namespace :test do
   task :coverage do
     ENV['COVERAGE'] = 'true'
-    Rake::Task['test'].invoke
-  end
-
-  desc 'Runs only unit tests'
-  task :unit do
-    Rake::Task['unit'].invoke
-  end
-
-  desc 'Run only integration tests'
-  task :integration do
-    Rake::Task['integration'].invoke
+    Rake::Task['spec:all'].invoke
   end
 end
 
-task default: :test
+task default: 'spec:all'

@@ -6,6 +6,7 @@ require 'hanami/model/associations/dsl'
 require 'hanami/model/association'
 require 'hanami/utils/class'
 require 'hanami/utils/class_attribute'
+require 'hanami/utils/io'
 
 module Hanami
   # Mediates between the entities and the persistence layer, by offering an API
@@ -19,8 +20,7 @@ module Hanami
   # @example
   #   require 'hanami/model'
   #
-  #   class Article
-  #     include Hanami::Entity
+  #   class Article < Hanami::Entity
   #   end
   #
   #   # valid
@@ -107,7 +107,7 @@ module Hanami
   # @see Hanami::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  class Repository < ROM::Repository::Root
+  class Repository < ROM::Repository::Root # rubocop:disable Metrics/ClassLength
     # Plugins for database commands
     #
     # @since 0.7.0
@@ -282,13 +282,22 @@ module Hanami
         include Utils::ClassAttribute
         auto_struct true
 
+        @associations = nil
+        @mapping      = nil
+        @schema       = nil
+
         class_attribute :entity
-
         class_attribute :entity_name
-        self.entity_name = Model::EntityName.new(name)
-
         class_attribute :relation
-        self.relation = Model::RelationName.new(name)
+
+        Hanami::Utils::IO.silence_warnings do
+          def self.relation=(name)
+            @relation = name.to_sym
+          end
+        end
+
+        self.entity_name = Model::EntityName.new(name)
+        self.relation    = Model::RelationName.new(name)
 
         commands :create, update: :by_pk, delete: :by_pk, mapper: Model::MappedRelation.mapper_name, use: COMMAND_PLUGINS
         prepend Commands
