@@ -49,7 +49,7 @@ RSpec.describe Hanami::Entity do
       end
 
       it 'coerces values for array of primitives' do
-        entity = described_class.new(codes: %w(4 5 6))
+        entity = described_class.new(codes: %w[4 5 6])
 
         expect(entity.codes).to eq([4, 5, 6])
       end
