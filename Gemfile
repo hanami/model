@@ -22,4 +22,4 @@ end
 
 gem 'simplecov',         require: false
 gem 'coveralls',         require: false
-gem 'rubocop', '0.48.0', require: false
+gem 'rubocop', '0.49.1', require: false

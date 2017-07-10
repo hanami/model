@@ -3,7 +3,7 @@ Hanami::Model.migration do
     case Database.engine
     when :postgresql
       extension :pg_enum
-      create_enum :rainbow, %w(red orange yellow green blue indigo violet)
+      create_enum :rainbow, %w[red orange yellow green blue indigo violet]
 
       create_table :colors do
         primary_key :id
