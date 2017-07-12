@@ -24,7 +24,7 @@ module Hanami
           def initialize(relation, input)
             super
             columns     = relation.columns.sort
-            @timestamps = (columns & TIMESTAMPS) == TIMESTAMPS
+            @timestamps = (columns & TIMESTAMPS).count.positive?
           end
 
           # Processes the input

@@ -6,6 +6,7 @@ Hanami::Model.migration do
       foreign_key :user_id, :users, on_delete: :cascade, null: false
 
       column :url, String
+      column :created_at, DateTime
     end
   end
 end
