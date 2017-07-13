@@ -23,8 +23,7 @@ module Hanami
           # @api private
           def initialize(relation, input)
             super
-            columns     = relation.columns.sort
-            @timestamps = columns & TIMESTAMPS
+            @timestamps = relation.columns & TIMESTAMPS
           end
 
           # Processes the input
