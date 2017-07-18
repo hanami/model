@@ -25,6 +25,5 @@ RSpec.shared_examples "sql_console_postgresql" do
         ENV.delete('PGPASSWORD')
       end
     end
-
   end
 end
