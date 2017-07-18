@@ -21,7 +21,7 @@ RSpec.shared_examples "sql_console_postgresql" do
 
       it 'sets the PGPASSWORD environment variable decoding special characters' do
         console.connection_string
-        expect(ENV['PGPASSWORD']).to eq('WRONG')
+        expect(ENV['PGPASSWORD']).to eq('p@ss')
         ENV.delete('PGPASSWORD')
       end
     end
