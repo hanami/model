@@ -1,4 +1,4 @@
-RSpec.describe 'Associations (belongs_To)' do
+RSpec.describe 'Associations (belongs_to)' do
   it "returns nil if association wasn't preloaded" do
     repository = BookRepository.new
     book       = repository.create(name: 'L')

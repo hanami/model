@@ -22,14 +22,14 @@ RSpec.describe 'Associations (has_many :through)' do
     expect(found).to eq([genre])
   end
 
-  xit 'creates an object with a collection of associated objects' do
-    repository = BookRepository.new
-    book = repository.create_with_genres(name: , genres: [{name: }])
+  # xit 'creates an object with a collection of associated objects' do
+  #   repository = BookRepository.new
+  #   book = repository.create_with_genres(name: , genres: [{name: }])
 
-    expect(book).to be_an_instance_of(Author)
-    expect(book.name).to eq()
-    expect(boook.genres).to be_an_instance_of(Array)
-    expect(boook.genres.first).to be_an_instance_of(Genre)
-    expect(boook.genres.first.title).to eq()
-  end
+  #   expect(book).to be_an_instance_of(Author)
+  #   expect(book.name).to eq()
+  #   expect(boook.genres).to be_an_instance_of(Array)
+  #   expect(boook.genres.first).to be_an_instance_of(Genre)
+  #   expect(boook.genres.first.title).to eq()
+  # end
 end

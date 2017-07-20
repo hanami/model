@@ -42,6 +42,17 @@ module Hanami
           freeze
         end
 
+        def to_a
+          scope.to_a
+        end
+
+        def add(data)
+          command(:create, relation(target), use: [:timestamps])
+            .call(associate(data))
+        end
+
+        private
+
         # @since x.x.x
         # @api private
         def container
@@ -54,21 +65,36 @@ module Hanami
           repository.relations[name]
         end
 
+        # @since x.x.x
+        # @api private
+        def command(target, relation, options = {})
+          repository.command(target, relation, options)
+        end
+
+        # @since x.x.x
+        # @api private
         def primary_key
-          association_keys.first
+          association_keys[0].first
         end
 
+        # @since x.x.x
+        # @api private
         def foreign_key
-          association_keys.last
+          association_keys[1].last
         end
 
+        # @since x.x.x
+        # @api private
         def association_keys
           relation(source)
             .associations[target]
             .__send__(:join_key_map, container.relations)
         end
 
+        # @since x.x.x
+        # @api private
         def _build_scope
+          p repository.relations.to_a
           result = relation(target)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
           result.as(Model::MappedRelation.mapper_name)
