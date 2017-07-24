@@ -47,8 +47,17 @@ module Hanami
         end
 
         def add(data)
-          command(:create, relation(target), use: [:timestamps])
+          command(:create, relation(through), use: [:timestamps])
             .call(associate(data))
+        end
+
+        def remove(id)
+          command(
+            :delete, 
+            relation(through)
+              .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key)),
+            use: [:timestamps]
+          )
         end
 
         private
@@ -73,14 +82,22 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def primary_key
+        def associate(data)
+          relation(target)
+            .associations[source]
+            .associate(container.relations, [data], subject)
+        end
+
+        # @since x.x.x
+        # @api private
+        def source_primary_key
           association_keys[0].first
         end
 
         # @since x.x.x
         # @api private
-        def foreign_key
-          association_keys[1].last
+        def source_foreign_key
+          association_keys[0].last
         end
 
         # @since x.x.x
@@ -93,10 +110,31 @@ module Hanami
 
         # @since x.x.x
         # @api private
+        def through
+          relation(source).associations[target].through.to_sym
+        end
+
+        # @since x.x.x
+        # @api private
+        def target_foreign_key
+          association_keys[1].first
+        end
+
+        # @since x.x.x
+        # @api private
+        def target_primary_key
+          association_keys[1].last
+        end
+
+        # @since x.x.x
+        # @api private
         def _build_scope
-          p repository.relations.to_a
-          result = relation(target)
-          result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
+          result = relation(target).qualified
+          unless subject.nil?
+            result =  result
+                        .join(through, target_foreign_key => target_primary_key)
+                        .where(source_foreign_key => subject.fetch(source_primary_key))
+          end
           result.as(Model::MappedRelation.mapper_name)
         end
       end

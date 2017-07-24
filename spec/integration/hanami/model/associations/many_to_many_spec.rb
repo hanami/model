@@ -4,7 +4,7 @@ RSpec.describe 'Associations (has_many :through)' do
     book       = repository.create(name: 'L')
     found      = repository.find(book.id)
 
-    expect(found.author).to be(nil)
+    expect(found.category).to be(nil)
   end
 
   xit 'preloads the associated record' do
