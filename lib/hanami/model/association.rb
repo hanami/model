@@ -3,7 +3,6 @@ require 'hanami/model/associations/has_many'
 require 'hanami/model/associations/belongs_to'
 require 'hanami/model/associations/many_to_many'
 
-
 module Hanami
   module Model
     # Association factory

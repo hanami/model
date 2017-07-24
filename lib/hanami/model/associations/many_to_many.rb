@@ -33,33 +33,39 @@ module Hanami
         # @api private
         attr_reader :scope
 
+        # @since x.x.x
+        # @api private
+        attr_reader :through
+
         def initialize(repository, source, target, subject, scope = nil)
           @repository = repository
           @source     = source
           @target     = target
           @subject    = subject.to_hash unless subject.nil?
           @scope      = scope || _build_scope
+          @through    = relation(source).associations[target].through.to_sym
           freeze
         end
 
         def to_a
           scope.to_a
         end
-
-        def add(*data)
+        
+        # @since x.x.x
+        # @api private
+        def add(*data) #Can receive an array of entities/hashes with pks.
           command(:create, relation(through), use: [:timestamps])
             .call(associate(data))
         end
 
-        def remove(id)
-          thing = relation(through)
-                    .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
-                    .one  
-          command(
-            :delete, 
-            relation(through),
-            use: [:timestamps]
-          ).by_pk(thing.id).call
+        # @since x.x.x
+        # @api private
+        def remove(id) # Wrap in a transaction
+          association_record = relation(through)
+            .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
+            .one
+          ar_id = association_record.public_send relation(through).primary_key
+          command( :delete, relation(through), use: [:timestamps] ).by_pk(ar_id).call
         end
 
         private
@@ -112,12 +118,6 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def through
-          relation(source).associations[target].through.to_sym
-        end
-
-        # @since x.x.x
-        # @api private
         def target_foreign_key
           association_keys[1].first
         end
@@ -133,9 +133,9 @@ module Hanami
         def _build_scope
           result = relation(target).qualified
           unless subject.nil?
-            result =  result
-                        .join(through, target_foreign_key => target_primary_key)
-                        .where(source_foreign_key => subject.fetch(source_primary_key))
+            result = result
+                     .join(through, target_foreign_key => target_primary_key)
+                     .where(source_foreign_key => subject.fetch(source_primary_key))
           end
           result.as(Model::MappedRelation.mapper_name)
         end
