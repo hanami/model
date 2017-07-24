@@ -46,18 +46,20 @@ module Hanami
           scope.to_a
         end
 
-        def add(data)
+        def add(*data)
           command(:create, relation(through), use: [:timestamps])
             .call(associate(data))
         end
 
         def remove(id)
+          thing = relation(through)
+                    .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
+                    .one  
           command(
             :delete, 
-            relation(through)
-              .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key)),
+            relation(through),
             use: [:timestamps]
-          )
+          ).by_pk(thing.id).call
         end
 
         private
@@ -85,7 +87,7 @@ module Hanami
         def associate(data)
           relation(target)
             .associations[source]
-            .associate(container.relations, [data], subject)
+            .associate(container.relations, data, subject)
         end
 
         # @since x.x.x
