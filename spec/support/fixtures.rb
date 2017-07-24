@@ -61,6 +61,12 @@ end
 class Label < Hanami::Entity
 end
 
+class Category < Hanami::Entity
+end
+
+class BooksCategories < Hanami::Entity
+end
+
 class UserRepository < Hanami::Repository
   def by_name(name)
     users.where(name: name)
@@ -134,9 +140,23 @@ class AuthorRepository < Hanami::Repository
   end
 end
 
+class BooksCategoriesRepository < Hanami::Repository
+  associations do
+    belongs_to :books
+    belongs_to :categories
+  end
+end
+
+class CategoryRepository < Hanami::Repository
+  associations do
+    has_many :books, through: :books_categories
+  end
+end
+
 class BookRepository < Hanami::Repository
   associations do
     belongs_to :author
+    has_many :categories, through: :books_categories
   end
 
   def find_with_author(id)
