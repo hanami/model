@@ -42,25 +42,43 @@ module Hanami
           @source     = source
           @target     = target
           @subject    = subject.to_hash unless subject.nil?
-          @scope      = scope || _build_scope
           @through    = relation(source).associations[target].through.to_sym
+          @scope      = scope || _build_scope
           freeze
         end
 
         def to_a
           scope.to_a
         end
+
+        def map(&blk)
+          to_a.map(&blk)
+        end
+
+        def each(&blk)
+          scope.each(&blk)
+        end
+
+        def count
+          scope.count
+        end
+
+        def where(condition)
+          __new__(scope.where(condition))
+        end
         
         # @since x.x.x
         # @api private
-        def add(*data) #Can receive an array of entities/hashes with pks.
+        # Return the association table object. Would need an aditional query to return the entity
+        def add(*data) #Can receive an array of hashes with pks.
           command(:create, relation(through), use: [:timestamps])
             .call(associate(data))
         end
 
         # @since x.x.x
         # @api private
-        def remove(id) # Wrap in a transaction
+        # Return the association table object. Would need an aditional query to return the entity
+        def remove(id)
           association_record = relation(through)
             .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
             .one
@@ -138,6 +156,12 @@ module Hanami
                      .where(source_foreign_key => subject.fetch(source_primary_key))
           end
           result.as(Model::MappedRelation.mapper_name)
+        end
+
+        # @since x.x.x
+        # @api private
+        def __new__(new_scope)
+          self.class.new(repository, source, target, subject, new_scope)
         end
       end
     end

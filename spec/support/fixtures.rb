@@ -151,12 +151,28 @@ class CategoryRepository < Hanami::Repository
   associations do
     has_many :books, through: :books_categories
   end
+
+  def find_with_books(id)
+    aggregate(:books).where(id: id).as(Category).one
+  end
 end
 
 class BookRepository < Hanami::Repository
   associations do
     belongs_to :author
     has_many :categories, through: :books_categories
+  end
+
+  def add_category(book, category)
+    assoc(:categories, book).add(category)
+  end
+
+  def categories_for(book)
+    assoc(:categories, book).to_a
+  end
+
+  def find_with_categories(id)
+    aggregate(:categories).where(id: id).as(Book).one
   end
 
   def find_with_author(id)

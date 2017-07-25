@@ -19,3 +19,4 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+.idea
