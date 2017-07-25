@@ -66,25 +66,29 @@ module Hanami
         def where(condition)
           __new__(scope.where(condition))
         end
-        
+
         # @since x.x.x
         # @api private
         # Return the association table object. Would need an aditional query to return the entity
-        def add(*data) #Can receive an array of hashes with pks.
+        def add(*data) # Can receive an array of hashes with pks.
           command(:create, relation(through), use: [:timestamps])
             .call(associate(data.map(&:to_h)))
         end
 
         # @since x.x.x
         # @api private
-        # Return the association table object. Would need an aditional query to return the entity
+        # disabled until I figure out a better way to do this
+        # rubocop:disable Metrics/AbcSize
         def remove(id)
           association_record = relation(through)
-            .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
-            .one
-          ar_id = association_record.public_send relation(through).primary_key
-          command( :delete, relation(through), use: [:timestamps] ).by_pk(ar_id).call
+                               .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
+                               .one
+          if association_record
+            ar_id = association_record.public_send relation(through).primary_key
+            command(:delete, relation(through), use: [:timestamps]).by_pk(ar_id).call
+          end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -148,6 +152,7 @@ module Hanami
 
         # @since x.x.x
         # @api private
+        # rubocop:disable Metrics/AbcSize
         def _build_scope
           result = relation(target).qualified
           unless subject.nil?
@@ -157,6 +162,7 @@ module Hanami
           end
           result.as(Model::MappedRelation.mapper_name)
         end
+        # rubocop:enable Metrics/AbcSize
 
         # @since x.x.x
         # @api private
