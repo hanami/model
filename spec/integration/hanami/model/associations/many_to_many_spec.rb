@@ -1,21 +1,21 @@
 RSpec.describe 'Associations (has_many :through)' do
-  it "returns nil if association wasn't preloaded" do
-    repository = BookRepository.new
-    book       = repository.create(title: 'L')
-    found      = repository.find(book.id)
+  
+  #### REPOS
+  let(:books) { BookRepository.new }
+  let(:categories) { CategoryRepository.new }
+  let(:ontologies) { BookOntologyRepository.new }
 
+  ### ENTITIES
+  let(:book)  { books.create(title: 'Ontology: Encyclopedia of Database Systems') }
+  let(:category) { categories.create(name: 'information science') }
+
+  it "returns nil if association wasn't preloaded" do
+    found      = books.find(book.id)
     expect(found.categories).to be(nil)
   end
 
   it 'preloads the associated record' do
-    books = BookRepository.new
-    book = books.create(title: 'Blaise Pascal')
-  
-    categories = CategoryRepository.new
-    category = categories.create(name: 'biography')
-  
-    BooksCategoriesRepository.new.create(book_id: book.id, category_id: category.id)
-
+    ontologies.create(book_id: book.id, category_id: category.id)
     found = books.find_with_categories(book.id)
 
     expect(found).to eq(book)
@@ -23,42 +23,44 @@ RSpec.describe 'Associations (has_many :through)' do
   end
 
   it 'returns an array of Categories' do
-    books = BookRepository.new
-    book = books.create(title: 'Something Something')
-  
-    categories = CategoryRepository.new
-    category = categories.create(name: 'another one')
-  
-    BooksCategoriesRepository.new.create(book_id: book.id, category_id: category.id)
+    ontologies.create(book_id: book.id, category_id: category.id)
 
     found = books.categories_for(book)
     expect(found).to eq([category])
   end
 
-  it 'adds an object to the collection' do
-    categories = CategoryRepository.new
-    category = categories.create(name: 'some category')
-    books = BookRepository.new
-    book = books.create(title: 'Something Something')
-    books.add_category(book, category.to_hash)
+  context '#add' do
+    it 'adds an object to the collection' do
+      books.add_category(book, category)
 
-    found_book = books.find_with_categories(book.id)
-    found_category = categories.find_with_books(category.id)
+      found_book = books.find_with_categories(book.id)
+      found_category = categories.find_with_books(category.id)
 
-    expect(found_book).to eq(book)
-    expect(found_book.categories).to eq([category])
-    expect(found_category).to eq(category)
-    expect(found_category.books).to eq([book])
+      expect(found_book).to eq(book)
+      expect(found_book.categories).to eq([category])
+      expect(found_category).to eq(category)
+      expect(found_category.books).to eq([book])
+    end
+
+    it 'associates a collection of records' do
+      other_book = books.create(title: 'Ontological Engineering')
+      categories.add_books(category, book, other_book)
+      found = categories.find_with_books(category.id)
+
+      expect(found.books).to match_array([book, other_book])
+    end
   end
 
-  # xit 'creates an object with a collection of associated objects' do
-  #   repository = BookRepository.new
-  #   book = repository.create_with_genres(name: , genres: [{name: }])
+  context '#remove' do
+    it 'removes the desired association' do
+      to_remove = books.create(title: 'The Life of a Stoic')
+      books.add_category(to_remove, category)
 
-  #   expect(book).to be_an_instance_of(Author)
-  #   expect(book.name).to eq()
-  #   expect(boook.genres).to be_an_instance_of(Array)
-  #   expect(boook.genres.first).to be_an_instance_of(Genre)
-  #   expect(boook.genres.first.title).to eq()
-  # end
+      categories.remove_book(category, to_remove.id)
+      found = categories.find_with_books(category.id)
+
+      expect(found.books).to_not include(to_remove)
+    end
+  end
+
 end

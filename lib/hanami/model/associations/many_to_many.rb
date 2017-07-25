@@ -72,7 +72,7 @@ module Hanami
         # Return the association table object. Would need an aditional query to return the entity
         def add(*data) #Can receive an array of hashes with pks.
           command(:create, relation(through), use: [:timestamps])
-            .call(associate(data))
+            .call(associate(data.map(&:to_h)))
         end
 
         # @since x.x.x

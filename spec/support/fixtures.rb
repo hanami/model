@@ -10,6 +10,12 @@ end
 class Book < Hanami::Entity
 end
 
+class Category < Hanami::Entity
+end
+
+class BookOntology < Hanami::Entity
+end
+
 class Operator < Hanami::Entity
 end
 
@@ -59,12 +65,6 @@ class Color < Hanami::Entity
 end
 
 class Label < Hanami::Entity
-end
-
-class Category < Hanami::Entity
-end
-
-class BooksCategories < Hanami::Entity
 end
 
 class UserRepository < Hanami::Repository
@@ -140,7 +140,7 @@ class AuthorRepository < Hanami::Repository
   end
 end
 
-class BooksCategoriesRepository < Hanami::Repository
+class BookOntologyRepository < Hanami::Repository
   associations do
     belongs_to :books
     belongs_to :categories
@@ -149,18 +149,30 @@ end
 
 class CategoryRepository < Hanami::Repository
   associations do
-    has_many :books, through: :books_categories
+    has_many :books, through: :book_ontologies
+  end
+
+  def books_for(category)
+    assoc(:books, category).to_a
   end
 
   def find_with_books(id)
     aggregate(:books).where(id: id).as(Category).one
+  end
+
+  def add_books(category, *books)
+    assoc(:books, category).add(*books)
+  end
+
+  def remove_book(category, book_id)
+    assoc(:books, category).remove(book_id)
   end
 end
 
 class BookRepository < Hanami::Repository
   associations do
     belongs_to :author
-    has_many :categories, through: :books_categories
+    has_many :categories, through: :book_ontologies
   end
 
   def add_category(book, category)

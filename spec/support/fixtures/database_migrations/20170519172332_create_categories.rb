@@ -5,8 +5,8 @@ Hanami::Model.migration do
       primary_key :id
       column :name, String
     end
-    drop_table? :books_categories
-    create_table? :books_categories do
+    drop_table? :book_ontologies
+    create_table? :book_ontologies do
       primary_key :id
 
       foreign_key :book_id, :books, on_delete: :cascade, null: false
