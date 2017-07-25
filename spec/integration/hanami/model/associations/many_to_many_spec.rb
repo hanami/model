@@ -1,16 +1,15 @@
 RSpec.describe 'Associations (has_many :through)' do
-  
   #### REPOS
   let(:books) { BookRepository.new }
   let(:categories) { CategoryRepository.new }
   let(:ontologies) { BookOntologyRepository.new }
 
   ### ENTITIES
-  let(:book)  { books.create(title: 'Ontology: Encyclopedia of Database Systems') }
+  let(:book) { books.create(title: 'Ontology: Encyclopedia of Database Systems') }
   let(:category) { categories.create(name: 'information science') }
 
   it "returns nil if association wasn't preloaded" do
-    found      = books.find(book.id)
+    found = books.find(book.id)
     expect(found.categories).to be(nil)
   end
 
@@ -62,5 +61,4 @@ RSpec.describe 'Associations (has_many :through)' do
       expect(found.books).to_not include(to_remove)
     end
   end
-
 end
