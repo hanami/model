@@ -35,7 +35,6 @@ RSpec.describe 'Associations (has_many :through)' do
     expect(categories.on_sales_books_count(category)).to eq(1)
   end
 
-
   context '#add' do
     it 'adds an object to the collection' do
       books.add_category(book, category)
@@ -80,7 +79,6 @@ RSpec.describe 'Associations (has_many :through)' do
 
     it 'iterates through the categories' do
       ontologies.create(book_id: book.id, category_id: category.id)
-      expected = categories.books_for(category)
       actual = []
 
       categories.books_for(category).each do |book|
@@ -105,6 +103,5 @@ RSpec.describe 'Associations (has_many :through)' do
 
       expect(categories.books_count(category)).to eq(2)
     end
-
   end
 end
