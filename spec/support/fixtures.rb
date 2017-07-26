@@ -153,7 +153,15 @@ class CategoryRepository < Hanami::Repository
   end
 
   def books_for(category)
-    assoc(:books, category).to_a
+    assoc(:books, category)
+  end
+
+  def on_sales_books_count(category)
+    assoc(:books, category).where(on_sale: true).count
+  end
+
+  def books_count(category)
+    assoc(:books, category).count
   end
 
   def find_with_books(id)
