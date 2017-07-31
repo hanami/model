@@ -178,6 +178,14 @@ RSpec.describe 'Repository (base)' do
         expect(updated.created_at).to be_within(2).of(given_time)
         expect(updated.updated_at).to be_within(2).of(given_time)
       end
+
+      # Bug: https://github.com/hanami/model/issues/412
+      it 'can have only creation timestamp' do
+        user = UserRepository.new.create(name: 'L')
+        repository = AvatarRepository.new
+        account = repository.create(url: 'http://foo.com', user_id: user.id)
+        expect(account.created_at).to be_within(2).of(Time.now.utc)
+      end
     end
 
     # Bug: https://github.com/hanami/model/issues/237

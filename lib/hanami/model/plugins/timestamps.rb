@@ -23,8 +23,7 @@ module Hanami
           # @api private
           def initialize(relation, input)
             super
-            columns     = relation.columns.sort
-            @timestamps = (columns & TIMESTAMPS) == TIMESTAMPS
+            @timestamps = relation.columns & TIMESTAMPS
           end
 
           # Processes the input
@@ -49,7 +48,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def timestamps?
-            @timestamps
+            !@timestamps.empty?
           end
         end
 
@@ -63,7 +62,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def _touch(value, now)
-            value[:updated_at] ||= now
+            value[:updated_at] ||= now if @timestamps.include?(:updated_at)
             value
           end
         end
@@ -79,7 +78,7 @@ module Hanami
           # @api private
           def _touch(value, now)
             super
-            value[:created_at] ||= now
+            value[:created_at] ||= now if @timestamps.include?(:created_at)
             value
           end
         end
