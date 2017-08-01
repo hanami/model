@@ -76,19 +76,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "mysqldump --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
+          execute "mysqldump --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "mysql --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
+          execute "mysql --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "mysqldump --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
+          execute "mysqldump --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
         end
       end
     end

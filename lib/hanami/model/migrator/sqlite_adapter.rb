@@ -1,5 +1,6 @@
 require 'pathname'
 require 'hanami/utils'
+require 'english'
 
 module Hanami
   module Model
@@ -91,20 +92,36 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "sqlite3 #{escape(path)} .schema > #{escape(schema)}"
+          execute "sqlite3 #{escape(path)} .schema > #{escape(schema)}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "sqlite3 #{escape(path)} < #{escape(schema)}" if schema.exist?
+          execute "sqlite3 #{escape(path)} < #{escape(schema)}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def dump_migrations_data
-          system %(sqlite3 #{escape(path)} .dump | grep '^INSERT INTO "#{migrations_table}"' >> #{escape(schema)})
+          execute "sqlite3 #{escape(path)} .dump" do |stdout|
+            begin
+              contents = stdout.read.split($INPUT_RECORD_SEPARATOR)
+              contents = contents.grep(/^INSERT INTO "#{migrations_table}"/)
+
+              ::File.open(schema, ::File::CREAT | ::File::BINARY | ::File::WRONLY | ::File::APPEND) do |file|
+                file.write(contents.join($INPUT_RECORD_SEPARATOR))
+              end
+            rescue => exception
+              raise MigrationError.new(exception.message)
+            end
+          end
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
       end
     end
   end
