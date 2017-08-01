@@ -1,6 +1,6 @@
 require 'pathname'
 require 'hanami/utils'
-require 'english'
+require 'English'
 
 module Hanami
   module Model
