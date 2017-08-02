@@ -133,12 +133,6 @@ module Hanami
         def new_connection(global: false)
           uri = global ? connection.global_uri : connection.uri
 
-          if Database.engine.to_s == "mysql" && global == true
-            puts "\n" * 10
-            puts uri
-            puts "\n" * 10
-          end
-
           Sequel.connect(uri)
         end
 
