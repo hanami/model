@@ -7,6 +7,7 @@ Hanami::Model.migration do
         column :name,       String,   null: false
         column :languages,  'text[]'
         column :metadata,   'jsonb',  null: false
+        column :tags,       'jsonb',  null: false, default: [].to_json
         column :content,    File,     null: false
         column :created_at, DateTime, null: false
         column :updated_at, DateTime, null: false
