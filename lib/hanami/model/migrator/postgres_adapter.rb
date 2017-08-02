@@ -101,7 +101,7 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          error = ->(err) { raise MigrationError.new(err) unless err =~ /no matching tables/ }
+          error = ->(err) { raise MigrationError.new(err) unless err =~ /no matching tables/i }
           execute "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}", error: error
         end
 
