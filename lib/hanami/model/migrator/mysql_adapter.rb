@@ -18,6 +18,9 @@ module Hanami
 
         # @since 0.4.0
         # @api private
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def create
           connection = new_connection(global: true)
           connection.run %(CREATE DATABASE `#{database}`)
@@ -33,6 +36,8 @@ module Hanami
 
           raise MigrationError.new(message)
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
         # @since 0.4.0
         # @api private
