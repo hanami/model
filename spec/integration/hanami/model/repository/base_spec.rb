@@ -308,6 +308,29 @@ RSpec.describe 'Repository (base)' do
       end
 
       it 'raises error when constraint is violated' do
+        os = Platform.match do
+          os(:linux) { "linux" }
+          os(:macos) { "macos" }
+          default    { "other: #{RbConfig::CONFIG['host_os']}" }
+        end
+
+        engine = Platform.match do
+          engine(:ruby)  { "ruby" }
+          engine(:jruby) { "jruby" }
+          default        { "other: RUBY_ENGINE: #{RUBY_ENGINE}, RUBY_PLATFORM: #{RUBY_PLATFORM}" }
+        end
+
+        db = Platform.match do
+          db(:sqlite)     { "sqlite" }
+          db(:mysql)      { "mysql" }
+          db(:postgresql) { "postgresql" }
+          default         { "other: #{Database.engine}" }
+        end
+
+        puts "\n" * 20
+        puts [os, engine, db].join("\t")
+        puts "\n" * 20
+
         expected_error = Platform.match do
           os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
           default                              { Hanami::Model::CheckConstraintViolationError }
