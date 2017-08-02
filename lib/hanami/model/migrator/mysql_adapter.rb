@@ -19,7 +19,11 @@ module Hanami
         # @since 0.4.0
         # @api private
         def create
-          new_connection(global: true).run %(CREATE DATABASE `#{database}`;)
+          connection = new_connection(global: true)
+          connection.run %(CREATE DATABASE `#{database}`)
+          connection.run %(use `#{database}`)
+          connection.run %(GRANT ALL PRIVILEGES ON `#{database}`.* TO '#{username}'@'#{host}')
+          connection.run %(FLUSH PRIVILEGES)
         rescue Sequel::DatabaseError => e
           message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
                       DB_CREATION_ERROR
