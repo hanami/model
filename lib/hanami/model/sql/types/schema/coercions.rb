@@ -192,6 +192,12 @@ module Hanami
                 raise ArgumentError.new("invalid value for Hash(): #{arg.inspect}")
               end
             end
+
+            def self.json(arg)
+              hash(arg)
+            rescue ArgumentError
+              array(arg)
+            end
           end
           # rubocop:enable Metrics/MethodLength
         end
