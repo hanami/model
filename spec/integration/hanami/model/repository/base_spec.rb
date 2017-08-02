@@ -288,13 +288,10 @@ RSpec.describe 'Repository (base)' do
     # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
     unless_platform(db: :mysql) do
       it 'raises error when "check" constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: users)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
@@ -302,42 +299,16 @@ RSpec.describe 'Repository (base)' do
         end
 
         expect { UserRepository.new.create(name: 'L', age: 1) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
 
       it 'raises error when constraint is violated' do
-        os = Platform.match do
-          os(:linux) { "linux" }
-          os(:macos) { "macos" }
-          default    { "other: #{RbConfig::CONFIG['host_os']}" }
-        end
-
-        engine = Platform.match do
-          engine(:ruby)  { "ruby" }
-          engine(:jruby) { "jruby" }
-          default        { "other: RUBY_ENGINE: #{RUBY_ENGINE}, RUBY_PLATFORM: #{RUBY_PLATFORM}" }
-        end
-
-        db = Platform.match do
-          db(:sqlite)     { "sqlite" }
-          db(:mysql)      { "mysql" }
-          db(:postgresql) { "postgresql" }
-          default         { "other: #{Database.engine}" }
-        end
-
-        puts "\n" * 20
-        puts [os, engine, db].join("\t")
-        puts "\n" * 20
-
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: comments_count_constraint)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
@@ -345,7 +316,7 @@ RSpec.describe 'Repository (base)' do
         end
 
         expect { UserRepository.new.create(name: 'L', comments_count: -1) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
@@ -500,13 +471,10 @@ RSpec.describe 'Repository (base)' do
     # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
     unless_platform(db: :mysql) do
       it 'raises error when "check" constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite)  { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: users)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
@@ -517,19 +485,16 @@ RSpec.describe 'Repository (base)' do
         user = repository.create(name: 'L')
 
         expect { repository.update(user.id, age: 17) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
 
       it 'raises error when constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite)  { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: comments_count_constraint)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
@@ -540,7 +505,7 @@ RSpec.describe 'Repository (base)' do
         user = repository.create(name: 'L')
 
         expect { repository.update(user.id, comments_count: -2) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
