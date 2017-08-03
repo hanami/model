@@ -37,6 +37,12 @@ module Database
         def export_env
           super
           ENV['HANAMI_DATABASE_USERNAME'] = 'travis'
+          ENV['HANAMI_DATABASE_URL'] = "mysql2://#{credentials}@#{host}/#{database_name}"
+        end
+
+        def create_database
+          super
+          run_command "GRANT ALL PRIVILEGES ON *.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;"
         end
 
         private
