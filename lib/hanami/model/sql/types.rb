@@ -31,6 +31,19 @@ module Hanami
           Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
           Hash     = Types::Strict::Nil | Types::Hash.constructor(Coercions.method(:hash))
 
+          JSONB = lambda do |input|
+            case input
+            when ->(i) { i.respond_to?(:to_hash) }
+              Schema::Hash.call(input)
+            when ->(i) { i.respond_to?(:to_a) }
+              Schema::Array.call(input)
+            when ::NilClass
+              input
+            else
+              raise ArgumentError.new("Exception: invalid value for JSONB(): #{input.inspect}")
+            end
+          end
+
           # @since 0.7.0
           # @api private
           MAPPING = {
@@ -73,7 +86,7 @@ module Hanami
             #  MAPPING.fetch(unwrapped.pristine, attribute)
             MAPPING.fetch(unwrapped.pristine) do
               if defined?(ROM::SQL::Types::PG::JSONB) && unwrapped.pristine == ROM::SQL::Types::PG::JSONB
-                Schema::Hash
+                Schema::JSONB
               else
                 attribute
               end

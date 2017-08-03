@@ -559,11 +559,12 @@ RSpec.describe 'Repository (base)' do
     describe 'PostgreSQL' do
       it 'finds record by primary key (UUID)' do
         repository = SourceFileRepository.new
-        file = repository.create(name: 'path/to/file.rb', languages: ['ruby'], metadata: { coverage: 100.0 }, content: 'class Foo; end')
+        file = repository.create(name: 'path/to/file.rb', languages: ['ruby'], tags: ['pr'], metadata: { coverage: 100.0 }, content: 'class Foo; end')
         found = repository.find(file.id)
 
         expect(file.languages).to eq(['ruby'])
         expect(file.metadata).to eq(coverage: 100.0)
+        expect(file.tags).to eq(['pr'])
 
         expect(found).to eq(file)
       end
