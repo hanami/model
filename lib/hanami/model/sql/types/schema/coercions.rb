@@ -193,10 +193,17 @@ module Hanami
               end
             end
 
+            # Coerces given argument to appropriate JSON type, i.e. Hash or Array
+            #
+            # @param arg the argument to coerce
+            #
+            # @return [Hash, Array] the result of the coercion
+            #
+            # @raise [ArgumentError] if the coercion fails
+            #
+            # @api private
             def self.json(arg)
-              hash(arg)
-            rescue ArgumentError
-              array(arg)
+              arg.respond_to?(:to_hash) ? hash(arg) : array(arg)
             end
           end
           # rubocop:enable Metrics/MethodLength
