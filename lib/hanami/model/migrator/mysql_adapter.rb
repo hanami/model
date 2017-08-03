@@ -76,19 +76,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
+          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
+          execute "mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
+          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
         end
       end
     end
