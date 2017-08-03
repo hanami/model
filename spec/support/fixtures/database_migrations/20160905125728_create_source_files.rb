@@ -6,7 +6,7 @@ Hanami::Model.migration do
         column :id,         'uuid',   primary_key: true, default: Hanami::Model::Sql.function(:uuid_generate_v4)
         column :name,       String,   null: false
         column :languages,  'text[]'
-        column :metadata,   'jsonb',  null: false
+        column :metadata,   'jsonb', null: false
         column :json_info,  'json'
         column :content,    File,     null: false
         column :created_at, DateTime, null: false

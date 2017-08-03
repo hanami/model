@@ -74,14 +74,17 @@ module Hanami
             #
             #  MAPPING.fetch(unwrapped.pristine, attribute)
             MAPPING.fetch(unwrapped.pristine) do
-              if defined?(ROM::SQL::Types::PG::JSONB) && unwrapped.pristine == ROM::SQL::Types::PG::JSONB
-                Schema::JSON
-              elsif defined?(ROM::SQL::Types::PG::JSON) && unwrapped.pristine == ROM::SQL::Types::PG::JSON
+              if is_json?(unwrapped.pristine)
                 Schema::JSON
               else
                 attribute
               end
             end
+          end
+
+          def self.is_json?(pristine)
+            (defined?(ROM::SQL::Types::PG::JSONB) && pristine == ROM::SQL::Types::PG::JSONB) ||
+              (defined?(ROM::SQL::Types::PG::JSON) && pristine == ROM::SQL::Types::PG::JSON)
           end
 
           # Coercer for SQL associations target
