@@ -1,5 +1,6 @@
 require 'uri'
 require 'shellwords'
+require 'open3'
 
 module Hanami
   module Model
@@ -175,6 +176,15 @@ module Hanami
         # @api private
         def escape(string)
           Shellwords.escape(string) unless string.nil?
+        end
+
+        # @since x.x.x
+        # @api private
+        def execute(command, error: ->(err) { raise MigrationError.new(err) })
+          Open3.popen3(command) do |_, stdout, stderr, wait_thr|
+            error.call(stderr.read) unless wait_thr.value.success?
+            yield stdout if block_given?
+          end
         end
       end
     end

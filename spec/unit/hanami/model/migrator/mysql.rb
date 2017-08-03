@@ -230,7 +230,6 @@ RSpec.shared_examples 'migrator_mysql' do
       before do
         prepare_migrations_directory
         migrator.create
-        migrator.apply
       end
 
       after do
@@ -238,6 +237,7 @@ RSpec.shared_examples 'migrator_mysql' do
       end
 
       it 'migrates to latest version' do
+        migrator.apply
         connection = Sequel.connect(url)
         migration = connection[:schema_migrations].to_a.last
 
@@ -245,6 +245,7 @@ RSpec.shared_examples 'migrator_mysql' do
       end
 
       it 'dumps database schema.sql' do
+        migrator.apply
         actual = schema.read
 
         expect(actual).to include %(DROP TABLE IF EXISTS `reviews`;)
@@ -272,7 +273,30 @@ RSpec.shared_examples 'migrator_mysql' do
       end
 
       it 'deletes all the migrations' do
+        migrator.apply
         expect(target_migrations.children).to be_empty
+      end
+
+      context "when a system call fails" do
+        before do
+          expect(migrator).to receive(:adapter).at_least(:once).and_return(adapter)
+        end
+
+        let(:adapter) { Hanami::Model::Migrator::Adapter.for(configuration) }
+
+        it "raises error when fails to dump database structure" do
+          expect(adapter).to receive(:dump_structure).and_raise(Hanami::Model::MigrationError, message = "there was a problem")
+          expect { migrator.apply }.to raise_error(Hanami::Model::MigrationError, message)
+
+          expect(target_migrations.children).to_not be_empty
+        end
+
+        it "raises error when fails to dump migrations data" do
+          expect(adapter).to receive(:dump_migrations_data).and_raise(Hanami::Model::MigrationError, message = "there was another problem")
+          expect { migrator.apply }.to raise_error(Hanami::Model::MigrationError, message)
+
+          expect(target_migrations.children).to_not be_empty
+        end
       end
     end
 

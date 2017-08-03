@@ -18,8 +18,15 @@ module Hanami
 
         # @since 0.4.0
         # @api private
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def create
-          new_connection(global: true).run %(CREATE DATABASE `#{database}`;)
+          connection = new_connection(global: true)
+          connection.run %(CREATE DATABASE `#{database}`)
+          connection.run %(use `#{database}`)
+          connection.run %(GRANT ALL PRIVILEGES ON `#{database}`.* TO '#{username}'@'#{host}')
+          connection.run %(FLUSH PRIVILEGES)
         rescue Sequel::DatabaseError => e
           message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
                       DB_CREATION_ERROR
@@ -29,6 +36,8 @@ module Hanami
 
           raise MigrationError.new(message)
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
         # @since 0.4.0
         # @api private

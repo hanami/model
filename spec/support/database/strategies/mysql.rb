@@ -81,6 +81,7 @@ module Database
         run_command "DROP DATABASE IF EXISTS #{database_name}"
         run_command "CREATE DATABASE #{database_name}"
         run_command "GRANT ALL PRIVILEGES ON #{database_name}.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;"
+        run_command "GRANT CREATE ON *.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;"
       end
 
       private
