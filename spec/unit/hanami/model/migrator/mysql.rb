@@ -244,31 +244,33 @@ RSpec.shared_examples 'migrator_mysql' do
         expect(migration.fetch(:filename)).to include('20160831090612') # see spec/support/fixtures/migrations
       end
 
-      it 'dumps database schema.sql' do
-        actual = schema.read
+      unless_platform(engine: :jruby) do
+        it 'dumps database schema.sql' do
+          actual = schema.read
 
-        expect(actual).to include %(DROP TABLE IF EXISTS `reviews`;)
+          expect(actual).to include %(DROP TABLE IF EXISTS `reviews`;)
 
-        expect(actual).to include %(CREATE TABLE `reviews`)
-        expect(actual).to include %(`id` int\(11\) NOT NULL AUTO_INCREMENT,)
+          expect(actual).to include %(CREATE TABLE `reviews`)
+          expect(actual).to include %(`id` int\(11\) NOT NULL AUTO_INCREMENT,)
 
-        expect(actual).to include %(`title` varchar(255))
+          expect(actual).to include %(`title` varchar(255))
 
-        expect(actual).to include %(`rating` int\(11\) DEFAULT '0',)
-        expect(actual).to include %(PRIMARY KEY \(`id`\))
+          expect(actual).to include %(`rating` int\(11\) DEFAULT '0',)
+          expect(actual).to include %(PRIMARY KEY \(`id`\))
 
-        expect(actual).to include %(DROP TABLE IF EXISTS `schema_migrations`;)
+          expect(actual).to include %(DROP TABLE IF EXISTS `schema_migrations`;)
 
-        expect(actual).to include %(CREATE TABLE `schema_migrations` \()
+          expect(actual).to include %(CREATE TABLE `schema_migrations` \()
 
-        expect(actual).to include %(`filename` varchar(255))
-        expect(actual).to include %(PRIMARY KEY (`filename`))
+          expect(actual).to include %(`filename` varchar(255))
+          expect(actual).to include %(PRIMARY KEY (`filename`))
 
-        expect(actual).to include %(LOCK TABLES `schema_migrations` WRITE;)
+          expect(actual).to include %(LOCK TABLES `schema_migrations` WRITE;)
 
-        # expect(actual).to include %(INSERT INTO `schema_migrations` VALUES \('20150610133853_create_books.rb'\),\('20150610141017_add_price_to_books.rb'\);)
+          # expect(actual).to include %(INSERT INTO `schema_migrations` VALUES \('20150610133853_create_books.rb'\),\('20150610141017_add_price_to_books.rb'\);)
 
-        expect(actual).to include %(UNLOCK TABLES;)
+          expect(actual).to include %(UNLOCK TABLES;)
+        end
       end
 
       it 'deletes all the migrations' do
