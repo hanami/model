@@ -586,6 +586,29 @@ RSpec.describe 'Repository (base)' do
       #   found = repository.find('9999999')
       #   expect(found).to be_nil
       # end
+
+      describe 'JSON types' do
+        it 'writes hashes' do
+          hash = { first_name: 'John', age: 53, married: true, car: nil }
+          repository = SourceFileRepository.new
+          column_type = repository.create(metadata: hash, name: 'test', content: 'test', json_info: hash)
+          found = repository.find(column_type.id)
+
+          expect(found.metadata).to eq(hash)
+          expect(found.json_info).to eq(hash)
+        end
+
+        it 'writes arrays' do
+          array = ['abc', 1, true, nil]
+          repository = SourceFileRepository.new
+          column_type = repository.create(metadata: array, name: 'test', content: 'test', json_info: array)
+          found = repository.find(column_type.id)
+
+          expect(found.metadata).to eq(array)
+          expect(found.json_info).to eq(array)
+        end
+      end
+
       describe "when timestamps aren't enabled" do
         it 'writes the proper PG types' do
           repository = ProductRepository.new
