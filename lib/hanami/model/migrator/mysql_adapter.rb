@@ -47,7 +47,6 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump
-          set_environment_variables
           dump_structure
           dump_migrations_data
         end
@@ -55,17 +54,10 @@ module Hanami
         # @since 0.4.0
         # @api private
         def load
-          set_environment_variables
           load_structure
         end
 
         private
-
-        # @since 0.7.0
-        # @api private
-        def set_environment_variables
-          ENV[PASSWORD] = password unless password.nil?
-        end
 
         # @since 0.7.0
         # @api private
@@ -76,19 +68,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
+          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: { PASSWORD => password }
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          execute "mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
+          execute("mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}", env: { PASSWORD => password }) if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
+          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
         end
       end
     end

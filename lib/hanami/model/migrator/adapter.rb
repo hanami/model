@@ -180,8 +180,8 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def execute(command, error: ->(err) { raise MigrationError.new(err) })
-          Open3.popen3(command) do |_, stdout, stderr, wait_thr|
+        def execute(command, env: {}, error: ->(err) { raise MigrationError.new(err) })
+          Open3.popen3(env, command) do |_, stdout, stderr, wait_thr|
             error.call(stderr.read) unless wait_thr.value.success?
             yield stdout if block_given?
           end
