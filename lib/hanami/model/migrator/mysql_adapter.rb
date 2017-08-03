@@ -1,5 +1,3 @@
-require "hanami/utils/blank"
-
 module Hanami
   module Model
     class Migrator
@@ -8,14 +6,6 @@ module Hanami
       # @since 0.4.0
       # @api private
       class MySQLAdapter < Adapter
-        # @since x.x.x
-        # @api private
-        HOST = 'MYSQL_HOST'.freeze
-
-        # @since x.x.x
-        # @api private
-        PORT = 'MYSQL_TCP_PORT'.freeze
-
         # @since 0.7.0
         # @api private
         PASSWORD = 'MYSQL_PWD'.freeze
@@ -74,9 +64,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def set_environment_variables
-          ENV[HOST]     = host     unless Utils::Blank.blank?(host)
-          ENV[PORT]     = port     unless Utils::Blank.blank?(port)
-          ENV[PASSWORD] = password unless Utils::Blank.blank?(password)
+          ENV[PASSWORD] = password unless password.nil?
         end
 
         # @since 0.7.0
@@ -88,19 +76,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "mysqldump --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
+          system "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "mysql --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
+          system "mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "mysqldump --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
+          system "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}"
         end
       end
     end
