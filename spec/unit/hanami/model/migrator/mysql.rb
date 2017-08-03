@@ -1,6 +1,5 @@
 require 'ostruct'
 require 'securerandom'
-require 'hanami/utils'
 
 RSpec.shared_examples 'migrator_mysql' do
   let(:migrator) do
@@ -246,7 +245,6 @@ RSpec.shared_examples 'migrator_mysql' do
       end
 
       it 'dumps database schema.sql' do
-        skip if Hanami::Utils.jruby?
         migrator.apply
         actual = schema.read
 
