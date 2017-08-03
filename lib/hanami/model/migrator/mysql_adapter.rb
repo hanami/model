@@ -1,3 +1,5 @@
+require "hanami/utils/blank"
+
 module Hanami
   module Model
     class Migrator
@@ -6,6 +8,14 @@ module Hanami
       # @since 0.4.0
       # @api private
       class MySQLAdapter < Adapter
+        # @since x.x.x
+        # @api private
+        HOST = 'MYSQL_HOST'.freeze
+
+        # @since x.x.x
+        # @api private
+        PORT = 'MYSQL_TCP_PORT'.freeze
+
         # @since 0.7.0
         # @api private
         PASSWORD = 'MYSQL_PWD'.freeze
@@ -64,7 +74,9 @@ module Hanami
         # @since 0.7.0
         # @api private
         def set_environment_variables
-          ENV[PASSWORD] = password unless password.nil?
+          ENV[HOST]     = host     unless Utils::Blank.blank?(host)
+          ENV[PORT]     = port     unless Utils::Blank.blank?(port)
+          ENV[PASSWORD] = password unless Utils::Blank.blank?(password)
         end
 
         # @since 0.7.0
