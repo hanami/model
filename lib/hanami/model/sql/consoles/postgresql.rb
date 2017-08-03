@@ -1,4 +1,5 @@
 require_relative 'abstract'
+require 'cgi'
 
 module Hanami
   module Model
@@ -59,7 +60,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def configure_password
-            ENV[PASSWORD] = URI.decode(@uri.password) unless @uri.password.nil?
+            ENV[PASSWORD] = CGI.unescape(@uri.password) unless @uri.password.nil?
           end
         end
       end
