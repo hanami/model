@@ -15,8 +15,9 @@ module Hanami
 
         # @since 0.7.0
         # @api private
-        def has_many(relation, *)
+        def has_many(relation, **args)
           @repository.__send__(:relations, relation)
+          @repository.__send__(:relations, args[:through]) if args[:through]
         end
 
         # @since x.x.x
