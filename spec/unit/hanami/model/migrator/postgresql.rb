@@ -70,11 +70,14 @@ RSpec.shared_examples 'migrator_postgresql' do
 
         it 'raises MigrationError on create' do
           message = Platform.match do
-            os(:macos).engine(:jruby) { 'Unknown error - createdb' }
+            os(:macos).engine(:jruby) { 'createdb' }
             default                   { 'No such file or directory - createdb' }
           end
 
-          expect { migrator.create }.to raise_error(Hanami::Model::MigrationError, message)
+          expect { migrator.create }.to raise_error do |exception|
+            expect(exception).to         be_kind_of(Hanami::Model::MigrationError)
+            expect(exception.message).to include(message)
+          end
         end
       end
     end
@@ -213,7 +216,6 @@ RSpec.shared_examples 'migrator_postgresql' do
       before do
         prepare_migrations_directory
         migrator.create
-        migrator.apply
       end
 
       after do
@@ -221,6 +223,7 @@ RSpec.shared_examples 'migrator_postgresql' do
       end
 
       it 'migrates to latest version' do
+        migrator.apply
         connection = Sequel.connect(url)
         migration = connection[:schema_migrations].to_a.last
 
@@ -228,6 +231,7 @@ RSpec.shared_examples 'migrator_postgresql' do
       end
 
       it 'dumps database schema.sql' do
+        migrator.apply
         actual = schema.read
 
         expect(actual).to include <<-SQL
@@ -279,7 +283,30 @@ ALTER TABLE ONLY schema_migrations
       end
 
       it 'deletes all the migrations' do
+        migrator.apply
         expect(target_migrations.children).to be_empty
+      end
+
+      context "when a system call fails" do
+        before do
+          expect(migrator).to receive(:adapter).at_least(:once).and_return(adapter)
+        end
+
+        let(:adapter) { Hanami::Model::Migrator::Adapter.for(configuration) }
+
+        it "raises error when fails to dump database structure" do
+          expect(adapter).to receive(:dump_structure).and_raise(Hanami::Model::MigrationError, message = "there was a problem")
+          expect { migrator.apply }.to raise_error(Hanami::Model::MigrationError, message)
+
+          expect(target_migrations.children).to_not be_empty
+        end
+
+        it "raises error when fails to dump migrations data" do
+          expect(adapter).to receive(:dump_migrations_data).and_raise(Hanami::Model::MigrationError, message = "there was another problem")
+          expect { migrator.apply }.to raise_error(Hanami::Model::MigrationError, message)
+
+          expect(target_migrations.children).to_not be_empty
+        end
       end
     end
 

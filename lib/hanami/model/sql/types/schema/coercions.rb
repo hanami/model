@@ -11,6 +11,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           #
+          # rubocop:disable Metrics/ModuleLength
           # rubocop:disable Metrics/MethodLength
           module Coercions
             # Coerces given argument into Integer
@@ -192,8 +193,30 @@ module Hanami
                 raise ArgumentError.new("invalid value for Hash(): #{arg.inspect}")
               end
             end
+
+            # Coerces given argument to appropriate Postgres JSON(B) type, i.e. Hash or Array
+            #
+            # @param arg [Object] the object to coerce
+            #
+            # @return [Hash, Array] the result of the coercion
+            #
+            # @raise [ArgumentError] if the coercion fails
+            #
+            # @since 1.0.2
+            # @api private
+            def self.pg_json(arg)
+              case arg
+              when ->(a) { a.respond_to?(:to_hash) }
+                hash(arg)
+              when ->(a) { a.respond_to?(:to_a) }
+                array(arg)
+              else
+                raise ArgumentError.new("invalid value for PG_JSON(): #{arg.inspect}")
+              end
+            end
           end
           # rubocop:enable Metrics/MethodLength
+          # rubocop:enable Metrics/ModuleLength
         end
       end
     end

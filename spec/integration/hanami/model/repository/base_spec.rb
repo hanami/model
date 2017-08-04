@@ -178,6 +178,14 @@ RSpec.describe 'Repository (base)' do
         expect(updated.created_at).to be_within(2).of(given_time)
         expect(updated.updated_at).to be_within(2).of(given_time)
       end
+
+      # Bug: https://github.com/hanami/model/issues/412
+      it 'can have only creation timestamp' do
+        user = UserRepository.new.create(name: 'L')
+        repository = AvatarRepository.new
+        account = repository.create(url: 'http://foo.com', user_id: user.id)
+        expect(account.created_at).to be_within(2).of(Time.now.utc)
+      end
     end
 
     # Bug: https://github.com/hanami/model/issues/237
@@ -280,13 +288,10 @@ RSpec.describe 'Repository (base)' do
     # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
     unless_platform(db: :mysql) do
       it 'raises error when "check" constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: users)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
@@ -294,19 +299,16 @@ RSpec.describe 'Repository (base)' do
         end
 
         expect { UserRepository.new.create(name: 'L', age: 1) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
 
       it 'raises error when constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)  { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite) { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: comments_count_constraint)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
@@ -314,7 +316,7 @@ RSpec.describe 'Repository (base)' do
         end
 
         expect { UserRepository.new.create(name: 'L', comments_count: -1) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
@@ -469,13 +471,10 @@ RSpec.describe 'Repository (base)' do
     # http://dev.mysql.com/doc/refman/5.7/en/create-table.html
     unless_platform(db: :mysql) do
       it 'raises error when "check" constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite)  { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: users)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "users_age_check"' }
@@ -486,19 +485,16 @@ RSpec.describe 'Repository (base)' do
         user = repository.create(name: 'L')
 
         expect { repository.update(user.id, age: 17) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
 
       it 'raises error when constraint is violated' do
-        expected_error = Platform.match do
-          os(:linux).engine(:ruby).db(:sqlite) { Hanami::Model::ConstraintViolationError }
-          default                              { Hanami::Model::CheckConstraintViolationError }
-        end
+        expected = Hanami::Model::CheckConstraintViolationError
 
         message = Platform.match do
-          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException' }
+          engine(:ruby).db(:sqlite)   { 'SQLite3::ConstraintException: CHECK constraint failed' }
           engine(:jruby).db(:sqlite)  { 'Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_CHECK]  A CHECK constraint failed (CHECK constraint failed: comments_count_constraint)' }
 
           engine(:ruby).db(:postgresql)  { 'PG::CheckViolation: ERROR:  new row for relation "users" violates check constraint "comments_count_constraint"' }
@@ -509,7 +505,7 @@ RSpec.describe 'Repository (base)' do
         user = repository.create(name: 'L')
 
         expect { repository.update(user.id, comments_count: -2) }.to raise_error do |error|
-          expect(error).to be_a(expected_error)
+          expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
       end
@@ -590,6 +586,29 @@ RSpec.describe 'Repository (base)' do
       #   found = repository.find('9999999')
       #   expect(found).to be_nil
       # end
+
+      describe 'JSON types' do
+        it 'writes hashes' do
+          hash = { first_name: 'John', age: 53, married: true, car: nil }
+          repository = SourceFileRepository.new
+          column_type = repository.create(metadata: hash, name: 'test', content: 'test', json_info: hash)
+          found = repository.find(column_type.id)
+
+          expect(found.metadata).to eq(hash)
+          expect(found.json_info).to eq(hash)
+        end
+
+        it 'writes arrays' do
+          array = ['abc', 1, true, nil]
+          repository = SourceFileRepository.new
+          column_type = repository.create(metadata: array, name: 'test', content: 'test', json_info: array)
+          found = repository.find(column_type.id)
+
+          expect(found.metadata).to eq(array)
+          expect(found.json_info).to eq(array)
+        end
+      end
+
       describe "when timestamps aren't enabled" do
         it 'writes the proper PG types' do
           repository = ProductRepository.new
