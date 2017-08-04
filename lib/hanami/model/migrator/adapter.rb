@@ -178,7 +178,7 @@ module Hanami
           Shellwords.escape(string) unless string.nil?
         end
 
-        # @since x.x.x
+        # @since 1.0.2
         # @api private
         def execute(command, env: {}, error: ->(err) { raise MigrationError.new(err) })
           Open3.popen3(env, command) do |_, stdout, stderr, wait_thr|

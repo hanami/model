@@ -202,6 +202,7 @@ module Hanami
             #
             # @raise [ArgumentError] if the coercion fails
             #
+            # @since 1.0.2
             # @api private
             def self.pg_json(arg)
               case arg

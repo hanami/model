@@ -82,7 +82,7 @@ module Hanami
             end
           end
 
-          # @since x.x.x
+          # @since 1.0.2
           # @api private
           def self.pg_json?(pristine)
             (defined?(ROM::SQL::Types::PG::JSONB) && pristine == ROM::SQL::Types::PG::JSONB) ||
