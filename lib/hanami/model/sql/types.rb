@@ -31,6 +31,8 @@ module Hanami
           Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
           Hash     = Types::Strict::Nil | Types::Hash.constructor(Coercions.method(:hash))
 
+          PG_JSON  = Types::Strict::Nil | Types::Any.constructor(Coercions.method(:pg_json))
+
           # @since 0.7.0
           # @api private
           MAPPING = {
@@ -72,13 +74,22 @@ module Hanami
             #
             #  MAPPING.fetch(unwrapped.pristine, attribute)
             MAPPING.fetch(unwrapped.pristine) do
-              if defined?(ROM::SQL::Types::PG::JSONB) && unwrapped.pristine == ROM::SQL::Types::PG::JSONB
-                Schema::Hash
+              if pg_json?(unwrapped.pristine)
+                Schema::PG_JSON
               else
                 attribute
               end
             end
           end
+
+          # @since 1.0.2
+          # @api private
+          def self.pg_json?(pristine)
+            (defined?(ROM::SQL::Types::PG::JSONB) && pristine == ROM::SQL::Types::PG::JSONB) ||
+              (defined?(ROM::SQL::Types::PG::JSON) && pristine == ROM::SQL::Types::PG::JSON)
+          end
+
+          private_class_method :pg_json?
 
           # Coercer for SQL associations target
           #

@@ -22,5 +22,5 @@ Style/PredicateName:
   Enabled: false
 Style/SymbolArray:
   Enabled: false
-Style/IndentHeredoc:
+Layout/IndentHeredoc:
   Enabled: false

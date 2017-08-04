@@ -1,6 +1,13 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.0.2 - 2017-08-04
+### Fixed
+- [Maurizio De Magnis] URI escape for Postgres password
+- [Marion Duprey] Ensure repository to generate timestamps values even when only one between `created_at` and `updated_at` is present
+- [Paweł Świątkowski] Make Postgres JSON(B) to work with Ruby arrays
+- [Luca Guidi] Don't remove migrations when running `Hanami::Model::Migrator#apply` fails to dump the database
+
 ## v1.0.1 - 2017-06-23
 ### Fixed
 - [Kai Kuchenbecker & Marcello Rocha & Luca Guidi] Ensure `Hanami::Entity#initialize` to not serialize (into `Hash`) other entities passed as an argument

@@ -89,19 +89,20 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          system "pg_dump -s -x -O -T #{migrations_table} -f #{escape(schema)} #{database}"
+          execute "pg_dump -s -x -O -T #{migrations_table} -f #{escape(schema)} #{database}"
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          system "psql -X -q -f #{escape(schema)} #{database}" if schema.exist?
+          execute "psql -X -q -f #{escape(schema)} #{database}" if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          system "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}"
+          error = ->(err) { raise MigrationError.new(err) unless err =~ /no matching tables/i }
+          execute "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}", error: error
         end
 
         # @since 0.5.1
