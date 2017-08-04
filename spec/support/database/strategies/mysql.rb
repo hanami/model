@@ -43,6 +43,7 @@ module Database
         def create_database
           super
           run_command "GRANT ALL PRIVILEGES ON *.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;"
+          run_command "GRANT ALL PRIVILEGES ON *.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'%'; FLUSH PRIVILEGES;" if jruby?
         end
 
         private
