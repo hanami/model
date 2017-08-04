@@ -165,7 +165,7 @@ class CategoryRepository < Hanami::Repository
   end
 
   def find_with_books(id)
-    aggregate(:books).where(id: id).as(Category).one
+    aggregate(:books).where(id: id).map_to(Category).one
   end
 
   def add_books(category, *books)
@@ -192,11 +192,11 @@ class BookRepository < Hanami::Repository
   end
 
   def find_with_categories(id)
-    aggregate(:categories).where(id: id).as(Book).one
+    aggregate(:categories).where(id: id).map_to(Book).one
   end
 
   def find_with_author(id)
-    aggregate(:author).where(id: id).as(Book).one
+    aggregate(:author).where(id: id).map_to(Book).one
   end
 
   def author_for(book)
