@@ -20,6 +20,10 @@ module Hanami
           @repository.__send__(:relations, args[:through]) if args[:through]
         end
 
+        def has_one(relation, *)
+          @repository.__send__(:relations, Hanami::Utils::String.new(relation).pluralize.to_sym)
+        end
+
         # @since x.x.x
         # @api private
         def belongs_to(relation, *)
