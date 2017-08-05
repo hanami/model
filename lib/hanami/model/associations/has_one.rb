@@ -54,7 +54,7 @@ module Hanami
         end
 
         def add(data)
-          command( :create, relation(target), use: [:timestamps] ).call(associate(data))
+          command(:create, relation(target), use: [:timestamps]).call(associate(data))
         end
 
         def update(data)

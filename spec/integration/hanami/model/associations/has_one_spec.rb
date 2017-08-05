@@ -27,7 +27,7 @@ RSpec.describe 'Associations (has_one)' do
   end
 
   it 'adds an an Avatar to an existing User' do
-    user       = repository.create(name: 'Jean Paul-Sartre')
+    user = repository.create(name: 'Jean Paul-Sartre')
     avatar = repository.add_avatar(user, url: 'http://www.notarealurl.com/sartre.png')
     found = repository.find_with_avatar(user.id)
 
