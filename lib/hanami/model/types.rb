@@ -47,6 +47,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def call(value)
+            return if value.nil?
             if valid?(value)
               coerce(value)
             else
