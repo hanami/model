@@ -62,7 +62,7 @@ module Hanami
         end
 
         def remove
-          command(:delete, relation(target)).by_pk(scope.one.id).call()
+          command(:delete, relation(target)).by_pk(scope.one.id).call
         end
 
         private
@@ -122,7 +122,6 @@ module Hanami
         def unassociate
           { foreign_key => nil }
         end
-
 
         # Returns primary key and foreign key
         #
