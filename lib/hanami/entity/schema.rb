@@ -175,7 +175,7 @@ module Hanami
         # @param attributes [#to_hash] the attributes hash
         #
         # @raise [TypeError] if the process fails
-        # @raise [ArgumentError] if data is missing
+        # @raise [ArgumentError] if data is missing, or unknown keys are given
         #
         # @since 0.7.0
         # @api private
@@ -183,7 +183,7 @@ module Hanami
           schema.call(attributes)
         rescue Dry::Types::SchemaError => e
           raise TypeError.new(e.message)
-        rescue Dry::Types::MissingKeyError => e
+        rescue Dry::Types::MissingKeyError, Dry::Types::UnknownKeysError => e
           raise ArgumentError.new(e.message)
         end
 
