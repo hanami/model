@@ -74,6 +74,10 @@ class AvatarRepository < Hanami::Repository
   associations do
     belongs_to :user
   end
+
+  def by_user(id)
+    avatars.where(user_id: id).to_a
+  end
 end
 
 class UserRepository < Hanami::Repository
@@ -95,6 +99,10 @@ class UserRepository < Hanami::Repository
 
   def add_avatar(user, data)
     assoc(:avatar, user).add(data)
+  end
+
+  def replace_avatar(user, data)
+    assoc(:avatar, user).replace(data)
   end
 
   def avatar_for(user)

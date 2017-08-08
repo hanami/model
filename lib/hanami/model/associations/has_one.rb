@@ -65,8 +65,14 @@ module Hanami
           command(:delete, relation(target)).by_pk(scope.one.id).call
         end
 
-        private
+        def replace(data)
+          repository.transaction do
+            remove
+            add(data)
+          end
+        end
 
+        private
         # @since x.x.x
         # @api private
         def entity
@@ -115,12 +121,6 @@ module Hanami
           relation(source)
             .associations[target]
             .associate(container.relations, data, subject)
-        end
-
-        # @since x.x.x
-        # @api private
-        def unassociate
-          { foreign_key => nil }
         end
 
         # Returns primary key and foreign key
