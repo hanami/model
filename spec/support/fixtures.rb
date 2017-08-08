@@ -58,6 +58,13 @@ class PageVisit < Hanami::Entity
   end
 end
 
+class Person < Hanami::Entity
+  attributes :strict do
+    attribute :id,   Types::Strict::Int
+    attribute :name, Types::Strict::String
+  end
+end
+
 class Product < Hanami::Entity
 end
 
