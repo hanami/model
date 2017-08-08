@@ -61,6 +61,10 @@ module Hanami
           command(:update, relation(target), use: [:timestamps]).call(associate(data))
         end
 
+        def remove
+          command(:delete, relation(target)).by_pk(scope.one.id).call()
+        end
+
         private
 
         # @since x.x.x
@@ -112,6 +116,13 @@ module Hanami
             .associations[target]
             .associate(container.relations, data, subject)
         end
+
+        # @since x.x.x
+        # @api private
+        def unassociate
+          { foreign_key => nil }
+        end
+
 
         # Returns primary key and foreign key
         #

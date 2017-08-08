@@ -44,4 +44,20 @@ RSpec.describe 'Associations (has_one)' do
     expect(found.avatar).to eq(user.avatar)
     expect(found.avatar.url).to eq('http://lao-tse.io/me.jpg')
   end
+
+  it 'returns nil if the association was preloaded but no associated object is set' do
+    user       = repository.create(name: 'Henry Jenkins')
+    found      = repository.find_with_avatar(user.id)
+
+    expect(found).to eq(user)
+    expect(found.avatar).to be_nil
+  end
+
+  it 'removes the Avatar' do
+    user = repository.create_with_avatar(name: 'Bob Ross', avatar: { url: 'http://bobross/happy_little_avatar.jpg' })
+    repository.remove_avatar(user)
+    found = repository.find_with_avatar(user.id)
+
+    expect(found.avatar).to be_nil
+  end
 end
