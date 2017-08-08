@@ -63,7 +63,7 @@ RSpec.describe 'Associations (has_one)' do
 
   it 'replaces the associated object', focus: true do
     user = repository.create_with_avatar(name: 'Frank Herbert', avatar: { url: 'http://not-real.com/avatar.jpg' })
-    repository.replace_avatar(user, {url: 'http://totally-correct.com/avatar.jpg'})
+    repository.replace_avatar(user, url: 'http://totally-correct.com/avatar.jpg')
     found = repository.find_with_avatar(user.id)
 
     expect(found.avatar).to_not eq(user.avatar)

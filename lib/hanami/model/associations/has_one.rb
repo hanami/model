@@ -73,6 +73,7 @@ module Hanami
         end
 
         private
+
         # @since x.x.x
         # @api private
         def entity
