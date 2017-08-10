@@ -71,7 +71,7 @@ RSpec.describe 'Associations (has_one)' do
     expect(AvatarRepository.new.by_user(user.id).size).to eq(1)
   end
 
-  context 'raises a Hanami::Model::Error wrapped exception on', focus: true do
+  context 'raises a Hanami::Model::Error wrapped exception on' do
     it '#create' do
       expect do
         repository.create_with_avatar(name: 'Noam Chomsky')
