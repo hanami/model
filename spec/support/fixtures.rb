@@ -228,6 +228,10 @@ class BookRepository < Hanami::Repository
     assoc(:categories, book).add(category)
   end
 
+  def clear_categories(book)
+    assoc(:categories, book).delete
+  end
+
   def categories_for(book)
     assoc(:categories, book).to_a
   end

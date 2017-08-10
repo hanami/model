@@ -73,19 +73,30 @@ module Hanami
         def add(*data)
           command(:create, relation(through), use: [:timestamps])
             .call(associate(data.map(&:to_h)))
+        rescue => e
+            raise Hanami::Model::Error.for(e)
         end
 
         # @since x.x.x
         # @api private
-        # disabled until I figure out a better way to do this
+        def delete
+          relation(through)
+            .where(source_foreign_key => subject.fetch(source_primary_key))
+            .delete
+        end
+
+        # @since x.x.x
+        # @api private
         # rubocop:disable Metrics/AbcSize
         def remove(id)
-          association_record = relation(through)
+          repository.transaction do
+            association_record = relation(through)
                                .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
                                .one
-          if association_record
-            ar_id = association_record.public_send relation(through).primary_key
-            command(:delete, relation(through)).by_pk(ar_id).call
+            if association_record
+              ar_id = association_record.public_send relation(through).primary_key
+              command(:delete, relation(through)).by_pk(ar_id).call
+            end
           end
         end
         # rubocop:enable Metrics/AbcSize
