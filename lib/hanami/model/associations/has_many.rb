@@ -62,6 +62,8 @@ module Hanami
         def add(data)
           command(:create, relation(target), use: [:timestamps])
             .call(associate(data))
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         # @since 0.7.0
