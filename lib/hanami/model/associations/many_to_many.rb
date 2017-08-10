@@ -85,7 +85,7 @@ module Hanami
                                .one
           if association_record
             ar_id = association_record.public_send relation(through).primary_key
-            command(:delete, relation(through), use: [:timestamps]).by_pk(ar_id).call
+            command(:delete, relation(through)).by_pk(ar_id).call
           end
         end
         # rubocop:enable Metrics/AbcSize

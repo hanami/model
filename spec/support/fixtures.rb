@@ -25,6 +25,9 @@ end
 class SourceFile < Hanami::Entity
 end
 
+class Avatar < Hanami::Entity
+end
+
 class Warehouse < Hanami::Entity
   attributes do
     attribute :id,   Types::Int
@@ -67,7 +70,45 @@ end
 class Label < Hanami::Entity
 end
 
+class AvatarRepository < Hanami::Repository
+  associations do
+    belongs_to :user
+  end
+
+  def by_user(id)
+    avatars.where(user_id: id).to_a
+  end
+end
+
 class UserRepository < Hanami::Repository
+  associations do
+    has_one :avatar
+  end
+
+  def find_with_avatar(id)
+    aggregate(:avatar).where(id: id).as(User).one
+  end
+
+  def create_with_avatar(data)
+    assoc(:avatar).create(data)
+  end
+
+  def remove_avatar(user)
+    assoc(:avatar, user).remove
+  end
+
+  def add_avatar(user, data)
+    assoc(:avatar, user).add(data)
+  end
+
+  def replace_avatar(user, data)
+    assoc(:avatar, user).replace(data)
+  end
+
+  def avatar_for(user)
+    assoc(:avatar, user).one
+  end
+
   def by_name(name)
     users.where(name: name)
   end
