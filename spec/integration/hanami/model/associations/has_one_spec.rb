@@ -46,6 +46,20 @@ RSpec.describe 'Associations (has_one)' do
       expect(found.avatar.url).to eq('http://www.notarealurl.com/sartre.png')
     end
   end
+
+  context '#update' do
+    it 'updates the avatar' do
+      user = users.create_with_avatar(name: 'Bakunin', avatar: { url: 'bakunin.jpg' })
+      users.update_avatar(user, url: 'http://history.com/bakunin.png')
+
+      found = users.find_with_avatar(user.id)
+
+      expect(found).to eq(user)
+      expect(found.avatar).to eq(user.avatar)
+      expect(found.avatar.url).to_not eq(user.avatar.url)
+    end
+  end
+
   context '#create' do
     it 'creates a User and an Avatar' do
       user = users.create_with_avatar(name: 'Lao Tse', avatar: { url: 'http://lao-tse.io/me.jpg' })
@@ -70,14 +84,16 @@ RSpec.describe 'Associations (has_one)' do
     end
   end
 
-  it 'replaces the associated object' do
-    user = users.create_with_avatar(name: 'Frank Herbert', avatar: { url: 'http://not-real.com/avatar.jpg' })
-    users.replace_avatar(user, url: 'http://totally-correct.com/avatar.jpg')
-    found = users.find_with_avatar(user.id)
+  context '#replace' do
+    it 'replaces the associated object' do
+      user = users.create_with_avatar(name: 'Frank Herbert', avatar: { url: 'http://not-real.com/avatar.jpg' })
+      users.replace_avatar(user, url: 'http://totally-correct.com/avatar.jpg')
+      found = users.find_with_avatar(user.id)
 
-    expect(found.avatar).to_not eq(user.avatar)
+      expect(found.avatar).to_not eq(user.avatar)
 
-    expect(avatars.by_user(user.id).size).to eq(1)
+      expect(avatars.by_user(user.id).size).to eq(1)
+    end
   end
 
   context 'raises a Hanami::Model::Error wrapped exception on' do
@@ -94,6 +110,7 @@ RSpec.describe 'Associations (has_one)' do
 
     it '#update' do
       user = users.create_with_avatar(name: 'Dan North', avatar: { url: 'bdd_creator.png' })
+
       expect do
         users.update_avatar(user, url: nil)
       end.to raise_error Hanami::Model::NotNullConstraintViolationError

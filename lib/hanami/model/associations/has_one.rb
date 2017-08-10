@@ -62,7 +62,10 @@ module Hanami
         end
 
         def update(data)
-          command(:update, relation(target), use: [:timestamps]).call(associate(data))
+          command(:update, relation(target), use: [:timestamps])
+            .by_pk(
+              one.public_send(relation(target).primary_key)
+            ).call(data)
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -70,8 +73,6 @@ module Hanami
         def delete
           scope.delete
         end
-
-        # compatibility with the current beta
         alias remove delete
 
         def replace(data)
