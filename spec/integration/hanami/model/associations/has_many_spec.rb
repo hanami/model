@@ -167,12 +167,9 @@ RSpec.describe 'Associations (has_many)' do
     it '#add' do
       author = authors.create(name: 'Machado de Assis')
       expect do
-        authors.add_book(author, title: 'O Aliennista', on_sale: nil)
+        authors.add_book(author, title: 'O Alienista', on_sale: nil)
       end.to raise_error Hanami::Model::NotNullConstraintViolationError
     end
-
-    # This is already handled by Repository#delete if needed
-    it '#delete'
 
     # skipped spec
     it '#remove'

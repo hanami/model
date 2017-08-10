@@ -94,11 +94,15 @@ class UserRepository < Hanami::Repository
   end
 
   def remove_avatar(user)
-    assoc(:avatar, user).remove
+    assoc(:avatar, user).delete
   end
 
   def add_avatar(user, data)
     assoc(:avatar, user).add(data)
+  end
+
+  def update_avatar(user, data)
+    assoc(:avatar, user).update(data)
   end
 
   def replace_avatar(user, data)

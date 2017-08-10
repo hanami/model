@@ -74,29 +74,25 @@ module Hanami
           command(:create, relation(through), use: [:timestamps])
             .call(associate(data.map(&:to_h)))
         rescue => e
-            raise Hanami::Model::Error.for(e)
+          raise Hanami::Model::Error.for(e)
         end
 
         # @since x.x.x
         # @api private
         def delete
-          relation(through)
-            .where(source_foreign_key => subject.fetch(source_primary_key))
-            .delete
+          relation(through).where(source_foreign_key => subject.fetch(source_primary_key)).delete
         end
 
         # @since x.x.x
         # @api private
         # rubocop:disable Metrics/AbcSize
-        def remove(id)
-          repository.transaction do
-            association_record = relation(through)
-                               .where(target_foreign_key => id, source_foreign_key => subject.fetch(source_primary_key))
+        def remove(target_id)
+          association_record = relation(through)
+                               .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
                                .one
-            if association_record
-              ar_id = association_record.public_send relation(through).primary_key
-              command(:delete, relation(through)).by_pk(ar_id).call
-            end
+          if association_record
+            ar_id = association_record.public_send relation(through).primary_key
+            command(:delete, relation(through)).by_pk(ar_id).call
           end
         end
         # rubocop:enable Metrics/AbcSize

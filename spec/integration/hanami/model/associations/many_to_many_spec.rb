@@ -140,8 +140,5 @@ RSpec.describe 'Associations (has_many :through)' do
         categories.add_books(category, id: -2)
       end.to raise_error Hanami::Model::ForeignKeyConstraintViolationError
     end
-
-    it '#remove' # this is a no-op if no record is found
-    it 'delete' # same as above
   end
 end

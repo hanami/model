@@ -63,16 +63,17 @@ module Hanami
 
         def update(data)
           command(:update, relation(target), use: [:timestamps]).call(associate(data))
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
-        def remove
-          avatar = scope.one
-          command(:delete, relation(target)).by_pk(scope.one.id).call if avatar
+        def delete
+          scope.delete
         end
 
         def replace(data)
           repository.transaction do
-            remove
+            delete
             add(data)
           end
         end

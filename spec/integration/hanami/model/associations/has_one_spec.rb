@@ -27,25 +27,6 @@ RSpec.describe 'Associations (has_one)' do
     expect(found).to eq(avatar)
   end
 
-  it 'adds an an Avatar to an existing User' do
-    user = users.create(name: 'Jean Paul-Sartre')
-    avatar = users.add_avatar(user, url: 'http://www.notarealurl.com/sartre.png')
-    found = users.find_with_avatar(user.id)
-
-    expect(found).to eq(user)
-    expect(found.avatar.id).to eq(avatar.id)
-    expect(found.avatar.url).to eq('http://www.notarealurl.com/sartre.png')
-  end
-
-  it 'creates a User and an Avatar' do
-    user = users.create_with_avatar(name: 'Lao Tse', avatar: { url: 'http://lao-tse.io/me.jpg' })
-    found = users.find_with_avatar(user.id)
-
-    expect(found.name).to eq(user.name)
-    expect(found.avatar).to eq(user.avatar)
-    expect(found.avatar.url).to eq('http://lao-tse.io/me.jpg')
-  end
-
   it 'returns nil if the association was preloaded but no associated object is set' do
     user       = users.create(name: 'Henry Jenkins')
     found      = users.find_with_avatar(user.id)
@@ -54,12 +35,39 @@ RSpec.describe 'Associations (has_one)' do
     expect(found.avatar).to be_nil
   end
 
-  it 'removes the Avatar' do
-    user = users.create_with_avatar(name: 'Bob Ross', avatar: { url: 'http://bobross/happy_little_avatar.jpg' })
-    users.remove_avatar(user)
-    found = users.find_with_avatar(user.id)
+  context '#add' do
+    it 'adds an an Avatar to an existing User' do
+      user = users.create(name: 'Jean Paul-Sartre')
+      avatar = users.add_avatar(user, url: 'http://www.notarealurl.com/sartre.png')
+      found = users.find_with_avatar(user.id)
 
-    expect(found.avatar).to be_nil
+      expect(found).to eq(user)
+      expect(found.avatar.id).to eq(avatar.id)
+      expect(found.avatar.url).to eq('http://www.notarealurl.com/sartre.png')
+    end
+  end
+  context '#create' do
+    it 'creates a User and an Avatar' do
+      user = users.create_with_avatar(name: 'Lao Tse', avatar: { url: 'http://lao-tse.io/me.jpg' })
+      found = users.find_with_avatar(user.id)
+
+      expect(found.name).to eq(user.name)
+      expect(found.avatar).to eq(user.avatar)
+      expect(found.avatar.url).to eq('http://lao-tse.io/me.jpg')
+    end
+  end
+
+  context '#delete' do
+    it 'removes the Avatar' do
+      user = users.create_with_avatar(name: 'Bob Ross', avatar: { url: 'http://bobross/happy_little_avatar.jpg' })
+      other = users.create_with_avatar(name: 'Candido Portinari', avatar: { url: 'some_mugshot.jpg' })
+      users.remove_avatar(user)
+      found = users.find_with_avatar(user.id)
+      other_found = users.find_with_avatar(other.id)
+
+      expect(found.avatar).to be_nil
+      expect(other_found.avatar).to be_an Avatar
+    end
   end
 
   it 'replaces the associated object' do
@@ -82,6 +90,13 @@ RSpec.describe 'Associations (has_one)' do
     it '#add' do
       user = users.create_with_avatar(name: 'Stephen Fry', avatar: { url: 'fry_mugshot.png' })
       expect { users.add_avatar(user, url: 'new_mugshot.png') }.to raise_error Hanami::Model::UniqueConstraintViolationError
+    end
+
+    it '#update' do
+      user = users.create_with_avatar(name: 'Dan North', avatar: { url: 'bdd_creator.png' })
+      expect do
+        users.update_avatar(user, url: nil)
+      end.to raise_error Hanami::Model::NotNullConstraintViolationError
     end
 
     it '#replace' do
