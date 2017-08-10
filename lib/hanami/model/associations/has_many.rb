@@ -49,10 +49,8 @@ module Hanami
         # @since 0.7.0
         # @api private
         def create(data)
-          entity.new(
-            command(:create, aggregate(target), use: [:timestamps])
-              .call(data)
-          )
+          entity.new(command(:create, aggregate(target), use: [:timestamps])
+            .call(data))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
