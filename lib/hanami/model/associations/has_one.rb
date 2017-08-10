@@ -71,6 +71,9 @@ module Hanami
           scope.delete
         end
 
+        # compatibility with the current beta
+        alias remove delete
+
         def replace(data)
           repository.transaction do
             delete
