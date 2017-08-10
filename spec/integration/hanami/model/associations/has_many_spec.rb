@@ -157,7 +157,7 @@ RSpec.describe 'Associations (has_many)' do
     expect(book_repository.find(on_sale.id)).to be_nil
   end
 
-  context 'raises a Hanami::Model::Error wrapped exception on', focus: true do
+  context 'raises a Hanami::Model::Error wrapped exception on' do
     it '#create' do
       expect do
         author_repository.create_with_books(name: 'Noam Chomsky')
