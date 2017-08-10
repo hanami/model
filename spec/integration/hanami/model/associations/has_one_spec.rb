@@ -108,12 +108,15 @@ RSpec.describe 'Associations (has_one)' do
       expect { users.add_avatar(user, url: 'new_mugshot.png') }.to raise_error Hanami::Model::UniqueConstraintViolationError
     end
 
-    it '#update' do
-      user = users.create_with_avatar(name: 'Dan North', avatar: { url: 'bdd_creator.png' })
+    # by default it seems that MySQL allows you to update a NOT NULL column to a NULL value
+    unless_platform(db: mysql) do
+      it '#update' do
+        user = users.create_with_avatar(name: 'Dan North', avatar: { url: 'bdd_creator.png' })
 
-      expect do
-        users.update_avatar(user, url: nil)
-      end.to raise_error Hanami::Model::NotNullConstraintViolationError
+        expect do
+          users.update_avatar(user, url: nil)
+        end.to raise_error Hanami::Model::NotNullConstraintViolationError
+      end
     end
 
     it '#replace' do
