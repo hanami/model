@@ -51,10 +51,14 @@ module Hanami
           entity.new(
             command(:create, aggregate(target), use: [:timestamps]).call(data)
           )
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         def add(data)
           command(:create, relation(target), use: [:timestamps]).call(associate(data))
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         def update(data)
@@ -62,7 +66,8 @@ module Hanami
         end
 
         def remove
-          command(:delete, relation(target)).by_pk(scope.one.id).call
+          avatar = scope.one
+          command(:delete, relation(target)).by_pk(scope.one.id).call if avatar
         end
 
         def replace(data)

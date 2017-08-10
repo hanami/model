@@ -53,6 +53,8 @@ module Hanami
             command(:create, aggregate(target), use: [:timestamps])
               .call(data)
           )
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         # @since 0.7.0

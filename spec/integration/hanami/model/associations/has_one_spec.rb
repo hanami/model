@@ -70,4 +70,22 @@ RSpec.describe 'Associations (has_one)' do
 
     expect(AvatarRepository.new.by_user(user.id).size).to eq(1)
   end
+
+  context 'raises a Hanami::Model::Error wrapped exception on', focus: true do
+    it '#create' do
+      expect do
+        repository.create_with_avatar(name: 'Noam Chomsky')
+      end.to raise_error Hanami::Model::Error
+    end
+
+    it '#add' do
+      user = repository.create_with_avatar(name: 'Stephen Fry', avatar: { url: 'fry_mugshot.png' })
+      expect { repository.add_avatar(user, url: 'new_mugshot.png') }.to raise_error Hanami::Model::UniqueConstraintViolationError
+    end
+
+    it '#replace' do
+      user = repository.create_with_avatar(name: 'Eric Evans', avatar: { url: 'ddd_man.png' })
+      expect { repository.replace_avatar(user, url: nil) }.to raise_error Hanami::Model::NotNullConstraintViolationError
+    end
+  end
 end
