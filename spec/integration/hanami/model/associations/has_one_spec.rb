@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Associations (has_one)' do
+  extend PlatformHelpers
+
   let(:users) { UserRepository.new }
   let(:avatars) { AvatarRepository.new }
 
@@ -109,7 +111,7 @@ RSpec.describe 'Associations (has_one)' do
     end
 
     # by default it seems that MySQL allows you to update a NOT NULL column to a NULL value
-    unless_platform(db: mysql) do
+    unless_platform(db: :mysql) do
       it '#update' do
         user = users.create_with_avatar(name: 'Dan North', avatar: { url: 'bdd_creator.png' })
 
