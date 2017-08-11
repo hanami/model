@@ -1,7 +1,7 @@
 # Hanami::Model
 A persistence layer for Hanami
 
-## v1.1.0.beta1 (unreleased)
+## v1.1.0.beta1 - 2017-08-11
 ### Added
 - [Marcello Rocha] One-To-Many association (aka `belongs_to`)
 - [Marcello Rocha] One-To-One association (aka `has_one`)
