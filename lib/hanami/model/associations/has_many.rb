@@ -49,10 +49,10 @@ module Hanami
         # @since 0.7.0
         # @api private
         def create(data)
-          entity.new(
-            command(:create, aggregate(target), use: [:timestamps])
-              .call(data)
-          )
+          entity.new(command(:create, aggregate(target), use: [:timestamps])
+            .call(data))
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         # @since 0.7.0
@@ -60,6 +60,8 @@ module Hanami
         def add(data)
           command(:create, relation(target), use: [:timestamps])
             .call(associate(data))
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         # @since 0.7.0

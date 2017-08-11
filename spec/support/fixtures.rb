@@ -93,7 +93,7 @@ class UserRepository < Hanami::Repository
   end
 
   def find_with_avatar(id)
-    aggregate(:avatar).where(id: id).as(User).one
+    aggregate(:avatar).where(id: id).map_to(User).one
   end
 
   def create_with_avatar(data)
@@ -101,11 +101,15 @@ class UserRepository < Hanami::Repository
   end
 
   def remove_avatar(user)
-    assoc(:avatar, user).remove
+    assoc(:avatar, user).delete
   end
 
   def add_avatar(user, data)
     assoc(:avatar, user).add(data)
+  end
+
+  def update_avatar(user, data)
+    assoc(:avatar, user).update(data)
   end
 
   def replace_avatar(user, data)
@@ -233,6 +237,10 @@ class BookRepository < Hanami::Repository
 
   def add_category(book, category)
     assoc(:categories, book).add(category)
+  end
+
+  def clear_categories(book)
+    assoc(:categories, book).delete
   end
 
   def categories_for(book)

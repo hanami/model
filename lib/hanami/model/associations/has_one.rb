@@ -51,23 +51,33 @@ module Hanami
           entity.new(
             command(:create, aggregate(target), use: [:timestamps]).call(data)
           )
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         def add(data)
           command(:create, relation(target), use: [:timestamps]).call(associate(data))
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
         def update(data)
-          command(:update, relation(target), use: [:timestamps]).call(associate(data))
+          command(:update, relation(target), use: [:timestamps])
+            .by_pk(
+              one.public_send(relation(target).primary_key)
+            ).call(data)
+        rescue => e
+          raise Hanami::Model::Error.for(e)
         end
 
-        def remove
-          command(:delete, relation(target)).by_pk(scope.one.id).call
+        def delete
+          scope.delete
         end
+        alias remove delete
 
         def replace(data)
           repository.transaction do
-            remove
+            delete
             add(data)
           end
         end

@@ -5,7 +5,7 @@ RSpec.describe 'Associations (has_many :through)' do
   let(:ontologies) { BookOntologyRepository.new }
 
   ### ENTITIES
-  let(:book) { books.create(title: 'Ontology: Encyclopedia of Database Systems', on_sale: false) }
+  let(:book) { books.create(title: 'Ontology: Encyclopedia of Database Systems') }
   let(:category) { categories.create(name: 'information science') }
 
   it "returns nil if association wasn't preloaded" do
@@ -57,6 +57,35 @@ RSpec.describe 'Associations (has_many :through)' do
     end
   end
 
+  context '#delete' do
+    it 'removes all association information' do
+      books.add_category(book, category)
+      categorized = books.find_with_categories(book.id)
+      books.clear_categories(book)
+      found = books.find_with_categories(book.id)
+
+      expect(categorized.categories).to be_an Array
+      expect(categorized.categories).to match_array([category])
+      expect(found.categories).to be_empty
+      expect(found).to eq(categorized)
+    end
+
+    it 'does not touch other books' do
+      other_book = books.create(title: 'Do not meddle with')
+      books.add_category(other_book, category)
+      books.add_category(book, category)
+
+      books.clear_categories(book)
+      found = books.find_with_categories(book.id)
+      other_found = books.find_with_categories(other_book.id)
+
+      expect(found).to eq(book)
+      expect(other_book).to eq(other_found)
+      expect(other_found.categories).to eq([category])
+      expect(found.categories).to be_empty
+    end
+  end
+
   context '#remove' do
     it 'removes the desired association' do
       to_remove = books.create(title: 'The Life of a Stoic')
@@ -102,6 +131,14 @@ RSpec.describe 'Associations (has_many :through)' do
       ontologies.create(book_id: other_book.id, category_id: category.id)
 
       expect(categories.books_count(category)).to eq(2)
+    end
+  end
+
+  context 'raises a Hanami::Model::Error wrapped exception on' do
+    it '#add' do
+      expect do
+        categories.add_books(category, id: -2)
+      end.to raise_error Hanami::Model::ForeignKeyConstraintViolationError
     end
   end
 end
