@@ -1,5 +1,5 @@
 RSpec.describe Hanami::Entity do
-  describe 'manual schema' do
+  describe 'manual schema (base)' do
     let(:described_class) { Account }
 
     let(:input) do
