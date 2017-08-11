@@ -93,11 +93,11 @@ module Hanami
         #
         # @since 0.7.0
         class Dsl
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           TYPES = [:schema, :strict, :weak, :permissive, :strict_with_defaults, :symbolized].freeze
 
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           DEFAULT_TYPE = TYPES.first
 

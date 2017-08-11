@@ -105,7 +105,7 @@ module Hanami
           end
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def modified_message(original_message)
           case original_message

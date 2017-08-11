@@ -21,13 +21,13 @@ module Hanami
         end
 
         def has_one(relation, *)
-          @repository.__send__(:relations, Hanami::Utils::String.new(relation).pluralize.to_sym)
+          @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def belongs_to(relation, *)
-          @repository.__send__(:relations, Hanami::Utils::String.new(relation).pluralize.to_sym)
+          @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
         end
       end
     end

@@ -13,27 +13,27 @@ module Hanami
           Types::Strict::Array.member(type)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         attr_reader :repository
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         attr_reader :source
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         attr_reader :target
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         attr_reader :subject
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         attr_reader :scope
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         attr_reader :through
 
@@ -67,7 +67,7 @@ module Hanami
           __new__(scope.where(condition))
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         # Return the association table object. Would need an aditional query to return the entity
         def add(*data)
@@ -77,13 +77,13 @@ module Hanami
           raise Hanami::Model::Error.for(e)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def delete
           relation(through).where(source_foreign_key => subject.fetch(source_primary_key)).delete
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         # rubocop:disable Metrics/AbcSize
         def remove(target_id)
@@ -99,25 +99,25 @@ module Hanami
 
         private
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def container
           repository.container
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def relation(name)
           repository.relations[name]
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def command(target, relation, options = {})
           repository.command(target, relation, options)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def associate(data)
           relation(target)
@@ -125,19 +125,19 @@ module Hanami
             .associate(container.relations, data, subject)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def source_primary_key
           association_keys[0].first
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def source_foreign_key
           association_keys[0].last
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def association_keys
           relation(source)
@@ -145,19 +145,19 @@ module Hanami
             .__send__(:join_key_map, container.relations)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def target_foreign_key
           association_keys[1].first
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def target_primary_key
           association_keys[1].last
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         # rubocop:disable Metrics/AbcSize
         def _build_scope
@@ -171,7 +171,7 @@ module Hanami
         end
         # rubocop:enable Metrics/AbcSize
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def __new__(new_scope)
           self.class.new(repository, source, target, subject, new_scope)

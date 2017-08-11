@@ -1,6 +1,16 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.1.0.beta1 (unreleased)
+### Added
+- [Marcello Rocha] One-To-Many association (aka `belongs_to`)
+- [Marcello Rocha] One-To-One association (aka `has_one`)
+- [Marcello Rocha] Many-To-Many association (aka `has_many :through`)
+- [Luca Guidi] Introduced new extra behaviors for entity manual schema: `:schema` (default), `:strict`, `:weak`, and `:permissive`
+
+### Fixed
+- [Sean Collins] Enhanced error message for Postgres `db create` and `db drop` when `createdb` and `dropdb` aren't in `PATH`
+
 ## v1.0.2 - 2017-08-04
 ### Fixed
 - [Maurizio De Magnis] URI escape for Postgres password
