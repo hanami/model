@@ -33,15 +33,7 @@ module Hanami
         def create
           set_environment_variables
 
-          call_db_command('createdb') do |error_message|
-            message = if error_message.match(/already exists/) # rubocop:disable Performance/RedundantMatch
-                        DB_CREATION_ERROR
-                      else
-                        error_message
-                      end
-
-            raise MigrationError.new(message)
-          end
+          call_db_command('createdb')
         end
 
         # @since 0.4.0
@@ -49,15 +41,7 @@ module Hanami
         def drop
           set_environment_variables
 
-          call_db_command('dropdb') do |error_message|
-            message = if error_message.match(/does not exist/) # rubocop:disable Performance/RedundantMatch
-                        "Cannot find database: #{database}"
-                      else
-                        error_message
-                      end
-
-            raise MigrationError.new(message)
-          end
+          call_db_command('dropdb')
         end
 
         # @since 0.4.0
@@ -112,10 +96,27 @@ module Hanami
 
           begin
             Open3.popen3(command, database) do |_stdin, _stdout, stderr, wait_thr|
-              yield stderr.read unless wait_thr.value.success? # wait_thr.value is the exit status
+              unless wait_thr.value.success? # wait_thr.value is the exit status
+                raise MigrationError.new(modified_message(stderr.read))
+              end
             end
           rescue SystemCallError => e
-            yield e.message
+            raise MigrationError.new(modified_message(e.message))
+          end
+        end
+
+        # @since x.x.x
+        # @api private
+        def modified_message(original_message)
+          case original_message
+          when /already exists/
+            DB_CREATION_ERROR
+          when /does not exist/
+            "Cannot find database: #{database}"
+          when /No such file or directory/
+            "Could not find executable in your PATH: `#{original_message.split.last}`"
+          else
+            original_message
           end
         end
       end
