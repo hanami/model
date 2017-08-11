@@ -86,7 +86,7 @@ class UserRepository < Hanami::Repository
   end
 
   def find_with_avatar(id)
-    aggregate(:avatar).where(id: id).as(User).one
+    aggregate(:avatar).where(id: id).map_to(User).one
   end
 
   def create_with_avatar(data)
