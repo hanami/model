@@ -33,7 +33,7 @@ module Hanami
   #     end
   #   end
   #
-  # **Hanami::Model** ships `Hanami::Entity` for developers's convenience.
+  # **Hanami::Model** ships `Hanami::Entity` for developers' convenience.
   #
   # **Hanami::Model** depends on a narrow and well-defined interface for an
   # Entity - `#id`, `#id=`, `#initialize(attributes={})`.If your object

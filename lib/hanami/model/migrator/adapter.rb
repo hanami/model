@@ -123,10 +123,10 @@ module Hanami
         # Returns a database connection
         #
         # Given a DB connection URI we can connect to a specific database or not, we need this when creating
-        # or droping a database. Important to notice that we can't always open a _global_ DB connection,
+        # or dropping a database. Important to notice that we can't always open a _global_ DB connection,
         # because most of the times application's DB user has no rights to do so.
         #
-        # @param global [Boolean] determine whether or not a connection should specify an database.
+        # @param global [Boolean] determine whether or not a connection should specify a database.
         #
         # @since 0.5.0
         # @api private
