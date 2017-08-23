@@ -67,9 +67,8 @@ module Hanami
         # @since 0.7.0
         # @api private
         def remove(id)
-          target_relation = relation(target)
-
-          command(:update, target_relation.where(target_relation.primary_key => id), use: [:timestamps])
+          command(:update, relation(target), use: [:timestamps])
+            .by_pk(id)
             .call(unassociate)
         end
 

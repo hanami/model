@@ -48,33 +48,32 @@ RSpec.describe 'Associations (has_many)' do
   ##
   # REMOVE
   #
-  it 'removes an object from the collection'
-  # it 'removes an object from the collection' do
-  #   authors = AuthorRepository.new
-  #   books = BookRepository.new
+  it 'removes an object from the collection' do
+    authors = AuthorRepository.new
+    books = BookRepository.new
 
-  #   # Book under test
-  #   author = authors.create(name: 'Douglas Adams')
-  #   book = books.create(author_id: author.id, title: "The Hitchhiker's Guide to the Galaxy")
+    # Book under test
+    author = authors.create(name: 'Douglas Adams')
+    book = books.create(author_id: author.id, title: "The Hitchhiker's Guide to the Galaxy")
 
-  #   # Different book
-  #   a = authors.create(name: 'William Finnegan')
-  #   b = books.create(author_id: a.id, title: 'Barbarian Days: A Surfing Life')
+    # Different book
+    a = authors.create(name: 'William Finnegan')
+    b = books.create(author_id: a.id, title: 'Barbarian Days: A Surfing Life')
 
-  #   authors.remove_book(author, book.id)
+    authors.remove_book(author, book.id)
 
-  #   # Check the book under test has removed foreign key
-  #   found_book = books.find(book.id)
-  #   expect(found_book).to_not be_nil
-  #   expect(found_book.author_id).to be_nil
+    # Check the book under test has removed foreign key
+    found_book = books.find(book.id)
+    expect(found_book).to_not be_nil
+    expect(found_book.author_id).to be_nil
 
-  #   found_author = authors.find_with_books(author.id)
-  #   expect(found_author.books.map(&:id)).to_not include(found_book.id)
+    found_author = authors.find_with_books(author.id)
+    expect(found_author.books.map(&:id)).to_not include(found_book.id)
 
-  #   # Check that the other book was left untouched
-  #   found_b = books.find(b.id)
-  #   expect(found_b.author_id).to eq(a.id)
-  # end
+    # Check that the other book was left untouched
+    found_b = books.find(b.id)
+    expect(found_b.author_id).to eq(a.id)
+  end
 
   ##
   # TO_A
