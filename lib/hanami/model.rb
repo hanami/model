@@ -82,7 +82,7 @@ module Hanami
 
     # Disconnect from the database
     #
-    # This is useful for reboot applications in production and to ensure that
+    # This is useful for rebooting applications in production and to ensure that
     # the framework prunes stale connections.
     #
     # @since 1.0.0

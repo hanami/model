@@ -110,7 +110,7 @@ module Hanami
       #     end
       #
       #     down do
-      #       drop_table :itmes
+      #       drop_table :items
       #       execute 'DROP TYPE inventory_item'
       #     end
       #   end

@@ -116,7 +116,7 @@ module Hanami
       #   # Reads all files from "db/migrations" and apply them
       #   Hanami::Model::Migrator.migrate
       #
-      #   # Migrate to a specifiy version
+      #   # Migrate to a specific version
       #   Hanami::Model::Migrator.migrate(version: "20150610133853")
       #
       # NOTE: Class level interface SHOULD be removed in Hanami 2.0
@@ -189,7 +189,7 @@ module Hanami
       #     migrations 'db/migrations'
       #   end
       #
-      #   Hanami::Model::Migrator.prepare # => creates `foo' and run migrations
+      #   Hanami::Model::Migrator.prepare # => creates `foo' and runs migrations
       #
       # @example Prepare Database (with schema dump)
       #   require 'hanami/model'

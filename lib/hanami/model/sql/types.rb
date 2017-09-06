@@ -70,7 +70,7 @@ module Hanami
 
             # NOTE: In the future rom-sql should be able to always return Ruby
             # types instead of Sequel types. When that will happen we can get
-            # rid of this logic in the block and to fallback to:
+            # rid of this logic in the block and fall back to:
             #
             #  MAPPING.fetch(unwrapped.pristine, attribute)
             MAPPING.fetch(unwrapped.pristine) do
