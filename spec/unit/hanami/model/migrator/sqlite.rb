@@ -196,6 +196,66 @@ RSpec.shared_examples 'migrator_sqlite' do
       end
     end
 
+    describe 'rollback' do
+      before do
+        migrator.create
+      end
+
+      describe 'when no migrations' do
+        let(:migrations) { Pathname.new(__dir__ + '/../../../../support/fixtures/empty_migrations') }
+
+        it "it doesn't alter database" do
+          migrator.rollback
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to be_empty
+        end
+      end
+
+      describe 'when migrations are present' do
+        it 'rollbacks one migration (default)' do
+          migrator.migrate
+          migrator.rollback
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to eq([:schema_migrations, :reviews])
+
+          table = connection.schema(:reviews)
+
+          name, options = table[0] # id
+          expect(name).to eq(:id)
+
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:integer)
+          expect(options.fetch(:db_type)).to eq('integer')
+          expect(options.fetch(:primary_key)).to eq(true)
+          expect(options.fetch(:auto_increment)).to eq(true)
+
+          name, options = table[1] # title
+          expect(name).to eq(:title)
+
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:string)
+          expect(options.fetch(:db_type)).to eq('varchar(255)')
+          expect(options.fetch(:primary_key)).to eq(false)
+
+          name, options = table[2] # rating (second migration)
+          expect(name).to eq(nil)
+          expect(options).to eq(nil)
+        end
+
+        it 'rollbacks several migrations' do
+          migrator.migrate
+          migrator.rollback(versions: 2)
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to eq([:schema_migrations])
+        end
+      end
+    end
+
     describe 'apply' do
       let(:migrations) { target_migrations }
       let(:schema)     { root.join("schema-sqlite-#{random}.sql") }
