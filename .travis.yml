@@ -8,8 +8,8 @@ before_install:
   - rvm @global do gem install bundler -v 1.13.7
 rvm:
   - 2.3.4
-  - 2.4.1
-  - jruby-9.1.9.0
+  - 2.4.2
+  - jruby-9.1.13.0
   - ruby-head
   - jruby-head
 env:
