@@ -84,6 +84,17 @@ module Hanami
           raise MigrationError.new(e.message)
         end
 
+        # @since x.x.x
+        # @api private
+        def rollback(migrations, versions)
+          table = migrations_table_dataset
+          version = version_to_rollback(table, versions)
+
+          Sequel::Migrator.run(connection.raw, migrations, target: version, allow_missing_migration_files: true)
+        rescue Sequel::Migrator::Error => e
+          raise MigrationError.new(e.message)
+        end
+
         # Load database schema.
         # It must be implemented by subclasses.
         #
@@ -100,7 +111,7 @@ module Hanami
         # @since 0.4.0
         # @api private
         def version
-          table = connection.table(MIGRATIONS_TABLE)
+          table = migrations_table_dataset
           return if table.nil?
 
           if record = table.order(MIGRATIONS_TABLE_VERSION_COLUMN).last
@@ -109,6 +120,21 @@ module Hanami
         end
 
         private
+
+        # @since x.x.x
+        # @api private
+        def version_to_rollback(table, versions)
+          record = table.order(Sequel.desc(MIGRATIONS_TABLE_VERSION_COLUMN)).all[versions]
+          return 0 unless record
+
+          record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_i
+        end
+
+        # @since x.x.x
+        # @api private
+        def migrations_table_dataset
+          connection.table(MIGRATIONS_TABLE)
+        end
 
         # @since 0.5.0
         # @api private
