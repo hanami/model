@@ -183,7 +183,6 @@ module Hanami
         end
       end
 
-      relations(relation)
       root(relation)
       class_eval %{
         def #{relation}
