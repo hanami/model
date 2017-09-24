@@ -306,7 +306,8 @@ module Hanami
     def self.inherited(klass)
       klass.class_eval do
         include Utils::ClassAttribute
-        auto_struct true
+
+        auto_struct false
 
         @associations = nil
         @mapping      = nil
