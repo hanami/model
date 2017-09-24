@@ -12,7 +12,7 @@ module Hanami
         # @api private
         def self.schema_type(entity)
           type = Sql::Types::Schema::AssociationType.new(entity)
-          Types::Strict::Array.member(type)
+          Types::Strict::Array.of(type)
         end
 
         # @since 0.7.0
