@@ -416,8 +416,8 @@ module Hanami
     # @return [Hanami::Repository] the new instance
     #
     # @since 0.7.0
-    def initialize
-      super(self.class.container)
+    def self.new(container = self.container, options = {})
+      super
     end
 
     # Find by primary key
