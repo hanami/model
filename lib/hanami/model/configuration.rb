@@ -155,8 +155,9 @@ module Hanami
         container = ROM.container(rom)
         define_entities_mappings(container, repositories)
         container
-      rescue => e
-        raise Hanami::Model::Error.for(e)
+      # rescue => e
+      #   byebug
+      #   raise Hanami::Model::Error.for(e)
       end
 
       # @since 1.0.0
