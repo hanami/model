@@ -96,11 +96,11 @@ module Hanami
           scope.to_a
         end
 
-        # @since 0.7.0
-        # @api private
-        def where(condition)
-          __new__(scope.where(condition))
-        end
+        # # @since 0.7.0
+        # # @api private
+        # def where(condition)
+        #   __new__(scope.where(condition))
+        # end
 
         # @since 0.7.0
         # @api private
@@ -109,6 +109,16 @@ module Hanami
         end
 
         private
+
+        def method_missing(meth, args)
+          whitelisted_methods = %i(where order limit)
+          return super unless whitelisted_methods.member?(meth) && scope.respond_to?(meth)
+          __new__(scope.public_send(meth, args))
+        end
+
+        def respond_to_missing?(meth, include_all)
+          scope.respond_to?(meth, include_all)
+        end
 
         # @since 0.7.0
         # @api private
