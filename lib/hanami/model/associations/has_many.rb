@@ -96,12 +96,6 @@ module Hanami
           scope.to_a
         end
 
-        # # @since 0.7.0
-        # # @api private
-        # def where(condition)
-        #   __new__(scope.where(condition))
-        # end
-
         # @since 0.7.0
         # @api private
         def count

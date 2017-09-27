@@ -12,7 +12,7 @@ module Hanami
         # @api private
         def self.schema_type(entity)
           type = Sql::Types::Schema::AssociationType.new(entity)
-          Types::Strict::Array.member(type)
+          Types::Strict::Array.of(type)
         end
 
         # @since 1.1.0
@@ -65,12 +65,15 @@ module Hanami
           scope.count
         end
 
+<<<<<<< HEAD
         def where(condition)
           __new__(scope.where(condition))
         end
 
         # Return the association table object. Would need an aditional query to return the entity
         #
+=======
+>>>>>>> many-to-many respond_to :where, :limit, :order
         # @since 1.1.0
         # @api private
         def add(*data)
@@ -102,6 +105,16 @@ module Hanami
         # rubocop:enable Metrics/AbcSize
 
         private
+
+        def method_missing(meth, args)
+          whitelisted_methods = %i(where order limit)
+          return super unless whitelisted_methods.member?(meth) && scope.respond_to?(meth)
+          __new__(scope.public_send(meth, args))
+        end
+
+        def respond_to_missing?(meth, include_all)
+          scope.respond_to?(meth, include_all)
+        end
 
         # @since 1.1.0
         # @api private

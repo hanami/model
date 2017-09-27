@@ -317,7 +317,7 @@ class BookRepository < Hanami::Repository
   end
 
   def categories_for(book)
-    assoc(:categories, book).to_a
+    assoc(:categories, book)
   end
 
   def find_with_categories(id)

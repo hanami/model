@@ -24,7 +24,7 @@ RSpec.describe 'Associations (has_many :through)' do
   it 'returns an array of Categories' do
     ontologies.create(book_id: book.id, category_id: category.id)
 
-    found = books.categories_for(book)
+    found = books.categories_for(book).to_a
     expect(found).to eq([category])
   end
 
@@ -139,6 +139,26 @@ RSpec.describe 'Associations (has_many :through)' do
       expect do
         categories.add_books(category, id: -2)
       end.to raise_error Hanami::Model::ForeignKeyConstraintViolationError
+    end
+  end
+
+  context 'delegates scope manipulation to #scope' do
+    let(:category_assoc) { books.categories_for(book) }
+
+    it 'responds to #where' do
+      expect(category_assoc).to respond_to :where
+      expect { category_assoc.where(name: 'nonexistant') }.to_not raise_error
+      expect(category_assoc.where(name: 'nonexistant').to_a.size).to eq(0)
+    end
+
+    it 'reponds to #limit' do
+      expect(category_assoc).to respond_to :limit
+      expect { category_assoc.limit(5) }.to_not raise_error
+    end
+
+    it 'responds to #order' do
+      expect(category_assoc).to respond_to :order
+      expect{ category_assoc.order(:name) }.to_not raise_error
     end
   end
 end
