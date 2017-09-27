@@ -74,7 +74,7 @@ module Hanami
         #   user.name  # => "MG"
         def Collection(type)
           type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
-          Types::Array.member(type)
+          Types::Array.of(type)
         end
       end
       # rubocop:enable Naming/MethodName

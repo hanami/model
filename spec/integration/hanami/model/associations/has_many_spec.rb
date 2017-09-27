@@ -194,7 +194,7 @@ RSpec.describe 'Associations (has_many)' do
   end
 
   context 'delegates scope manipulation to #scope' do
-    let(:author) { authors.create_with_books(name: 'Luis de Camões', books: [{title: 'Os Lusíadas'}]) }
+    let(:author) { authors.create_with_books(name: 'Luis de Camões', books: [{ title: 'Os Lusíadas' }]) }
     let(:book_assoc) { authors.books_for(id: author.id) }
 
     it 'responds to #where' do
@@ -210,7 +210,7 @@ RSpec.describe 'Associations (has_many)' do
 
     it 'responds to #order' do
       expect(book_assoc).to respond_to :order
-      expect{ book_assoc.order(:title) }.to_not raise_error
+      expect { book_assoc.order(:title) }.to_not raise_error
     end
   end
 end

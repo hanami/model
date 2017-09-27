@@ -158,7 +158,7 @@ RSpec.describe 'Associations (has_many :through)' do
 
     it 'responds to #order' do
       expect(category_assoc).to respond_to :order
-      expect{ category_assoc.order(:name) }.to_not raise_error
+      expect { category_assoc.order(:name) }.to_not raise_error
     end
   end
 end

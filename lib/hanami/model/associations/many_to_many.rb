@@ -107,7 +107,7 @@ module Hanami
         private
 
         def method_missing(meth, args)
-          whitelisted_methods = %i(where order limit)
+          whitelisted_methods = %i[where order limit reverse]
           return super unless whitelisted_methods.member?(meth) && scope.respond_to?(meth)
           __new__(scope.public_send(meth, args))
         end

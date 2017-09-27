@@ -12,7 +12,7 @@ module Hanami
         # @api private
         def self.schema_type(entity)
           type = Sql::Types::Schema::AssociationType.new(entity)
-          Types::Strict::Array.member(type)
+          Types::Strict::Array.of(type)
         end
 
         # @since 0.7.0
@@ -105,7 +105,7 @@ module Hanami
         private
 
         def method_missing(meth, args)
-          whitelisted_methods = %i(where order limit)
+          whitelisted_methods = %i[where order limit reverse]
           return super unless whitelisted_methods.member?(meth) && scope.respond_to?(meth)
           __new__(scope.public_send(meth, args))
         end
