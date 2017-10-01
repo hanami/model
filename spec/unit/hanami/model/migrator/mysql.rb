@@ -275,7 +275,7 @@ RSpec.shared_examples 'migrator_mysql' do
 
         it 'rollbacks several migrations' do
           migrator.migrate
-          migrator.rollback(versions: 2)
+          migrator.rollback(steps: 2)
 
           connection = Sequel.connect(url)
           expect(connection.tables).to eq([:schema_migrations])

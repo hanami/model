@@ -86,9 +86,9 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def rollback(migrations, versions)
+        def rollback(migrations, steps)
           table = migrations_table_dataset
-          version = version_to_rollback(table, versions)
+          version = version_to_rollback(table, steps)
 
           Sequel::Migrator.run(connection.raw, migrations, target: version, allow_missing_migration_files: true)
         rescue Sequel::Migrator::Error => e
@@ -123,8 +123,8 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def version_to_rollback(table, versions)
-          record = table.order(Sequel.desc(MIGRATIONS_TABLE_VERSION_COLUMN)).all[versions]
+        def version_to_rollback(table, steps)
+          record = table.order(Sequel.desc(MIGRATIONS_TABLE_VERSION_COLUMN)).all[steps]
           return 0 unless record
 
           record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_i

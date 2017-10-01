@@ -127,7 +127,7 @@ module Hanami
 
       # Rollback database schema
       #
-      # @param versions [Number,NilClass] versions to rollback
+      # @param steps [Number,NilClass] number of versions to rollback
       #
       # @raise [Hanami::Model::MigrationError] if an error occurs
       #
@@ -157,8 +157,8 @@ module Hanami
       #   Hanami::Model::Migrator.rollback(versions: 2)
       #
       # NOTE: Class level interface SHOULD be removed in Hanami 2.0
-      def self.rollback(versions: 1)
-        new.rollback(versions: versions)
+      def self.rollback(steps: 1)
+        new.rollback(steps: steps)
       end
 
       # Migrate, dump schema, delete migrations.
@@ -307,8 +307,8 @@ module Hanami
       # @api private
       #
       # @see Hanami::Model::Migrator.rollback
-      def rollback(versions: 1)
-        adapter.rollback(migrations, versions.abs) if migrations?
+      def rollback(steps: 1)
+        adapter.rollback(migrations, steps.abs) if migrations?
       end
 
       # @since 0.7.0
