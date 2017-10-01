@@ -36,7 +36,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def host
-            " -h #{@uri.host}"
+            " -h #{query['host'] || @uri.host}"
           end
 
           # @since 0.7.0
@@ -48,19 +48,31 @@ module Hanami
           # @since 0.7.0
           # @api private
           def port
-            " -p #{@uri.port}" unless @uri.port.nil?
+            port = query['port'] || @uri.port
+            " -p #{port}" if port
           end
 
           # @since 0.7.0
           # @api private
           def username
-            " -U #{@uri.user}" unless @uri.user.nil?
+            username = query['user'] || @uri.user
+            " -U #{username}" if username
           end
 
           # @since 0.7.0
           # @api private
           def configure_password
-            ENV[PASSWORD] = CGI.unescape(@uri.password) unless @uri.password.nil?
+            password = query['password'] || @uri.password
+            ENV[PASSWORD] = CGI.unescape(query['password'] || @uri.password) if password
+          end
+
+          # @since x.x.x
+          # @api private
+          def query
+            return {} if @uri.query.nil? || @uri.query.empty?
+
+            parsed_query = @uri.query.split("&").map { |a| a.split("=") }
+            @query ||= Hash[parsed_query]
           end
         end
       end
