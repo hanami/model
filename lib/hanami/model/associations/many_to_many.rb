@@ -90,10 +90,11 @@ module Hanami
           association_record = relation(through)
                                .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
                                .one
-          if association_record
-            ar_id = association_record.public_send relation(through).primary_key
-            command(:delete, relation(through)).by_pk(ar_id).call
-          end
+
+          return if association_record.nil?
+
+          ar_id = association_record.public_send relation(through).primary_key
+          command(:delete, relation(through)).by_pk(ar_id).call
         end
         # rubocop:enable Metrics/AbcSize
 

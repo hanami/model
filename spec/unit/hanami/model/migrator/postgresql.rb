@@ -307,51 +307,51 @@ RSpec.shared_examples 'migrator_postgresql' do
         migrator.apply
         actual = schema.read
 
-        expect(actual).to include <<-SQL
-CREATE TABLE reviews (
-    id integer NOT NULL,
-    title text NOT NULL,
-    rating integer DEFAULT 0
-);
+        expect(actual).to include <<~SQL
+          CREATE TABLE reviews (
+              id integer NOT NULL,
+              title text NOT NULL,
+              rating integer DEFAULT 0
+          );
         SQL
 
-        expect(actual).to include <<-SQL
-CREATE SEQUENCE reviews_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+        expect(actual).to include <<~SQL
+          CREATE SEQUENCE reviews_id_seq
+              START WITH 1
+              INCREMENT BY 1
+              NO MINVALUE
+              NO MAXVALUE
+              CACHE 1;
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
+        expect(actual).to include <<~SQL
+          ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
+        expect(actual).to include <<~SQL
+          ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER TABLE ONLY reviews
-    ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
+        expect(actual).to include <<~SQL
+          ALTER TABLE ONLY reviews
+              ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
         SQL
 
-        expect(actual).to include <<-SQL
-CREATE TABLE schema_migrations (
-    filename text NOT NULL
-);
+        expect(actual).to include <<~SQL
+          CREATE TABLE schema_migrations (
+              filename text NOT NULL
+          );
         SQL
 
-        expect(actual).to include <<-SQL
-COPY schema_migrations (filename) FROM stdin;
-20160831073534_create_reviews.rb
-20160831090612_add_rating_to_reviews.rb
+        expect(actual).to include <<~SQL
+          COPY schema_migrations (filename) FROM stdin;
+          20160831073534_create_reviews.rb
+          20160831090612_add_rating_to_reviews.rb
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER TABLE ONLY schema_migrations
-    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
+        expect(actual).to include <<~SQL
+          ALTER TABLE ONLY schema_migrations
+              ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
         SQL
       end
 

@@ -21,7 +21,7 @@ module Hanami
         # Define an array of given type
         #
         # @since 0.7.0
-        def Collection(type) # rubocop:disable Style/MethodName
+        def Collection(type) # rubocop:disable Naming/MethodName
           type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
           Types::Array.member(type)
         end
@@ -48,7 +48,8 @@ module Hanami
           # @api private
           def call(value)
             return if value.nil?
-            if valid?(value)
+
+            if valid?(value) # rubocop:disable Style/GuardClause
               coerce(value)
             else
               raise TypeError.new("#{value.inspect} must be coercible into #{object}")

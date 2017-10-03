@@ -95,7 +95,7 @@ module Hanami
         class Dsl
           # @since 1.1.0
           # @api private
-          TYPES = [:schema, :strict, :weak, :permissive, :strict_with_defaults, :symbolized].freeze
+          TYPES = %i[schema strict weak permissive strict_with_defaults symbolized].freeze
 
           # @since 1.1.0
           # @api private

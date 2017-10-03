@@ -131,7 +131,7 @@ module Hanami
       #
       # @raise [Hanami::Model::MigrationError] if an error occurs
       #
-      # @since x.x.x
+      # @since 1.1.0
       #
       # @see Hanami::Model::Configuration#adapter
       # @see Hanami::Model::Configuration#migrations
@@ -303,7 +303,7 @@ module Hanami
         adapter.migrate(migrations, version) if migrations?
       end
 
-      # @since x.x.x
+      # @since 1.1.0
       # @api private
       #
       # @see Hanami::Model::Migrator.rollback
@@ -327,7 +327,7 @@ module Hanami
       # @see Hanami::Model::Migrator.prepare
       def prepare
         drop
-      rescue
+      rescue # rubocop:disable Lint/HandleExceptions
       ensure
         create
         adapter.load
@@ -342,8 +342,6 @@ module Hanami
         adapter.version
       end
 
-      private
-
       # Hanami::Model configuration
       #
       # @since 0.4.0
@@ -351,6 +349,8 @@ module Hanami
       def self.configuration
         Model.configuration
       end
+
+      private
 
       # @since 0.7.0
       # @api private

@@ -112,7 +112,7 @@ module Hanami
       # @since 1.0.0
       # @api private
       def configure_gateway
-        @gateway_config.call(gateway) unless @gateway_config.nil?
+        @gateway_config&.call(gateway)
       end
 
       # @since 1.0.0
@@ -152,6 +152,12 @@ module Hanami
         else
           super
         end
+      end
+
+      # @since 1.1.0
+      # @api private
+      def respond_to_missing?(method_name, include_all)
+        rom.respond_to?(method_name, include_all)
       end
     end
   end

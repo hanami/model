@@ -153,7 +153,7 @@ RSpec.shared_examples 'migrator_sqlite' do
 
           connection = Sequel.connect(url)
           expect(connection.tables).to_not be_empty
-          expect(connection.tables).to eq([:schema_migrations, :reviews])
+          expect(connection.tables).to eq(%i[schema_migrations reviews])
         end
       end
 
@@ -218,7 +218,7 @@ RSpec.shared_examples 'migrator_sqlite' do
           migrator.rollback
 
           connection = Sequel.connect(url)
-          expect(connection.tables).to eq([:schema_migrations, :reviews])
+          expect(connection.tables).to eq(%i[schema_migrations reviews])
 
           table = connection.schema(:reviews)
 
@@ -340,20 +340,20 @@ RSpec.shared_examples 'migrator_sqlite' do
 
         migration = target_migrations.join('20160831095616_create_abuses.rb')
         File.open(migration, 'w+') do |f|
-          f.write <<-RUBY
-Hanami::Model.migration do
-  change do
-    create_table :abuses do
-      primary_key :id
-    end
-  end
-end
+          f.write <<~RUBY
+            Hanami::Model.migration do
+              change do
+                create_table :abuses do
+                  primary_key :id
+                end
+              end
+            end
 RUBY
         end
 
         migrator.prepare
 
-        expect(connection.tables).to eq([:schema_migrations, :reviews, :abuses])
+        expect(connection.tables).to eq(%i[schema_migrations reviews abuses])
 
         FileUtils.rm_f migration
       end
@@ -364,7 +364,7 @@ RUBY
         migrator.prepare
 
         connection = Sequel.connect(url)
-        expect(connection.tables).to eq([:schema_migrations, :reviews])
+        expect(connection.tables).to eq(%i[schema_migrations reviews])
       end
 
       it 'drops the database and recreate it' do

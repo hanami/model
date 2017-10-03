@@ -84,7 +84,7 @@ module Hanami
           raise MigrationError.new(e.message)
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def rollback(migrations, steps)
           table = migrations_table_dataset
@@ -114,23 +114,28 @@ module Hanami
           table = migrations_table_dataset
           return if table.nil?
 
-          if record = table.order(MIGRATIONS_TABLE_VERSION_COLUMN).last
-            record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_s
-          end
+          record = table.order(MIGRATIONS_TABLE_VERSION_COLUMN).last
+          return if record.nil?
+
+          record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(MIGRATIONS_FILE_NAME_PATTERN).first.to_s
         end
 
         private
 
-        # @since x.x.x
+        # @since 1.1.0
+        # @api private
+        MIGRATIONS_FILE_NAME_PATTERN = /\A[\d]{14}/
+
+        # @since 1.1.0
         # @api private
         def version_to_rollback(table, steps)
           record = table.order(Sequel.desc(MIGRATIONS_TABLE_VERSION_COLUMN)).all[steps]
           return 0 unless record
 
-          record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(/\A[\d]{14}/).first.to_i
+          record.fetch(MIGRATIONS_TABLE_VERSION_COLUMN).scan(MIGRATIONS_FILE_NAME_PATTERN).first.to_i
         end
 
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def migrations_table_dataset
           connection.table(MIGRATIONS_TABLE)

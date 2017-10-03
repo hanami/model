@@ -180,7 +180,7 @@ RSpec.shared_examples 'migrator_mysql' do
 
           connection = Sequel.connect(url)
           expect(connection.tables).to_not be_empty
-          expect(connection.tables).to eq([:reviews, :schema_migrations])
+          expect(connection.tables).to eq(%i[reviews schema_migrations])
         end
       end
 
@@ -381,14 +381,14 @@ RSpec.shared_examples 'migrator_mysql' do
 
         migration = target_migrations.join('20160831095616_create_abuses.rb')
         File.open(migration, 'w+') do |f|
-          f.write <<-RUBY
-Hanami::Model.migration do
-  change do
-    create_table :abuses do
-      primary_key :id
-    end
-  end
-end
+          f.write <<~RUBY
+            Hanami::Model.migration do
+              change do
+                create_table :abuses do
+                  primary_key :id
+                end
+              end
+            end
 RUBY
         end
 

@@ -1,9 +1,17 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.1.0.beta2 - 2017-10-03
+### Added
+- [Alfonso Uceda] Introduce `Hanami::Model::Migrator#rollback` to provide database migrations rollback
+- [Alfonso Uceda] Improve connection string for PostgreSQL in order to pass credentials as URI query string
+
+### Fixed
+- [Marcello Rocha] One-To-Many properly destroy the associated methods
+
 ## v1.1.0.beta1 - 2017-08-11
 ### Added
-- [Marcello Rocha] One-To-Many association (aka `belongs_to`)
+- [Marcello Rocha] Many-To-One association (aka `belongs_to`)
 - [Marcello Rocha] One-To-One association (aka `has_one`)
 - [Marcello Rocha] Many-To-Many association (aka `has_many :through`)
 - [Luca Guidi] Introduced new extra behaviors for entity manual schema: `:schema` (default), `:strict`, `:weak`, and `:permissive`

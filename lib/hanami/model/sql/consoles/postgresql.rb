@@ -66,7 +66,7 @@ module Hanami
             ENV[PASSWORD] = CGI.unescape(query['password'] || @uri.password) if password
           end
 
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           def query
             return {} if @uri.query.nil? || @uri.query.empty?
