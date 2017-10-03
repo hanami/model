@@ -54,7 +54,7 @@ module Hanami
   #
   # All the queries and commands are private.
   # This decision forces developers to define intention revealing API, instead
-  # leak storage API details outside of a repository.
+  # of leaking storage API details outside of a repository.
   #
   # @example
   #   require 'hanami/model'
@@ -87,7 +87,7 @@ module Hanami
   #   #  * It expresses a clear intent.
   #   #
   #   #  * The caller can be easily tested in isolation.
-  #   #    It's just a matter of stub this method.
+  #   #    It's just a matter of stubbing this method.
   #   #
   #   #  * If we change the storage, the callers aren't affected.
   #
@@ -167,7 +167,7 @@ module Hanami
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
-    # Defines the ampping between a database table and an entity.
+    # Defines the mapping between a database table and an entity.
     #
     # It's also responsible to associate table columns to entity attributes.
     #
@@ -314,7 +314,7 @@ module Hanami
     module Commands
       # Create a new record
       #
-      # @return [Hanami::Entity] an new created entity
+      # @return [Hanami::Entity] a new created entity
       #
       # @raise [Hanami::Model::Error] an error in case the command fails
       #

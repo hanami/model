@@ -58,7 +58,7 @@ module Hanami
           # Check if value can be coerced
           #
           # It is true if value is an instance of `object` type or if value
-          # respond to `#to_hash`.
+          # responds to `#to_hash`.
           #
           # @param value [Object] the value
           #
