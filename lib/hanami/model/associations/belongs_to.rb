@@ -82,15 +82,22 @@ module Hanami
         # @since 1.1.0
         # @api private
         def association_keys
-          relation(source)
-            .associations[target]
+          association
             .__send__(:join_key_map, container.relations)
+        end
+
+        # Return the ROM::Associations for the source relation
+        #
+        # @since x.x.x
+        # @api private
+        def association
+          relation(source).associations[target]
         end
 
         # @since 1.1.0
         # @api private
         def _build_scope
-          result = relation(target)
+          result = relation(association.target.to_sym)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
           result.as(Model::MappedRelation.mapper_name)
         end
