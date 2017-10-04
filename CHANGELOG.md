@@ -1,6 +1,8 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.1.0.beta3 - 2017-10-04
+
 ## v1.1.0.beta2 - 2017-10-03
 ### Added
 - [Alfonso Uceda] Introduce `Hanami::Model::Migrator#rollback` to provide database migrations rollback
