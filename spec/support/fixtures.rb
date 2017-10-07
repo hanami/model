@@ -250,6 +250,10 @@ class AuthorRepository < Hanami::Repository
     assoc(:books, author).where(on_sale: true).count
   end
 
+  def last_books_published_for(author)
+    assoc(:books, author).reverse(:created_at).limit(2).to_a
+  end
+
   def find_book(author, id)
     book_for(author, id).one
   end

@@ -212,5 +212,13 @@ RSpec.describe 'Associations (has_many)' do
       expect(book_assoc).to respond_to :order
       expect { book_assoc.order(:title) }.to_not raise_error
     end
+
+    it 'allows chaining of the methods' do
+      author = authors.create_with_books(name: 'Machado de Assis', books: [{title: 'Dom Casmurro'}, {title: 'O Alienista'}])
+      authors.add_book(author, {title: 'Memórias Póstumas de Brás Cubas'})
+      found = authors.last_books_published_for(author)
+
+      expect(found.map(&:title)).to match(['Memórias Póstumas de Brás Cubas', 'O Alienista'])
+    end
   end
 end
