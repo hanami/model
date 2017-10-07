@@ -22,7 +22,7 @@ RSpec.describe 'Alias (:as)  support for associations' do
 
     found = posts.feed_for(post.id)
     expect(found.author).to eq(user)
-    expect(found.comments[0].commenter).to eq(commenter)
+    expect(found.comments[0].user).to eq(commenter)
   end
 
   context '#assoc support (calling assoc by the alias)' do
@@ -47,16 +47,15 @@ RSpec.describe 'Alias (:as)  support for associations' do
       expect(found_threads).to match_array [post]
     end
 
-    # Not working yet
-    # it 'for #has_many :through' do
-    #   user = users.create(name: 'Jules Verne')
-    #   post = posts.create(title: 'World Traveling made easy', user_id: user.id)
-    #   commenter = users.create(name: 'Thomas Reid')
-    #   comment = comments.create(user_id: commenter.id, post_id: post.id)
+    it 'for #has_many :through' do
+      user = users.create(name: 'Jules Verne')
+      post = posts.create(title: 'World Traveling made easy', user_id: user.id)
+      commenter = users.create(name: 'Thomas Reid')
+      comments.create(user_id: commenter.id, post_id: post.id)
 
-    #   commenters = posts.commenters_for(post)
+      commenters = posts.commenters_for(post)
 
-    #   expect(commenters).to match_array([commenter])
-    # end
+      expect(commenters).to match_array([commenter])
+    end
   end
 end

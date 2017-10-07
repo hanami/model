@@ -100,7 +100,7 @@ class PostRepository < Hanami::Repository
   end
 
   def feed_for(id)
-    aggregate(:author, comments: :commenter).where(id: id).map_to(Post).one
+    aggregate(:author, comments: :user).where(id: id).map_to(Post).one
   end
 
   def author_for(post)
@@ -111,11 +111,11 @@ end
 class CommentRepository < Hanami::Repository
   associations do
     belongs_to :post
-    belongs_to :users, as: :commenter
+    belongs_to :user
   end
 
   def commenter_for(comment)
-    assoc(:commenter, comment).one
+    assoc(:user, comment).one
   end
 end
 
