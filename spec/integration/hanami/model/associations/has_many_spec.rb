@@ -214,8 +214,8 @@ RSpec.describe 'Associations (has_many)' do
     end
 
     it 'allows chaining of the methods' do
-      author = authors.create_with_books(name: 'Machado de Assis', books: [{title: 'Dom Casmurro'}, {title: 'O Alienista'}])
-      authors.add_book(author, {title: 'Memórias Póstumas de Brás Cubas'})
+      author = authors.create_with_books(name: 'Machado de Assis', books: [{ title: 'Dom Casmurro' }, { title: 'O Alienista' }])
+      authors.add_book(author, title: 'Memórias Póstumas de Brás Cubas')
       found = authors.last_books_published_for(author)
 
       expect(found.map(&:title)).to match(['Memórias Póstumas de Brás Cubas', 'O Alienista'])
