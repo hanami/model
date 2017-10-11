@@ -33,7 +33,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Time" do
   it 'raises error for meaningless string' do
     input = 'foo'
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "no time information in #{input.inspect}")
+      .to raise_error(ArgumentError, "invalid value for Time(): #{input.inspect}")
   end
 
   it 'raises error for symbol' do

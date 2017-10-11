@@ -15,6 +15,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Decimal" do
   end
 
   it 'coerces object that respond to #to_d' do
+    described_class[input]
     expect(described_class[input]).to eq(input.to_d)
   end
 
