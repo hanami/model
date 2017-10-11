@@ -21,6 +21,10 @@ A persistence layer for Hanami
 ### Fixed
 - [Sean Collins] Enhanced error message for Postgres `db create` and `db drop` when `createdb` and `dropdb` aren't in `PATH`
 
+## v1.0.3 - 2017-10-11
+### Fixed
+- [Luca Guidi] Keep the dependency on `dry-types` at `~> 0.11.0`
+
 ## v1.0.2 - 2017-08-04
 ### Fixed
 - [Maurizio De Magnis] URI escape for Postgres password
