@@ -33,7 +33,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::DateTime" do
   it 'raises error for meaningless string' do
     input = 'foo'
     expect { described_class[input] }
-      .to raise_error(ArgumentError, 'invalid date')
+      .to raise_error(ArgumentError, "invalid value for DateTime(): #{input.inspect}")
   end
 
   it 'raises error for symbol' do
