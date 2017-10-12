@@ -82,7 +82,7 @@ module Hanami
             end
           end
 
-          # @since 1.1.0
+          # @since 1.0.4
           # @api private
           def self.pg_json_pristines
             @pg_json_pristines ||= ::Hash.new do |hash, type|
@@ -95,8 +95,8 @@ module Hanami
           # @since 1.0.2
           # @api private
           def self.pg_json?(pristine)
-            pristine == pg_json_pristines['JSONB'] ||
-              pristine == pg_json_pristines['JSON']
+            pristine == pg_json_pristines['JSONB'.freeze] ||
+              pristine == pg_json_pristines['JSON'.freeze]
           end
 
           private_class_method :pg_json?
