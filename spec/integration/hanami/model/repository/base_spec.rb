@@ -553,6 +553,19 @@ RSpec.describe 'Repository (base)' do
 
       expect(found.to_a).to include(user)
     end
+
+    it 'selects only a subset of informations' do
+      repository = UserRepository.new
+      users = repository.create([{ name: 'L' }, { name: 'MG' }])
+      found = repository.ids
+
+      expect(found.size).to eq(users.size)
+      found.each do |user|
+        expect(user).to be_a_kind_of(User)
+        expect(user.id).to_not be(nil)
+        expect(user.id).to be(nil)
+      end
+    end
   end
 
   with_platform(db: :postgresql) do

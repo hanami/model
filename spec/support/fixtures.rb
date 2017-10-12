@@ -73,6 +73,10 @@ class UserRepository < Hanami::Repository
   def find_all_by_manual_query
     users.read("select * from users").to_a
   end
+
+  def ids
+    users.select([:id]).to_a
+  end
 end
 
 class AvatarRepository < Hanami::Repository
