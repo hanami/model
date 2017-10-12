@@ -30,7 +30,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def host
-            " -h #{@uri.host}"
+            " -h #{query['host'] || @uri.host}"
           end
 
           # @since 0.7.0
@@ -42,19 +42,31 @@ module Hanami
           # @since 0.7.0
           # @api private
           def port
-            " -P #{@uri.port}" unless @uri.port.nil?
+            port = query['port'] || @uri.port
+            " -P #{port}" if port
           end
 
           # @since 0.7.0
           # @api private
           def username
-            " -u #{@uri.user}" unless @uri.user.nil?
+            username = query['user'] || @uri.user
+            " -u #{username}" if username
           end
 
           # @since 0.7.0
           # @api private
           def password
-            " -p #{@uri.password}" unless @uri.password.nil?
+            password = query['password'] || @uri.password
+            " -p #{password}" if password
+          end
+
+          # @since x.x.x
+          # @api private
+          def query
+            return {} if @uri.query.nil? || @uri.query.empty?
+
+            parsed_query = @uri.query.split("&").map { |a| a.split("=") }
+            @query ||= Hash[parsed_query]
           end
         end
       end
