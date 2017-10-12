@@ -82,11 +82,21 @@ module Hanami
             end
           end
 
+          # @since 1.1.0
+          # @api private
+          def self.pg_json_pristines
+            @pg_json_pristines ||= ::Hash.new do |hash, type|
+              hash[type] = if defined?(ROM::SQL::Types::PG)
+                             ROM::SQL::Types::PG.const_get(type).pristine
+                           end
+            end
+          end
+
           # @since 1.0.2
           # @api private
           def self.pg_json?(pristine)
-            (defined?(ROM::SQL::Types::PG::JSONB) && pristine == ROM::SQL::Types::PG::JSONB) ||
-              (defined?(ROM::SQL::Types::PG::JSON) && pristine == ROM::SQL::Types::PG::JSON)
+            pristine == pg_json_pristines['JSONB'] ||
+              pristine == pg_json_pristines['JSON']
           end
 
           private_class_method :pg_json?
