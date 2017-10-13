@@ -146,7 +146,7 @@ class AuthorRepository < Hanami::Repository
   end
 
   def find_with_books(id)
-    aggregate(:books).where(authors__id: id).map_to(Author).one
+    aggregate(:books).by_pk(id).map_to(Author).one
   end
 
   def books_for(author)

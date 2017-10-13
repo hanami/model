@@ -620,6 +620,20 @@ RSpec.describe 'Repository (base)' do
 
           expect(found).to eq(product)
         end
+
+        it 'succeeds even if timestamps is the only plugin' do
+          repository = ProductRepository.new
+
+          product = repository
+                    .command(:create, repository.root, use: %i[timestamps])
+                    .call(name: 'NeoVim', categories: ['software'])
+
+          found = repository.find(product.id)
+
+          expect(product.categories).to eq(['software'])
+
+          expect(found.to_h).to eq(product.to_h)
+        end
       end
     end
 
