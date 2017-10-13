@@ -25,7 +25,10 @@ end
 class SourceFile < Hanami::Entity
 end
 
-class Avatar < Hanami::Entity
+class Post < Hanami::Entity
+end
+
+class Comment < Hanami::Entity
 end
 
 class Warehouse < Hanami::Entity
@@ -77,6 +80,45 @@ end
 class Label < Hanami::Entity
 end
 
+class PostRepository < Hanami::Repository
+  associations do
+    belongs_to :user, as: :author
+    has_many :comments
+    has_many :users, through: :comments, as: :commenters
+  end
+
+  def find_with_commenters(id)
+    aggregate(:commenters).where(id: id).map_to(Post).to_a
+  end
+
+  def commenters_for(post)
+    assoc(:commenters, post).to_a
+  end
+
+  def find_with_author(id)
+    aggregate(:author).where(id: id).map_to(Post).one
+  end
+
+  def feed_for(id)
+    aggregate(:author, comments: :user).where(id: id).map_to(Post).one
+  end
+
+  def author_for(post)
+    assoc(:author, post).one
+  end
+end
+
+class CommentRepository < Hanami::Repository
+  associations do
+    belongs_to :post
+    belongs_to :user
+  end
+
+  def commenter_for(comment)
+    assoc(:user, comment).one
+  end
+end
+
 class AvatarRepository < Hanami::Repository
   associations do
     belongs_to :user
@@ -90,6 +132,16 @@ end
 class UserRepository < Hanami::Repository
   associations do
     has_one :avatar
+    has_many :posts, as: :threads
+    has_many :comments
+  end
+
+  def find_with_threads(id)
+    aggregate(:threads).where(id: id).map_to(User).one
+  end
+
+  def threads_for(user)
+    assoc(:threads, user).to_a
   end
 
   def find_with_avatar(id)

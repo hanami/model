@@ -158,11 +158,20 @@ module Hanami
           association_keys[1].last
         end
 
+        # Return the ROM::Associations for the source relation
+        #
+        # @since x.x.x
+        # @api private
+        def association
+          relation(source).associations[target]
+        end
+
         # @since 1.1.0
+        #
         # @api private
         # rubocop:disable Metrics/AbcSize
         def _build_scope
-          result = relation(target).qualified
+          result = relation(association.target.to_sym).qualified
           unless subject.nil?
             result = result
                      .join(through, target_foreign_key => target_primary_key)

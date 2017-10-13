@@ -7,7 +7,7 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      class HasMany
+      class HasMany # rubocop:disable Metrics/ClassLength
         # @since 0.7.0
         # @api private
         def self.schema_type(entity)
@@ -177,15 +177,22 @@ module Hanami
         # @since 0.7.0
         # @api private
         def association_keys
-          relation(source)
-            .associations[target]
+          target_association
             .__send__(:join_key_map, container.relations)
+        end
+
+        # Returns the targeted association for a given source
+        #
+        # @since 0.7.0
+        # @api private
+        def target_association
+          relation(source).associations[target]
         end
 
         # @since 0.7.0
         # @api private
         def _build_scope
-          result = relation(target)
+          result = relation(target_association.target.to_sym)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
           result.as(Model::MappedRelation.mapper_name)
         end
