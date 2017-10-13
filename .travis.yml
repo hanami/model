@@ -9,7 +9,7 @@ before_install:
 rvm:
   - 2.3.4
   - 2.4.2
-  - jruby-9.1.6.0
+  - jruby-9.1.9.0
   - ruby-head
   - jruby-head
 env:
