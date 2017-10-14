@@ -1,6 +1,12 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.0.4 - 2017-10-14
+### Fixed
+- [Nikita Shilnikov] Keep the dependency on `dry-sql` at `~> 1.3`, which is compatible with `dry-types` `~> 0.11.0`
+- [Nikita Shilnikov] Ensure to write Postgres JSON (`PGJSON`) type for nested associated records
+- [Nikita Shilnikov] Ensure `Repository#select` to work with `Hanami::Model::MappedRelation`
+
 ## v1.0.3 - 2017-10-11
 ### Fixed
 - [Luca Guidi] Keep the dependency on `dry-types` at `~> 0.11.0`

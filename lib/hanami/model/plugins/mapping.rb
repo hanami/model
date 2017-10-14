@@ -23,7 +23,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def [](value)
-            @mapping.process(@input[value])
+            @input[@mapping.process(value)]
           end
         end
 

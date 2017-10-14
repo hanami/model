@@ -73,6 +73,14 @@ class UserRepository < Hanami::Repository
   def find_all_by_manual_query
     users.read("select * from users").to_a
   end
+
+  def ids
+    users.select(:id).to_a
+  end
+
+  def select_id_and_name
+    users.select(:id, :name).to_a
+  end
 end
 
 class AvatarRepository < Hanami::Repository
@@ -88,7 +96,7 @@ class AuthorRepository < Hanami::Repository
   end
 
   def find_with_books(id)
-    aggregate(:books).where(authors__id: id).map_to(Author).one
+    aggregate(:books).by_pk(id).map_to(Author).one
   end
 
   def books_for(author)
