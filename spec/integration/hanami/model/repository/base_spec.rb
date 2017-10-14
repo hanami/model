@@ -554,16 +554,35 @@ RSpec.describe 'Repository (base)' do
       expect(found.to_a).to include(user)
     end
 
-    it 'selects only a subset of informations' do
+    it 'selects only a single column' do
       repository = UserRepository.new
-      users = repository.create([{ name: 'L' }, { name: 'MG' }])
+      repository.clear
+
+      repository.create([{ name: 'L', age: 35 }, { name: 'MG', age: 34 }])
       found = repository.ids
 
-      expect(found.size).to eq(users.size)
+      expect(found.size).to be(2)
       found.each do |user|
         expect(user).to be_a_kind_of(User)
         expect(user.id).to_not be(nil)
-        expect(user.id).to be(nil)
+        expect(user.name).to be(nil)
+        expect(user.age).to be(nil)
+      end
+    end
+
+    it 'selects multiple columns' do
+      repository = UserRepository.new
+      repository.clear
+
+      repository.create([{ name: 'L', age: 35 }, { name: 'MG', age: 34 }])
+      found = repository.select_id_and_name
+
+      expect(found.size).to be(2)
+      found.each do |user|
+        expect(user).to be_a_kind_of(User)
+        expect(user.id).to_not be(nil)
+        expect(user.name).to_not be(nil)
+        expect(user.age).to be(nil)
       end
     end
   end

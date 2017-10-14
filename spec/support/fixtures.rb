@@ -75,7 +75,11 @@ class UserRepository < Hanami::Repository
   end
 
   def ids
-    users.select([:id]).to_a
+    users.select(:id).to_a
+  end
+
+  def select_id_and_name
+    users.select(:id, :name).to_a
   end
 end
 
