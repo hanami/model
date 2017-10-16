@@ -160,7 +160,7 @@ module Hanami
 
         # Return the ROM::Associations for the source relation
         #
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         def association
           relation(source).associations[target]

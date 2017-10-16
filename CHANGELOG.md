@@ -1,6 +1,11 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.1.0.rc1 - 2017-10-16
+### Added
+- [Marcello Rocha] Added support for associations aliasing via `:as` option (`has_many :users, through: :comments, as: :authors`)
+- [Luca Guidi] Allow entities to be used as type in entities manual schema (`attribute :owner, Types::Entity(User)`)
+
 ## v1.1.0.beta3 - 2017-10-04
 
 ## v1.1.0.beta2 - 2017-10-03

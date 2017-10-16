@@ -3,6 +3,6 @@ module Hanami
     # Defines the version
     #
     # @since 0.1.0
-    VERSION = '1.1.0.beta3'.freeze
+    VERSION = '1.1.0.rc1'.freeze
   end
 end
