@@ -29,6 +29,16 @@ RSpec.describe 'Associations (has_many)' do
     expect(author.books.first.title).to eq('Walden')
   end
 
+  it 'creates associated records when it receives a collection of serializable data' do
+    author = authors.create_with_books(name: 'Sandi Metz', books: [BaseParams.new(title: 'Practical Object-Oriented Design in Ruby')])
+
+    expect(author).to be_an_instance_of(Author)
+    expect(author.name).to eq('Sandi Metz')
+    expect(author.books).to be_an_instance_of(Array)
+    expect(author.books.first).to be_an_instance_of(Book)
+    expect(author.books.first.title).to eq('Practical Object-Oriented Design in Ruby')
+  end
+
   ##############################################################################
   # OPERATIONS                                                                 #
   ##############################################################################
@@ -42,6 +52,15 @@ RSpec.describe 'Associations (has_many)' do
 
     expect(book.id).to_not be_nil
     expect(book.title).to eq('The Count of Monte Cristo')
+    expect(book.author_id).to eq(author.id)
+  end
+
+  it 'adds an object to the collection with serializable data' do
+    author = authors.create(name: 'David Foster Wallace')
+    book = authors.add_book(author, BaseParams.new(title: 'Infinite Jest'))
+
+    expect(book.id).to_not be_nil
+    expect(book.title).to eq('Infinite Jest')
     expect(book.author_id).to eq(author.id)
   end
 
