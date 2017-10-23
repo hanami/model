@@ -1,3 +1,5 @@
+require "hanami/utils/hash"
+
 module Hanami
   module Model
     module Associations
@@ -49,14 +51,14 @@ module Hanami
 
         def create(data)
           entity.new(
-            command(:create, aggregate(target), use: [:timestamps]).call(data)
+            command(:create, aggregate(target), use: [:timestamps]).call(serialize(data))
           )
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
 
         def add(data)
-          command(:create, relation(target), use: [:timestamps]).call(associate(data))
+          command(:create, relation(target), use: [:timestamps]).call(associate(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -65,7 +67,7 @@ module Hanami
           command(:update, relation(target), use: [:timestamps])
             .by_pk(
               one.public_send(relation(target).primary_key)
-            ).call(data)
+            ).call(serialize(data))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -78,7 +80,7 @@ module Hanami
         def replace(data)
           repository.transaction do
             delete
-            add(data)
+            add(serialize(data))
           end
         end
 
@@ -150,6 +152,12 @@ module Hanami
           result = relation(target)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
           result.as(Model::MappedRelation.mapper_name)
+        end
+
+        # @since 1.1.0
+        # @api private
+        def serialize(data)
+          Utils::Hash.deep_serialize(data)
         end
       end
     end

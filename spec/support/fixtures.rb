@@ -1,3 +1,11 @@
+require "ostruct"
+
+class BaseParams < OpenStruct
+  def to_hash
+    to_h
+  end
+end
+
 class User < Hanami::Entity
 end
 

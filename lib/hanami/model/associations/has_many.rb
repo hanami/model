@@ -50,7 +50,7 @@ module Hanami
         # @api private
         def create(data)
           entity.new(command(:create, aggregate(target), use: [:timestamps])
-            .call(data))
+            .call(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -59,7 +59,7 @@ module Hanami
         # @api private
         def add(data)
           command(:create, relation(target), use: [:timestamps])
-            .call(associate(data))
+            .call(associate(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -201,6 +201,10 @@ module Hanami
         # @api private
         def __new__(new_scope)
           self.class.new(repository, source, target, subject, new_scope)
+        end
+
+        def serialize(data)
+          Utils::Hash.deep_serialize(data)
         end
       end
     end

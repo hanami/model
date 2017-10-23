@@ -47,24 +47,54 @@ RSpec.describe 'Associations (has_one)' do
       expect(found.avatar.id).to eq(avatar.id)
       expect(found.avatar.url).to eq('http://www.notarealurl.com/sartre.png')
     end
+
+    it 'adds an an Avatar to an existing User when serializable data is received' do
+      user = users.create(name: 'Jean Paul-Sartre')
+      avatar = users.add_avatar(user, BaseParams.new(url: 'http://www.notarealurl.com/sartre.png'))
+      found = users.find_with_avatar(user.id)
+
+      expect(found).to eq(user)
+      expect(found.avatar.id).to eq(avatar.id)
+      expect(found.avatar.url).to eq('http://www.notarealurl.com/sartre.png')
+    end
   end
 
   context '#update' do
     it 'updates the avatar' do
       user = users.create_with_avatar(name: 'Bakunin', avatar: { url: 'bakunin.jpg' })
-      users.update_avatar(user, url: 'http://history.com/bakunin.png')
+      users.update_avatar(user, url: url = 'http://history.com/bakunin.png')
 
       found = users.find_with_avatar(user.id)
 
       expect(found).to eq(user)
       expect(found.avatar).to eq(user.avatar)
-      expect(found.avatar.url).to_not eq(user.avatar.url)
+      expect(found.avatar.url).to eq(url)
+    end
+
+    it 'updates the avatar when serializable data is received' do
+      user = users.create_with_avatar(name: 'Bakunin', avatar: { url: 'bakunin.jpg' })
+      users.update_avatar(user, BaseParams.new(url: url = 'http://history.com/bakunin.png'))
+
+      found = users.find_with_avatar(user.id)
+
+      expect(found).to eq(user)
+      expect(found.avatar).to eq(user.avatar)
+      expect(found.avatar.url).to eq(url)
     end
   end
 
   context '#create' do
     it 'creates a User and an Avatar' do
       user = users.create_with_avatar(name: 'Lao Tse', avatar: { url: 'http://lao-tse.io/me.jpg' })
+      found = users.find_with_avatar(user.id)
+
+      expect(found.name).to eq(user.name)
+      expect(found.avatar).to eq(user.avatar)
+      expect(found.avatar.url).to eq('http://lao-tse.io/me.jpg')
+    end
+
+    it 'creates a User and an Avatar when serializable data is received' do
+      user = users.create_with_avatar(name: 'Lao Tse', avatar: BaseParams.new(url: 'http://lao-tse.io/me.jpg'))
       found = users.find_with_avatar(user.id)
 
       expect(found.name).to eq(user.name)
@@ -90,6 +120,16 @@ RSpec.describe 'Associations (has_one)' do
     it 'replaces the associated object' do
       user = users.create_with_avatar(name: 'Frank Herbert', avatar: { url: 'http://not-real.com/avatar.jpg' })
       users.replace_avatar(user, url: 'http://totally-correct.com/avatar.jpg')
+      found = users.find_with_avatar(user.id)
+
+      expect(found.avatar).to_not eq(user.avatar)
+
+      expect(avatars.by_user(user.id).size).to eq(1)
+    end
+
+    it 'replaces the associated object when serializable data is received' do
+      user = users.create_with_avatar(name: 'Frank Herbert', avatar: { url: 'http://not-real.com/avatar.jpg' })
+      users.replace_avatar(user, BaseParams.new(url: 'http://totally-correct.com/avatar.jpg'))
       found = users.find_with_avatar(user.id)
 
       expect(found.avatar).to_not eq(user.avatar)

@@ -1,3 +1,5 @@
+require "hanami/utils/hash"
+
 module Hanami
   module Model
     module Associations
@@ -67,12 +69,13 @@ module Hanami
           __new__(scope.where(condition))
         end
 
+        # Return the association table object. Would need an aditional query to return the entity
+        #
         # @since 1.1.0
         # @api private
-        # Return the association table object. Would need an aditional query to return the entity
         def add(*data)
           command(:create, relation(through), use: [:timestamps])
-            .call(associate(data.map(&:to_h)))
+            .call(associate(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -185,6 +188,14 @@ module Hanami
         # @api private
         def __new__(new_scope)
           self.class.new(repository, source, target, subject, new_scope)
+        end
+
+        # @since 1.1.0
+        # @api private
+        def serialize(data)
+          data.map do |d|
+            Utils::Hash.deep_serialize(d)
+          end
         end
       end
     end
