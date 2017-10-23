@@ -6,7 +6,7 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-gem 'hanami-utils', '1.1.0.rc1', require: false, git: 'https://github.com/hanami/utils.git', branch: 'feature/hash-deep-serialize'
+gem 'hanami-utils', '1.1.0.rc1', require: false, git: 'https://github.com/hanami/utils.git', branch: 'develop'
 
 platforms :ruby do
   gem 'sqlite3', require: false
