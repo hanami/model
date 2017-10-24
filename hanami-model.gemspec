@@ -18,8 +18,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.3.0'
 
-  spec.add_runtime_dependency 'hanami-utils',    '1.1.0.rc1'
-  spec.add_runtime_dependency 'rom',             '~> 3.3', '>= 3.3.2'
+  spec.add_runtime_dependency 'hanami-utils',    '~> 1.1'
+  spec.add_runtime_dependency 'rom',             '~> 3.3', '>= 3.3.3'
   spec.add_runtime_dependency 'rom-sql',         '~> 1.3', '>= 1.3.5'
   spec.add_runtime_dependency 'rom-repository',  '~> 1.4'
   spec.add_runtime_dependency 'dry-types',       '~> 0.11.0'
@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake',  '~> 12'
-  spec.add_development_dependency 'rspec', '~> 3.6'
+  spec.add_development_dependency 'rspec', '~> 3.7'
 end

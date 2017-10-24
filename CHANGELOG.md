@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.1.0 - 2017-10-25
+### Fixed
+- [Luca Guidi] Ensure associations to always accept objects that are serializable into `::Hash`
+
 ## v1.1.0.rc1 - 2017-10-16
 ### Added
 - [Marcello Rocha] Added support for associations aliasing via `:as` option (`has_many :users, through: :comments, as: :authors`)
