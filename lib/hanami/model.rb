@@ -102,7 +102,7 @@ module Hanami
     #     Hanami::Model.load!
     #   end
     def self.disconnect
-      configuration.connection && configuration.connection.disconnect
+      configuration.connection&.disconnect
     end
   end
 end

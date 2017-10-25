@@ -89,6 +89,7 @@ module Hanami
       #
       # @see Hanami::Model::Configuration#adapter
       # @see Hanami::Model::Configuration#migrations
+      # @see Hanami::Model::Configuration#rollback
       #
       # @example Migrate Up
       #   require 'hanami/model'
@@ -122,6 +123,42 @@ module Hanami
       # NOTE: Class level interface SHOULD be removed in Hanami 2.0
       def self.migrate(version: nil)
         new.migrate(version: version)
+      end
+
+      # Rollback database schema
+      #
+      # @param steps [Number,NilClass] number of versions to rollback
+      #
+      # @raise [Hanami::Model::MigrationError] if an error occurs
+      #
+      # @since 1.1.0
+      #
+      # @see Hanami::Model::Configuration#adapter
+      # @see Hanami::Model::Configuration#migrations
+      # @see Hanami::Model::Configuration#migrate
+      #
+      # @example Rollback
+      #   require 'hanami/model'
+      #   require 'hanami/model/migrator'
+      #
+      #   Hanami::Model.configure do
+      #     # ...
+      #     adapter    :sql, 'postgres://localhost/foo'
+      #     migrations 'db/migrations'
+      #   end
+      #
+      #   # Reads all files from "db/migrations" and apply them
+      #   Hanami::Model::Migrator.migrate
+      #
+      #   # By default only rollback one version
+      #   Hanami::Model::Migrator.rollback
+      #
+      #   # Use a hash passing a number of versions to rollback, it will rollbacks those versions
+      #   Hanami::Model::Migrator.rollback(versions: 2)
+      #
+      # NOTE: Class level interface SHOULD be removed in Hanami 2.0
+      def self.rollback(steps: 1)
+        new.rollback(steps: steps)
       end
 
       # Migrate, dump schema, delete migrations.
@@ -266,6 +303,14 @@ module Hanami
         adapter.migrate(migrations, version) if migrations?
       end
 
+      # @since 1.1.0
+      # @api private
+      #
+      # @see Hanami::Model::Migrator.rollback
+      def rollback(steps: 1)
+        adapter.rollback(migrations, steps.abs) if migrations?
+      end
+
       # @since 0.7.0
       # @api private
       #
@@ -282,7 +327,7 @@ module Hanami
       # @see Hanami::Model::Migrator.prepare
       def prepare
         drop
-      rescue
+      rescue # rubocop:disable Lint/HandleExceptions
       ensure
         create
         adapter.load
@@ -297,8 +342,6 @@ module Hanami
         adapter.version
       end
 
-      private
-
       # Hanami::Model configuration
       #
       # @since 0.4.0
@@ -306,6 +349,8 @@ module Hanami
       def self.configuration
         Model.configuration
       end
+
+      private
 
       # @since 0.7.0
       # @api private

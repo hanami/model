@@ -278,7 +278,7 @@ RSpec.describe 'Repository (base)' do
         engine(:jruby).db(:mysql) { 'Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)' }
       end
 
-      expect { AvatarRepository.new.create(user_id: 999_999_999) }.to raise_error do |error|
+      expect { AvatarRepository.new.create(user_id: 999_999_999, url: 'url') }.to raise_error do |error|
         expect(error).to be_a(expected_error)
         expect(error.message).to include(message)
       end
@@ -459,7 +459,7 @@ RSpec.describe 'Repository (base)' do
 
       user = UserRepository.new.create(name: 'L')
       repository = AvatarRepository.new
-      avatar = repository.create(user_id: user.id)
+      avatar = repository.create(user_id: user.id, url: 'a valid url')
 
       expect { repository.update(avatar.id, user_id: 999_999_999) }.to raise_error do |error|
         expect(error).to be_a(expected_error)

@@ -1,6 +1,8 @@
 require 'rom-sql'
-require 'hanami/model/associations/has_many'
 require 'hanami/model/associations/belongs_to'
+require 'hanami/model/associations/has_many'
+require 'hanami/model/associations/has_one'
+require 'hanami/model/associations/many_to_many'
 
 module Hanami
   module Model
@@ -22,8 +24,13 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
+      # rubocop:disable Metrics/MethodLength
       def self.lookup(association)
         case association
+        when ROM::SQL::Association::ManyToMany
+          Associations::ManyToMany
+        when ROM::SQL::Association::OneToOne
+          Associations::HasOne
         when ROM::SQL::Association::OneToMany
           Associations::HasMany
         when ROM::SQL::Association::ManyToOne
@@ -32,6 +39,7 @@ module Hanami
           raise "Unsupported association: #{association}"
         end
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end

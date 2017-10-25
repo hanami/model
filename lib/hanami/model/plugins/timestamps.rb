@@ -17,7 +17,7 @@ module Hanami
           #
           # @since 0.7.0
           # @api private
-          TIMESTAMPS = [:created_at, :updated_at].freeze
+          TIMESTAMPS = %i[created_at updated_at].freeze
 
           # @since 0.7.0
           # @api private

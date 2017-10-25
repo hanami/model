@@ -24,7 +24,7 @@ module Hanami
       # @since 0.7.0
       # @api private
       def underscore
-        Utils::String.new(@name).underscore.to_sym
+        Utils::String.underscore(@name).to_sym
       end
 
       # @since 0.7.0

@@ -17,7 +17,7 @@ module Hanami
       # @since 0.7.0
       # @api private
       def self.new(name)
-        Utils::String.new(super).underscore.pluralize
+        Utils::String.transform(super, :underscore, :pluralize)
       end
     end
   end

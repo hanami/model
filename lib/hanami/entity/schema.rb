@@ -93,11 +93,22 @@ module Hanami
         #
         # @since 0.7.0
         class Dsl
+          # @since 1.1.0
+          # @api private
+          TYPES = %i[schema strict weak permissive strict_with_defaults symbolized].freeze
+
+          # @since 1.1.0
+          # @api private
+          DEFAULT_TYPE = TYPES.first
+
           # @since 0.7.0
           # @api private
-          def self.build(&blk)
+          def self.build(type, &blk)
+            type ||= DEFAULT_TYPE
+            raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'") unless TYPES.include?(type)
+
             attributes = new(&blk).to_h
-            [attributes, Hanami::Model::Types::Coercible::Hash.schema(attributes)]
+            [attributes, Hanami::Model::Types::Coercible::Hash.__send__(type, attributes)]
           end
 
           # @since 0.7.0
@@ -152,9 +163,9 @@ module Hanami
         #
         # @since 0.7.0
         # @api private
-        def initialize(&blk)
+        def initialize(type = nil, &blk)
           raise LocalJumpError unless block_given?
-          @attributes, @schema = Dsl.build(&blk)
+          @attributes, @schema = Dsl.build(type, &blk)
           @attributes = Hash[@attributes.map { |k, _| [k, true] }]
           freeze
         end
@@ -164,6 +175,7 @@ module Hanami
         # @param attributes [#to_hash] the attributes hash
         #
         # @raise [TypeError] if the process fails
+        # @raise [ArgumentError] if data is missing, or unknown keys are given
         #
         # @since 0.7.0
         # @api private
@@ -171,6 +183,8 @@ module Hanami
           schema.call(attributes)
         rescue Dry::Types::SchemaError => e
           raise TypeError.new(e.message)
+        rescue Dry::Types::MissingKeyError, Dry::Types::UnknownKeysError => e
+          raise ArgumentError.new(e.message)
         end
 
         # Check if the attribute is known
@@ -204,9 +218,9 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      def initialize(&blk)
+      def initialize(type = nil, &blk)
         @schema = if block_given?
-                    Definition.new(&blk)
+                    Definition.new(type, &blk)
                   else
                     Schemaless.new
                   end

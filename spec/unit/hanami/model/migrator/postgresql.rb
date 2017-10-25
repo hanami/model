@@ -55,32 +55,8 @@ RSpec.shared_examples 'migrator_postgresql' do
           expect(error.message).to include('https://github.com/hanami/model/issues/250')
         end
       end
-
-      describe "when a command isn't available" do
-        before do
-          # We accomplish having a command not be available by setting PATH
-          # to an empty string, which means *no commands* are available.
-          @original_path = ENV['PATH']
-          ENV['PATH'] = ''
-        end
-
-        after do
-          ENV['PATH'] = @original_path
-        end
-
-        it 'raises MigrationError on create' do
-          message = Platform.match do
-            os(:macos).engine(:jruby) { 'createdb' }
-            default                   { 'No such file or directory - createdb' }
-          end
-
-          expect { migrator.create }.to raise_error do |exception|
-            expect(exception).to         be_kind_of(Hanami::Model::MigrationError)
-            expect(exception.message).to include(message)
-          end
-        end
-      end
     end
+
     describe 'drop' do
       before do
         migrator.create
@@ -97,6 +73,43 @@ RSpec.shared_examples 'migrator_postgresql' do
 
         expect { migrator.drop }
           .to raise_error(Hanami::Model::MigrationError, "Cannot find database: #{database}")
+      end
+    end
+
+    describe "when executables are not available" do
+      before do
+        # We accomplish having a command not be available by setting PATH
+        # to an empty string, which means *no commands* are available.
+        @original_path = ENV['PATH']
+        ENV['PATH'] = ''
+      end
+
+      after do
+        ENV['PATH'] = @original_path
+      end
+
+      it 'raises MigrationError on missing `createdb`' do
+        message = Platform.match do
+          os(:macos).engine(:jruby) { 'createdb' }
+          default { "Could not find executable in your PATH: `createdb`" }
+        end
+
+        expect { migrator.create }.to raise_error do |exception|
+          expect(exception).to         be_kind_of(Hanami::Model::MigrationError)
+          expect(exception.message).to include(message)
+        end
+      end
+
+      it 'raises MigrationError on missing `dropdb`' do
+        message = Platform.match do
+          os(:macos).engine(:jruby) { 'dropdb' }
+          default { "Could not find executable in your PATH: `dropdb`" }
+        end
+
+        expect { migrator.drop }.to raise_error do |exception|
+          expect(exception).to         be_kind_of(Hanami::Model::MigrationError)
+          expect(exception.message).to include(message)
+        end
       end
     end
 
@@ -209,6 +222,66 @@ RSpec.shared_examples 'migrator_postgresql' do
       end
     end
 
+    describe 'rollback' do
+      before do
+        migrator.create
+      end
+
+      describe 'when no migrations' do
+        let(:migrations) { Pathname.new(__dir__ + '/../../../../support/fixtures/empty_migrations') }
+
+        it "it doesn't alter database" do
+          migrator.rollback
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to be_empty
+        end
+      end
+
+      describe 'when migrations are present' do
+        it 'rollbacks one migration (default)' do
+          migrator.migrate
+          migrator.rollback
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to include(:reviews)
+
+          table = connection.schema(:reviews)
+
+          name, options = table[0] # id
+          expect(name).to eq(:id)
+
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to eq("nextval('reviews_id_seq'::regclass)")
+          expect(options.fetch(:type)).to eq(:integer)
+          expect(options.fetch(:db_type)).to eq('integer')
+          expect(options.fetch(:primary_key)).to eq(true)
+          expect(options.fetch(:auto_increment)).to eq(true)
+
+          name, options = table[1] # title
+          expect(name).to eq(:title)
+
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:string)
+          expect(options.fetch(:db_type)).to eq('text')
+          expect(options.fetch(:primary_key)).to eq(false)
+
+          name, options = table[2] # rating (second migration)
+          expect(name).to eq(nil)
+          expect(options).to eq(nil)
+        end
+
+        it 'rollbacks several migrations' do
+          migrator.migrate
+          migrator.rollback(steps: 2)
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to eq([:schema_migrations])
+        end
+      end
+    end
+
     describe 'apply' do
       let(:migrations) { target_migrations }
       let(:schema)     { root.join("schema-postgresql-#{random}.sql") }
@@ -234,51 +307,51 @@ RSpec.shared_examples 'migrator_postgresql' do
         migrator.apply
         actual = schema.read
 
-        expect(actual).to include <<-SQL
-CREATE TABLE reviews (
-    id integer NOT NULL,
-    title text NOT NULL,
-    rating integer DEFAULT 0
-);
+        expect(actual).to include <<~SQL
+          CREATE TABLE reviews (
+              id integer NOT NULL,
+              title text NOT NULL,
+              rating integer DEFAULT 0
+          );
         SQL
 
-        expect(actual).to include <<-SQL
-CREATE SEQUENCE reviews_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+        expect(actual).to include <<~SQL
+          CREATE SEQUENCE reviews_id_seq
+              START WITH 1
+              INCREMENT BY 1
+              NO MINVALUE
+              NO MAXVALUE
+              CACHE 1;
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
+        expect(actual).to include <<~SQL
+          ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
+        expect(actual).to include <<~SQL
+          ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER TABLE ONLY reviews
-    ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
+        expect(actual).to include <<~SQL
+          ALTER TABLE ONLY reviews
+              ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
         SQL
 
-        expect(actual).to include <<-SQL
-CREATE TABLE schema_migrations (
-    filename text NOT NULL
-);
+        expect(actual).to include <<~SQL
+          CREATE TABLE schema_migrations (
+              filename text NOT NULL
+          );
         SQL
 
-        expect(actual).to include <<-SQL
-COPY schema_migrations (filename) FROM stdin;
-20160831073534_create_reviews.rb
-20160831090612_add_rating_to_reviews.rb
+        expect(actual).to include <<~SQL
+          COPY schema_migrations (filename) FROM stdin;
+          20160831073534_create_reviews.rb
+          20160831090612_add_rating_to_reviews.rb
         SQL
 
-        expect(actual).to include <<-SQL
-ALTER TABLE ONLY schema_migrations
-    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
+        expect(actual).to include <<~SQL
+          ALTER TABLE ONLY schema_migrations
+              ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
         SQL
       end
 

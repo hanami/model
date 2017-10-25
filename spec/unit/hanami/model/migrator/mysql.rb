@@ -180,7 +180,7 @@ RSpec.shared_examples 'migrator_mysql' do
 
           connection = Sequel.connect(url)
           expect(connection.tables).to_not be_empty
-          expect(connection.tables).to eq([:reviews, :schema_migrations])
+          expect(connection.tables).to eq(%i[reviews schema_migrations])
         end
       end
 
@@ -219,6 +219,66 @@ RSpec.shared_examples 'migrator_mysql' do
           name, options = table[2] # rating (rolled back second migration)
           expect(name).to be_nil
           expect(options).to be_nil
+        end
+      end
+    end
+
+    describe 'rollback' do
+      before do
+        migrator.create
+      end
+
+      describe 'when no migrations' do
+        let(:migrations) { Pathname.new(__dir__ + '/../../../../support/fixtures/empty_migrations') }
+
+        it "it doesn't alter database" do
+          migrator.rollback
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to be_empty
+        end
+      end
+
+      describe 'when migrations are present' do
+        it 'rollbacks one migration (default)' do
+          migrator.migrate
+          migrator.rollback
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to include(:reviews)
+
+          table = connection.schema(:reviews)
+
+          name, options = table[0] # id
+          expect(name).to eq(:id)
+
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:integer)
+          expect(options.fetch(:db_type)).to eq('int(11)')
+          expect(options.fetch(:primary_key)).to eq(true)
+          expect(options.fetch(:auto_increment)).to eq(true)
+
+          name, options = table[1] # title
+          expect(name).to eq(:title)
+
+          expect(options.fetch(:allow_null)).to eq(false)
+          expect(options.fetch(:default)).to be_nil
+          expect(options.fetch(:type)).to eq(:string)
+          expect(options.fetch(:db_type)).to eq('varchar(255)')
+          expect(options.fetch(:primary_key)).to eq(false)
+
+          name, options = table[2] # rating (second migration)
+          expect(name).to eq(nil)
+          expect(options).to eq(nil)
+        end
+
+        it 'rollbacks several migrations' do
+          migrator.migrate
+          migrator.rollback(steps: 2)
+
+          connection = Sequel.connect(url)
+          expect(connection.tables).to eq([:schema_migrations])
         end
       end
     end
@@ -321,14 +381,14 @@ RSpec.shared_examples 'migrator_mysql' do
 
         migration = target_migrations.join('20160831095616_create_abuses.rb')
         File.open(migration, 'w+') do |f|
-          f.write <<-RUBY
-Hanami::Model.migration do
-  change do
-    create_table :abuses do
-      primary_key :id
-    end
-  end
-end
+          f.write <<~RUBY
+            Hanami::Model.migration do
+              change do
+                create_table :abuses do
+                  primary_key :id
+                end
+              end
+            end
 RUBY
         end
 

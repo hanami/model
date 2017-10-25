@@ -1,3 +1,11 @@
+require "ostruct"
+
+class BaseParams < OpenStruct
+  def to_hash
+    to_h
+  end
+end
+
 class User < Hanami::Entity
 end
 
@@ -10,6 +18,12 @@ end
 class Book < Hanami::Entity
 end
 
+class Category < Hanami::Entity
+end
+
+class BookOntology < Hanami::Entity
+end
+
 class Operator < Hanami::Entity
 end
 
@@ -17,6 +31,12 @@ class AccessToken < Hanami::Entity
 end
 
 class SourceFile < Hanami::Entity
+end
+
+class Post < Hanami::Entity
+end
+
+class Comment < Hanami::Entity
 end
 
 class Warehouse < Hanami::Entity
@@ -32,6 +52,7 @@ class Account < Hanami::Entity
     attribute :id,         Types::Strict::Int
     attribute :name,       Types::String
     attribute :codes,      Types::Collection(Types::Coercible::Int)
+    attribute :owner,      Types::Entity(User)
     attribute :users,      Types::Collection(User)
     attribute :email,      Types::String.constrained(format: /@/)
     attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
@@ -52,6 +73,13 @@ class PageVisit < Hanami::Entity
   end
 end
 
+class Person < Hanami::Entity
+  attributes :strict do
+    attribute :id,   Types::Strict::Int
+    attribute :name, Types::Strict::String
+  end
+end
+
 class Product < Hanami::Entity
 end
 
@@ -61,7 +89,98 @@ end
 class Label < Hanami::Entity
 end
 
+class PostRepository < Hanami::Repository
+  associations do
+    belongs_to :user, as: :author
+    has_many :comments
+    has_many :users, through: :comments, as: :commenters
+  end
+
+  def find_with_commenters(id)
+    aggregate(:commenters).where(id: id).map_to(Post).to_a
+  end
+
+  def commenters_for(post)
+    assoc(:commenters, post).to_a
+  end
+
+  def find_with_author(id)
+    aggregate(:author).where(id: id).map_to(Post).one
+  end
+
+  def feed_for(id)
+    aggregate(:author, comments: :user).where(id: id).map_to(Post).one
+  end
+
+  def author_for(post)
+    assoc(:author, post).one
+  end
+end
+
+class CommentRepository < Hanami::Repository
+  associations do
+    belongs_to :post
+    belongs_to :user
+  end
+
+  def commenter_for(comment)
+    assoc(:user, comment).one
+  end
+end
+
+class AvatarRepository < Hanami::Repository
+  associations do
+    belongs_to :user
+  end
+
+  def by_user(id)
+    avatars.where(user_id: id).to_a
+  end
+end
+
 class UserRepository < Hanami::Repository
+  associations do
+    has_one :avatar
+    has_many :posts, as: :threads
+    has_many :comments
+  end
+
+  def find_with_threads(id)
+    aggregate(:threads).where(id: id).map_to(User).one
+  end
+
+  def threads_for(user)
+    assoc(:threads, user).to_a
+  end
+
+  def find_with_avatar(id)
+    aggregate(:avatar).where(id: id).map_to(User).one
+  end
+
+  def create_with_avatar(data)
+    assoc(:avatar).create(data)
+  end
+
+  def remove_avatar(user)
+    assoc(:avatar, user).delete
+  end
+
+  def add_avatar(user, data)
+    assoc(:avatar, user).add(data)
+  end
+
+  def update_avatar(user, data)
+    assoc(:avatar, user).update(data)
+  end
+
+  def replace_avatar(user, data)
+    assoc(:avatar, user).replace(data)
+  end
+
+  def avatar_for(user)
+    assoc(:avatar, user).one
+  end
+
   def by_name(name)
     users.where(name: name)
   end
@@ -142,9 +261,71 @@ class AuthorRepository < Hanami::Repository
   end
 end
 
+class BookOntologyRepository < Hanami::Repository
+  associations do
+    belongs_to :books
+    belongs_to :categories
+  end
+end
+
+class CategoryRepository < Hanami::Repository
+  associations do
+    has_many :books, through: :book_ontologies
+  end
+
+  def books_for(category)
+    assoc(:books, category)
+  end
+
+  def on_sales_books_count(category)
+    assoc(:books, category).where(on_sale: true).count
+  end
+
+  def books_count(category)
+    assoc(:books, category).count
+  end
+
+  def find_with_books(id)
+    aggregate(:books).where(id: id).map_to(Category).one
+  end
+
+  def add_books(category, *books)
+    assoc(:books, category).add(*books)
+  end
+
+  def remove_book(category, book_id)
+    assoc(:books, category).remove(book_id)
+  end
+end
+
 class BookRepository < Hanami::Repository
   associations do
     belongs_to :author
+    has_many :categories, through: :book_ontologies
+  end
+
+  def add_category(book, category)
+    assoc(:categories, book).add(category)
+  end
+
+  def clear_categories(book)
+    assoc(:categories, book).delete
+  end
+
+  def categories_for(book)
+    assoc(:categories, book).to_a
+  end
+
+  def find_with_categories(id)
+    aggregate(:categories).where(id: id).map_to(Book).one
+  end
+
+  def find_with_author(id)
+    aggregate(:author).where(id: id).map_to(Book).one
+  end
+
+  def author_for(book)
+    assoc(:author, book).one
   end
 end
 
