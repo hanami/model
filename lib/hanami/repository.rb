@@ -184,11 +184,6 @@ module Hanami
       end
 
       root(relation)
-      class_eval %{
-        def #{relation}
-          Hanami::Model::MappedRelation.new(@#{relation})
-        end
-      }, __FILE__, __LINE__ - 4
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
@@ -209,7 +204,7 @@ module Hanami
 
       blk = lambda do |_|
         model       e
-        register_as Model::MappedRelation.mapper_name
+        register_as :entity
         instance_exec(&m) unless m.nil?
       end
 
@@ -326,7 +321,7 @@ module Hanami
         self.entity_name = Model::EntityName.new(name)
         self.relation    = Model::RelationName.new(name)
 
-        commands :create, update: :by_pk, delete: :by_pk, mapper: Model::MappedRelation.mapper_name, use: COMMAND_PLUGINS
+        commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
         prepend Commands
       end
 

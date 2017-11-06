@@ -152,6 +152,9 @@ module Hanami
         repositories.each(&:load!)
         self.logger = logger
 
+        # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
+        gateway.connection.tables
+
         container = ROM.container(rom)
         define_entities_mappings(container, repositories)
         container
