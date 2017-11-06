@@ -3,11 +3,8 @@ sudo: false
 cache: bundler
 script: 'bundle exec rubocop && bundle exec rake spec:coverage --trace'
 after_script: 'echo `env`'
-before_install:
-  - rvm @global do gem uninstall bundler -a -x
-  - rvm @global do gem install bundler -v 1.13.7
 rvm:
-  - 2.3.4
+  - 2.3.5
   - 2.4.2
   - jruby-9.1.13.0
   - ruby-head
