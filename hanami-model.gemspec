@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'hanami-utils',    '~> 1.2'
   spec.add_runtime_dependency 'rom',             '~> 4.0'
   spec.add_runtime_dependency 'rom-sql',         '~> 2.1'
-  spec.add_runtime_dependency 'dry-types',       '~> 0.11.0'
+  spec.add_runtime_dependency 'dry-types',       '~> 0.12'
   spec.add_runtime_dependency 'concurrent-ruby', '~> 1.0'
 
   spec.add_development_dependency 'bundler'
