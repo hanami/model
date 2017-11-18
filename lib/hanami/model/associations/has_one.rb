@@ -51,20 +51,20 @@ module Hanami
 
         def create(data)
           entity.new(
-            command(:create, aggregate(target), use: [:timestamps]).call(serialize(data))
+            command(:create, aggregate(target), mapper: nil).call(serialize(data))
           )
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
 
         def add(data)
-          command(:create, relation(target), use: [:timestamps]).call(associate(serialize(data)))
+          command(:create, relation(target), mapper: nil).call(associate(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
 
         def update(data)
-          command(:update, relation(target), use: [:timestamps])
+          command(:update, relation(target), mapper: nil)
             .by_pk(
               one.public_send(relation(target).primary_key)
             ).call(serialize(data))
