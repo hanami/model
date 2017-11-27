@@ -413,6 +413,21 @@ module Hanami
       raise Hanami::Model::Error.for(e)
     end
 
+    # Find by any conditions
+    #
+    # @return [Hanami::Entity,NilClass] one entity, if any
+    #
+    # @since 1.1.1
+    #
+    # @example
+    #   repository = UserRepository.new
+    #   user       = repository.create(name: 'Luca')
+    #
+    #   user       = UserRepository.new.find_by(name: 'Luca')
+    def find_by(conditions = {})
+      root.where(conditions).as(:entity).limit(1).one
+    end
+
     # Return all the records for the relation
     #
     # @return [Array<Hanami::Entity>] all the entities
