@@ -56,6 +56,23 @@ RSpec.describe 'Repository (base)' do
     end
   end
 
+  describe '#find_by' do
+    it 'finds a record by conditions' do
+      repository = UserRepository.new
+      user = repository.create(name: 'Van Pannelo')
+      found = repository.find_by(name: user.name)
+
+      expect(found).to eq(user)
+    end
+
+    it 'returns nil for missing record' do
+      repository = UserRepository.new
+      found = repository.find_by(name: 'jjjjj')
+
+      expect(found).to be_nil
+    end
+  end
+
   describe '#all' do
     it 'returns all the records' do
       repository = UserRepository.new
