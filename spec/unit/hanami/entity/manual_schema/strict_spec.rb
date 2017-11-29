@@ -41,7 +41,7 @@ RSpec.describe Hanami::Entity do
         expect(entity.name).to eq("MG")
       end
 
-      it 'freezes the intance' do
+      it 'freezes the instance' do
         entity = described_class.new(id: 1, name: "Luca")
 
         expect(entity).to be_frozen
