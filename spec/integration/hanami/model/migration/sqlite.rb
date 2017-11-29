@@ -380,11 +380,11 @@ RSpec.shared_examples 'migration_integration_sqlite' do
 
       index = indexes.fetch(:column_indexes_b_c_index)
       expect(index[:unique]).to eq(false)
-      expect(index[:columns]).to eq([:b, :c])
+      expect(index[:columns]).to eq(%i[b c])
 
       index = indexes.fetch(:column_indexes_coords_index)
       expect(index[:unique]).to eq(false)
-      expect(index[:columns]).to eq([:lat, :lng])
+      expect(index[:columns]).to eq(%i[lat lng])
     end
 
     it 'defines primary key (via #primary_key :id)' do

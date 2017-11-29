@@ -22,7 +22,7 @@ module Hanami
           # associations and potentially to mapping defined by the repository.
           #
           # @param registry [Hash] a registry that keeps reference between
-          #   entities klass and their underscored names
+          #   entities class and their underscored names
           # @param relation [ROM::Relation] the database relation
           # @param mapping [Hanami::Model::Mapping] the optional repository
           #   mapping
@@ -75,7 +75,7 @@ module Hanami
           # Build the schema
           #
           # @param registry [Hash] a registry that keeps reference between
-          #   entities klass and their underscored names
+          #   entities class and their underscored names
           # @param relation [ROM::Relation] the database relation
           # @param mapping [Hanami::Model::Mapping] the optional repository
           #   mapping
@@ -112,7 +112,7 @@ module Hanami
           # Merge attributes and associations
           #
           # @param registry [Hash] a registry that keeps reference between
-          #   entities klass and their underscored names
+          #   entities class and their underscored names
           # @param associations [ROM::AssociationSet] a set of associations for
           #   the current relation
           #
@@ -122,7 +122,7 @@ module Hanami
           # @api private
           def build_associations(registry, associations)
             associations.each_with_object({}) do |(name, association), result|
-              target       = registry.fetch(name)
+              target       = registry.fetch(association.target.to_sym)
               result[name] = Association.lookup(association).schema_type(target)
             end
           end

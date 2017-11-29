@@ -1,6 +1,45 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.1.0 - 2017-10-25
+### Fixed
+- [Luca Guidi] Ensure associations to always accept objects that are serializable into `::Hash`
+
+## v1.1.0.rc1 - 2017-10-16
+### Added
+- [Marcello Rocha] Added support for associations aliasing via `:as` option (`has_many :users, through: :comments, as: :authors`)
+- [Luca Guidi] Allow entities to be used as type in entities manual schema (`attribute :owner, Types::Entity(User)`)
+
+## v1.1.0.beta3 - 2017-10-04
+
+## v1.1.0.beta2 - 2017-10-03
+### Added
+- [Alfonso Uceda] Introduce `Hanami::Model::Migrator#rollback` to provide database migrations rollback
+- [Alfonso Uceda] Improve connection string for PostgreSQL in order to pass credentials as URI query string
+
+### Fixed
+- [Marcello Rocha] One-To-Many properly destroy the associated methods
+
+## v1.1.0.beta1 - 2017-08-11
+### Added
+- [Marcello Rocha] Many-To-One association (aka `belongs_to`)
+- [Marcello Rocha] One-To-One association (aka `has_one`)
+- [Marcello Rocha] Many-To-Many association (aka `has_many :through`)
+- [Luca Guidi] Introduced new extra behaviors for entity manual schema: `:schema` (default), `:strict`, `:weak`, and `:permissive`
+
+### Fixed
+- [Sean Collins] Enhanced error message for Postgres `db create` and `db drop` when `createdb` and `dropdb` aren't in `PATH`
+
+## v1.0.4 - 2017-10-14
+### Fixed
+- [Nikita Shilnikov] Keep the dependency on `rom-sql` at `~> 1.3`, which is compatible with `dry-types` `~> 0.11.0`
+- [Nikita Shilnikov] Ensure to write Postgres JSON (`PGJSON`) type for nested associated records
+- [Nikita Shilnikov] Ensure `Repository#select` to work with `Hanami::Model::MappedRelation`
+
+## v1.0.3 - 2017-10-11
+### Fixed
+- [Luca Guidi] Keep the dependency on `dry-types` at `~> 0.11.0`
+
 ## v1.0.2 - 2017-08-04
 ### Fixed
 - [Maurizio De Magnis] URI escape for Postgres password

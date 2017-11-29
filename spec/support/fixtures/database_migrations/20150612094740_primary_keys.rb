@@ -12,7 +12,7 @@ Hanami::Model.migration do
       column :group_id, Integer
       column :position, Integer
 
-      primary_key [:group_id, :position], name: :primary_keys_3_pk
+      primary_key %i[group_id position], name: :primary_keys_3_pk
     end
   end
 end

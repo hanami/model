@@ -5,6 +5,8 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
+      #
+      # rubocop:disable Naming/PredicateName
       class Dsl
         # @since 0.7.0
         # @api private
@@ -20,12 +22,19 @@ module Hanami
           @repository.__send__(:relations, args[:through]) if args[:through]
         end
 
-        # @since x.x.x
+        # @since 1.1.0
+        # @api private
+        def has_one(relation, *)
+          @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
+        end
+
+        # @since 1.1.0
         # @api private
         def belongs_to(relation, *)
-          @repository.__send__(:relations, Hanami::Utils::String.new(relation).pluralize.to_sym)
+          @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
         end
       end
+      # rubocop:enable Naming/PredicateName
     end
   end
 end

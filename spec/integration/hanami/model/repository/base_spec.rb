@@ -278,7 +278,7 @@ RSpec.describe 'Repository (base)' do
         engine(:jruby).db(:mysql) { 'Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)' }
       end
 
-      expect { AvatarRepository.new.create(user_id: 999_999_999) }.to raise_error do |error|
+      expect { AvatarRepository.new.create(user_id: 999_999_999, url: 'url') }.to raise_error do |error|
         expect(error).to be_a(expected_error)
         expect(error.message).to include(message)
       end
@@ -459,7 +459,7 @@ RSpec.describe 'Repository (base)' do
 
       user = UserRepository.new.create(name: 'L')
       repository = AvatarRepository.new
-      avatar = repository.create(user_id: user.id)
+      avatar = repository.create(user_id: user.id, url: 'a valid url')
 
       expect { repository.update(avatar.id, user_id: 999_999_999) }.to raise_error do |error|
         expect(error).to be_a(expected_error)
@@ -553,6 +553,38 @@ RSpec.describe 'Repository (base)' do
 
       expect(found.to_a).to include(user)
     end
+
+    it 'selects only a single column' do
+      repository = UserRepository.new
+      repository.clear
+
+      repository.create([{ name: 'L', age: 35 }, { name: 'MG', age: 34 }])
+      found = repository.ids
+
+      expect(found.size).to be(2)
+      found.each do |user|
+        expect(user).to be_a_kind_of(User)
+        expect(user.id).to_not be(nil)
+        expect(user.name).to be(nil)
+        expect(user.age).to be(nil)
+      end
+    end
+
+    it 'selects multiple columns' do
+      repository = UserRepository.new
+      repository.clear
+
+      repository.create([{ name: 'L', age: 35 }, { name: 'MG', age: 34 }])
+      found = repository.select_id_and_name
+
+      expect(found.size).to be(2)
+      found.each do |user|
+        expect(user).to be_a_kind_of(User)
+        expect(user.id).to_not be(nil)
+        expect(user.name).to_not be(nil)
+        expect(user.age).to be(nil)
+      end
+    end
   end
 
   with_platform(db: :postgresql) do
@@ -619,6 +651,20 @@ RSpec.describe 'Repository (base)' do
           expect(product.categories).to eq(['software'])
 
           expect(found).to eq(product)
+        end
+
+        it 'succeeds even if timestamps is the only plugin' do
+          repository = ProductRepository.new
+
+          product = repository
+                    .command(:create, repository.root, use: %i[timestamps])
+                    .call(name: 'NeoVim', categories: ['software'])
+
+          found = repository.find(product.id)
+
+          expect(product.categories).to eq(['software'])
+
+          expect(found.to_h).to eq(product.to_h)
         end
       end
     end

@@ -25,4 +25,11 @@ RSpec.describe 'Associations (belongs_to)' do
 
     expect(found).to eq(author)
   end
+
+  it "returns nil if there's no associated record" do
+    repository = BookRepository.new
+    book = repository.create(title: 'The no author book')
+
+    expect { repository.find_with_author(book.id) }.to_not raise_error
+  end
 end

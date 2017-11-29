@@ -17,15 +17,67 @@ module Hanami
       # Class level interface
       #
       # @since 0.7.0
+      # rubocop:disable Naming/MethodName
       module ClassMethods
+        # Define an entity of the given type
+        #
+        # @param type [Hanami::Entity] an entity
+        #
+        # @since 1.1.0
+        #
+        # @example
+        #   require "hanami/model"
+        #
+        #   class Account < Hanami::Entity
+        #     attributes do
+        #       # ...
+        #       attribute :owner, Types::Entity(User)
+        #     end
+        #   end
+        #
+        #   account = Account.new(owner: User.new(name: "Luca"))
+        #   account.owner.class # => User
+        #   account.owner.name  # => "Luca"
+        #
+        #   account = Account.new(owner: { name: "MG" })
+        #   account.owner.class # => User
+        #   account.owner.name  # => "MG"
+        def Entity(type)
+          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
+          type
+        end
+
         # Define an array of given type
         #
+        # @param type [Object] an object
+        #
         # @since 0.7.0
-        def Collection(type) # rubocop:disable Style/MethodName
+        #
+        # @example
+        #   require "hanami/model"
+        #
+        #   class Account < Hanami::Entity
+        #     attributes do
+        #       # ...
+        #       attribute :users, Types::Collection(User)
+        #     end
+        #   end
+        #
+        #   account = Account.new(users: [User.new(name: "Luca")])
+        #   user    = account.users.first
+        #   user.class # => User
+        #   user.name  # => "Luca"
+        #
+        #   account = Account.new(users: [{ name: "MG" }])
+        #   user    = account.users.first
+        #   user.class # => User
+        #   user.name  # => "MG"
+        def Collection(type)
           type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
           Types::Array.member(type)
         end
       end
+      # rubocop:enable Naming/MethodName
 
       # Types for schema definitions
       #
@@ -47,7 +99,9 @@ module Hanami
           # @since 0.7.0
           # @api private
           def call(value)
-            if valid?(value)
+            return if value.nil?
+
+            if valid?(value) # rubocop:disable Style/GuardClause
               coerce(value)
             else
               raise TypeError.new("#{value.inspect} must be coercible into #{object}")
@@ -57,7 +111,7 @@ module Hanami
           # Check if value can be coerced
           #
           # It is true if value is an instance of `object` type or if value
-          # respond to `#to_hash`.
+          # responds to `#to_hash`.
           #
           # @param value [Object] the value
           #

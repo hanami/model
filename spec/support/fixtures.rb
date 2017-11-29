@@ -1,3 +1,11 @@
+require "ostruct"
+
+class BaseParams < OpenStruct
+  def to_hash
+    to_h
+  end
+end
+
 class User < Hanami::Entity
 end
 
@@ -25,6 +33,12 @@ end
 class SourceFile < Hanami::Entity
 end
 
+class Post < Hanami::Entity
+end
+
+class Comment < Hanami::Entity
+end
+
 class Warehouse < Hanami::Entity
   attributes do
     attribute :id,   Types::Int
@@ -38,6 +52,7 @@ class Account < Hanami::Entity
     attribute :id,         Types::Strict::Int
     attribute :name,       Types::String
     attribute :codes,      Types::Collection(Types::Coercible::Int)
+    attribute :owner,      Types::Entity(User)
     attribute :users,      Types::Collection(User)
     attribute :email,      Types::String.constrained(format: /@/)
     attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
@@ -58,6 +73,13 @@ class PageVisit < Hanami::Entity
   end
 end
 
+class Person < Hanami::Entity
+  attributes :strict do
+    attribute :id,   Types::Strict::Int
+    attribute :name, Types::Strict::String
+  end
+end
+
 class Product < Hanami::Entity
 end
 
@@ -67,7 +89,98 @@ end
 class Label < Hanami::Entity
 end
 
+class PostRepository < Hanami::Repository
+  associations do
+    belongs_to :user, as: :author
+    has_many :comments
+    has_many :users, through: :comments, as: :commenters
+  end
+
+  def find_with_commenters(id)
+    aggregate(:commenters).where(id: id).map_to(Post).to_a
+  end
+
+  def commenters_for(post)
+    assoc(:commenters, post).to_a
+  end
+
+  def find_with_author(id)
+    aggregate(:author).where(id: id).map_to(Post).one
+  end
+
+  def feed_for(id)
+    aggregate(:author, comments: :user).where(id: id).map_to(Post).one
+  end
+
+  def author_for(post)
+    assoc(:author, post).one
+  end
+end
+
+class CommentRepository < Hanami::Repository
+  associations do
+    belongs_to :post
+    belongs_to :user
+  end
+
+  def commenter_for(comment)
+    assoc(:user, comment).one
+  end
+end
+
+class AvatarRepository < Hanami::Repository
+  associations do
+    belongs_to :user
+  end
+
+  def by_user(id)
+    avatars.where(user_id: id).to_a
+  end
+end
+
 class UserRepository < Hanami::Repository
+  associations do
+    has_one :avatar
+    has_many :posts, as: :threads
+    has_many :comments
+  end
+
+  def find_with_threads(id)
+    aggregate(:threads).where(id: id).map_to(User).one
+  end
+
+  def threads_for(user)
+    assoc(:threads, user).to_a
+  end
+
+  def find_with_avatar(id)
+    aggregate(:avatar).where(id: id).map_to(User).one
+  end
+
+  def create_with_avatar(data)
+    assoc(:avatar).create(data)
+  end
+
+  def remove_avatar(user)
+    assoc(:avatar, user).delete
+  end
+
+  def add_avatar(user, data)
+    assoc(:avatar, user).add(data)
+  end
+
+  def update_avatar(user, data)
+    assoc(:avatar, user).update(data)
+  end
+
+  def replace_avatar(user, data)
+    assoc(:avatar, user).replace(data)
+  end
+
+  def avatar_for(user)
+    assoc(:avatar, user).one
+  end
+
   def by_name(name)
     users.where(name: name)
   end
@@ -78,6 +191,14 @@ class UserRepository < Hanami::Repository
 
   def find_all_by_manual_query
     users.read("select * from users").to_a
+  end
+
+  def ids
+    users.select(:id).to_a
+  end
+
+  def select_id_and_name
+    users.select(:id, :name).to_a
   end
 end
 
@@ -94,7 +215,7 @@ class AuthorRepository < Hanami::Repository
   end
 
   def find_with_books(id)
-    aggregate(:books).where(authors__id: id).map_to(Author).one
+    aggregate(:books).by_pk(id).map_to(Author).one
   end
 
   def books_for(author)
@@ -185,6 +306,10 @@ class BookRepository < Hanami::Repository
 
   def add_category(book, category)
     assoc(:categories, book).add(category)
+  end
+
+  def clear_categories(book)
+    assoc(:categories, book).delete
   end
 
   def categories_for(book)

@@ -33,7 +33,7 @@ module Hanami
   #     end
   #   end
   #
-  # **Hanami::Model** ships `Hanami::Entity` for developers's convenience.
+  # **Hanami::Model** ships `Hanami::Entity` for developers' convenience.
   #
   # **Hanami::Model** depends on a narrow and well-defined interface for an
   # Entity - `#id`, `#id=`, `#initialize(attributes={})`.If your object
@@ -75,13 +75,14 @@ module Hanami
       # attributes via this DSL. If you don't do any setup, the entity accepts all
       # the given attributes.
       #
+      # @param type [Symbol] the type of schema to build
       # @param blk [Proc] the block that defines the attributes
       #
       # @since 0.7.0
       #
       # @see Hanami::Entity
-      def attributes(&blk)
-        self.schema = Schema.new(&blk)
+      def attributes(type = nil, &blk)
+        self.schema = Schema.new(type, &blk)
         @attributes = true
       end
 

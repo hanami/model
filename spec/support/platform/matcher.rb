@@ -7,7 +7,7 @@ module Platform
         blk.nil? ? other : blk.call # rubocop:disable Performance/RedundantBlockCall
       end
 
-      def method_missing(*)
+      def method_missing(*) # rubocop:disable Style/MethodMissing
         self.class.new
       end
     end

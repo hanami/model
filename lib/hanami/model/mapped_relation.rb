@@ -2,7 +2,7 @@ module Hanami
   module Model
     # Mapped proxy for ROM relations.
     #
-    # It eliminates the need of use #as for repository queries
+    # It eliminates the need to use #as for repository queries
     #
     # @since 1.0.0
     # @api private
