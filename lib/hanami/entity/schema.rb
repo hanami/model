@@ -1,5 +1,7 @@
-require 'hanami/model/types'
-require 'hanami/utils/hash'
+# frozen_string_literal: true
+
+require "hanami/model/types"
+require "hanami/utils/hash"
 
 module Hanami
   class Entity

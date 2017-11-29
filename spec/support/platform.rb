@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Platform
-  require_relative 'platform/os'
-  require_relative 'platform/engine'
-  require_relative 'platform/db'
-  require_relative 'platform/matcher'
+  require_relative "platform/os"
+  require_relative "platform/engine"
+  require_relative "platform/db"
+  require_relative "platform/matcher"
 
   def self.ci?
-    ENV['TRAVIS'] == 'true'
+    ENV["TRAVIS"] == "true"
   end
 
   def self.match(&blk)

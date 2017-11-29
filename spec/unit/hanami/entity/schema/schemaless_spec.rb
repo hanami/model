@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 RSpec.describe Hanami::Entity::Schema::Schemaless do
   let(:subject) { Hanami::Entity::Schema::Schemaless.new }
 
-  describe '#initialize' do
-    it 'returns frozen instance' do
+  describe "#initialize" do
+    it "returns frozen instance" do
       expect(subject).to be_frozen
     end
   end
 
-  describe '#call' do
-    it 'returns empty hash when nil is given' do
+  describe "#call" do
+    it "returns empty hash when nil is given" do
       result = subject.call(nil)
 
       expect(result).to eq({})
     end
 
-    it 'returns duped hash' do
-      input = { foo: 'bar' }
+    it "returns duped hash" do
+      input = { foo: "bar" }
       result = subject.call(input)
 
       expect(result).to eq(input)
@@ -23,8 +25,8 @@ RSpec.describe Hanami::Entity::Schema::Schemaless do
     end
   end
 
-  describe '#attribute?' do
-    it 'always returns true' do
+  describe "#attribute?" do
+    it "always returns true" do
       expect(subject.attribute?(:foo)).to eq(true)
     end
   end

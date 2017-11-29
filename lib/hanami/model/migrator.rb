@@ -1,5 +1,7 @@
-require 'sequel'
-require 'sequel/extensions/migration'
+# frozen_string_literal: true
+
+require "sequel"
+require "sequel/extensions/migration"
 
 module Hanami
   module Model
@@ -13,8 +15,8 @@ module Hanami
     #
     # @since 0.4.0
     class Migrator
-      require 'hanami/model/migrator/connection'
-      require 'hanami/model/migrator/adapter'
+      require "hanami/model/migrator/connection"
+      require "hanami/model/migrator/adapter"
 
       # Create database defined by current configuration.
       #

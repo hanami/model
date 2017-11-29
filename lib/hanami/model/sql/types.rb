@@ -1,5 +1,7 @@
-require 'hanami/model/types'
-require 'rom/types'
+# frozen_string_literal: true
+
+require "hanami/model/types"
+require "rom/types"
 
 module Hanami
   module Model
@@ -14,7 +16,7 @@ module Hanami
         #
         # @since 0.7.0
         module Schema
-          require 'hanami/model/sql/types/schema/coercions'
+          require "hanami/model/sql/types/schema/coercions"
 
           String   = Types::Optional::Coercible::String
 
@@ -95,8 +97,8 @@ module Hanami
           # @since 1.0.2
           # @api private
           def self.pg_json?(pristine)
-            pristine == pg_json_pristines['JSONB'.freeze] ||
-              pristine == pg_json_pristines['JSON'.freeze]
+            pristine == pg_json_pristines["JSONB"] ||
+              pristine == pg_json_pristines["JSON"]
           end
 
           private_class_method :pg_json?

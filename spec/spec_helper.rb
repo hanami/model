@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -14,7 +16,7 @@ RSpec.configure do |config|
 
   config.warnings = true
 
-  config.default_formatter = 'doc' if config.files_to_run.one?
+  config.default_formatter = "doc" if config.files_to_run.one?
 
   config.profile_examples = 10
 
@@ -22,11 +24,11 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 end
 
-$LOAD_PATH.unshift 'lib'
-require 'hanami/model'
+$LOAD_PATH.unshift "lib"
+require "hanami/model"
 
-require_relative './support/coverage'
-require_relative './support/test_io'
-require_relative './support/platform'
-require_relative './support/database'
-require_relative './support/fixtures'
+require_relative "./support/coverage"
+require_relative "./support/test_io"
+require_relative "./support/platform"
+require_relative "./support/database"
+require_relative "./support/fixtures"

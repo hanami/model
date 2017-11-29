@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TestIO
   def self.with_stdout
     stdout = $stdout
@@ -9,6 +11,6 @@ module TestIO
   end
 
   def self.stream
-    File.new(ENV['HANAMI_DATABASE_LOGGER'], "a+")
+    File.new(ENV["HANAMI_DATABASE_LOGGER"], "a+")
   end
 end

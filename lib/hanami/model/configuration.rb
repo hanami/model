@@ -1,4 +1,6 @@
-require 'rom/configuration'
+# frozen_string_literal: true
+
+require "rom/configuration"
 
 module Hanami
   module Model

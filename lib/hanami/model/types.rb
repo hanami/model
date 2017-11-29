@@ -1,4 +1,6 @@
-require 'rom/types'
+# frozen_string_literal: true
+
+require "rom/types"
 
 module Hanami
   module Model

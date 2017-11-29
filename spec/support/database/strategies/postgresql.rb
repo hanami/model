@@ -1,4 +1,6 @@
-require_relative 'sql'
+# frozen_string_literal: true
+
+require_relative "sql"
 
 module Database
   module Strategies
@@ -7,15 +9,15 @@ module Database
         protected
 
         def load_dependencies
-          require 'hanami/model/sql'
-          require 'jdbc/postgres'
+          require "hanami/model/sql"
+          require "jdbc/postgres"
 
           Jdbc::Postgres.load_driver
         end
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:postgresql://#{host}/#{database_name}"
+          ENV["HANAMI_DATABASE_URL"] = "jdbc:postgresql://#{host}/#{database_name}"
         end
       end
 
@@ -24,12 +26,12 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] = 'postgres'
+          ENV["HANAMI_DATABASE_USERNAME"] = "postgres"
         end
       end
 
       def self.eligible?(adapter)
-        adapter.start_with?('postgres')
+        adapter.start_with?("postgres")
       end
 
       def initialize
@@ -40,8 +42,8 @@ module Database
       protected
 
       def load_dependencies
-        require 'hanami/model/sql'
-        require 'pg'
+        require "hanami/model/sql"
+        require "pg"
       end
 
       def create_database
@@ -56,9 +58,9 @@ module Database
 
       def export_env
         super
-        ENV['HANAMI_DATABASE_TYPE'] = 'postgresql'
-        ENV['HANAMI_DATABASE_URL'] = "postgres://#{host}/#{database_name}"
-        ENV['HANAMI_DATABASE_USERNAME'] = `whoami`.strip.freeze
+        ENV["HANAMI_DATABASE_TYPE"] = "postgresql"
+        ENV["HANAMI_DATABASE_URL"] = "postgres://#{host}/#{database_name}"
+        ENV["HANAMI_DATABASE_USERNAME"] = `whoami`.strip.freeze
       end
 
       private

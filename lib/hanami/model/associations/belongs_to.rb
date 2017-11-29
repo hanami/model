@@ -1,4 +1,6 @@
-require 'hanami/model/types'
+# frozen_string_literal: true
+
+require "hanami/model/types"
 
 module Hanami
   module Model

@@ -1,8 +1,10 @@
-require 'rom-sql'
-require 'hanami/model/associations/belongs_to'
-require 'hanami/model/associations/has_many'
-require 'hanami/model/associations/has_one'
-require 'hanami/model/associations/many_to_many'
+# frozen_string_literal: true
+
+require "rom-sql"
+require "hanami/model/associations/belongs_to"
+require "hanami/model/associations/has_many"
+require "hanami/model/associations/has_one"
+require "hanami/model/associations/many_to_many"
 
 module Hanami
   module Model

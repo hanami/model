@@ -1,19 +1,21 @@
-RSpec.describe 'Associations (has_many :through)' do
+# frozen_string_literal: true
+
+RSpec.describe "Associations (has_many :through)" do
   #### REPOS
   let(:books) { BookRepository.new }
   let(:categories) { CategoryRepository.new }
   let(:ontologies) { BookOntologyRepository.new }
 
   ### ENTITIES
-  let(:book) { books.create(title: 'Ontology: Encyclopedia of Database Systems') }
-  let(:category) { categories.create(name: 'information science') }
+  let(:book) { books.create(title: "Ontology: Encyclopedia of Database Systems") }
+  let(:category) { categories.create(name: "information science") }
 
   it "returns nil if association wasn't preloaded" do
     found = books.find(book.id)
     expect(found.categories).to be(nil)
   end
 
-  it 'preloads the associated record' do
+  it "preloads the associated record" do
     ontologies.create(book_id: book.id, category_id: category.id)
     found = books.find_with_categories(book.id)
 
@@ -21,22 +23,22 @@ RSpec.describe 'Associations (has_many :through)' do
     expect(found.categories).to eq([category])
   end
 
-  it 'returns an array of Categories' do
+  it "returns an array of Categories" do
     ontologies.create(book_id: book.id, category_id: category.id)
 
     found = books.categories_for(book)
     expect(found).to eq([category])
   end
 
-  it 'returns the count of on sale associated books' do
-    on_sale = books.create(title: 'The Sense of Style', on_sale: true)
+  it "returns the count of on sale associated books" do
+    on_sale = books.create(title: "The Sense of Style", on_sale: true)
     ontologies.create(book_id: on_sale.id, category_id: category.id)
 
     expect(categories.on_sales_books_count(category)).to eq(1)
   end
 
-  context '#add' do
-    it 'adds an object to the collection' do
+  context "#add" do
+    it "adds an object to the collection" do
       books.add_category(book, category)
 
       found_book = books.find_with_categories(book.id)
@@ -48,8 +50,8 @@ RSpec.describe 'Associations (has_many :through)' do
       expect(found_category.books).to eq([book])
     end
 
-    it 'associates a collection of records' do
-      other_book = books.create(title: 'Ontological Engineering')
+    it "associates a collection of records" do
+      other_book = books.create(title: "Ontological Engineering")
       categories.add_books(category, book, other_book)
       found = categories.find_with_books(category.id)
 
@@ -57,8 +59,8 @@ RSpec.describe 'Associations (has_many :through)' do
     end
   end
 
-  context '#delete' do
-    it 'removes all association information' do
+  context "#delete" do
+    it "removes all association information" do
       books.add_category(book, category)
       categorized = books.find_with_categories(book.id)
       books.clear_categories(book)
@@ -70,8 +72,8 @@ RSpec.describe 'Associations (has_many :through)' do
       expect(found).to eq(categorized)
     end
 
-    it 'does not touch other books' do
-      other_book = books.create(title: 'Do not meddle with')
+    it "does not touch other books" do
+      other_book = books.create(title: "Do not meddle with")
       books.add_category(other_book, category)
       books.add_category(book, category)
 
@@ -86,9 +88,9 @@ RSpec.describe 'Associations (has_many :through)' do
     end
   end
 
-  context '#remove' do
-    it 'removes the desired association' do
-      to_remove = books.create(title: 'The Life of a Stoic')
+  context "#remove" do
+    it "removes the desired association" do
+      to_remove = books.create(title: "The Life of a Stoic")
       books.add_category(to_remove, category)
 
       categories.remove_book(category, to_remove.id)
@@ -98,15 +100,15 @@ RSpec.describe 'Associations (has_many :through)' do
     end
   end
 
-  context 'collection methods' do
-    it 'returns an array of books' do
+  context "collection methods" do
+    it "returns an array of books" do
       ontologies.create(book_id: book.id, category_id: category.id)
 
       actual = categories.books_for(category).to_a
       expect(actual).to eq([book])
     end
 
-    it 'iterates through the categories' do
+    it "iterates through the categories" do
       ontologies.create(book_id: book.id, category_id: category.id)
       actual = []
 
@@ -118,15 +120,15 @@ RSpec.describe 'Associations (has_many :through)' do
       expect(actual).to eq([book])
     end
 
-    it 'iterates through the books and returns an array' do
+    it "iterates through the books and returns an array" do
       ontologies.create(book_id: book.id, category_id: category.id)
 
       actual = categories.books_for(category).map(&:id)
       expect(actual).to eq([book.id])
     end
 
-    it 'returns the count of the associated books' do
-      other_book = books.create(title: 'Practical Ontologies for Information Professionals')
+    it "returns the count of the associated books" do
+      other_book = books.create(title: "Practical Ontologies for Information Professionals")
       ontologies.create(book_id: book.id, category_id: category.id)
       ontologies.create(book_id: other_book.id, category_id: category.id)
 
@@ -134,8 +136,8 @@ RSpec.describe 'Associations (has_many :through)' do
     end
   end
 
-  context 'raises a Hanami::Model::Error wrapped exception on' do
-    it '#add' do
+  context "raises a Hanami::Model::Error wrapped exception on" do
+    it "#add" do
       expect do
         categories.add_books(category, id: -2)
       end.to raise_error Hanami::Model::ForeignKeyConstraintViolationError

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     class Migrator
@@ -8,32 +10,32 @@ module Hanami
       class PostgresAdapter < Adapter
         # @since 0.4.0
         # @api private
-        HOST     = 'PGHOST'.freeze
+        HOST     = "PGHOST"
 
         # @since 0.4.0
         # @api private
-        PORT     = 'PGPORT'.freeze
+        PORT     = "PGPORT"
 
         # @since 0.4.0
         # @api private
-        USER     = 'PGUSER'.freeze
+        USER     = "PGUSER"
 
         # @since 0.4.0
         # @api private
-        PASSWORD = 'PGPASSWORD'.freeze
+        PASSWORD = "PGPASSWORD"
 
         # @since 1.0.0
         # @api private
-        DB_CREATION_ERROR = 'createdb: database creation failed. If the database exists, ' \
-                            'then its console may be open. See this issue for more details: ' \
-                            'https://github.com/hanami/model/issues/250'.freeze
+        DB_CREATION_ERROR = "createdb: database creation failed. If the database exists, " \
+                            "then its console may be open. See this issue for more details: " \
+                            "https://github.com/hanami/model/issues/250"
 
         # @since 0.4.0
         # @api private
         def create
           set_environment_variables
 
-          call_db_command('createdb')
+          call_db_command("createdb")
         end
 
         # @since 0.4.0
@@ -41,7 +43,7 @@ module Hanami
         def drop
           set_environment_variables
 
-          call_db_command('dropdb')
+          call_db_command("dropdb")
         end
 
         # @since 0.4.0
@@ -85,14 +87,14 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          error = ->(err) { raise MigrationError.new(err) unless err =~ /no matching tables/i }
+          error = ->(err) { raise MigrationError.new(err) unless err.match?(/no matching tables/i) }
           execute "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}", error: error
         end
 
         # @since 0.5.1
         # @api private
         def call_db_command(command)
-          require 'open3'
+          require "open3"
 
           begin
             Open3.popen3(command, database) do |_stdin, _stdout, stderr, wait_thr|

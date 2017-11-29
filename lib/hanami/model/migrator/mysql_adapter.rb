@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     class Migrator
@@ -8,20 +10,20 @@ module Hanami
       class MySQLAdapter < Adapter
         # @since 0.7.0
         # @api private
-        PASSWORD = 'MYSQL_PWD'.freeze
+        PASSWORD = "MYSQL_PWD"
 
         # @since 1.0.0
         # @api private
-        DB_CREATION_ERROR = 'Database creation failed. If the database exists, ' \
-                            'then its console may be open. See this issue for more details: ' \
-                            'https://github.com/hanami/model/issues/250'.freeze
+        DB_CREATION_ERROR = "Database creation failed. If the database exists, " \
+                            "then its console may be open. See this issue for more details: " \
+                            "https://github.com/hanami/model/issues/250"
 
         # @since 0.4.0
         # @api private
         def create
           new_connection(global: true).run %(CREATE DATABASE `#{database}`;)
         rescue Sequel::DatabaseError => e
-          message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
+          message = if e.message.match?(/database exists/)
                       DB_CREATION_ERROR
                     else
                       e.message
@@ -35,7 +37,7 @@ module Hanami
         def drop
           new_connection(global: true).run %(DROP DATABASE `#{database}`;)
         rescue Sequel::DatabaseError => e
-          message = if e.message.match(/doesn\'t exist/) # rubocop:disable Performance/RedundantMatch
+          message = if e.message.match?(/doesn\'t exist/)
                       "Cannot find database: #{database}"
                     else
                       e.message

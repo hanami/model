@@ -1,5 +1,7 @@
-require_relative 'abstract'
-require 'shellwords'
+# frozen_string_literal: true
+
+require_relative "abstract"
+require "shellwords"
 
 module Hanami
   module Model
@@ -12,12 +14,12 @@ module Hanami
         class Sqlite < Abstract
           # @since 0.7.0
           # @api private
-          COMMAND = 'sqlite3'.freeze
+          COMMAND = "sqlite3"
 
           # @since 0.7.0
           # @api private
           def connection_string
-            concat(command, ' ', host, database)
+            concat(command, " ", host, database)
           end
 
           private

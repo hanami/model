@@ -1,4 +1,6 @@
-require 'concurrent'
+# frozen_string_literal: true
+
+require "concurrent"
 
 module Hanami
   module Model
@@ -41,7 +43,7 @@ module Hanami
     class InvalidCommandError < Error
       # @since 0.5.0
       # @api private
-      def initialize(message = 'Invalid command')
+      def initialize(message = "Invalid command")
         super
       end
     end
@@ -52,7 +54,7 @@ module Hanami
     class ConstraintViolationError < Error
       # @since 0.7.0
       # @api private
-      def initialize(message = 'Constraint has been violated')
+      def initialize(message = "Constraint has been violated")
         super
       end
     end
@@ -63,7 +65,7 @@ module Hanami
     class UniqueConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
-      def initialize(message = 'Unique constraint has been violated')
+      def initialize(message = "Unique constraint has been violated")
         super
       end
     end
@@ -74,7 +76,7 @@ module Hanami
     class ForeignKeyConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
-      def initialize(message = 'Foreign key constraint has been violated')
+      def initialize(message = "Foreign key constraint has been violated")
         super
       end
     end
@@ -85,7 +87,7 @@ module Hanami
     class NotNullConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
-      def initialize(message = 'NOT NULL constraint has been violated')
+      def initialize(message = "NOT NULL constraint has been violated")
         super
       end
     end
@@ -96,7 +98,7 @@ module Hanami
     class CheckConstraintViolationError < ConstraintViolationError
       # @since 0.6.1
       # @api private
-      def initialize(message = 'Check constraint has been violated')
+      def initialize(message = "Check constraint has been violated")
         super
       end
     end
