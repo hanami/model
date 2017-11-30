@@ -23,7 +23,7 @@ module Hanami
         def create
           new_connection(global: true).run %(CREATE DATABASE `#{database}`;)
         rescue Sequel::DatabaseError => e
-          message = if e.message.match?(/database exists/)
+          message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
                       DB_CREATION_ERROR
                     else
                       e.message
@@ -37,7 +37,7 @@ module Hanami
         def drop
           new_connection(global: true).run %(DROP DATABASE `#{database}`;)
         rescue Sequel::DatabaseError => e
-          message = if e.message.match?(/doesn\'t exist/)
+          message = if e.message.match(/doesn\'t exist/) # rubocop:disable Performance/RedundantMatch
                       "Cannot find database: #{database}"
                     else
                       e.message
