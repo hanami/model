@@ -65,15 +65,8 @@ module Hanami
           scope.count
         end
 
-<<<<<<< HEAD
-        def where(condition)
-          __new__(scope.where(condition))
-        end
-
         # Return the association table object. Would need an aditional query to return the entity
         #
-=======
->>>>>>> many-to-many respond_to :where, :limit, :order
         # @since 1.1.0
         # @api private
         def add(*data)
@@ -106,8 +99,8 @@ module Hanami
 
         private
 
-        def method_missing(meth, *args)
-          whitelisted_methods = %i[where order limit reverse]
+        def method_missing(meth, args)
+          whitelisted_methods = %i(where order limit)
           return super unless whitelisted_methods.member?(meth) && scope.respond_to?(meth)
           __new__(scope.public_send(meth, args))
         end
