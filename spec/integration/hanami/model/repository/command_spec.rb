@@ -2,7 +2,7 @@ RSpec.describe 'Customized commands' do
   subject(:authors) { AuthorRepository.new }
 
   let(:data) do
-    [{name: 'Arthur C. Clarke'}, {name: 'Phillip K. Dick'}]
+    [{ name: 'Arthur C. Clarke' }, { name: 'Phillip K. Dick' }]
   end
 
   context 'the mapper' do
