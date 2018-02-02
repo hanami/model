@@ -41,7 +41,7 @@ Hanami::Model.migration do
         column :f, BigDecimal, default: 1.0
         column :g, Numeric,    default: 943_943
         column :h, Date # ,       default: 'CURRENT_TIMESTAMP'
-        column :i, DateTime #,   default: DateTime.now FIXME: see https://github.com/hanami/model/pull/474
+        column :i, DateTime # ,   default: DateTime.now FIXME: see https://github.com/hanami/model/pull/474
         column :j, Time,       default: Time.now
         column :k, TrueClass,  default: true
         column :l, FalseClass, default: false
