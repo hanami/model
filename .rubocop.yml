@@ -2,5 +2,7 @@
 # alphabetically
 inherit_from:
   - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop-unstable.yml
-Lint/RescueWithoutErrorClass:
+Style/RescueStandardError:
+  Enabled: false
+Style/DateTime:
   Enabled: false

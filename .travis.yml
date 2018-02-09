@@ -4,8 +4,9 @@ cache: bundler
 script: 'bundle exec rubocop && bundle exec rake spec:coverage --trace'
 after_script: 'echo `env`'
 rvm:
-  - 2.3.5
+  - 2.3.6
   - 2.4.2
+  - 2.5.0
   - jruby-9.1.13.0
   - ruby-head
   - jruby-head
