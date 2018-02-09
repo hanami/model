@@ -162,7 +162,7 @@ module Hanami
         def #{relation}
           Hanami::Model::MappedRelation.new(@#{relation})
         end
-      }
+      }, __FILE__, __LINE__ - 4
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
