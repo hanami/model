@@ -142,8 +142,8 @@ module Hanami
     # @return [ROM::Command] the created command
     #
     # @example
-    #   In this example, calling the create_many method with and array of data,
-    #   would result in the creation of records and return an Array of Task entities.
+    #   # In this example, calling the create_many method with and array of data,
+    #   # would result in the creation of records and return an Array of Task entities.
     #
     #   class TaskRepository < Hanami::Repository
     #     def create_many(data)
@@ -151,7 +151,7 @@ module Hanami
     #     end
     #   end
     #
-    # @since x.x.x
+    # @since 1.2.0
     def command(*args, **opts, &block)
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
       opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)

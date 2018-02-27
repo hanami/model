@@ -1,6 +1,11 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.2.0.beta1 - 2018-02-28
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 2.5
+- [Marcello Rocha] Introduce `Hanami::Repository#command` as a factory for custom database commands. This is useful to create custom bulk operations.
+
 ## v1.1.0 - 2017-10-25
 ### Fixed
 - [Luca Guidi] Ensure associations to always accept objects that are serializable into `::Hash`
