@@ -94,6 +94,8 @@ RSpec.describe 'Repository (base)' do
   describe 'querying' do
     it 'allows to access relation attributes via square bracket syntax' do
       repository = UserRepository.new
+      repository.clear
+
       expected   = [repository.create(name: 'Ella'),
                     repository.create(name: 'Bella')]
       repository.create(name: 'Jon')
