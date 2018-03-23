@@ -26,7 +26,12 @@ module Hanami
       # @since 1.0.0
       # @api private
       def initialize(relation)
+        @relation = relation
         super(relation.as(self.class.mapper_name))
+      end
+
+      def [](key)
+        @relation[key]
       end
     end
   end
