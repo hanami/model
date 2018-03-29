@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.2.0.rc1 - 2018-03-30
+### Fixed
+- [Marcello Rocha & Luca Guidi] Ensure repository relations to access database attributes via `#[]` (eg. `projects[:name].ilike("Hanami")`)
+
 ## v1.2.0.beta2 - 2018-03-23
 
 ## v1.2.0.beta1 - 2018-02-28
