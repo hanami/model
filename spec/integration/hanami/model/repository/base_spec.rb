@@ -90,6 +90,21 @@ RSpec.describe 'Repository (base)' do
     end
   end
 
+  # https://github.com/hanami/model/issues/473
+  describe 'querying' do
+    it 'allows to access relation attributes via square bracket syntax' do
+      repository = UserRepository.new
+      repository.clear
+
+      expected = [repository.create(name: 'Ella'),
+                  repository.create(name: 'Bella')]
+      repository.create(name: 'Jon')
+
+      actual = repository.by_matching_name('%ella%')
+      expect(actual).to eq(expected)
+    end
+  end
+
   describe '#clear' do
     it 'clears all the records' do
       repository = UserRepository.new

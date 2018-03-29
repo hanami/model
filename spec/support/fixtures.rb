@@ -185,6 +185,10 @@ class UserRepository < Hanami::Repository
     users.where(name: name)
   end
 
+  def by_matching_name(name)
+    users.where(users[:name].ilike(name)).map_to(User).to_a
+  end
+
   def by_name_with_root(name)
     root.where(name: name).as(:entity)
   end
