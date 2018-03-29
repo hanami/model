@@ -96,8 +96,8 @@ RSpec.describe 'Repository (base)' do
       repository = UserRepository.new
       repository.clear
 
-      expected   = [repository.create(name: 'Ella'),
-                    repository.create(name: 'Bella')]
+      expected = [repository.create(name: 'Ella'),
+                  repository.create(name: 'Bella')]
       repository.create(name: 'Jon')
 
       actual = repository.by_matching_name('%ella%')
