@@ -242,7 +242,7 @@ class UserRepository < Hanami::Repository
 end
 
 Hanami::Model.configure do
-  adapter :sql, uri: 'postgresql://localhost/bookshelf'
+  adapter :sql, 'postgresql://localhost/bookshelf'
 end.load!
 
 repository = UserRepository.new
