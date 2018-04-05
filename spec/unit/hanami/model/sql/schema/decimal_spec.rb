@@ -4,7 +4,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Decimal" do
   let(:input) do
     Class.new do
       def to_d
-        BigDecimal.new(10)
+        BigDecimal(10)
       end
     end.new
   end
@@ -55,7 +55,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Decimal" do
   end
 
   it 'coerces bigdecimal' do
-    input = BigDecimal.new(3.14, 10)
+    input = BigDecimal(3.14, 10)
     expect(described_class[input]).to eq(input.to_d)
   end
 

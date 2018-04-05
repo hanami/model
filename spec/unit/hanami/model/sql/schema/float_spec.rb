@@ -61,7 +61,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Float" do
   end
 
   it 'coerces bigdecimal' do
-    input = BigDecimal.new(3.14, 10)
+    input = BigDecimal(3.14, 10)
     expect(described_class[input]).to eq(input.to_f)
   end
 
