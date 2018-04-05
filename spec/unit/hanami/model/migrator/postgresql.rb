@@ -76,43 +76,6 @@ RSpec.shared_examples 'migrator_postgresql' do
       end
     end
 
-    describe "when executables are not available" do
-      before do
-        # We accomplish having a command not be available by setting PATH
-        # to an empty string, which means *no commands* are available.
-        @original_path = ENV['PATH']
-        ENV['PATH'] = ''
-      end
-
-      after do
-        ENV['PATH'] = @original_path
-      end
-
-      it 'raises MigrationError on missing `createdb`' do
-        message = Platform.match do
-          os(:macos).engine(:jruby) { 'createdb' }
-          default { "Could not find executable in your PATH: `createdb`" }
-        end
-
-        expect { migrator.create }.to raise_error do |exception|
-          expect(exception).to         be_kind_of(Hanami::Model::MigrationError)
-          expect(exception.message).to include(message)
-        end
-      end
-
-      it 'raises MigrationError on missing `dropdb`' do
-        message = Platform.match do
-          os(:macos).engine(:jruby) { 'dropdb' }
-          default { "Could not find executable in your PATH: `dropdb`" }
-        end
-
-        expect { migrator.drop }.to raise_error do |exception|
-          expect(exception).to         be_kind_of(Hanami::Model::MigrationError)
-          expect(exception.message).to include(message)
-        end
-      end
-    end
-
     describe 'migrate' do
       before do
         migrator.create
