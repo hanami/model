@@ -71,7 +71,7 @@ module Hanami
               when ::BigDecimal
                 arg
               when ::Integer, ::Float, ::String, ::Hanami::Utils::String
-                ::BigDecimal.new(arg, ::Float::DIG)
+                Kernel.BigDecimal(arg, ::Float::DIG)
               when ->(a) { a.respond_to?(:to_d) }
                 arg.to_d
               else

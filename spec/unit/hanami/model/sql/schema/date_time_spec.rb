@@ -55,7 +55,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::DateTime" do
   end
 
   it 'raises error for bigdecimal' do
-    input = BigDecimal.new(3.14, 10)
+    input = Kernel.BigDecimal(3.14, 10)
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for DateTime(): #{input.inspect}")
   end
