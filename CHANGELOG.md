@@ -1,6 +1,8 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.2.0 - 2018-04-11
+
 ## v1.2.0.rc2 - 2018-04-06
 
 ## v1.2.0.rc1 - 2018-03-30

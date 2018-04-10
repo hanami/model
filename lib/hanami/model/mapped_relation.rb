@@ -36,7 +36,7 @@ module Hanami
       #
       # @return [ROM::SQL::Attribute] the attribute
       #
-      # @raises [Hanami::Model::UnknownAttributeError] if the attribute cannot be found
+      # @raise [Hanami::Model::UnknownAttributeError] if the attribute cannot be found
       #
       # @since 1.2.0
       #
