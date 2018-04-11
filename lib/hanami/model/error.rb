@@ -112,5 +112,11 @@ module Hanami
     # @since 1.0.0
     class MissingPrimaryKeyError < Error
     end
+
+    # Unknown attribute error
+    #
+    # @since 1.2.0
+    class UnknownAttributeError < Error
+    end
   end
 end

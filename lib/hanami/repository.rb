@@ -132,6 +132,33 @@ module Hanami
       Hanami::Model.container
     end
 
+    # Define a new ROM::Command while preserving the defaults used by Hanami itself.
+    #
+    # It allows the user to define a new command to, for example,
+    # create many records at the same time and still get entities back.
+    #
+    # The first argument is the command and relation it will operate on.
+    #
+    # @return [ROM::Command] the created command
+    #
+    # @example
+    #   # In this example, calling the create_many method with and array of data,
+    #   # would result in the creation of records and return an Array of Task entities.
+    #
+    #   class TaskRepository < Hanami::Repository
+    #     def create_many(data)
+    #       command(create: :tasks, result: :many).call(data)
+    #     end
+    #   end
+    #
+    # @since 1.2.0
+    def command(*args, **opts, &block)
+      opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
+      opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
+
+      super(*args, **opts, &block)
+    end
+
     # Define a database relation, which describes how data is fetched from the
     # database.
     #

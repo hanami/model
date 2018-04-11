@@ -51,7 +51,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Int" do
   end
 
   it 'coerces bigdecimal' do
-    input = Kernel.BigDecimal(3.14, 10)
+    input = BigDecimal(3.14, 10)
     expect(described_class[input]).to eq(input.to_i)
   end
 

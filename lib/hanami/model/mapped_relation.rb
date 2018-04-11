@@ -26,7 +26,33 @@ module Hanami
       # @since 1.0.0
       # @api private
       def initialize(relation)
+        @relation = relation
         super(relation.as(self.class.mapper_name))
+      end
+
+      # Access low level relation's attribute
+      #
+      # @param attribute [Symbol] the attribute name
+      #
+      # @return [ROM::SQL::Attribute] the attribute
+      #
+      # @raise [Hanami::Model::UnknownAttributeError] if the attribute cannot be found
+      #
+      # @since 1.2.0
+      #
+      # @example
+      #   class UserRepository < Hanami::Repository
+      #     def by_matching_name(name)
+      #       users
+      #         .where(users[:name].ilike(name))
+      #         .map_to(User)
+      #         .to_a
+      #     end
+      #   end
+      def [](attribute)
+        @relation[attribute]
+      rescue KeyError => e
+        raise UnknownAttributeError.new(e.message)
       end
     end
   end
