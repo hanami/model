@@ -127,7 +127,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def parsed_uri
-          @uri ||= URI.parse(uri.sub("jdbc:", ""))
+          @parsed_uri ||= URI.parse(uri.sub("jdbc:", ""))
         end
 
         # @api private

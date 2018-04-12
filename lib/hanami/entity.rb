@@ -142,9 +142,9 @@ module Hanami
     # value, otherwise it raises a <tt>NoMethodError</tt>
     #
     # @since 0.7.0
-    def method_missing(m, *)
-      attribute?(m) or super
-      attributes.fetch(m, nil)
+    def method_missing(method_name, *)
+      attribute?(method_name) or super
+      attributes.fetch(method_name, nil)
     end
 
     # Implement generic equality for entities

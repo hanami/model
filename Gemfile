@@ -8,7 +8,7 @@ unless ENV["TRAVIS"]
   gem "yard",   require: false
 end
 
-gem "hanami-utils", "2.0.0.alpha1", require: false, git: "https://github.com/hanami/utils.git", branch: "unstable"
+gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/utils.git", branch: "unstable"
 
 platforms :ruby do
   gem "sqlite3", require: false

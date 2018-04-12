@@ -43,7 +43,7 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Bool" do
   end
 
   it "raises error for bigdecimal" do
-    input = BigDecimal.new(3.14, 10)
+    input = BigDecimal(3.14, 10)
     expect { described_class[input] }
       .to raise_error(TypeError, "#{input.inspect} violates constraints (type?(FalseClass, #{input.inspect}) failed)")
   end

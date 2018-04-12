@@ -20,7 +20,7 @@ module Platform
       end
     end
 
-    def self.match?(os: Os.current, engine: Engine.current, db: Db.current)
+    def self.match?(os: Os.current, engine: Engine.current, db: Db.current) # rubocop:disable Naming/UncommunicativeMethodParamName
       catch :match do
         new.os(os).engine(engine).db(db) { true }.or(false)
       end
