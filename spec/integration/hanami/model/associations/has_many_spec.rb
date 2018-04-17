@@ -192,4 +192,33 @@ RSpec.describe 'Associations (has_many)' do
     # skipped spec
     it '#remove'
   end
+
+  context 'delegates scope manipulation to #scope' do
+    let(:author) { authors.create_with_books(name: 'Luis de Camões', books: [{ title: 'Os Lusíadas' }]) }
+    let(:book_assoc) { authors.books_for(id: author.id) }
+
+    it 'responds to #where' do
+      expect(book_assoc).to respond_to :where
+      expect { book_assoc.where(title: 'Os Lusíadas') }.to_not raise_error
+      expect(book_assoc.where(title: 'Os Lusíadas').to_a.size).to eq(1)
+    end
+
+    it 'reponds to #limit' do
+      expect(book_assoc).to respond_to :limit
+      expect { book_assoc.limit(5) }.to_not raise_error
+    end
+
+    it 'responds to #order' do
+      expect(book_assoc).to respond_to :order
+      expect { book_assoc.order(:title) }.to_not raise_error
+    end
+
+    it 'allows chaining of the methods' do
+      author = authors.create_with_books(name: 'Machado de Assis', books: [{ title: 'Dom Casmurro' }, { title: 'O Alienista' }])
+      authors.add_book(author, title: 'Memórias Póstumas de Brás Cubas')
+      found = authors.last_books_published_for(author)
+
+      expect(found.map(&:title)).to match(['Memórias Póstumas de Brás Cubas', 'O Alienista'])
+    end
+  end
 end
