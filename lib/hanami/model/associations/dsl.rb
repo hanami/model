@@ -27,13 +27,21 @@ module Hanami
         # @since 1.1.0
         # @api private
         def has_one(relation, *)
-          @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
+          @repository.__send__(:relations, inflector.pluralize(relation).to_sym)
         end
 
         # @since 1.1.0
         # @api private
         def belongs_to(relation, *)
-          @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
+          @repository.__send__(:relations, inflector.pluralize(relation).to_sym)
+        end
+
+        private
+
+        # @since x.x.x
+        # @api private
+        def inflector
+          Model.configuration.inflector
         end
       end
       # rubocop:enable Naming/PredicateName

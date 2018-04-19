@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rom/configuration"
+require "dry/inflector"
 
 module Hanami
   module Model
@@ -27,9 +28,13 @@ module Hanami
       # @api private
       attr_reader :migrations_logger
 
+      # @since x.x.x
+      # @api private
+      attr_reader :inflector
+
       # @since 0.2.0
       # @api private
-      def initialize(configurator)
+      def initialize(configurator, inflector: Dry::Inflector.new)
         @backend = configurator.backend
         @url = configurator.url
         @migrations        = configurator._migrations
@@ -37,6 +42,7 @@ module Hanami
         @gateway_config    = configurator._gateway
         @logger            = configurator._logger
         @migrations_logger = configurator.migrations_logger
+        @inflector         = inflector
         @mappings          = {}
         @entities          = {}
       end

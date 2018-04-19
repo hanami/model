@@ -109,7 +109,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def relation(name)
-          repository.relations[Hanami::Utils::String.pluralize(name)]
+          repository.relations[inflector.pluralize(name)]
         end
 
         # @since 1.1.0
@@ -160,6 +160,12 @@ module Hanami
         # @api private
         def serialize(data)
           Utils::Hash.deep_serialize(data)
+        end
+
+        # @since x.x.x
+        # @api private
+        def inflector
+          Model.configuration.inflector
         end
       end
     end
