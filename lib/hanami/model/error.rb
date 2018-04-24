@@ -118,5 +118,14 @@ module Hanami
     # @since 1.2.0
     class UnknownAttributeError < Error
     end
+
+    # Unknown database adapter error
+    #
+    # @since 1.2.1
+    class UnknownDatabaseAdapterError < Error
+      def initialize(url)
+        super("Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
+      end
+    end
   end
 end
