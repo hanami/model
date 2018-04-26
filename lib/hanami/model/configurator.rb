@@ -48,6 +48,13 @@ module Hanami
         @migrations_logger ||= Hanami::Model::Migrator::Logger.new(stream)
       end
 
+      # @since x.x.x
+      # @api private
+      def inflector(&blk)
+        require "dry/inflector"
+        @inflector ||= Dry::Inflector.new(&blk)
+      end
+
       private
 
       # @since 0.7.0

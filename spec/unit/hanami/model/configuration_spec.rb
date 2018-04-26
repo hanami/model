@@ -18,6 +18,9 @@ RSpec.describe Hanami::Model::Configuration do
 
       migrations "tmp/db/migrations"
       schema     "tmp/db/schema.sql"
+      inflector do |inflections|
+        inflections.plural "virus", "viruses"
+      end
     end
   end
 
@@ -73,6 +76,12 @@ RSpec.describe Hanami::Model::Configuration do
       expected = subject.root.join("tmp", "db", "schema.sql")
 
       expect(subject.schema).to eq(expected)
+    end
+  end
+
+  describe "#inflector" do
+    it "accepts custom inflections" do
+      expect(subject.inflector.pluralize("virus")).to eq("viruses")
     end
   end
 end
