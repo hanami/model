@@ -50,9 +50,13 @@ module Hanami
 
       # @since x.x.x
       # @api private
-      def inflector(&blk)
-        require "dry/inflector"
-        @inflector ||= Dry::Inflector.new(&blk)
+      def inflector(inflector = nil, &blk)
+        @inflector ||= if inflector
+                         inflector
+                       else
+                         require "dry/inflector"
+                         Dry::Inflector.new(&blk)
+                       end
       end
 
       private

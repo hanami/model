@@ -18,9 +18,6 @@ RSpec.describe Hanami::Model::Configuration do
 
       migrations "tmp/db/migrations"
       schema     "tmp/db/schema.sql"
-      inflector do |inflections|
-        inflections.plural "virus", "viruses"
-      end
     end
   end
 
@@ -80,8 +77,30 @@ RSpec.describe Hanami::Model::Configuration do
   end
 
   describe "#inflector" do
-    it "accepts custom inflections" do
-      expect(subject.inflector.pluralize("virus")).to eq("viruses")
+    let(:inflector) { Dry::Inflector.new }
+
+    it "returns dry-inflector" do
+      expect(subject.inflector).to be_a_kind_of(Dry::Inflector)
+    end
+
+    it "allows to pass inflector to config" do
+      configurator.inflector(inflector)
+
+      expect(subject.inflector).to eq(inflector)
+    end
+
+    describe "configuration" do
+      let(:configurator) do
+        Hanami::Model::Configurator.build do
+          inflector do |rule|
+            rule.plural "virus", "viruses"
+          end
+        end
+      end
+
+      it "allows to configure inflector rules" do
+        expect(subject.inflector.pluralize("virus")).to eq("viruses")
+      end
     end
   end
 end
