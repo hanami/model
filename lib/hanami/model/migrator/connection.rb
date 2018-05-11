@@ -1,3 +1,5 @@
+require 'cgi'
+
 module Hanami
   module Model
     class Migrator
@@ -153,8 +155,11 @@ module Hanami
         #
         # @since 0.5.0
         # @api private
-        def parsed_opt(option)
-          parsed_uri.to_s.match(/[\?|\&]#{ option }=(\w+)\&?/).to_a.last
+        def parsed_opt(option, query: parsed_uri.query)
+          return if query.nil?
+
+          @parsed_query_opts ||= CGI.parse(query)
+          @parsed_query_opts[option].to_a.last
         end
       end
     end
