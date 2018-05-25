@@ -32,7 +32,7 @@ Like all the other Hanami components, it can be used as a standalone framework o
 
 ## Rubies
 
-__Hanami::Model__ supports Ruby (MRI) 2.3+ and JRuby 9.1.5.0+
+__Hanami::Model__ supports Ruby (MRI) 2.4+ and JRuby 9.1.5.0+
 
 ## Installation
 
