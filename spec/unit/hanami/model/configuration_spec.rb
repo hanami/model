@@ -75,4 +75,32 @@ RSpec.describe Hanami::Model::Configuration do
       expect(subject.schema).to eq(expected)
     end
   end
+
+  describe "#inflector" do
+    let(:inflector) { Dry::Inflector.new }
+
+    it "returns dry-inflector" do
+      expect(subject.inflector).to be_a_kind_of(Dry::Inflector)
+    end
+
+    it "allows to pass inflector to config" do
+      configurator.inflector(inflector)
+
+      expect(subject.inflector).to eq(inflector)
+    end
+
+    describe "configuration" do
+      let(:configurator) do
+        Hanami::Model::Configurator.build do
+          inflector do |rule|
+            rule.plural "virus", "viruses"
+          end
+        end
+      end
+
+      it "allows to configure inflector rules" do
+        expect(subject.inflector.pluralize("virus")).to eq("viruses")
+      end
+    end
+  end
 end
