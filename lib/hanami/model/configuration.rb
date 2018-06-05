@@ -54,6 +54,9 @@ module Hanami
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
+      # @raise [Hanami::Model::UnknownDatabaseAdapterError] if `url` is blank,
+      #   or it uses an unknown adapter.
+      #
       # @since 0.7.0
       # @api private
       def connection
@@ -61,6 +64,9 @@ module Hanami
       end
 
       # NOTE: This must be changed when we want to support several adapters at the time
+      #
+      # @raise [Hanami::Model::UnknownDatabaseAdapterError] if `url` is blank,
+      #   or it uses an unknown adapter.
       #
       # @since 0.7.0
       # @api private
@@ -129,12 +135,21 @@ module Hanami
         gateway.use_logger(@logger = value)
       end
 
+      # @raise [Hanami::Model::UnknownDatabaseAdapterError] if `url` is blank,
+      #   or it uses an unknown adapter.
+      #
       # @since 1.0.0
       # @api private
       def rom
         @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
+      rescue => e
+        raise UnknownDatabaseAdapterError.new(@url) if e.message =~ /adapters/
+        raise e
       end
 
+      # @raise [Hanami::Model::UnknownDatabaseAdapterError] if `url` is blank,
+      #   or it uses an unknown adapter.
+      #
       # @since 1.0.0
       # @api private
       def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize

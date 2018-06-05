@@ -43,6 +43,14 @@ RSpec.describe Hanami::Model::Configuration do
       expect(connection).to be_a_kind_of(Sequel::Database)
       expect(connection.url).to eq(url)
     end
+
+    context 'with blank url' do
+      let(:url) { nil }
+
+      it 'raises error' do
+        expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
+      end
+    end
   end
 
   describe "#gateway" do
@@ -51,6 +59,14 @@ RSpec.describe Hanami::Model::Configuration do
 
       expect(gateway).to be_a_kind_of(ROM::Gateway)
       expect(gateway.connection).to eq(subject.connection)
+    end
+
+    context 'with blank url' do
+      let(:url) { nil }
+
+      it 'raises error' do
+        expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
+      end
     end
   end
 
