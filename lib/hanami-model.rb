@@ -1,1 +1,1 @@
-require 'hanami/model' # rubocop:disable Naming/FileName
+require 'hanami/model'
