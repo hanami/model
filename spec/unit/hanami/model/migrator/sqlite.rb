@@ -350,7 +350,7 @@ RSpec.shared_examples "migrator_sqlite" do
                 end
               end
             end
-RUBY
+          RUBY
         end
 
         migrator.prepare

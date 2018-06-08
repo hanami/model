@@ -9,9 +9,13 @@ module Platform
         blk.nil? ? other : blk.call # rubocop:disable Performance/RedundantBlockCall
       end
 
-      def method_missing(*) # rubocop:disable Style/MethodMissing
+      # rubocop:disable Style/MethodMissingSuper
+      # rubocop:disable Style/MissingRespondToMissing
+      def method_missing(*)
         self.class.new
       end
+      # rubocop:enable Style/MissingRespondToMissing
+      # rubocop:enable Style/MethodMissingSuper
     end
 
     def self.match(&blk)
