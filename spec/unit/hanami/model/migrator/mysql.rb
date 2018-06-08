@@ -389,7 +389,7 @@ RSpec.shared_examples 'migrator_mysql' do
                 end
               end
             end
-RUBY
+          RUBY
         end
 
         migrator.prepare
