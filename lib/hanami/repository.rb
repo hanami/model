@@ -156,7 +156,7 @@ module Hanami
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
       opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
 
-      super(*args, **opts, &block)
+      root.command(*args, **opts, &block)
     end
 
     # Define a database relation, which describes how data is fetched from the
@@ -444,7 +444,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.as(:entity).to_a
+      root.map_to(:entity).to_a
     end
 
     # Returns the first record for the relation
@@ -456,7 +456,7 @@ module Hanami
     # @example
     #   UserRepository.new.first
     def first
-      root.as(:entity).limit(1).one
+      root.map_to(:entity).limit(1).one
     end
 
     # Returns the last record for the relation
@@ -468,7 +468,7 @@ module Hanami
     # @example
     #   UserRepository.new.last
     def last
-      root.as(:entity).limit(1).reverse.one
+      root.map_to(:entity).limit(1).reverse.one
     end
 
     # Deletes all the records from the relation

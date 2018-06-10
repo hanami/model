@@ -215,7 +215,7 @@ class AuthorRepository < Hanami::Repository
   end
 
   def create_many(data, opts: {})
-    command(create: :authors, result: :many, **opts).call(data)
+    command(:create, result: :many, **opts).call(data)
   end
 
   def create_with_books(data)
