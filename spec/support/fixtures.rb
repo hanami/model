@@ -184,7 +184,7 @@ class UserRepository < Hanami::Repository
   end
 
   def by_name(name)
-    users.where(name: name)
+    users.where(name: name).map_to(User)
   end
 
   def by_matching_name(name)
@@ -192,19 +192,19 @@ class UserRepository < Hanami::Repository
   end
 
   def by_name_with_root(name)
-    root.where(name: name).as(:entity)
+    root.where(name: name).map_to(User)
   end
 
   def find_all_by_manual_query
-    users.read("select * from users").to_a
+    users.read("select * from users").map_to(User).to_a
   end
 
   def ids
-    users.select(:id).to_a
+    users.select(:id).map_to(User).to_a
   end
 
   def select_id_and_name
-    users.select(:id, :name).to_a
+    users.select(:id, :name).map_to(User).to_a
   end
 end
 
