@@ -154,11 +154,11 @@ module Hanami
     #   end
     #
     # @since 1.2.0
-    def command(*args, **opts, &block)
+    def command(type, relation: root, **opts, &block)
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
       opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
 
-      root.command(*args, **opts, &block)
+      relation.command(type, **opts, &block)
     end
 
     # Define a database relation, which describes how data is fetched from the
