@@ -158,7 +158,7 @@ module Hanami
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
       opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
 
-      super(*args, **opts, &block)
+      root.command(*args, **opts, &block)
     end
 
     # Define a database relation, which describes how data is fetched from the
@@ -185,13 +185,7 @@ module Hanami
         end
       end
 
-      relations(relation)
       root(relation)
-      class_eval %{
-        def #{relation}
-          Hanami::Model::MappedRelation.new(@#{relation})
-        end
-      }, __FILE__, __LINE__ - 4
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
@@ -212,7 +206,7 @@ module Hanami
 
       blk = lambda do |_|
         model       e
-        register_as Model::MappedRelation.mapper_name
+        register_as :entity
         instance_exec(&m) unless m.nil?
       end
 
@@ -309,7 +303,8 @@ module Hanami
     def self.inherited(klass)
       klass.class_eval do
         include Utils::ClassAttribute
-        auto_struct true
+
+        auto_struct false
 
         @associations = nil
         @mapping      = nil
@@ -328,7 +323,7 @@ module Hanami
         self.entity_name = Model::EntityName.new(name)
         self.relation    = Model::RelationName.new(name)
 
-        commands :create, update: :by_pk, delete: :by_pk, mapper: Model::MappedRelation.mapper_name, use: COMMAND_PLUGINS
+        commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
         prepend Commands
       end
 
@@ -418,8 +413,8 @@ module Hanami
     # @return [Hanami::Repository] the new instance
     #
     # @since 0.7.0
-    def initialize
-      super(self.class.container)
+    def self.new(container = self.container, options = {})
+      super
     end
 
     # Find by primary key
@@ -451,7 +446,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.as(:entity).to_a
+      root.map_to(:entity).to_a
     end
 
     # Returns the first record for the relation
@@ -463,7 +458,7 @@ module Hanami
     # @example
     #   UserRepository.new.first
     def first
-      root.as(:entity).limit(1).one
+      root.map_to(:entity).limit(1).one
     end
 
     # Returns the last record for the relation
@@ -475,7 +470,7 @@ module Hanami
     # @example
     #   UserRepository.new.last
     def last
-      root.as(:entity).limit(1).reverse.one
+      root.map_to(:entity).limit(1).reverse.one
     end
 
     # Deletes all the records from the relation

@@ -14,7 +14,7 @@ module Hanami
         # @api private
         def self.schema_type(entity)
           type = Sql::Types::Schema::AssociationType.new(entity)
-          Types::Strict::Array.member(type)
+          Types::Strict::Array.of(type)
         end
 
         # @since 0.7.0
@@ -196,7 +196,7 @@ module Hanami
         def _build_scope
           result = relation(target_association.target.to_sym)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
-          result.as(Model::MappedRelation.mapper_name)
+          result.map_with(:entity)
         end
 
         # @since 0.7.0

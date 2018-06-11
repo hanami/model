@@ -141,7 +141,7 @@ module Hanami
       # @since 1.0.0
       # @api private
       def rom
-        @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
+        @rom ||= ROM::Configuration.new(@backend, @url)
       rescue => e
         raise UnknownDatabaseAdapterError.new(@url) if e.message =~ /adapters/
         raise e
@@ -159,11 +159,15 @@ module Hanami
         repositories.each(&:load!)
         self.logger = logger
 
+        # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
+        gateway.connection.tables
+
         container = ROM.container(rom)
         define_entities_mappings(container, repositories)
         container
-      rescue => e
-        raise Hanami::Model::Error.for(e)
+      # rescue => e
+      #   byebug
+      #   raise Hanami::Model::Error.for(e)
       end
 
       # @since 1.0.0

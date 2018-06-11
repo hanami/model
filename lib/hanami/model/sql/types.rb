@@ -26,7 +26,7 @@ module Hanami
 
           Bool     = Types::Strict::Nil | Types::Strict::Bool
 
-          Date     = Types::Strict::Nil | Types::Date.constructor(Coercions.method(:date))
+          Date     = Types::Strict::Nil | Types::Strict::Date.constructor(Coercions.method(:date))
           DateTime = Types::Strict::Nil | Types::DateTime.constructor(Coercions.method(:datetime))
           Time     = Types::Strict::Nil | Types::Time.constructor(Coercions.method(:time))
 

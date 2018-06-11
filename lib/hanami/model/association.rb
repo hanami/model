@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require "rom-sql"
+require "rom/sql/associations/one_to_many"
+require "rom/sql/associations/many_to_one"
+
+require "hanami/model/associations/has_many"
 require "hanami/model/associations/belongs_to"
 require "hanami/model/associations/has_many"
 require "hanami/model/associations/has_one"
@@ -29,13 +33,13 @@ module Hanami
       # rubocop:disable Metrics/MethodLength
       def self.lookup(association)
         case association
-        when ROM::SQL::Association::ManyToMany
+        when ROM::SQL::Associations::ManyToMany
           Associations::ManyToMany
-        when ROM::SQL::Association::OneToOne
+        when ROM::SQL::Associations::OneToOne
           Associations::HasOne
-        when ROM::SQL::Association::OneToMany
+        when ROM::SQL::Associations::OneToMany
           Associations::HasMany
-        when ROM::SQL::Association::ManyToOne
+        when ROM::SQL::Associations::ManyToOne
           Associations::BelongsTo
         else
           raise "Unsupported association: #{association}"
