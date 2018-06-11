@@ -16,7 +16,7 @@ RSpec.describe "Customized commands" do
 
     it "can be explictly turned off" do
       result = authors.create_many(data, opts: { mapper: nil })
-      expect(result).to all(be_an(ROM::Struct))
+      expect(result).to all(be_an(::Hash))
     end
   end
 
