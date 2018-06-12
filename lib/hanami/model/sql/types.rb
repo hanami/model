@@ -20,18 +20,18 @@ module Hanami
 
           String   = Types::Optional::Coercible::String
 
-          Int      = Types::Strict::Nil | Types::Int.constructor(Coercions.method(:int))
-          Float    = Types::Strict::Nil | Types::Float.constructor(Coercions.method(:float))
-          Decimal  = Types::Strict::Nil | Types::Float.constructor(Coercions.method(:decimal))
+          Int      = Types::Strict::Nil | Types::Strict::Int.constructor(Coercions.method(:int))
+          Float    = Types::Strict::Nil | Types::Strict::Float.constructor(Coercions.method(:float))
+          Decimal  = Types::Strict::Nil | Types::Strict::Decimal.constructor(Coercions.method(:decimal))
 
           Bool     = Types::Strict::Nil | Types::Strict::Bool
 
           Date     = Types::Strict::Nil | Types::Strict::Date.constructor(Coercions.method(:date))
-          DateTime = Types::Strict::Nil | Types::DateTime.constructor(Coercions.method(:datetime))
-          Time     = Types::Strict::Nil | Types::Time.constructor(Coercions.method(:time))
+          DateTime = Types::Strict::Nil | Types::Strict::DateTime.constructor(Coercions.method(:datetime))
+          Time     = Types::Strict::Nil | Types::Strict::Time.constructor(Coercions.method(:time))
 
-          Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
-          Hash     = Types::Strict::Nil | Types::Hash.constructor(Coercions.method(:hash))
+          Array    = Types::Strict::Nil | Types::Strict::Array.constructor(Coercions.method(:array))
+          Hash     = Types::Strict::Nil | Types::Strict::Hash.constructor(Coercions.method(:hash))
 
           PG_JSON  = Types::Strict::Nil | Types::Any.constructor(Coercions.method(:pg_json))
 

@@ -43,13 +43,13 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Float" do
   it "raises error for meaningless string" do
     input = "foo"
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 
   it "raises error for symbol" do
     input = :house_11
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 
   it "coerces integer" do
@@ -70,30 +70,30 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Float" do
   it "raises error for date" do
     input = Date.today
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 
   it "raises error for datetime" do
     input = DateTime.new
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 
   it "raises error for time" do
     input = Time.now
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 
   it "raises error for array" do
     input = []
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 
   it "raises error for hash" do
     input = {}
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Float(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Float(): #{input.inspect} failed)")
   end
 end
