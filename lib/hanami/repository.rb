@@ -432,7 +432,7 @@ module Hanami
     #
     #   user       = repository.find(user.id)
     def find(id)
-      root.by_pk(id).map_to(self.class.entity).one
+      root.by_pk(id).map_with(:entity).one
     rescue => e
       raise Hanami::Model::Error.for(e)
     end
@@ -446,7 +446,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.map_to(self.class.entity).to_a
+      root.map_with(:entity).to_a
     end
 
     # Returns the first record for the relation
@@ -458,7 +458,7 @@ module Hanami
     # @example
     #   UserRepository.new.first
     def first
-      root.map_to(self.class.entity).limit(1).one
+      root.map_with(:entity).limit(1).one
     end
 
     # Returns the last record for the relation
@@ -470,7 +470,7 @@ module Hanami
     # @example
     #   UserRepository.new.last
     def last
-      root.map_to(self.class.entity).limit(1).reverse.one
+      root.map_with(:entity).limit(1).reverse.one
     end
 
     # Deletes all the records from the relation
