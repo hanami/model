@@ -168,10 +168,7 @@ module Hanami
     #
     # @since 0.7.0
     # @api private
-    #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
-    def self.define_relation
+    def self.define_relation # rubocop:disable Metrics/MethodLength
       a = @associations
       s = @schema
 
@@ -187,8 +184,6 @@ module Hanami
 
       root(relation)
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
 
     # Defines the mapping between a database table and an entity.
     #
