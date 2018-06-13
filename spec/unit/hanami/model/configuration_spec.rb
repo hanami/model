@@ -21,14 +21,7 @@ RSpec.describe Hanami::Model::Configuration do
     end
   end
 
-  let(:url) do
-    db = "tmp/db/bookshelf.sqlite"
-
-    Platform.match do
-      engine(:ruby)  { "sqlite://#{db}" }
-      engine(:jruby) { "jdbc:sqlite://#{db}" }
-    end
-  end
+  let(:url) { ENV["HANAMI_DATABASE_URL"] }
 
   describe "#url" do
     it "equals to the configured url" do
