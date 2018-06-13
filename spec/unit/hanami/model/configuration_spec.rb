@@ -44,8 +44,16 @@ RSpec.describe Hanami::Model::Configuration do
       expect(connection.url).to eq(url)
     end
 
-    context "with blank url" do
+    context "with nil url" do
       let(:url) { nil }
+
+      it "raises error" do
+        expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
+      end
+    end
+
+    context "with blank url" do
+      let(:url) { "" }
 
       it "raises error" do
         expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
@@ -61,8 +69,16 @@ RSpec.describe Hanami::Model::Configuration do
       expect(gateway.connection).to eq(subject.connection)
     end
 
-    context "with blank url" do
+    context "with nil url" do
       let(:url) { nil }
+
+      it "raises error" do
+        expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
+      end
+    end
+
+    context "with blank url" do
+      let(:url) { "" }
 
       it "raises error" do
         expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
