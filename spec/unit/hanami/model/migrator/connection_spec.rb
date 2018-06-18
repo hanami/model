@@ -6,7 +6,7 @@ RSpec.describe Hanami::Model::Migrator::Connection do
   let(:connection) { Hanami::Model::Migrator::Connection.new(hanami_model_configuration) }
 
   describe "when not a jdbc connection" do
-    let(:hanami_model_configuration) { OpenStruct.new(url: url, migrations_logger: Hanami::Model::Migrator::Logger.new($stdout)) }
+    let(:hanami_model_configuration) { OpenStruct.new(url: url, migrations_logger: Hanami::Model::Migrator::Logger.new(StringIO.new)) }
     let(:url) { "postgresql://postgres:s3cr3T@127.0.0.1:5432/database" }
 
     describe "#jdbc?" do
