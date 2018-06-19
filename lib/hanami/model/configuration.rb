@@ -34,9 +34,10 @@ module Hanami
 
       # @since 0.2.0
       # @api private
-      def initialize(configurator)
+      def initialize(configurator) # rubocop:disable Metrics/MethodLength
         @backend = configurator.backend
         @url = configurator.url
+        @container         = nil
         @migrations        = configurator._migrations
         @schema            = configurator._schema
         @gateway_config    = configurator._gateway
@@ -45,6 +46,10 @@ module Hanami
         @inflector         = configurator.inflector
         @mappings          = {}
         @entities          = {}
+      end
+
+      def container
+        @container or raise "not loaded"
       end
 
       # NOTE: This must be changed when we want to support several adapters at the time
@@ -170,9 +175,9 @@ module Hanami
         # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
         gateway.connection.tables
 
-        container = ROM.container(rom)
-        define_entities_mappings(container, repositories)
-        container
+        @container = ROM.container(rom)
+        define_entities_mappings(@container, repositories)
+        @container
       rescue => e
         raise Hanami::Model::Error.for(e)
       end
