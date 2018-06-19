@@ -388,7 +388,7 @@ module Hanami
     # @return [Hanami::Repository] the new instance
     #
     # @since 0.7.0
-    def self.new(configuration = self.configuration, options = {})
+    def self.new(configuration:, **options)
       super(configuration.container, options)
     end
 

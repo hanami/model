@@ -38,7 +38,7 @@ module Database
           gateway do |g|
             g.connection.extension(:pg_enum) if Database.engine?(:postgresql)
           end
-        end
+        end.configuration
       end
 
       def after

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe "Alias (:as)  support for associations" do
-  let(:users) { UserRepository.new }
-  let(:posts) { PostRepository.new }
-  let(:comments) { CommentRepository.new }
+  let(:users) { UserRepository.new(configuration: configuration) }
+  let(:posts) { PostRepository.new(configuration: configuration) }
+  let(:comments) { CommentRepository.new(configuration: configuration) }
 
   it "the attribute is named after the association" do
     user = users.create(name: "Jules Verne")

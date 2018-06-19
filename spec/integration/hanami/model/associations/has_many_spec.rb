@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe "Associations (has_many)" do
-  let(:authors) { AuthorRepository.new }
-  let(:books) { BookRepository.new }
+  let(:authors) { AuthorRepository.new(configuration: configuration) }
+  let(:books) { BookRepository.new(configuration: configuration) }
 
   it "returns nil if association wasn't preloaded" do
     author = authors.create(name: "L")
@@ -70,8 +70,8 @@ RSpec.describe "Associations (has_many)" do
   # REMOVE
   #
   it "removes an object from the collection" do
-    authors = AuthorRepository.new
-    books = BookRepository.new
+    authors = AuthorRepository.new(configuration: configuration)
+    books = BookRepository.new(configuration: configuration)
 
     # Book under test
     author = authors.create(name: "Douglas Adams")
