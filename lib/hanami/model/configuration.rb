@@ -2,6 +2,7 @@
 
 require "rom/configuration"
 require "hanami/utils/blank"
+require "hanami/model/repository_configurer"
 
 module Hanami
   module Model
@@ -169,7 +170,7 @@ module Hanami
         rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
         rom.instance_eval(&blk)                            if     block_given?
         configure_gateway
-        repositories.each(&:load!)
+        configure_repositories(repositories)
         self.logger = logger
 
         # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
@@ -183,6 +184,14 @@ module Hanami
       end
       # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/AbcSize
+
+      # @since x.x.x
+      # @api private
+      def configure_repositories(repositories)
+        repositories.each do |repository|
+          RepositoryConfigurer.call(repository, self)
+        end
+      end
 
       # @since 1.0.0
       # @api private
