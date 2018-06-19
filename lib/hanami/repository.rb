@@ -108,7 +108,7 @@ module Hanami
   # @see Hanami::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  class Repository < ROM::Repository::Root # rubocop:disable Metrics/ClassLength
+  class Repository < ROM::Repository::Root
     # Plugins for database commands
     #
     # @since 0.7.0
@@ -123,14 +123,6 @@ module Hanami
     # @api private
     def self.configuration
       Hanami::Model.configuration
-    end
-
-    # Container
-    #
-    # @since 0.7.0
-    # @api private
-    def self.container
-      Hanami::Model.container
     end
 
     # Define a new ROM::Command while preserving the defaults used by Hanami itself.
@@ -396,8 +388,8 @@ module Hanami
     # @return [Hanami::Repository] the new instance
     #
     # @since 0.7.0
-    def self.new(container = self.container, options = {})
-      super
+    def self.new(configuration = self.configuration, options = {})
+      super(configuration.container, options)
     end
 
     # Find by primary key
