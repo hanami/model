@@ -4,7 +4,6 @@ require "rom-repository"
 require "hanami/model/entity_name"
 require "hanami/model/relation_name"
 require "hanami/model/mapped_relation"
-require "hanami/model/associations/dsl"
 require "hanami/model/association"
 require "hanami/utils/class"
 require "hanami/utils/class_attribute"
@@ -213,16 +212,6 @@ module Hanami
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
-    # It defines associations, by adding relations to the repository
-    #
-    # @since 0.7.0
-    # @api private
-    #
-    # @see Hanami::Model::Associations::Dsl
-    def self.define_associations
-      Model::Associations::Dsl.new(self, &@associations) unless @associations.nil?
-    end
-
     # Declare associations for the repository
     #
     # NOTE: This is an experimental feature
@@ -287,7 +276,6 @@ module Hanami
     def self.load!
       define_relation
       define_mapping
-      define_associations
     end
 
     # @since 0.7.0
