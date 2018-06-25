@@ -60,7 +60,7 @@ module Hanami
         end
 
         def add(data)
-          command(:create, relation(target), mapper: nil).call(associate(serialize(data)))
+          command(:create, relation(target)).call(associate(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
         end
@@ -100,16 +100,18 @@ module Hanami
           repository.aggregate(name)
         end
 
+        COMMAND_PLUGINS = %i[schema mapping timestamps].freeze
+
         # @since 1.1.0
         # @api private
-        def command(target, relation, options = {})
-          repository.command(target, relation, options)
+        def command(type, relation, options = {})
+          repository.command(type, relation: relation, **options)
         end
 
         # @since 1.1.0
         # @api private
         def relation(name)
-          repository.relations[inflector.pluralize(name)]
+          container.relations[inflector.pluralize(name)]
         end
 
         # @since 1.1.0
@@ -135,7 +137,7 @@ module Hanami
         def associate(data)
           relation(source)
             .associations[target]
-            .associate(container.relations, data, subject)
+            .associate(data, subject)
         end
 
         # Returns primary key and foreign key
@@ -145,7 +147,7 @@ module Hanami
         def association_keys
           relation(source)
             .associations[target]
-            .__send__(:join_key_map, container.relations)
+            .__send__(:join_key_map)
         end
 
         # @since 1.1.0
@@ -153,7 +155,7 @@ module Hanami
         def _build_scope
           result = relation(target)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
-          result.as(Model::MappedRelation.mapper_name)
+          result.map_with(Model::MappedRelation.mapper_name)
         end
 
         # @since 1.1.0

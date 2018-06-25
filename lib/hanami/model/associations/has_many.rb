@@ -14,7 +14,7 @@ module Hanami
         # @api private
         def self.schema_type(entity)
           type = Sql::Types::Schema::AssociationType.new(entity)
-          Types::Strict::Array.member(type)
+          Types::Strict::Array.of(type)
         end
 
         # @since 0.7.0
@@ -114,8 +114,8 @@ module Hanami
 
         # @since 0.7.0
         # @api private
-        def command(target, relation, options = {})
-          repository.command(target => relation, **options)
+        def command(type, relation, options = {})
+          repository.command(type, relation: relation, **options)
         end
 
         # @since 0.7.0
@@ -127,7 +127,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def relation(name)
-          repository.relations[name]
+          container.relations[inflector.pluralize(name)]
         end
 
         # @since 0.7.0
@@ -147,7 +147,7 @@ module Hanami
         def associate(data)
           relation(source)
             .associations[target]
-            .associate(container.relations, data, subject)
+            .associate(data, subject)
         end
 
         # @since 0.7.0
@@ -180,7 +180,7 @@ module Hanami
         # @api private
         def association_keys
           target_association
-            .__send__(:join_key_map, container.relations)
+            .__send__(:join_key_map)
         end
 
         # Returns the targeted association for a given source
@@ -194,9 +194,9 @@ module Hanami
         # @since 0.7.0
         # @api private
         def _build_scope
-          result = relation(target_association.target.to_sym)
+          result = relation(target_association.target.name.to_sym)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
-          result.as(Model::MappedRelation.mapper_name)
+          result.map_with(:entity)
         end
 
         # @since 0.7.0
@@ -207,6 +207,12 @@ module Hanami
 
         def serialize(data)
           Utils::Hash.deep_serialize(data)
+        end
+
+        # @since x.x.x
+        # @api private
+        def inflector
+          Model.configuration.inflector
         end
       end
     end

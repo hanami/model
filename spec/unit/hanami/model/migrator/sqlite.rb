@@ -337,7 +337,6 @@ RSpec.shared_examples "migrator_sqlite" do
 
       it "creates database, loads schema and migrate" do
         # Simulate already existing schema.sql, without existing database and pending migrations
-        connection = Sequel.connect(url)
         Hanami::Model::Migrator::Adapter.for(configuration).dump
 
         migration = target_migrations.join("20160831095616_create_abuses.rb")
@@ -355,6 +354,7 @@ RSpec.shared_examples "migrator_sqlite" do
 
         migrator.prepare
 
+        connection = Sequel.connect(url)
         expect(connection.tables).to eq(%i[schema_migrations reviews abuses])
 
         FileUtils.rm_f migration

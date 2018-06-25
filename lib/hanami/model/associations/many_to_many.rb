@@ -94,6 +94,7 @@ module Hanami
         def remove(target_id)
           association_record = relation(through)
                                .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
+                               .map_with(Model::MappedRelation.mapper_name)
                                .one
 
           return if association_record.nil?
@@ -114,13 +115,13 @@ module Hanami
         # @since 1.1.0
         # @api private
         def relation(name)
-          repository.relations[name]
+          container.relations[inflector.pluralize(name)]
         end
 
         # @since 1.1.0
         # @api private
-        def command(target, relation, options = {})
-          repository.command(target, relation, options)
+        def command(type, relation, options = {})
+          repository.command(type, relation: relation, **options)
         end
 
         # @since 1.1.0
@@ -128,7 +129,7 @@ module Hanami
         def associate(data)
           relation(target)
             .associations[source]
-            .associate(container.relations, data, subject)
+            .associate(data, subject)
         end
 
         # @since 1.1.0
@@ -148,7 +149,7 @@ module Hanami
         def association_keys
           relation(source)
             .associations[target]
-            .__send__(:join_key_map, container.relations)
+            .__send__(:join_key_map)
         end
 
         # @since 1.1.0
@@ -176,13 +177,13 @@ module Hanami
         # @api private
         # rubocop:disable Metrics/AbcSize
         def _build_scope
-          result = relation(association.target.to_sym).qualified
+          result = relation(association.target.name.to_sym).qualified
           unless subject.nil?
             result = result
                      .join(through, target_foreign_key => target_primary_key)
                      .where(source_foreign_key => subject.fetch(source_primary_key))
           end
-          result.as(Model::MappedRelation.mapper_name)
+          result.map_with(Model::MappedRelation.mapper_name)
         end
         # rubocop:enable Metrics/AbcSize
 
@@ -198,6 +199,12 @@ module Hanami
           data.map do |d|
             Utils::Hash.deep_serialize(d)
           end
+        end
+
+        # @since x.x.x
+        # @api private
+        def inflector
+          Model.configuration.inflector
         end
       end
     end

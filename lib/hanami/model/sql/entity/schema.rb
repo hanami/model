@@ -124,7 +124,7 @@ module Hanami
           # @api private
           def build_associations(registry, associations)
             associations.each_with_object({}) do |(name, association), result|
-              target       = registry.fetch(association.target.to_sym)
+              target       = registry.fetch(association.name)
               result[name] = Association.lookup(association).schema_type(target)
             end
           end

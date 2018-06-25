@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rom/configuration"
+require "hanami/utils/blank"
 
 module Hanami
   module Model
@@ -48,9 +49,14 @@ module Hanami
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
+      # @raise [Hanami::Model::UnknownDatabaseAdapterError] if @url is blank
+      #
       # @since 0.7.0
       # @api private
-      attr_reader :url
+      def url
+        raise Hanami::Model::UnknownDatabaseAdapterError.new(@url) if Utils::Blank.blank?(@url)
+        @url
+      end
 
       # NOTE: This must be changed when we want to support several adapters at the time
       #
@@ -141,10 +147,7 @@ module Hanami
       # @since 1.0.0
       # @api private
       def rom
-        @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
-      rescue => e
-        raise UnknownDatabaseAdapterError.new(@url) if e.message =~ /adapters/
-        raise e
+        @rom ||= ROM::Configuration.new(@backend, url)
       end
 
       # @raise [Hanami::Model::UnknownDatabaseAdapterError] if `url` is blank,
@@ -152,12 +155,18 @@ module Hanami
       #
       # @since 1.0.0
       # @api private
-      def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize
+      #
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
+      def load!(repositories, &blk)
         rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
         rom.instance_eval(&blk)                            if     block_given?
         configure_gateway
         repositories.each(&:load!)
         self.logger = logger
+
+        # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
+        gateway.connection.tables
 
         container = ROM.container(rom)
         define_entities_mappings(container, repositories)
@@ -165,6 +174,8 @@ module Hanami
       rescue => e
         raise Hanami::Model::Error.for(e)
       end
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
 
       # @since 1.0.0
       # @api private

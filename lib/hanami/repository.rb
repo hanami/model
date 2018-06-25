@@ -4,7 +4,6 @@ require "rom-repository"
 require "hanami/model/entity_name"
 require "hanami/model/relation_name"
 require "hanami/model/mapped_relation"
-require "hanami/model/associations/dsl"
 require "hanami/model/association"
 require "hanami/utils/class"
 require "hanami/utils/class_attribute"
@@ -154,11 +153,11 @@ module Hanami
     #   end
     #
     # @since 1.2.0
-    def command(*args, **opts, &block)
+    def command(type, relation: root, **opts, &block)
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
       opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
 
-      super(*args, **opts, &block)
+      relation.command(type, **opts, &block)
     end
 
     # Define a database relation, which describes how data is fetched from the
@@ -168,10 +167,7 @@ module Hanami
     #
     # @since 0.7.0
     # @api private
-    #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
-    def self.define_relation
+    def self.define_relation # rubocop:disable Metrics/MethodLength
       a = @associations
       s = @schema
 
@@ -185,16 +181,8 @@ module Hanami
         end
       end
 
-      relations(relation)
       root(relation)
-      class_eval %{
-        def #{relation}
-          Hanami::Model::MappedRelation.new(@#{relation})
-        end
-      }, __FILE__, __LINE__ - 4
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
 
     # Defines the mapping between a database table and an entity.
     #
@@ -212,7 +200,7 @@ module Hanami
 
       blk = lambda do |_|
         model       e
-        register_as Model::MappedRelation.mapper_name
+        register_as :entity
         instance_exec(&m) unless m.nil?
       end
 
@@ -223,16 +211,6 @@ module Hanami
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
-
-    # It defines associations, by adding relations to the repository
-    #
-    # @since 0.7.0
-    # @api private
-    #
-    # @see Hanami::Model::Associations::Dsl
-    def self.define_associations
-      Model::Associations::Dsl.new(self, &@associations) unless @associations.nil?
-    end
 
     # Declare associations for the repository
     #
@@ -298,7 +276,6 @@ module Hanami
     def self.load!
       define_relation
       define_mapping
-      define_associations
     end
 
     # @since 0.7.0
@@ -309,7 +286,8 @@ module Hanami
     def self.inherited(klass)
       klass.class_eval do
         include Utils::ClassAttribute
-        auto_struct true
+
+        auto_struct false
 
         @associations = nil
         @mapping      = nil
@@ -328,7 +306,7 @@ module Hanami
         self.entity_name = Model::EntityName.new(name)
         self.relation    = Model::RelationName.new(name)
 
-        commands :create, update: :by_pk, delete: :by_pk, mapper: Model::MappedRelation.mapper_name, use: COMMAND_PLUGINS
+        commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
         prepend Commands
       end
 
@@ -418,8 +396,8 @@ module Hanami
     # @return [Hanami::Repository] the new instance
     #
     # @since 0.7.0
-    def initialize
-      super(self.class.container)
+    def self.new(container = self.container, options = {})
+      super
     end
 
     # Find by primary key
@@ -437,7 +415,7 @@ module Hanami
     #
     #   user       = repository.find(user.id)
     def find(id)
-      root.by_pk(id).as(:entity).one
+      root.by_pk(id).map_with(:entity).one
     rescue => e
       raise Hanami::Model::Error.for(e)
     end
@@ -451,7 +429,7 @@ module Hanami
     # @example
     #   UserRepository.new.all
     def all
-      root.as(:entity).to_a
+      root.map_with(:entity).to_a
     end
 
     # Returns the first record for the relation
@@ -463,7 +441,7 @@ module Hanami
     # @example
     #   UserRepository.new.first
     def first
-      root.as(:entity).limit(1).one
+      root.map_with(:entity).limit(1).one
     end
 
     # Returns the last record for the relation
@@ -475,7 +453,7 @@ module Hanami
     # @example
     #   UserRepository.new.last
     def last
-      root.as(:entity).limit(1).reverse.one
+      root.map_with(:entity).limit(1).reverse.one
     end
 
     # Deletes all the records from the relation

@@ -35,13 +35,13 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Time" do
   it "raises error for meaningless string" do
     input = "foo"
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "no time information in #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (no time information in #{input.inspect} failed)")
   end
 
   it "raises error for symbol" do
     input = :foo
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Time(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Time(): #{input.inspect} failed)")
   end
 
   it "coerces integer" do
@@ -54,13 +54,13 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Time" do
   it "raises error for float" do
     input = 3.14
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Time(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Time(): #{input.inspect} failed)")
   end
 
   it "raises error for bigdecimal" do
     input = BigDecimal(3.14, 10)
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Time(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Time(): #{input.inspect} failed)")
   end
 
   it "coerces date" do
@@ -87,12 +87,12 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Time" do
   it "raises error for array" do
     input = []
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Time(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Time(): #{input.inspect} failed)")
   end
 
   it "raises error for hash" do
     input = {}
     expect { described_class[input] }
-      .to raise_error(ArgumentError, "invalid value for Time(): #{input.inspect}")
+      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Time(): #{input.inspect} failed)")
   end
 end

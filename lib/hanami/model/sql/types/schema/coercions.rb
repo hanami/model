@@ -186,7 +186,7 @@ module Hanami
             def self.hash(arg)
               case arg
               when ::Hash
-                arg
+                Utils::Hash.deep_symbolize(arg)
               when ->(a) { a.respond_to?(:to_hash) }
                 Utils::Hash.deep_symbolize(
                   ::Kernel.Hash(arg)
