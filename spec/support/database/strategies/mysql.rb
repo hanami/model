@@ -88,7 +88,7 @@ module Database
       private
 
       def run_command(command)
-        system %(mysql -u #{ENV['HANAMI_DATABASE_USERNAME']} -e "#{command}")
+        system %(mysql -h #{ENV['HANAMI_DATABASE_HOST']} -u #{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} -e "#{command}")
       end
     end
   end
