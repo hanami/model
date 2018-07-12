@@ -36,7 +36,8 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] = 'travis'
+          ENV['HANAMI_DATABASE_USERNAME']   = 'travis' if ENV['TRAVIS']
+          ENV['HANAMI_DATABASE_USERNAME'] ||= 'root'   if ENV['CIRCLECI']
           ENV['HANAMI_DATABASE_URL'] = "mysql2://#{credentials}@#{host}/#{database_name}"
         end
 
