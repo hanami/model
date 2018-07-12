@@ -41,10 +41,10 @@ jobs:
          environment:
            DB=mysql
        - image: tkuchiki/delayed-mysql
-          environment:
-            MYSQL_ALLOW_EMPTY_PASSWORD=yes
-            MYSQL_ROOT_PASSWORD=''
-            MYSQL_DATABASE=hanami_model
+         environment:
+           MYSQL_ALLOW_EMPTY_PASSWORD=yes
+           MYSQL_ROOT_PASSWORD=''
+           MYSQL_DATABASE=hanami_model
     working_directory: ~/hanami-utils
     steps:
       - checkout
