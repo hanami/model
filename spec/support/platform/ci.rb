@@ -5,19 +5,19 @@ module Platform
     end
 
     def self.current
-      if    travisci?  then :travisci
-      elsif circleci?  then :circleci
+      if    travis?  then :travis
+      elsif circle?  then :circle
       end
     end
 
     class << self
       private
 
-      def travisci?
+      def travis?
         ENV['TRAVIS'] == 'true'
       end
 
-      def circleci?
+      def circle?
         ENV['CIRCLECI'] == 'true'
       end
     end
