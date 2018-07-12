@@ -43,6 +43,8 @@ module Database
 
         def create_database
           super
+          return if root?
+
           run_command "GRANT ALL PRIVILEGES ON *.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;"
           run_command "GRANT ALL PRIVILEGES ON *.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'%'; FLUSH PRIVILEGES;" if jruby?
         end
@@ -50,7 +52,7 @@ module Database
         private
 
         def run_command(command)
-          result = system %(mysql -u root -e "#{command}")
+          result = system %(mysql -h #{host} -u #{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} -e "#{command}")
           raise "Failed command:\n#{command}" unless result
         end
       end
@@ -82,13 +84,17 @@ module Database
       def create_database
         run_command "DROP DATABASE IF EXISTS #{database_name}"
         run_command "CREATE DATABASE #{database_name}"
-        run_command "GRANT ALL PRIVILEGES ON #{database_name}.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;"
+        run_command "GRANT ALL PRIVILEGES ON #{database_name}.* TO '#{ENV['HANAMI_DATABASE_USERNAME']}'@'#{host}'; FLUSH PRIVILEGES;" unless root?
       end
 
       private
 
       def run_command(command)
-        system %(mysql -h #{ENV['HANAMI_DATABASE_HOST']} -u #{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} -e "#{command}")
+        system %(mysql -h #{host} -u #{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} -e "#{command}")
+      end
+
+      def root?
+        ENV['HANAMI_DATABASE_USERNAME'] == 'root'
       end
     end
   end
