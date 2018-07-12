@@ -25,7 +25,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle --with=sqlite
+            bundle install --jobs=4 --retry=3 --path vendor/bundle --without=postgres,mysql
       - save_cache:
           paths:
             - ./vendor/bundle
