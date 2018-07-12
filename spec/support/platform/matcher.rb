@@ -22,9 +22,9 @@ module Platform
       end
     end
 
-    def self.match?(os: Os.current, engine: Engine.current, db: Db.current) # rubocop:disable Naming/UncommunicativeMethodParamName
+    def self.match?(os: Os.current, ci: Ci.current, engine: Engine.current, db: Db.current) # rubocop:disable Naming/UncommunicativeMethodParamName
       catch :match do
-        new.os(os).engine(engine).db(db) { true }.or(false)
+        new.os(os).ci(ci).engine(engine).db(db) { true }.or(false)
       end
     end
 
@@ -34,6 +34,11 @@ module Platform
 
     def os(name, &blk)
       return nope unless os?(name)
+      block_given? ? resolve(&blk) : yep
+    end
+
+    def ci(name, &blk)
+      return nope unless ci?(name)
       block_given? ? resolve(&blk) : yep
     end
 
@@ -71,6 +76,10 @@ module Platform
 
     def os?(name)
       Os.os?(name)
+    end
+
+    def ci?(name)
+      Ci.ci?(name)
     end
 
     def engine?(name)
