@@ -8,7 +8,7 @@ jobs:
     docker:
        - image: hanami/ruby-2.5
          environment:
-           DB=sqlite
+           DB: sqlite
     working_directory: ~/hanami-utils
     steps:
       - checkout
@@ -39,13 +39,13 @@ jobs:
     docker:
        - image: hanami/ruby-2.5
          environment:
-           DB=mysql
-           HANAMI_DATABASE_USERNAME=root
-           HANAMI_DATABASE_PASSWORD=hanami
-           HANAMI_DATABASE_HOST=127.0.0.1
+           DB: mysql
+           HANAMI_DATABASE_USERNAME: root
+           HANAMI_DATABASE_PASSWORD: hanami
+           HANAMI_DATABASE_HOST: 127.0.0.1
        - image: cytopia/mysql-5.7
          environment:
-           MYSQL_ROOT_PASSWORD=hanami
+           MYSQL_ROOT_PASSWORD: hanami
     working_directory: ~/hanami-utils
     steps:
       - checkout
