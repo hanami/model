@@ -8,17 +8,13 @@ end
 
 gem 'hanami-utils', '~> 1.2', require: false, git: 'https://github.com/hanami/utils.git', branch: 'master'
 
-platforms :ruby do
-  gem 'sqlite3', require: false
-  gem 'pg',      require: false
-  gem 'mysql2',  require: false
-end
+gem 'sqlite3', require: false, platforms: :mri, group: :sqlite
+gem 'pg',      require: false, platforms: :mri, group: :postgres
+gem 'mysql2',  require: false, platforms: :mri, group: :mysql
 
-platforms :jruby do
-  gem 'jdbc-sqlite3',  require: false
-  gem 'jdbc-postgres', require: false
-  gem 'jdbc-mysql',    require: false
-end
+gem 'jdbc-sqlite3',  require: false, platforms: :jruby, group: :sqlite
+gem 'jdbc-postgres', require: false, platforms: :jruby, group: :postgres
+gem 'jdbc-mysql',    require: false, platforms: :jruby, group: :mysql
 
 gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git'
 gem 'simplecov', require: false
