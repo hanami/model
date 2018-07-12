@@ -41,10 +41,10 @@ jobs:
          environment:
            DB=mysql
        - image: tkuchiki/delayed-mysql
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: hanami_model
+          environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD=yes
+            MYSQL_ROOT_PASSWORD=''
+            MYSQL_DATABASE=hanami_model
     working_directory: ~/hanami-utils
     steps:
       - checkout
@@ -62,9 +62,8 @@ jobs:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-
       - run:
-          name: Wait for DB
+          name: wait for db
           # preinstalled in circleci/* docker image
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
       # run tests!
