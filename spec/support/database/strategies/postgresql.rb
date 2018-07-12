@@ -24,7 +24,7 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] = 'postgres'
+          ENV['HANAMI_DATABASE_USERNAME'] = 'postgres' if ENV['TRAVIS']
         end
       end
 
@@ -58,7 +58,7 @@ module Database
         super
         ENV['HANAMI_DATABASE_TYPE'] = 'postgresql'
         ENV['HANAMI_DATABASE_URL'] = "postgres://#{host}/#{database_name}"
-        ENV['HANAMI_DATABASE_USERNAME'] = `whoami`.strip.freeze
+        ENV['HANAMI_DATABASE_USERNAME'] ||= `whoami`.strip.freeze
       end
 
       private
