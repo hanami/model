@@ -83,7 +83,7 @@ module Database
       def initialize
         ci_implementation = Platform.match do
           ci(:travis) { TravisCiImplementation }
-          ci(:circle) { CircleCIImplementation }
+          ci(:circle) { CircleCiImplementation }
           default { Module.new }
         end
 
