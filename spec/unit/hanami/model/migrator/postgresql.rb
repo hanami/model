@@ -321,6 +321,7 @@ RSpec.shared_examples 'migrator_postgresql' do
 
           expect(actual).to include <<~SQL
             CREATE SEQUENCE public.reviews_id_seq
+                AS integer
                 START WITH 1
                 INCREMENT BY 1
                 NO MINVALUE
