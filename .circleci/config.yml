@@ -9,7 +9,7 @@ jobs:
        - image: hanami/ruby-2.5
          environment:
            DB: sqlite
-    working_directory: ~/hanami-utils
+    working_directory: ~/hanami-model
     steps:
       - checkout
       # Download and cache dependencies
@@ -46,7 +46,7 @@ jobs:
        - image: cytopia/mysql-5.7
          environment:
            MYSQL_ROOT_PASSWORD: hanami
-    working_directory: ~/hanami-utils
+    working_directory: ~/hanami-model
     steps:
       - checkout
       # Download and cache dependencies
@@ -87,7 +87,7 @@ jobs:
        - image: postgres:10-alpine
          environment:
            POSTGRES_PASSWORD: hanami
-    working_directory: ~/hanami-utils
+    working_directory: ~/hanami-model
     steps:
       - checkout
       # Download and cache dependencies
