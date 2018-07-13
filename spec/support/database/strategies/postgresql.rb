@@ -15,7 +15,8 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:postgresql://#{credentials}@#{host}/#{database_name}"
+          ENV['HANAMI_DATABASE_PORT'] ||= 5432
+          ENV['HANAMI_DATABASE_URL'] = "jdbc:postgresql://#{credentials}@#{host}:#{ENV['HANAMI_DATABASE_PORT']}/#{database_name}"
         end
       end
 

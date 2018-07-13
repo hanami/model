@@ -84,6 +84,7 @@ jobs:
            HANAMI_DATABASE_USERNAME: postgres
            HANAMI_DATABASE_PASSWORD: hanami
            HANAMI_DATABASE_HOST: 127.0.0.1
+           HANAMI_DATABASE_PORT: 5432
        - image: postgres:10-alpine
          environment:
            POSTGRES_PASSWORD: hanami
@@ -200,6 +201,7 @@ jobs:
            HANAMI_DATABASE_USERNAME: postgres
            HANAMI_DATABASE_PASSWORD: hanami
            HANAMI_DATABASE_HOST: 127.0.0.1
+           HANAMI_DATABASE_PORT: 5432
        - image: postgres:10-alpine
          environment:
            POSTGRES_PASSWORD: hanami
