@@ -46,19 +46,19 @@ module Database
 
       def create_database
         try("Failed to drop Postgres database: #{database_name}") do
-          system "dropdb #{database_name}"
+          system "dropdb --host=#{ENV['HANAMI_DATABASE_HOST']} --username=#{ENV['HANAMI_DATABASE_USERNAME']} --if-exists #{database_name}"
         end
 
         try("Failed to create Postgres database: #{database_name}") do
-          system "createdb #{database_name}"
+          system "createdb --host=#{ENV['HANAMI_DATABASE_HOST']} --username=#{ENV['HANAMI_DATABASE_USERNAME']} #{database_name}"
         end
       end
 
       def export_env
         super
         ENV['HANAMI_DATABASE_TYPE'] = 'postgresql'
-        ENV['HANAMI_DATABASE_URL'] = "postgres://#{host}/#{database_name}"
         ENV['HANAMI_DATABASE_USERNAME'] ||= `whoami`.strip.freeze
+        ENV['HANAMI_DATABASE_URL'] = "postgres://#{credentials}@#{host}/#{database_name}"
       end
 
       private
