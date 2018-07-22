@@ -7,7 +7,7 @@ rvm:
   - 2.3.7
   - 2.4.4
   - 2.5.1
-  - jruby-9.1.9.0
+  - jruby-9.2.0.0
   - ruby-head
   - jruby-head
 env:
@@ -16,7 +16,7 @@ env:
   - DB=mysql
 
 addons:
-  postgresql: '9.4'
+  postgresql: '9.6'
 
 matrix:
   allow_failures:
