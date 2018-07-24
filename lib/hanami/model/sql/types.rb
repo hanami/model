@@ -95,7 +95,7 @@ module Hanami
           # @since 1.0.2
           # @api private
           def self.pg_json?(pristine)
-            pristine == pg_json_pristines['JSONB'.freeze] ||
+            pristine == pg_json_pristines['JSONB'.freeze] || # rubocop:disable Style/MultipleComparison
               pristine == pg_json_pristines['JSON'.freeze]
           end
 
