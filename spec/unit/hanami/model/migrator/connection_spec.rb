@@ -31,6 +31,38 @@ RSpec.describe Hanami::Model::Migrator::Connection do
       it "returns configured host" do
         expect(connection.host).to eq("127.0.0.1")
       end
+
+      describe "when the host is only specified in the URI" do
+        let(:url) { "postgresql://127.0.0.1/database" }
+
+        it "returns configured host" do
+          expect(connection.host).to eq("127.0.0.1")
+        end
+      end
+
+      describe "when the host is only specified in the query" do
+        let(:url) { "postgresql:///database?host=0.0.0.0" }
+
+        it "returns the host specified in the query param" do
+          expect(connection.host).to eql("0.0.0.0")
+        end
+      end
+
+      describe "when the host is specified as a socket" do
+        let(:url) { "postgresql:///database?host=/path/to/my/sock" }
+
+        it "returns the path to the socket specified in the query param" do
+          expect(connection.host).to eql("/path/to/my/sock")
+        end
+      end
+
+      describe "when the host is specified in both the URI and query" do
+        let(:url) { "postgresql://127.0.0.1/database?host=0.0.0.0" }
+
+        it "prefers the host from the URI" do
+          expect(connection.host).to eql("127.0.0.1")
+        end
+      end
     end
 
     describe "#port" do
