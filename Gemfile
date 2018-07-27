@@ -17,5 +17,3 @@ gem 'jdbc-postgres', require: false, platforms: :jruby, group: :postgres
 gem 'jdbc-mysql',    require: false, platforms: :jruby, group: :mysql
 
 gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git'
-gem 'simplecov', require: false
-gem 'codecov',   require: false
