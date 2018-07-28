@@ -1,0 +1,130 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  "ruby-2.5:sqlite":
+    docker:
+       - image: hanami/ruby-2.5
+         environment:
+           DB: sqlite
+    working_directory: ~/hanami-model
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: install SQLite3
+          command: |
+            sudo apt install -y sqlite3
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            ./script/ci
+  "ruby-2.5:mysql":
+    docker:
+       - image: hanami/ruby-2.5
+         environment:
+           DB: mysql
+           HANAMI_DATABASE_USERNAME: root
+           HANAMI_DATABASE_PASSWORD: hanami
+           HANAMI_DATABASE_HOST: 127.0.0.1
+       - image: cytopia/mysql-5.7
+         environment:
+           MYSQL_ROOT_PASSWORD: hanami
+    working_directory: ~/hanami-model
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: install MySQL client
+          command: |
+            sudo apt install -y mysql-client
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: wait for db
+          # preinstalled in circleci/* docker image
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            ./script/ci
+  "ruby-2.5:postgresql":
+    docker:
+       - image: hanami/ruby-2.5
+         environment:
+           DB: postgresql
+           HANAMI_DATABASE_USERNAME: postgres
+           HANAMI_DATABASE_PASSWORD: hanami
+           HANAMI_DATABASE_HOST: 127.0.0.1
+       - image: postgres:10-alpine
+         environment:
+           POSTGRES_PASSWORD: hanami
+    working_directory: ~/hanami-model
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: install PostgreSQL client
+          command: |
+            wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+            sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+            sudo apt-get update
+            sudo apt install -y postgresql-contrib
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: wait for db
+          # preinstalled in circleci/* docker image
+          command: dockerize -wait tcp://127.0.0.1:5432 -timeout 120s
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            ./script/ci
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "ruby-2.5:sqlite"
+      - "ruby-2.5:mysql"
+      - "ruby-2.5:postgresql"

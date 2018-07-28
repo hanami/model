@@ -2,12 +2,13 @@
 
 module Platform
   require_relative "platform/os"
+  require_relative "platform/ci"
   require_relative "platform/engine"
   require_relative "platform/db"
   require_relative "platform/matcher"
 
   def self.ci?
-    ENV["TRAVIS"] == "true"
+    !Ci.current.nil?
   end
 
   def self.match(&blk)

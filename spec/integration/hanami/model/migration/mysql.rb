@@ -394,8 +394,8 @@ RSpec.shared_examples "migration_integration_mysql" do
       expect(options.fetch(:allow_null)).to eq(false)
 
       expected = Platform.match do
-        os(:linux) { "0" }
-        os(:macos) { nil }
+        ci(:travis) { "0" }
+        default     { nil }
       end
 
       expect(options.fetch(:default)).to eq(expected)
@@ -411,8 +411,8 @@ RSpec.shared_examples "migration_integration_mysql" do
       expect(options.fetch(:allow_null)).to eq(false)
 
       expected = Platform.match do
-        os(:linux) { "0" }
-        os(:macos) { nil }
+        ci(:travis) { "0" }
+        default     { nil }
       end
 
       expect(options.fetch(:default)).to eq(expected)

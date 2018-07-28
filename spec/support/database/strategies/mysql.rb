@@ -33,7 +33,7 @@ module Database
         end
       end
 
-      module CiImplementation
+      module TravisCiImplementation
         protected
 
         def export_env
@@ -56,12 +56,40 @@ module Database
         end
       end
 
+      module CircleCiImplementation
+        protected
+
+        def export_env
+          super
+          ENV["HANAMI_DATABASE_USERNAME"] ||= "root"
+          ENV["HANAMI_DATABASE_URL"] = "mysql2://#{credentials}@#{host}/#{database_name}"
+        end
+
+        def create_database
+          run_command "DROP DATABASE IF EXISTS #{database_name}"
+          run_command "CREATE DATABASE #{database_name}"
+        end
+
+        private
+
+        def run_command(command)
+          result = system %(mysql -h #{host} -u #{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} -e "#{command}")
+          raise "Failed command:\n#{command}" unless result
+        end
+      end
+
       def self.eligible?(adapter)
         adapter.start_with?("mysql")
       end
 
       def initialize
-        extend(CiImplementation)    if ci?
+        ci_implementation = Platform.match do
+          ci(:travis) { TravisCiImplementation }
+          ci(:circle) { CircleCiImplementation }
+          default { Module.new }
+        end
+
+        extend(ci_implementation)
         extend(JrubyImplementation) if jruby?
       end
 

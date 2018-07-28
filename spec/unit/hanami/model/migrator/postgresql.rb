@@ -309,52 +309,108 @@ RSpec.shared_examples "migrator_postgresql" do
         migrator.apply
         actual = schema.read
 
-        expect(actual).to include <<~SQL
-          CREATE TABLE reviews (
-              id integer NOT NULL,
-              title text NOT NULL,
-              rating integer DEFAULT 0
-          );
-        SQL
+        if actual =~ /public\.reviews/
+          #
+          # POSTGRESQL 10
+          #
+          expect(actual).to include <<~SQL
+            CREATE TABLE public.reviews (
+                id integer NOT NULL,
+                title text NOT NULL,
+                rating integer DEFAULT 0
+            );
+          SQL
 
-        expect(actual).to include <<~SQL
-          CREATE SEQUENCE reviews_id_seq
-              START WITH 1
-              INCREMENT BY 1
-              NO MINVALUE
-              NO MAXVALUE
-              CACHE 1;
-        SQL
+          expect(actual).to include <<~SQL
+            CREATE SEQUENCE public.reviews_id_seq
+                AS integer
+                START WITH 1
+                INCREMENT BY 1
+                NO MINVALUE
+                NO MAXVALUE
+                CACHE 1;
+          SQL
 
-        expect(actual).to include <<~SQL
-          ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
-        SQL
+          expect(actual).to include <<~SQL
+            ALTER SEQUENCE public.reviews_id_seq OWNED BY public.reviews.id;
+          SQL
 
-        expect(actual).to include <<~SQL
-          ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
-        SQL
+          expect(actual).to include <<~SQL
+            ALTER TABLE ONLY public.reviews ALTER COLUMN id SET DEFAULT nextval('public.reviews_id_seq'::regclass);
+          SQL
 
-        expect(actual).to include <<~SQL
-          ALTER TABLE ONLY reviews
-              ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
-        SQL
+          expect(actual).to include <<~SQL
+            ALTER TABLE ONLY public.reviews
+                ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
+          SQL
 
-        expect(actual).to include <<~SQL
-          CREATE TABLE schema_migrations (
-              filename text NOT NULL
-          );
-        SQL
+          expect(actual).to include <<~SQL
+            CREATE TABLE public.schema_migrations (
+                filename text NOT NULL
+            );
+          SQL
 
-        expect(actual).to include <<~SQL
-          COPY schema_migrations (filename) FROM stdin;
-          20160831073534_create_reviews.rb
-          20160831090612_add_rating_to_reviews.rb
-        SQL
+          expect(actual).to include <<~SQL
+            COPY public.schema_migrations (filename) FROM stdin;
+            20160831073534_create_reviews.rb
+            20160831090612_add_rating_to_reviews.rb
+          SQL
 
-        expect(actual).to include <<~SQL
-          ALTER TABLE ONLY schema_migrations
-              ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
-        SQL
+          expect(actual).to include <<~SQL
+            ALTER TABLE ONLY public.schema_migrations
+                ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
+          SQL
+        else
+          #
+          # POSTGRESQL 9
+          #
+          expect(actual).to include <<~SQL
+            CREATE TABLE reviews (
+                id integer NOT NULL,
+                title text NOT NULL,
+                rating integer DEFAULT 0
+            );
+          SQL
+
+          expect(actual).to include <<~SQL
+            CREATE SEQUENCE reviews_id_seq
+                START WITH 1
+                INCREMENT BY 1
+                NO MINVALUE
+                NO MAXVALUE
+                CACHE 1;
+          SQL
+
+          expect(actual).to include <<~SQL
+            ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
+          SQL
+
+          expect(actual).to include <<~SQL
+            ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
+          SQL
+
+          expect(actual).to include <<~SQL
+            ALTER TABLE ONLY reviews
+                ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
+          SQL
+
+          expect(actual).to include <<~SQL
+            CREATE TABLE schema_migrations (
+                filename text NOT NULL
+            );
+          SQL
+
+          expect(actual).to include <<~SQL
+            COPY schema_migrations (filename) FROM stdin;
+            20160831073534_create_reviews.rb
+            20160831090612_add_rating_to_reviews.rb
+          SQL
+
+          expect(actual).to include <<~SQL
+            ALTER TABLE ONLY schema_migrations
+                ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
+          SQL
+        end
       end
 
       it "deletes all the migrations" do
