@@ -28,9 +28,13 @@ RSpec.shared_examples 'migrator_mysql' do
 
     let(:url) do
       db = database
+      credentials = [
+        ENV['HANAMI_DATABASE_USERNAME'],
+        ENV['HANAMI_DATABASE_PASSWORD']
+      ].compact.join(":")
 
       Platform.match do
-        engine(:ruby)  { "mysql2://localhost/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+        engine(:ruby) { "mysql2://#{credentials}@#{ENV['HANAMI_DATABASE_HOST']}/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
         engine(:jruby) { "jdbc:mysql://localhost/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}&useSSL=false" }
       end
     end
