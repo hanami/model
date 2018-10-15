@@ -299,7 +299,7 @@ module Hanami
 
         Hanami::Utils::IO.silence_warnings do
           def self.relation=(name)
-            @relation = name.to_sym
+            class_attributes[:relation] = name.to_sym
           end
         end
 
