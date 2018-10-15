@@ -125,6 +125,7 @@ module Hanami
       # @api private
       def logger=(value)
         return if value.nil?
+
         gateway.use_logger(@logger = value)
       end
 
@@ -137,6 +138,7 @@ module Hanami
         @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
       rescue => e
         raise UnknownDatabaseAdapterError.new(@url) if e.message =~ /adapters/
+
         raise e
       end
 
