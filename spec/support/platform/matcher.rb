@@ -36,21 +36,25 @@ module Platform
 
     def os(name, &blk)
       return nope unless os?(name)
+
       block_given? ? resolve(&blk) : yep
     end
 
     def ci(name, &blk)
       return nope unless ci?(name)
+
       block_given? ? resolve(&blk) : yep
     end
 
     def engine(name, &blk)
       return nope unless engine?(name)
+
       block_given? ? resolve(&blk) : yep
     end
 
     def db(name, &blk)
       return nope unless db?(name)
+
       block_given? ? resolve(&blk) : yep
     end
 

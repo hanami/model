@@ -55,6 +55,7 @@ module Hanami
       # @api private
       def url
         raise Hanami::Model::UnknownDatabaseAdapterError.new(@url) if Utils::Blank.blank?(@url)
+
         @url
       end
 
@@ -138,6 +139,7 @@ module Hanami
       # @api private
       def logger=(value)
         return if value.nil?
+
         gateway.use_logger(@logger = value)
       end
 

@@ -96,6 +96,7 @@ module Hanami
       # @api private
       def schema=(value)
         return if defined?(@attributes)
+
         @schema = value
       end
 

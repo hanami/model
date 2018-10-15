@@ -34,6 +34,7 @@ module Hanami
           # @api private
           def [](value)
             return @input[value] unless timestamps?
+
             _touch(@input[value], Time.now)
           end
 

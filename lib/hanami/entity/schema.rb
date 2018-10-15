@@ -167,6 +167,7 @@ module Hanami
         # @api private
         def initialize(type = nil, &blk)
           raise LocalJumpError unless block_given?
+
           @attributes, @schema = Dsl.build(type, &blk)
           @attributes = Hash[@attributes.map { |k, _| [k, true] }]
           freeze

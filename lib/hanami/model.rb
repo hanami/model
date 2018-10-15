@@ -73,6 +73,7 @@ module Hanami
     # @api private
     def self.container
       raise "Not loaded" unless loaded?
+
       @container
     end
 
