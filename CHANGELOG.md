@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.3.0.beta1 - 2018-08-08
+### Fixed
+- [Luca Guidi] Print meaningful error message when connection URL is misconfigured (eg. `Unknown database adapter for URL: "". Please check your database configuration (hint: ENV['DATABASE_URL']).`)
+
 ## v1.2.0 - 2018-04-11
 
 ## v1.2.0.rc2 - 2018-04-06
