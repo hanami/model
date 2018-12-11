@@ -38,26 +38,26 @@ module Hanami
           # @since 0.7.0
           # @api private
           MAPPING = {
-            Types::String.pristine            => Schema::String,
-            Types::Int.pristine               => Schema::Int,
-            Types::Float.pristine             => Schema::Float,
-            Types::Decimal.pristine           => Schema::Decimal,
-            Types::Bool.pristine              => Schema::Bool,
-            Types::Date.pristine              => Schema::Date,
-            Types::DateTime.pristine          => Schema::DateTime,
-            Types::Time.pristine              => Schema::Time,
-            Types::Array.pristine             => Schema::Array,
-            Types::Hash.pristine              => Schema::Hash,
-            Types::String.optional.pristine   => Schema::String,
-            Types::Int.optional.pristine      => Schema::Int,
-            Types::Float.optional.pristine    => Schema::Float,
-            Types::Decimal.optional.pristine  => Schema::Decimal,
-            Types::Bool.optional.pristine     => Schema::Bool,
-            Types::Date.optional.pristine     => Schema::Date,
+            Types::String.pristine => Schema::String,
+            Types::Int.pristine => Schema::Int,
+            Types::Float.pristine => Schema::Float,
+            Types::Decimal.pristine => Schema::Decimal,
+            Types::Bool.pristine => Schema::Bool,
+            Types::Date.pristine => Schema::Date,
+            Types::DateTime.pristine => Schema::DateTime,
+            Types::Time.pristine => Schema::Time,
+            Types::Array.pristine => Schema::Array,
+            Types::Hash.pristine => Schema::Hash,
+            Types::String.optional.pristine => Schema::String,
+            Types::Int.optional.pristine => Schema::Int,
+            Types::Float.optional.pristine => Schema::Float,
+            Types::Decimal.optional.pristine => Schema::Decimal,
+            Types::Bool.optional.pristine => Schema::Bool,
+            Types::Date.optional.pristine => Schema::Date,
             Types::DateTime.optional.pristine => Schema::DateTime,
-            Types::Time.optional.pristine     => Schema::Time,
-            Types::Array.optional.pristine    => Schema::Array,
-            Types::Hash.optional.pristine     => Schema::Hash
+            Types::Time.optional.pristine => Schema::Time,
+            Types::Array.optional.pristine => Schema::Array,
+            Types::Hash.optional.pristine => Schema::Hash
           }.freeze
 
           # Convert given type into coercible
@@ -88,9 +88,7 @@ module Hanami
           # @api private
           def self.pg_json_pristines
             @pg_json_pristines ||= ::Hash.new do |hash, type|
-              hash[type] = if defined?(ROM::SQL::Types::PG)
-                             ROM::SQL::Types::PG.const_get(type).pristine
-                           end
+              hash[type] = (ROM::SQL::Types::PG.const_get(type).pristine if defined?(ROM::SQL::Types::PG))
             end
           end
 

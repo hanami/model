@@ -12,7 +12,7 @@ module Hanami
     class EntityName
       # @since 0.7.0
       # @api private
-      SUFFIX = /Repository\z/
+      SUFFIX = /Repository\z/.freeze
 
       # @param name [Class,String] the class or its name
       # @return [String] the entity name
