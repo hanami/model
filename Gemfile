@@ -6,7 +6,7 @@ unless ENV['CI']
   gem 'yard',   require: false
 end
 
-gem 'hanami-utils', '~> 1.3', require: false, git: 'https://github.com/hanami/utils.git', branch: 'master'
+gem 'hanami-utils', '~> 1.3', require: false, git: 'https://github.com/hanami/utils.git', branch: 'develop'
 
 gem 'sqlite3', require: false, platforms: :mri, group: :sqlite
 gem 'pg',      require: false, platforms: :mri, group: :postgres
