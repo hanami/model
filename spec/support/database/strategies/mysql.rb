@@ -22,9 +22,9 @@ module Database
 
         def credentials
           Hash[
-            'user'     => ENV['HANAMI_DATABASE_USERNAME'],
+            'user' => ENV['HANAMI_DATABASE_USERNAME'],
             'password' => ENV['HANAMI_DATABASE_PASSWORD'],
-            'useSSL'   => 'false'
+            'useSSL' => 'false'
           ].map do |key, value|
             "#{key}=#{value}" unless Hanami::Utils::Blank.blank?(value)
           end.compact.join('&')

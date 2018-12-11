@@ -124,7 +124,7 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        MIGRATIONS_FILE_NAME_PATTERN = /\A[\d]{14}/
+        MIGRATIONS_FILE_NAME_PATTERN = /\A[\d]{14}/.freeze
 
         # @since 1.1.0
         # @api private
