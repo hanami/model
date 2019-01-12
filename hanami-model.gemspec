@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "hanami-utils",    "~> 2.0.alpha"
   spec.add_runtime_dependency "rom",             "~> 4.2"
-  spec.add_runtime_dependency "rom-sql",         "~> 2.4"
+  spec.add_runtime_dependency "rom-sql",         "~> 2.5"
   spec.add_runtime_dependency "rom-repository",  "~> 2.0"
   spec.add_runtime_dependency "dry-types",       "~> 0.12"
   spec.add_runtime_dependency "dry-inflector",   "~> 0.1"
