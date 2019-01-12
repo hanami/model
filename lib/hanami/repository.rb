@@ -230,7 +230,6 @@ module Hanami
 
         class_attribute :entity
         class_attribute :entity_name
-        class_attribute :relation
 
         Hanami::Utils::IO.silence_warnings do
           def self.relation=(name)
@@ -240,6 +239,7 @@ module Hanami
 
         self.entity_name = Model::EntityName.new(name)
         self.relation    = Model::RelationName.new(name)
+
 
         commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
         prepend Commands
