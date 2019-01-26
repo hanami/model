@@ -309,7 +309,7 @@ RSpec.shared_examples "migrator_postgresql" do
         migrator.apply
         actual = schema.read
 
-        if actual =~ /public\.reviews/
+        if /public\.reviews/.match?(actual)
           #
           # POSTGRESQL 10
           #
