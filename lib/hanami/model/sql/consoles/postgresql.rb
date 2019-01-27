@@ -74,7 +74,7 @@ module Hanami
             return {} if @uri.query.nil? || @uri.query.empty?
 
             parsed_query = @uri.query.split("&").map { |a| a.split("=") }
-            @query ||= Hash[parsed_query]
+            @query ||= ::Hash[parsed_query]
           end
         end
       end

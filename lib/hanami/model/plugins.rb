@@ -15,7 +15,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def initialize(_relation, input)
-          @input = input || Hash
+          @input = input || ::Hash
         end
       end
 

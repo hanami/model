@@ -36,7 +36,7 @@ module Hanami
           def initialize(registry, relation, mapping)
             attributes  = build(registry, relation, mapping)
             @schema     = Types::Coercible::Hash.schema(attributes)
-            @attributes = Hash[attributes.map { |k, _| [k, true] }]
+            @attributes = ::Hash[attributes.map { |k, _| [k, true] }]
             freeze
           end
 
