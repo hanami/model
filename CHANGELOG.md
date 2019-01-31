@@ -1,6 +1,10 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.3.2 - 2019-01-31
+### Fixed
+- [Luca Guidi] Depend on `dry-logic` `~> 0.4.2`, `< 0.5`
+
 ## v1.3.1 - 2019-01-18
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 2.6
