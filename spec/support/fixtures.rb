@@ -91,7 +91,7 @@ end
 class Label < Hanami::Entity
 end
 
-class PostRepository < Hanami::Repository
+class PostRepository < Hanami::Repository[:posts]
   associations do
     belongs_to :user, as: :author
     has_many :comments
@@ -119,7 +119,7 @@ class PostRepository < Hanami::Repository
   end
 end
 
-class CommentRepository < Hanami::Repository
+class CommentRepository < Hanami::Repository[:comments]
   associations do
     belongs_to :post
     belongs_to :user
@@ -130,7 +130,7 @@ class CommentRepository < Hanami::Repository
   end
 end
 
-class AvatarRepository < Hanami::Repository
+class AvatarRepository < Hanami::Repository[:avatars]
   associations do
     belongs_to :user
   end
@@ -140,7 +140,7 @@ class AvatarRepository < Hanami::Repository
   end
 end
 
-class UserRepository < Hanami::Repository
+class UserRepository < Hanami::Repository[:users]
   associations do
     has_one :avatar
     has_many :posts, as: :threads
@@ -208,10 +208,7 @@ class UserRepository < Hanami::Repository
   end
 end
 
-class AvatarRepository < Hanami::Repository
-end
-
-class AuthorRepository < Hanami::Repository
+class AuthorRepository < Hanami::Repository[:authors]
   associations do
     has_many :books
   end
@@ -271,14 +268,14 @@ class AuthorRepository < Hanami::Repository
   end
 end
 
-class BookOntologyRepository < Hanami::Repository
+class BookOntologyRepository < Hanami::Repository[:book_ontologies]
   associations do
     belongs_to :books
     belongs_to :categories
   end
 end
 
-class CategoryRepository < Hanami::Repository
+class CategoryRepository < Hanami::Repository[:categories]
   associations do
     has_many :books, through: :book_ontologies
   end
@@ -308,7 +305,7 @@ class CategoryRepository < Hanami::Repository
   end
 end
 
-class BookRepository < Hanami::Repository
+class BookRepository < Hanami::Repository[:books]
   associations do
     belongs_to :author
     has_many :categories, through: :book_ontologies
@@ -339,29 +336,26 @@ class BookRepository < Hanami::Repository
   end
 end
 
-class OperatorRepository < Hanami::Repository
-  self.relation = :t_operator
-
+class OperatorRepository < Hanami::Repository[:t_operator]
   mapping do
     attribute :id,   from: :operator_id
     attribute :name, from: :s_name
   end
 end
 
-class AccessTokenRepository < Hanami::Repository
-  self.relation = "tokens"
+class AccessTokenRepository < Hanami::Repository[:tokens]
 end
 
-class SourceFileRepository < Hanami::Repository
+class SourceFileRepository < Hanami::Repository[:source_files]
 end
 
-class WarehouseRepository < Hanami::Repository
+class WarehouseRepository < Hanami::Repository[:warehouses]
 end
 
-class ProductRepository < Hanami::Repository
+class ProductRepository < Hanami::Repository[:products]
 end
 
-class ColorRepository < Hanami::Repository
+class ColorRepository < Hanami::Repository[:colors]
   schema do
     attribute :id,         Hanami::Model::Sql::Types::Int
     attribute :name,       Hanami::Model::Sql::Types::String
@@ -370,7 +364,7 @@ class ColorRepository < Hanami::Repository
   end
 end
 
-class LabelRepository < Hanami::Repository
+class LabelRepository < Hanami::Repository[:labels]
 end
 
 Hanami::Model.load!

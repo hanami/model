@@ -218,35 +218,36 @@ module Hanami
     #
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
-    def self.inherited(klass)
-      klass.class_eval do
-        include Utils::ClassAttribute
+    def self.[](relation_name)
+      Class.new(Hanami::Repository) do
+        self.root relation_name
+        def self.inherited(klass)
+          klass.class_eval <<~CODE
+            include Utils::ClassAttribute
 
-        auto_struct false
+            auto_struct false
 
-        @associations = nil
-        @mapping      = nil
-        @schema       = nil
+            @associations = nil
+            @mapping = nil
+            @schema = nil
 
-        class_attribute :entity
-        class_attribute :entity_name
+            class_attribute :entity
+            class_attribute :entity_name
+            class_attribute :relation
 
-        Hanami::Utils::IO.silence_warnings do
-          def self.relation=(name)
-            class_attributes[:relation] = name.to_sym
-          end
+            self.entity_name = Model::EntityName.new(name)
+            self.relation = :#{self.root}
+
+
+            commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
+            prepend Commands
+          CODE
+
+          Hanami::Model.repositories << klass
         end
-
-        self.entity_name = Model::EntityName.new(name)
-        self.relation    = Model::RelationName.new(name)
-
-
-        commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
-        prepend Commands
       end
-
-      Hanami::Model.repositories << klass
     end
+
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
