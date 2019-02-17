@@ -221,7 +221,7 @@ module Hanami
       Class.new(Hanami::Repository) do
         root relation_name
         def self.inherited(klass)
-          klass.class_eval <<~CODE
+          klass.class_eval <<~CODE, __FILE__, __LINE__ + 1
             include Utils::ClassAttribute
 
             auto_struct false
