@@ -217,10 +217,9 @@ module Hanami
     # @api private
     #
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def self.[](relation_name)
       Class.new(Hanami::Repository) do
-        self.root relation_name
+        root relation_name
         def self.inherited(klass)
           klass.class_eval <<~CODE
             include Utils::ClassAttribute
@@ -236,7 +235,7 @@ module Hanami
             class_attribute :relation
 
             self.entity_name = Model::EntityName.new(name)
-            self.relation = :#{self.root}
+            self.relation = :#{root}
 
 
             commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
@@ -248,7 +247,6 @@ module Hanami
       end
     end
 
-    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
     # Extend commands from ROM::Repository with error management
