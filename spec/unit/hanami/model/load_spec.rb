@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Hanami::Model.load!" do
+RSpec.describe "Hanami::Model.configuration.load!" do
   let(:message) { "Cannot find corresponding type for form" }
 
   before do
@@ -8,6 +8,6 @@ RSpec.describe "Hanami::Model.load!" do
   end
 
   it "raises unknown database error when repository automapping spots an unknown type" do
-    expect { Hanami::Model.load! }.to raise_error(Hanami::Model::UnknownDatabaseTypeError, message)
+    expect { Hanami::Model.configuration.load!(Hanami::Model.repositories) }.to raise_error(Hanami::Model::UnknownDatabaseTypeError, message)
   end
 end

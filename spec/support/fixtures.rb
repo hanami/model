@@ -367,4 +367,4 @@ end
 class LabelRepository < Hanami::Repository[:labels]
 end
 
-Hanami::Model.load!
+Hanami::Model.configuration.load!(Hanami::Model.repositories)

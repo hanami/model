@@ -77,12 +77,6 @@ module Hanami
       @container
     end
 
-    # @since 0.1.0
-    def self.load!(&blk)
-      @container = configuration.load!(repositories, &blk)
-      @loaded    = true
-    end
-
     # Disconnect from the database
     #
     # This is useful for rebooting applications in production and to ensure that
