@@ -12,6 +12,8 @@ module Hanami
         # @api private
         PASSWORD = "MYSQL_PWD"
 
+        DEFAULT_PORT = 3306
+
         # @since 1.0.0
         # @api private
         DB_CREATION_ERROR = "Database creation failed. If the database exists, " \
@@ -83,6 +85,10 @@ module Hanami
         # @api private
         def dump_migrations_data
           execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
+        end
+
+        def port
+          super || DEFAULT_PORT
         end
       end
     end
