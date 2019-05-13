@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "hanami/utils/blank"
+
 module Hanami
   module Model
     class Migrator
@@ -12,7 +14,7 @@ module Hanami
         # @api private
         PASSWORD = "MYSQL_PWD"
 
-        DEFAULT_PORT = 3306
+        CLI_OPTIONS = %w[host port user].freeze
 
         # @since 1.0.0
         # @api private
@@ -72,23 +74,30 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: { PASSWORD => password }
+          execute "mysqldump #{cli_options} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: { PASSWORD => password }
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          execute("mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}", env: { PASSWORD => password }) if schema.exist?
+          execute("mysql #{cli_options} #{database} < #{escape(schema)}", env: { PASSWORD => password }) if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
+          execute "mysqldump #{cli_options} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
         end
 
-        def port
-          super || DEFAULT_PORT
+        alias user username
+
+        def cli_options
+          CLI_OPTIONS.map do |option|
+            value = send(option)
+            next if Utils::Blank.blank?(value)
+
+            "--#{option}=#{value}"
+          end.compact.join(" ")
         end
       end
     end
