@@ -27,9 +27,9 @@ module Hanami
     #
     #   class Account < Hanami::Entity
     #     attributes do
-    #       attribute :id,         Types::Int
+    #       attribute :id,         Types::Integer
     #       attribute :name,       Types::String
-    #       attribute :codes,      Types::Array(Types::Int)
+    #       attribute :codes,      Types::Array(Types::Integer)
     #       attribute :users,      Types::Array(User)
     #       attribute :email,      Types::String.constrained(format: /@/)
     #       attribute :created_at, Types::DateTime
@@ -97,7 +97,7 @@ module Hanami
         class Dsl
           # @since 1.1.0
           # @api private
-          TYPES = %i[schema strict weak permissive strict_with_defaults symbolized].freeze
+          TYPES = %i[strict weak permissive strict_with_defaults symbolized].freeze
 
           # @since 1.1.0
           # @api private
@@ -105,12 +105,14 @@ module Hanami
 
           # @since 0.7.0
           # @api private
-          def self.build(type, &blk)
-            type ||= DEFAULT_TYPE
-            raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'") unless TYPES.include?(type)
+          def self.build(type = nil, &blk)
+            raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'") if !type.nil? && !TYPES.include?(type)
 
             attributes = new(&blk).to_h
-            [attributes, Hanami::Model::Types::Coercible::Hash.__send__(type, attributes)]
+            schema = Hanami::Model::Types::Coercible::Hash.schema(attributes, strict: false)
+            schema = schema.public_send(type) unless type.nil?
+
+            [attributes, schema]
           end
 
           # @since 0.7.0
@@ -132,9 +134,9 @@ module Hanami
           #
           #   class Account < Hanami::Entity
           #     attributes do
-          #       attribute :id,         Types::Int
+          #       attribute :id,         Types::Integer
           #       attribute :name,       Types::String
-          #       attribute :codes,      Types::Array(Types::Int)
+          #       attribute :codes,      Types::Array(Types::Integer)
           #       attribute :users,      Types::Array(User)
           #       attribute :email,      Types::String.constrained(format: /@/)
           #       attribute :created_at, Types::DateTime

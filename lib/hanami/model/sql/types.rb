@@ -10,7 +10,7 @@ module Hanami
       #
       # @since 0.7.0
       module Types
-        include Dry::Types.module
+        include Dry.Types(default: :nominal)
 
         # Types for schema definitions
         #
@@ -20,7 +20,7 @@ module Hanami
 
           String   = Types::Optional::Coercible::String
 
-          Int      = Types::Strict::Nil | Types::Strict::Int.constructor(Coercions.method(:int))
+          Integer  = Types::Strict::Nil | Types::Strict::Integer.constructor(Coercions.method(:int))
           Float    = Types::Strict::Nil | Types::Strict::Float.constructor(Coercions.method(:float))
           Decimal  = Types::Strict::Nil | Types::Strict::Decimal.constructor(Coercions.method(:decimal))
 
@@ -39,7 +39,7 @@ module Hanami
           # @api private
           MAPPING = {
             Types::String.pristine => Schema::String,
-            Types::Int.pristine => Schema::Int,
+            Types::Integer.pristine => Schema::Integer,
             Types::Float.pristine => Schema::Float,
             Types::Decimal.pristine => Schema::Decimal,
             Types::Bool.pristine => Schema::Bool,
@@ -49,7 +49,7 @@ module Hanami
             Types::Array.pristine => Schema::Array,
             Types::Hash.pristine => Schema::Hash,
             Types::String.optional.pristine => Schema::String,
-            Types::Int.optional.pristine => Schema::Int,
+            Types::Integer.optional.pristine => Schema::Integer,
             Types::Float.optional.pristine => Schema::Float,
             Types::Decimal.optional.pristine => Schema::Decimal,
             Types::Bool.optional.pristine => Schema::Bool,

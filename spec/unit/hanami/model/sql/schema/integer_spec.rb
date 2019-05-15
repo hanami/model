@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe "Hanami::Model::Sql::Types::Schema::Int" do
-  let(:described_class) { Hanami::Model::Sql::Types::Schema::Int }
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Integer" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Integer }
 
   let(:input) do
     Class.new do

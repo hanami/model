@@ -45,7 +45,7 @@ module Hanami
         #   account.owner.class # => User
         #   account.owner.name  # => "MG"
         def Entity(type)
-          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
+          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Nominal)
           type
         end
 
@@ -75,7 +75,7 @@ module Hanami
         #   user.class # => User
         #   user.name  # => "MG"
         def Collection(type)
-          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Definition)
+          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Nominal)
           Types::Array.of(type)
         end
       end
@@ -89,7 +89,7 @@ module Hanami
         #
         # @since 0.7.0
         # @api private
-        class CoercibleType < Dry::Types::Definition
+        class CoercibleType < Dry::Types::Nominal
           # Coerce given value into the wrapped object type
           #
           # @param value [Object] the value

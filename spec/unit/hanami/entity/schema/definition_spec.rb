@@ -4,7 +4,7 @@ RSpec.describe Hanami::Entity::Schema::Definition do
   let(:described_class) { Hanami::Entity::Schema::Definition }
   let(:subject) do
     described_class.new do
-      attribute :id, Hanami::Model::Types::Coercible::Int
+      attribute :id, Hanami::Model::Types::Coercible::Integer
     end
   end
 
