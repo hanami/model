@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Customized commands" do
-  subject(:authors) { AuthorRepository.new }
+  subject(:authors) { AuthorRepository.new(configuration: configuration) }
 
   let(:data) do
     [{ name: "Arthur C. Clarke" }, { name: "Phillip K. Dick" }]

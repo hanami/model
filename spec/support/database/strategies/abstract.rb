@@ -12,9 +12,11 @@ module Database
         load_dependencies
         export_env
         create_database
-        configure
+        configuration = configure
         after
         sleep 1
+
+        configuration
       end
 
       protected
@@ -40,11 +42,12 @@ module Database
       end
 
       def configure
-        returing = Hanami::Model.configure do
+        returning = Hanami::Model.configure do
           adapter ENV["HANAMI_DATABASE_ADAPTER"].to_sym, ENV["HANAMI_DATABASE_URL"]
         end
 
-        returing == Hanami::Model or raise "Hanami::Model.configure should return Hanami::Model"
+        returning == Hanami::Model or raise "Hanami::Model.configure should return Hanami::Model"
+        returning.configuration
       end
 
       def after

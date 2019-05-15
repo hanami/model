@@ -108,7 +108,7 @@ module Hanami
   # @see Hanami::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  class Repository < ROM::Repository::Root # rubocop:disable Metrics/ClassLength
+  class Repository < ROM::Repository::Root
     # Plugins for database commands
     #
     # @since 0.7.0
@@ -116,22 +116,6 @@ module Hanami
     #
     # @see Hanami::Model::Plugins
     COMMAND_PLUGINS = %i[schema mapping timestamps].freeze
-
-    # Configuration
-    #
-    # @since 0.7.0
-    # @api private
-    def self.configuration
-      Hanami::Model.configuration
-    end
-
-    # Container
-    #
-    # @since 0.7.0
-    # @api private
-    def self.container
-      Hanami::Model.container
-    end
 
     # Define a new ROM::Command while preserving the defaults used by Hanami itself.
     #
@@ -160,58 +144,6 @@ module Hanami
       relation.command(type, **opts, &block)
     end
 
-    # Define a database relation, which describes how data is fetched from the
-    # database.
-    #
-    # It auto-infers the underlying database table.
-    #
-    # @since 0.7.0
-    # @api private
-    def self.define_relation # rubocop:disable Metrics/MethodLength
-      a = @associations
-      s = @schema
-
-      configuration.relation(relation) do
-        if s.nil?
-          schema(infer: true) do
-            associations(&a) unless a.nil?
-          end
-        else
-          schema(&s)
-        end
-      end
-
-      root(relation)
-    end
-
-    # Defines the mapping between a database table and an entity.
-    #
-    # It's also responsible to associate table columns to entity attributes.
-    #
-    # @since 0.7.0
-    # @api private
-    #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
-    def self.define_mapping
-      self.entity = Utils::Class.load!(entity_name)
-      e = entity
-      m = @mapping
-
-      blk = lambda do |_|
-        model       e
-        register_as :entity
-        instance_exec(&m) unless m.nil?
-      end
-
-      root = self.root
-      configuration.mappers { define(root, &blk) }
-      configuration.define_mappings(root, &blk)
-      configuration.register_entity(relation, entity_name.underscore, e)
-    end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-
     # Declare associations for the repository
     #
     # NOTE: This is an experimental feature
@@ -226,7 +158,11 @@ module Hanami
     #     end
     #   end
     def self.associations(&blk)
-      @associations = blk
+      if block_given?
+        @associations = blk
+      else
+        @associations
+      end
     end
 
     # Declare database schema
@@ -247,7 +183,11 @@ module Hanami
     #     end
     #   end
     def self.schema(&blk)
-      @schema = blk
+      if block_given?
+        @schema = blk
+      else
+        @schema
+      end
     end
 
     # Declare mapping between database columns and entity's attributes
@@ -266,53 +206,47 @@ module Hanami
     #     end
     #   end
     def self.mapping(&blk)
-      @mapping = blk
-    end
-
-    # Define relations, mapping and associations
-    #
-    # @since 0.7.0
-    # @api private
-    def self.load!
-      define_relation
-      define_mapping
+      if block_given?
+        @mapping = blk
+      else
+        @mapping
+      end
     end
 
     # @since 0.7.0
     # @api private
     #
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
-    def self.inherited(klass)
-      klass.class_eval do
-        include Utils::ClassAttribute
+    def self.[](relation_name)
+      Class.new(Hanami::Repository) do
+        root relation_name
+        def self.inherited(klass)
+          klass.class_eval <<~CODE, __FILE__, __LINE__ + 1
+            include Utils::ClassAttribute
 
-        auto_struct false
+            auto_struct false
 
-        @associations = nil
-        @mapping      = nil
-        @schema       = nil
+            @associations = nil
+            @mapping = nil
+            @schema = nil
 
-        class_attribute :entity
-        class_attribute :entity_name
-        class_attribute :relation
+            class_attribute :entity
+            class_attribute :entity_name
+            class_attribute :relation
 
-        Hanami::Utils::IO.silence_warnings do
-          def self.relation=(name)
-            class_attributes[:relation] = name.to_sym
-          end
+            self.entity_name = Model::EntityName.new(name)
+            self.relation = :#{root}
+
+
+            commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
+            prepend Commands
+          CODE
+
+          Hanami::Model.repositories << klass
         end
-
-        self.entity_name = Model::EntityName.new(name)
-        self.relation    = Model::RelationName.new(name)
-
-        commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
-        prepend Commands
       end
-
-      Hanami::Model.repositories << klass
     end
-    # rubocop:enable Metrics/AbcSize
+
     # rubocop:enable Metrics/MethodLength
 
     # Extend commands from ROM::Repository with error management
@@ -396,8 +330,8 @@ module Hanami
     # @return [Hanami::Repository] the new instance
     #
     # @since 0.7.0
-    def self.new(container = self.container, options = {})
-      super
+    def self.new(configuration:, **options)
+      super(configuration.container, options)
     end
 
     # Find by primary key

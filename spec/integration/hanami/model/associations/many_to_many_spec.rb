@@ -2,9 +2,9 @@
 
 RSpec.describe "Associations (has_many :through)" do
   #### REPOS
-  let(:books) { BookRepository.new }
-  let(:categories) { CategoryRepository.new }
-  let(:ontologies) { BookOntologyRepository.new }
+  let(:books) { BookRepository.new(configuration: configuration) }
+  let(:categories) { CategoryRepository.new(configuration: configuration) }
+  let(:ontologies) { BookOntologyRepository.new(configuration: configuration) }
 
   ### ENTITIES
   let(:book) { books.create(title: "Ontology: Encyclopedia of Database Systems") }

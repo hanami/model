@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe "Repository (legacy)" do
+  let(:repository) { OperatorRepository.new(configuration: configuration) }
+
   describe "#find" do
     it "finds record by primary key" do
-      repository = OperatorRepository.new
       operator = repository.create(name: "F")
       found = repository.find(operator.id)
 
@@ -11,7 +12,6 @@ RSpec.describe "Repository (legacy)" do
     end
 
     it "returns nil for missing record" do
-      repository = OperatorRepository.new
       found = repository.find("9999999")
 
       expect(found).to be_nil
@@ -20,7 +20,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#all" do
     it "returns all the records" do
-      repository = OperatorRepository.new
       operator = repository.create(name: "F")
 
       expect(repository.all).to be_an_instance_of(Array)
@@ -30,7 +29,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#first" do
     it "returns first record from table" do
-      repository = OperatorRepository.new
       repository.clear
 
       operator = repository.create(name: "Janis Joplin")
@@ -42,7 +40,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#last" do
     it "returns last record from table" do
-      repository = OperatorRepository.new
       repository.clear
 
       repository.create(name: "Rob")
@@ -54,7 +51,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#clear" do
     it "clears all the records" do
-      repository = OperatorRepository.new
       repository.create(name: "F")
 
       repository.clear
@@ -70,7 +66,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#create" do
     it "creates record" do
-      repository = OperatorRepository.new
       operator = repository.create(name: "F")
 
       expect(operator).to be_an_instance_of(Operator)
@@ -81,7 +76,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#update" do
     it "updates record" do
-      repository = OperatorRepository.new
       operator = repository.create(name: "F")
       updated = repository.update(operator.id, name: "Flo")
 
@@ -91,7 +85,6 @@ RSpec.describe "Repository (legacy)" do
     end
 
     it "returns nil when record cannot be found" do
-      repository = OperatorRepository.new
       updated = repository.update("9999999", name: "Flo")
 
       expect(updated).to be_nil
@@ -100,7 +93,6 @@ RSpec.describe "Repository (legacy)" do
 
   describe "#delete" do
     it "deletes record" do
-      repository = OperatorRepository.new
       operator = repository.create(name: "F")
       deleted = repository.delete(operator.id)
 
@@ -113,7 +105,6 @@ RSpec.describe "Repository (legacy)" do
     end
 
     it "returns nil when record cannot be found" do
-      repository = OperatorRepository.new
       deleted = repository.delete("9999999")
 
       expect(deleted).to be_nil

@@ -50,4 +50,22 @@ module Database
   end
 end
 
-Database::Setup.new.run
+# rubocop:disable Style/GlobalVars
+$config = Database::Setup.new.run
+
+module RSpec
+  module Support
+    module Context
+      def self.included(base)
+        base.class_eval do
+          let(:configuration) { $config }
+        end
+      end
+    end
+  end
+end
+# rubocop:enable Style/GlobalVars
+
+RSpec.configure do |config|
+  config.include(RSpec::Support::Context)
+end

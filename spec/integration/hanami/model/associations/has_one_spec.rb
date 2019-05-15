@@ -5,8 +5,8 @@ require "spec_helper"
 RSpec.describe "Associations (has_one)" do
   extend PlatformHelpers
 
-  let(:users) { UserRepository.new }
-  let(:avatars) { AvatarRepository.new }
+  let(:users) { UserRepository.new(configuration: configuration) }
+  let(:avatars) { AvatarRepository.new(configuration: configuration) }
 
   it "returns nil if the association wasn't preloaded" do
     user       = users.create(name: "John Doe")

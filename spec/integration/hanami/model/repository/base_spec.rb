@@ -7,7 +7,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#find" do
     it "finds record by primary key" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       found = repository.find(user.id)
 
@@ -15,7 +15,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "returns nil when nil is given" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.create(name: "L")
       found = repository.find(nil)
 
@@ -23,7 +23,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "returns nil for missing record" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       found = repository.find("9999999")
 
       expect(found).to be_nil
@@ -35,7 +35,7 @@ RSpec.describe "Repository (base)" do
         repository.clear
       end
 
-      let(:repository) { LabelRepository.new }
+      let(:repository) { LabelRepository.new(configuration: configuration) }
       let(:id)         { 1 }
 
       it "raises error" do
@@ -49,7 +49,7 @@ RSpec.describe "Repository (base)" do
     # See https://github.com/hanami/model/issues/399
     describe "with custom relation" do
       it "finds record by primary key" do
-        repository = AccessTokenRepository.new
+        repository = AccessTokenRepository.new(configuration: configuration)
         access_token = repository.create(token: "123")
         found        = repository.find(access_token.id)
 
@@ -60,7 +60,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#all" do
     it "returns all the records" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
 
       expect(repository.all).to be_an_instance_of(Array)
@@ -70,7 +70,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#first" do
     it "returns first record from table" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.clear
 
       user = repository.create(name: "James Hetfield")
@@ -82,7 +82,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#last" do
     it "returns last record from table" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.clear
 
       repository.create(name: "Tom")
@@ -95,7 +95,7 @@ RSpec.describe "Repository (base)" do
   # https://github.com/hanami/model/issues/473
   describe "querying" do
     it "allows to access relation attributes via square bracket syntax" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.clear
 
       expected = [repository.create(name: "Ella"),
@@ -109,7 +109,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#clear" do
     it "clears all the records" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.create(name: "L")
 
       repository.clear
@@ -120,7 +120,7 @@ RSpec.describe "Repository (base)" do
   describe "relation" do
     describe "read" do
       it "reads records from the database given a raw query string" do
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         repository.create(name: "L")
 
         users = repository.find_all_by_manual_query
@@ -134,7 +134,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#create" do
     it "creates record from data" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
 
       expect(user).to be_an_instance_of(User)
@@ -144,7 +144,7 @@ RSpec.describe "Repository (base)" do
 
     it "creates record from entity" do
       entity = User.new(name: "L")
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(entity)
 
       # It doesn't mutate original entity
@@ -161,7 +161,7 @@ RSpec.describe "Repository (base)" do
 
     unless_platform(engine: :jruby, db: :sqlite) do
       it "automatically touches timestamps" do
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         user = repository.create(name: "L")
 
         expect(user.created_at).to be_within(2).of(Time.now.utc)
@@ -169,7 +169,7 @@ RSpec.describe "Repository (base)" do
       end
 
       it "respects given timestamps" do
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         given_time = Time.new(2010, 1, 1, 12, 0, 0, "+00:00")
 
         user = repository.create(name: "L", created_at: given_time, updated_at: given_time)
@@ -179,7 +179,7 @@ RSpec.describe "Repository (base)" do
       end
 
       it "can update timestamps" do
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         user = repository.create(name: "L")
         expect(user.created_at).to be_within(2).of(Time.now.utc)
         expect(user.updated_at).to be_within(2).of(Time.now.utc)
@@ -198,8 +198,8 @@ RSpec.describe "Repository (base)" do
 
       # Bug: https://github.com/hanami/model/issues/412
       it "can have only creation timestamp" do
-        user = UserRepository.new.create(name: "L")
-        repository = AvatarRepository.new
+        user = UserRepository.new(configuration: configuration).create(name: "L")
+        repository = AvatarRepository.new(configuration: configuration)
         account = repository.create(url: "http://foo.com", user_id: user.id)
         expect(account.created_at).to be_within(2).of(Time.now.utc)
       end
@@ -207,7 +207,7 @@ RSpec.describe "Repository (base)" do
 
     # Bug: https://github.com/hanami/model/issues/237
     it "respects database defaults" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
 
       expect(user.comments_count).to eq(0)
@@ -215,7 +215,7 @@ RSpec.describe "Repository (base)" do
 
     # Bug: https://github.com/hanami/model/issues/272
     it "accepts booleans as attributes" do
-      user = UserRepository.new.create(name: "L", active: false)
+      user = UserRepository.new(configuration: configuration).create(name: "L", active: false)
       expect(user.active).to eq(false)
     end
 
@@ -233,7 +233,7 @@ RSpec.describe "Repository (base)" do
     #     engine(:jruby).db(:mysql) { 'bogus' }
     #   end
 
-    #   expect { UserRepository.new.create(name: 'L', bogus: 23) }.to raise_error do |error|
+    #   expect { UserRepository.new(configuration: configuration).create(name: 'L', bogus: 23) }.to raise_error do |error|
     #     expect(error).to be_a(expected_error)
     #     expect(error.message).to include(message)
     #   end
@@ -252,7 +252,7 @@ RSpec.describe "Repository (base)" do
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Column 'active' cannot be null" }
       end
 
-      expect { UserRepository.new.create(name: "L", active: nil) }.to raise_error do |error|
+      expect { UserRepository.new(configuration: configuration).create(name: "L", active: nil) }.to raise_error do |error|
         expect(error).to be_a(expected_error)
         expect(error.message).to include(message)
       end
@@ -273,7 +273,7 @@ RSpec.describe "Repository (base)" do
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Duplicate entry '#{email}' for key 'users_email_index'" }
       end
 
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.create(name: "Test", email: email)
 
       expect { repository.create(name: "L", email: email) }.to raise_error do |error|
@@ -295,7 +295,7 @@ RSpec.describe "Repository (base)" do
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)" }
       end
 
-      expect { AvatarRepository.new.create(user_id: 999_999_999, url: "url") }.to raise_error do |error|
+      expect { AvatarRepository.new(configuration: configuration).create(user_id: 999_999_999, url: "url") }.to raise_error do |error|
         expect(error).to be_a(expected_error)
         expect(error.message).to include(message)
       end
@@ -315,7 +315,7 @@ RSpec.describe "Repository (base)" do
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "users_age_check"' }
         end
 
-        expect { UserRepository.new.create(name: "L", age: 1) }.to raise_error do |error|
+        expect { UserRepository.new(configuration: configuration).create(name: "L", age: 1) }.to raise_error do |error|
           expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
@@ -332,7 +332,7 @@ RSpec.describe "Repository (base)" do
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "comments_count_constraint"' }
         end
 
-        expect { UserRepository.new.create(name: "L", comments_count: -1) }.to raise_error do |error|
+        expect { UserRepository.new(configuration: configuration).create(name: "L", comments_count: -1) }.to raise_error do |error|
           expect(error).to         be_a(expected)
           expect(error.message).to include(message)
         end
@@ -342,7 +342,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#update" do
     it "updates record from data" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       updated = repository.update(user.id, name: "Luca")
 
@@ -353,7 +353,7 @@ RSpec.describe "Repository (base)" do
 
     it "updates record from entity" do
       entity = User.new(name: "Luca")
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       updated = repository.update(user.id, entity)
 
@@ -366,7 +366,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "returns nil when record cannot be found" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       updated = repository.update("9999999", name: "Luca")
 
       expect(updated).to be_nil
@@ -378,7 +378,7 @@ RSpec.describe "Repository (base)" do
 
     unless_platform(engine: :jruby, db: :sqlite) do
       it "automatically touches timestamps" do
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         user = repository.create(name: "L")
         sleep 0.1
         updated = repository.update(user.id, name: "Luca")
@@ -402,7 +402,7 @@ RSpec.describe "Repository (base)" do
     #     engine(:jruby).db(:mysql) { 'bogus' }
     #   end
 
-    #   repository = UserRepository.new
+    #   repository = UserRepository.new(configuration: configuration)
     #   user = repository.create(name: 'L')
 
     #   expect { repository.update(user.id, bogus: 23) }.to raise_error do |error|
@@ -426,7 +426,7 @@ RSpec.describe "Repository (base)" do
           engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Column 'active' cannot be null" }
         end
 
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         user = repository.create(name: "L")
 
         expect { repository.update(user.id, active: nil) }.to raise_error do |error|
@@ -451,7 +451,7 @@ RSpec.describe "Repository (base)" do
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Duplicate entry '#{email}' for key 'users_email_index'" }
       end
 
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       repository.create(name: "UpdateTest", email: email)
 
@@ -474,8 +474,8 @@ RSpec.describe "Repository (base)" do
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`hanami_model`.`avatars`, CONSTRAINT `avatars_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)" }
       end
 
-      user = UserRepository.new.create(name: "L")
-      repository = AvatarRepository.new
+      user = UserRepository.new(configuration: configuration).create(name: "L")
+      repository = AvatarRepository.new(configuration: configuration)
       avatar = repository.create(user_id: user.id, url: "a valid url")
 
       expect { repository.update(avatar.id, user_id: 999_999_999) }.to raise_error do |error|
@@ -498,7 +498,7 @@ RSpec.describe "Repository (base)" do
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "users_age_check"' }
         end
 
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         user = repository.create(name: "L")
 
         expect { repository.update(user.id, age: 17) }.to raise_error do |error|
@@ -518,7 +518,7 @@ RSpec.describe "Repository (base)" do
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: new row for relation "users" violates check constraint "comments_count_constraint"' }
         end
 
-        repository = UserRepository.new
+        repository = UserRepository.new(configuration: configuration)
         user = repository.create(name: "L")
 
         expect { repository.update(user.id, comments_count: -2) }.to raise_error do |error|
@@ -531,7 +531,7 @@ RSpec.describe "Repository (base)" do
 
   describe "#delete" do
     it "deletes record" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       deleted = repository.delete(user.id)
 
@@ -544,7 +544,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "returns nil when record cannot be found" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       deleted = repository.delete("9999999")
 
       expect(deleted).to be_nil
@@ -556,7 +556,7 @@ RSpec.describe "Repository (base)" do
 
   describe "custom finder" do
     it "returns records" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       found = repository.by_name("L")
 
@@ -564,7 +564,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "uses root relation" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       found = repository.by_name_with_root("L")
 
@@ -572,7 +572,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "selects only a single column" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.clear
 
       repository.create([{ name: "L", age: 35 }, { name: "MG", age: 34 }])
@@ -588,7 +588,7 @@ RSpec.describe "Repository (base)" do
     end
 
     it "selects multiple columns" do
-      repository = UserRepository.new
+      repository = UserRepository.new(configuration: configuration)
       repository.clear
 
       repository.create([{ name: "L", age: 35 }, { name: "MG", age: 34 }])
@@ -607,7 +607,7 @@ RSpec.describe "Repository (base)" do
   with_platform(db: :postgresql) do
     describe "PostgreSQL" do
       it "finds record by primary key (UUID)" do
-        repository = SourceFileRepository.new
+        repository = SourceFileRepository.new(configuration: configuration)
         file = repository.create(name: "path/to/file.rb", languages: ["ruby"], metadata: { coverage: 100.0 }, content: "class Foo; end")
         found = repository.find(file.id)
 
@@ -618,7 +618,7 @@ RSpec.describe "Repository (base)" do
       end
 
       it "returns nil for nil primary key (UUID)" do
-        repository = SourceFileRepository.new
+        repository = SourceFileRepository.new(configuration: configuration)
 
         found = repository.find(nil)
         expect(found).to be_nil
@@ -630,7 +630,7 @@ RSpec.describe "Repository (base)" do
       #   LINE 1: ...", "updated_at" FROM "source_files" WHERE ("id" = '9999999')...
       it "returns nil for missing record (UUID)"
       # it 'returns nil for missing record (UUID)' do
-      #   repository = SourceFileRepository.new
+      #   repository = SourceFileRepository.new(configuration: configuration)
 
       #   found = repository.find('9999999')
       #   expect(found).to be_nil
@@ -639,7 +639,7 @@ RSpec.describe "Repository (base)" do
       describe "JSON types" do
         it "writes hashes" do
           hash = { first_name: "John", age: 53, married: true, car: nil }
-          repository = SourceFileRepository.new
+          repository = SourceFileRepository.new(configuration: configuration)
           column_type = repository.create(metadata: hash, name: "test", content: "test", json_info: hash)
           found = repository.find(column_type.id)
 
@@ -649,7 +649,7 @@ RSpec.describe "Repository (base)" do
 
         it "writes arrays" do
           array = ["abc", 1, true, nil]
-          repository = SourceFileRepository.new
+          repository = SourceFileRepository.new(configuration: configuration)
           column_type = repository.create(metadata: array, name: "test", content: "test", json_info: array)
           found = repository.find(column_type.id)
 
@@ -660,7 +660,7 @@ RSpec.describe "Repository (base)" do
 
       describe "when timestamps aren't enabled" do
         it "writes the proper PG types" do
-          repository = ProductRepository.new
+          repository = ProductRepository.new(configuration: configuration)
 
           product = repository.create(name: "NeoVim", categories: ["software"])
           found = repository.find(product.id)
@@ -671,7 +671,7 @@ RSpec.describe "Repository (base)" do
         end
 
         it "succeeds even if timestamps is the only plugin" do
-          repository = ProductRepository.new
+          repository = ProductRepository.new(configuration: configuration)
 
           product = repository
                     .command(:create, use: %i[timestamps])
@@ -688,7 +688,7 @@ RSpec.describe "Repository (base)" do
 
     describe "enum database type" do
       it "allows to write data" do
-        repository = ColorRepository.new
+        repository = ColorRepository.new(configuration: configuration)
         color = repository.create(name: "red")
 
         expect(color).to be_a_kind_of(Color)
@@ -696,7 +696,7 @@ RSpec.describe "Repository (base)" do
       end
 
       it "raises error if the value is not included in the enum" do
-        repository = ColorRepository.new
+        repository = ColorRepository.new(configuration: configuration)
         message = Platform.match do
           engine(:ruby)  { %(PG::InvalidTextRepresentation: ERROR:  invalid input value for enum rainbow: "grey") }
           engine(:jruby) { %(Java::OrgPostgresqlUtil::PSQLException: ERROR: invalid input value for enum rainbow: "grey") }
