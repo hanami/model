@@ -99,7 +99,7 @@ class PostRepository < Hanami::Repository[:posts]
   end
 
   def find_with_commenters(id)
-    aggregate(:commenters).where(id: id).map_to(Post).to_a
+    combine(:commenters).where(id: id).map_to(Post).to_a
   end
 
   def commenters_for(post)
@@ -107,11 +107,11 @@ class PostRepository < Hanami::Repository[:posts]
   end
 
   def find_with_author(id)
-    aggregate(:author).where(id: id).map_to(Post).one
+    posts.combine(:author).where(id: id).map_to(Post).one
   end
 
   def feed_for(id)
-    aggregate(:author, comments: :user).where(id: id).map_to(Post).one
+    posts.combine(:author, comments: :user).where(id: id).map_to(Post).one
   end
 
   def author_for(post)
@@ -148,7 +148,7 @@ class UserRepository < Hanami::Repository[:users]
   end
 
   def find_with_threads(id)
-    aggregate(:threads).where(id: id).map_to(User).one
+    combine(:threads).where(id: id).map_to(User).one
   end
 
   def threads_for(user)
@@ -156,7 +156,7 @@ class UserRepository < Hanami::Repository[:users]
   end
 
   def find_with_avatar(id)
-    aggregate(:avatar).where(id: id).map_to(User).one
+    users.combine(:avatar).where(id: id).map_to(User).one
   end
 
   def create_with_avatar(data)
@@ -222,7 +222,7 @@ class AuthorRepository < Hanami::Repository[:authors]
   end
 
   def find_with_books(id)
-    aggregate(:books).by_pk(id).map_to(Author).one
+    authors.combine(:books).by_pk(id).map_to(Author).one
   end
 
   def books_for(author)
@@ -293,7 +293,7 @@ class CategoryRepository < Hanami::Repository[:categories]
   end
 
   def find_with_books(id)
-    aggregate(:books).where(id: id).map_to(Category).one
+    categories.combine(:books).where(id: id).map_to(Category).one
   end
 
   def add_books(category, *books)
@@ -324,11 +324,11 @@ class BookRepository < Hanami::Repository[:books]
   end
 
   def find_with_categories(id)
-    aggregate(:categories).where(id: id).map_to(Book).one
+    books.combine(:categories).where(id: id).map_to(Book).one
   end
 
   def find_with_author(id)
-    aggregate(:author).where(id: id).map_to(Book).one
+    books.combine(:author).where(id: id).map_to(Book).one
   end
 
   def author_for(book)
