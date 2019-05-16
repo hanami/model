@@ -96,12 +96,15 @@ module Hanami
         #
         # @since 0.7.0
         class Dsl
-          STRICT = Hanami::Model::Types::Coercible::Hash
-                   .schema({})
-                   .with_key_transform(&:to_sym)
+          BASE = Hanami::Model::Types::Coercible::Hash
+                 .schema({})
+                 .with_key_transform(&:to_sym)
 
-          PERMISSIVE = STRICT
+          PERMISSIVE = BASE
                        .with_type_transform(&:omittable)
+
+          STRICT = BASE
+                   .strict
 
           # @since 1.1.0
           # @api private
