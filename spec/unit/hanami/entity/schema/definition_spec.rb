@@ -45,7 +45,9 @@ RSpec.describe Hanami::Entity::Schema::Definition do
         default        { "can't convert Symbol into Integer" }
       end
 
-      expect { subject.call(id: :foo) }.to raise_error(TypeError, message)
+      expect { subject.call(id: :foo) }.to raise_error(TypeError) do |exception|
+        expect(exception.message).to match(message)
+      end
     end
   end
 

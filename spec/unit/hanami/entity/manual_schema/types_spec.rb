@@ -2,7 +2,7 @@
 
 RSpec.describe Hanami::Entity do
   describe "manual schema (types)" do
-    [nil, :schema, :strict, :weak, :permissive, :strict_with_defaults, :symbolized].each do |type|
+    [nil, :permissive, :strict].each do |type|
       it "allows to build schema with #{type.inspect}" do
         Class.new(described_class) do
           attributes(type) {}

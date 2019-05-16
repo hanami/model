@@ -2,6 +2,7 @@
 
 require "hanami/model/types"
 require "hanami/utils/hash"
+require "dry/struct"
 
 module Hanami
   class Entity
@@ -95,22 +96,32 @@ module Hanami
         #
         # @since 0.7.0
         class Dsl
-          # @since 1.1.0
-          # @api private
-          TYPES = %i[strict weak permissive strict_with_defaults symbolized].freeze
+          STRICT = Hanami::Model::Types::Coercible::Hash
+                   .schema({})
+                   .with_key_transform(&:to_sym)
+
+          PERMISSIVE = STRICT
+                       .with_type_transform(&:omittable)
 
           # @since 1.1.0
           # @api private
-          DEFAULT_TYPE = TYPES.first
+          TYPES = {
+            permissive: PERMISSIVE,
+            strict: STRICT
+          }.freeze
+
+          DEFAULT_TYPE = TYPES.keys.first
 
           # @since 0.7.0
           # @api private
           def self.build(type = nil, &blk)
-            raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'") if !type.nil? && !TYPES.include?(type)
+            type ||= DEFAULT_TYPE
+            schema_type = TYPES.fetch(type) do
+              raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'")
+            end
 
             attributes = new(&blk).to_h
-            schema = Hanami::Model::Types::Coercible::Hash.schema(attributes, strict: false)
-            schema = schema.public_send(type) unless type.nil?
+            schema = schema_type.schema(attributes)
 
             [attributes, schema]
           end

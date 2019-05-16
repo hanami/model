@@ -45,8 +45,7 @@ module Hanami
         #   account.owner.class # => User
         #   account.owner.name  # => "MG"
         def Entity(type)
-          type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Nominal)
-          type
+          Hanami::Model::Types.Constructor(type)
         end
 
         # Define an array of given type
@@ -76,7 +75,7 @@ module Hanami
         #   user.name  # => "MG"
         def Collection(type)
           type = Schema::CoercibleType.new(type) unless type.is_a?(Dry::Types::Nominal)
-          Types::Array.of(type)
+          Hanami::Model::Types::Array.of(type)
         end
       end
       # rubocop:enable Naming/MethodName

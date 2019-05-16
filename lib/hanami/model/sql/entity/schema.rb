@@ -20,6 +20,11 @@ module Hanami
         #
         # @see Hanami::Entity::Schema
         class Schema < Hanami::Entity::Schema
+          DEFAULT = Hanami::Model::Sql::Types::Coercible::Hash
+                    .schema({})
+                    .with_key_transform(&:to_sym)
+                    .with_type_transform(&:omittable)
+
           # Build a new instance of Schema according to database columns,
           # associations and potentially to mapping defined by the repository.
           #
@@ -35,7 +40,7 @@ module Hanami
           # @api private
           def initialize(registry, relation, mapping)
             attributes  = build(registry, relation, mapping)
-            @schema     = Types::Coercible::Hash.schema(attributes)
+            @schema     = DEFAULT.schema(attributes)
             @attributes = ::Hash[attributes.map { |k, _| [k, true] }]
             freeze
           end
