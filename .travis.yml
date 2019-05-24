@@ -4,11 +4,10 @@ cache: bundler
 script: 'bundle exec rubocop && bundle exec rake spec:unit --trace'
 after_script: 'echo `env`'
 rvm:
-  - 2.3.8
-  - 2.4.5
-  - 2.5.3
-  - 2.6.0
-  - jruby-9.1.9.0
+  - 2.4.6
+  - 2.5.5
+  - 2.6.3
+  - jruby-9.2.6.0
   - ruby-head
   - jruby-head
 env:
@@ -23,7 +22,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.1.9.0
+    - rvm: jruby-9.2.6.0
 
 notifications:
   webhooks:
