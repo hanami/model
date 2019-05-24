@@ -113,7 +113,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def command(target, relation, options = {})
-          repository.command(target => relation, **options)
+          repository.command(target, relation, options)
         end
 
         # @since 0.7.0
