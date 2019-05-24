@@ -282,8 +282,8 @@ RSpec.shared_examples 'migrator_sqlite' do
 
         expect(actual).to include %(CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);)
         expect(actual).to include %(CREATE TABLE `reviews` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `title` varchar(255) NOT NULL, `rating` integer DEFAULT (0));)
-        expect(actual).to match /INSERT INTO "?schema_migrations"? VALUES\('20160831073534_create_reviews.rb'\);/
-        expect(actual).to match /INSERT INTO "?schema_migrations"? VALUES\('20160831090612_add_rating_to_reviews.rb'\);/
+        expect(actual).to match(/INSERT INTO "?schema_migrations"? VALUES\('20160831073534_create_reviews.rb'\);/)
+        expect(actual).to match(/INSERT INTO "?schema_migrations"? VALUES\('20160831090612_add_rating_to_reviews.rb'\);/)
       end
 
       it 'deletes all the migrations' do
