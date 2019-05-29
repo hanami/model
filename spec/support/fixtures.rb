@@ -42,44 +42,37 @@ class Comment < Hanami::Entity
 end
 
 class Warehouse < Hanami::Entity
-  attributes do
-    attribute :id,   Types::Integer
-    attribute :name, Types::String
-    attribute :code, Types::String.constrained(format: /\Awh\-/)
-  end
+  attribute :id,   Types::Integer
+  attribute :name, Types::String
+  attribute :code, Types::String.constrained(format: /\Awh\-/)
 end
 
 class Account < Hanami::Entity
-  attributes do
-    attribute :id,         Types::Strict::Integer
-    attribute :name,       Types::String
-    attribute :codes,      Types::Collection(Types::Coercible::Integer)
-    attribute :owner,      Types::Entity(User)
-    attribute :users,      Types::Collection(User)
-    attribute :email,      Types::String.constrained(format: /@/)
-    attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
-  end
+  attribute :id,         Types::Strict::Integer
+  attribute :name,       Types::String
+  attribute :codes,      Types::Collection(Types::Coercible::Integer)
+  attribute :owner,      Types::Entity(User)
+  attribute :users,      Types::Collection(User)
+  attribute :email,      Types::String.constrained(format: /@/)
+  attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
 end
 
 class PageVisit < Hanami::Entity
-  attributes do
-    attribute :id,        Types::Strict::Integer
-    attribute :start,     Types::DateTime
-    attribute :end,       Types::DateTime
-    attribute :visitor,   Types::Hash
-    attribute :page_info, Types::Hash.schema(
-      name: Types::Coercible::String,
-      scroll_depth: Types::Coercible::Float,
-      meta: Types::Hash
-    ).with_key_transform(&:to_sym)
+  attribute :id,        Types::Strict::Integer
+  attribute :start,     Types::DateTime
+  attribute :end,       Types::DateTime
+  attribute :visitor,   Types::Hash
+  attribute :page_info do
+    attribute :name, Types::Coercible::String
+    attribute :scroll_depth, Types::Coercible::Float
+    attribute :meta, Types::Hash
   end
 end
 
-class Person < Hanami::Entity
-  attributes :strict do
-    attribute :id,   Types::Strict::Integer
-    attribute :name, Types::Strict::String
-  end
+# FIXME: this must define `strict` schema
+class Person < Hanami::Entity[:strict]
+  attribute :id,   Types::Strict::Integer
+  attribute :name, Types::Strict::String
 end
 
 class Product < Hanami::Entity

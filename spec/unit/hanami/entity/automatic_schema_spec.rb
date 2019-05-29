@@ -47,7 +47,7 @@ RSpec.describe Hanami::Entity do
         expect(entity.created_at).to be_within(2).of(now)
       end
 
-      xit "coerces values for array of objects" do
+      it "coerces values for array of objects" do
         entity = described_class.new(books: books = [{ title: "TDD" }, { title: "Refactoring" }])
 
         books.each_with_index do |book, i|
@@ -60,8 +60,7 @@ RSpec.describe Hanami::Entity do
 
       xit "raises error if initialized with wrong array object" do
         object = Object.new
-        expect { described_class.new(books: [object]) }.to raise_error do |error|
-          expect(error).to be_a(TypeError)
+        expect { described_class.new(books: [object]) }.to raise_error(Hanami::Model::Error) do |error|
           expect(error.message).to include("[#<Object:0x")
           expect(error.message).to include(">] (Array) has invalid type for :books")
         end

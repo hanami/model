@@ -13,7 +13,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def self.schema_type(entity)
-          Sql::Types::Schema::AssociationType.new(entity)
+          Sql::Types.Entity(entity)
         end
         #
         # @since 1.1.0

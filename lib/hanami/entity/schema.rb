@@ -275,6 +275,12 @@ module Hanami
         schema.attribute?(name)
       end
 
+      def empty?
+        return true unless schema.respond_to?(:attributes, true)
+
+        schema.send(:attributes).empty?
+      end
+
       protected
 
       # @since 0.7.0

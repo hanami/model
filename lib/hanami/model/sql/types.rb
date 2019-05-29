@@ -10,7 +10,9 @@ module Hanami
       #
       # @since 0.7.0
       module Types
+        # FIXME: check if including Dry.Types here is still needed
         include Dry.Types(default: :nominal)
+        include Hanami::Model::Types
 
         # Types for schema definitions
         #
@@ -100,30 +102,6 @@ module Hanami
           end
 
           private_class_method :pg_json?
-
-          # Coercer for SQL associations target
-          #
-          # @since 0.7.0
-          # @api private
-          class AssociationType < Hanami::Model::Types::Schema::CoercibleType
-            # Check if value can be coerced
-            #
-            # @param value [Object] the value
-            #
-            # @return [TrueClass,FalseClass] the result of the check
-            #
-            # @since 0.7.0
-            # @api private
-            def valid?(value)
-              value.inspect =~ /\[#{primitive}\]/ || super
-            end
-
-            # @since 0.7.0
-            # @api private
-            def success(*args)
-              result(Dry::Types::Result::Success, primitive.new(args.first.to_h))
-            end
-          end
         end
       end
     end

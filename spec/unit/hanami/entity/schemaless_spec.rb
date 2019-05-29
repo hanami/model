@@ -3,7 +3,7 @@
 RSpec.describe Hanami::Entity do
   describe "schemaless" do
     let(:described_class) do
-      Class.new(Hanami::Entity)
+      Class.new(Hanami::Entity[:struct])
     end
 
     let(:input) do
@@ -62,16 +62,16 @@ RSpec.describe Hanami::Entity do
         expect(entity.name).to eq("Luca")
       end
 
-      it "returns nil for unknown methods" do
+      it "raises error for unknown methods" do
         entity = described_class.new
 
-        expect(entity.foo).to be_nil
+        expect { entity.foo }.to raise_error(NoMethodError)
       end
 
-      it "returns nil for #attributes" do
+      it "returns empty hash for #attributes" do
         entity = described_class.new
 
-        expect(entity.attributes).to be_nil
+        expect(entity.attributes).to eq({})
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe Hanami::Entity do
       it "serializes attributes into hash" do
         entity = described_class.new(foo: 1, "bar" => { "baz" => 2 })
 
-        expect(entity.to_h).to eq(Hash[foo: 1, bar: { baz: 2 }])
+        expect(entity.to_h).to eq(::Hash[foo: 1, bar: { baz: 2 }])
       end
 
       it "must be an instance of ::Hash" do
@@ -119,7 +119,7 @@ RSpec.describe Hanami::Entity do
       it "returns false for missing keys" do
         entity = described_class.new
 
-        expect(entity).to respond_to(:baz)
+        expect(entity).to_not respond_to(:baz)
       end
     end
   end
