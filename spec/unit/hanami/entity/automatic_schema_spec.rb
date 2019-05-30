@@ -58,12 +58,8 @@ RSpec.describe Hanami::Entity do
         end
       end
 
-      xit "raises error if initialized with wrong array object" do
-        object = Object.new
-        expect { described_class.new(books: [object]) }.to raise_error(Hanami::Model::Error) do |error|
-          expect(error.message).to include("[#<Object:0x")
-          expect(error.message).to include(">] (Array) has invalid type for :books")
-        end
+      it "raises error if initialized with wrong array object" do
+        expect { described_class.new(books: [Object.new]) }.to raise_error(NoMethodError, /to_hash/)
       end
     end
 

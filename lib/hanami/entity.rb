@@ -68,7 +68,7 @@ module Hanami
 
     def self.inherited(entity)
       super
-      optional!(entity)
+      schema_policy.call(entity)
     end
 
     def self.new(attributes = default_attributes, safe = false)
@@ -100,8 +100,10 @@ module Hanami
       defined?(@_schema)
     end
 
-    def self.optional!(entity)
-      entity.transform_types(&:omittable)
+    def self.schema_policy
+      lambda do |entity|
+        entity.transform_types(&:omittable)
+      end
     end
 
     def self.attribute(name, type = nil, &blk)

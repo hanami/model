@@ -6,7 +6,12 @@ module Hanami
     #
     # @since 2.0.0
     class Strict < Entity
-      def self.optional!(entity)
+      def self.schema_policy
+        lambda do |entity|
+          entity.class_eval do
+            schema schema.strict
+          end
+        end
       end
     end
   end

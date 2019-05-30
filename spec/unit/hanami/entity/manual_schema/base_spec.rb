@@ -75,9 +75,10 @@ RSpec.describe Hanami::Entity do
         end
       end
 
-      xit "raises error if initialized with wrong primitive" do
-        expect { described_class.new(id: :foo) }
-          .to raise_error(TypeError, ":foo (Symbol) has invalid type for :id violates constraints (type?(Integer, :foo) failed)")
+      it "raises error if initialized with wrong primitive" do
+        expect { described_class.new(id: :foo) }.to raise_error(Dry::Struct::Error) do |exception|
+          expect(exception.message).to include(":foo (Symbol) has invalid type for :id violates constraints (type?(Integer, :foo) failed)")
+        end
       end
 
       it "raises error if initialized with wrong array primitive" do
@@ -91,14 +92,16 @@ RSpec.describe Hanami::Entity do
         end
       end
 
-      xit "raises error if type constraint isn't honored" do
-        expect { described_class.new(email: "test") }
-          .to raise_error(TypeError, '"test" (String) has invalid type for :email violates constraints (format?(/@/, "test") failed)')
+      it "raises error if type constraint isn't honored" do
+        expect { described_class.new(email: "test") }.to raise_error(Dry::Struct::Error) do |exception|
+          expect(exception.message).to include('"test" (String) has invalid type for :email violates constraints (format?(/@/, "test") failed)')
+        end
       end
 
-      xit "doesn't override manual defined schema" do
-        expect { Warehouse.new(code: "foo") }
-          .to raise_error(TypeError, '"foo" (String) has invalid type for :code violates constraints (format?(/\Awh\-/, "foo") failed)')
+      it "doesn't override manual defined schema" do
+        expect { Warehouse.new(code: "foo") }.to raise_error(Dry::Struct::Error) do |exception|
+          expect(exception.message).to include('"foo" (String) has invalid type for :code violates constraints (format?(/\Awh\-/, "foo") failed)')
+        end
       end
 
       it "symbolizes nested hash keys according to schema" do
