@@ -141,7 +141,7 @@ class UserRepository < Hanami::Repository[:users]
   end
 
   def find_with_threads(id)
-    combine(:threads).where(id: id).map_to(User).one
+    users.combine(:threads).where(id: id).map_to(User).one
   end
 
   def threads_for(user)

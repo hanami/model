@@ -72,6 +72,8 @@ module Hanami
     end
 
     def self.new(attributes = default_attributes, safe = false)
+      return if attributes.nil?
+
       super(Utils::Hash.deep_symbolize(attributes.to_hash), safe).freeze
     end
 
