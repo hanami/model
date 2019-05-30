@@ -52,6 +52,16 @@ module Hanami
         "#<#{self.class.name} #{attributes.map { |k, v| "#{k}=#{v.inspect}" }.join(' ')}>"
       end
       alias to_s inspect
+
+      protected
+
+      # Check if the attribute is allowed to be read
+      #
+      # @since 0.7.0
+      # @api private
+      def attribute?(name)
+        self.class.has_attribute?(name)
+      end
     end
   end
 end

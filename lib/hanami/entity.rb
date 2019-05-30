@@ -53,7 +53,6 @@ module Hanami
   #
   # @see Hanami::Repository
   class Entity < Dry::Struct
-    require "hanami/entity/schema"
     require "hanami/entity/strict"
     require "hanami/entity/schemaless"
 
