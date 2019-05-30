@@ -10,8 +10,6 @@ module Hanami
       #
       # @since 0.7.0
       module Types
-        # FIXME: check if including Dry.Types here is still needed
-        include Dry.Types(default: :nominal)
         include Hanami::Model::Types
 
         # Types for schema definitions
