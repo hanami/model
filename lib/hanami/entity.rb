@@ -68,7 +68,11 @@ module Hanami
 
     def self.inherited(entity)
       super
+
       schema_policy.call(entity)
+      entity.class_eval do
+        @_mutex = Mutex.new
+      end
     end
 
     def self.new(attributes = default_attributes, safe = false)
@@ -90,7 +94,7 @@ module Hanami
       end
     end
 
-    def self._schema=(attrs)
+    def self.schema=(attrs)
       return if schema?
 
       attrs.each do |name, type|
@@ -99,7 +103,9 @@ module Hanami
     end
 
     def self.schema?
-      defined?(@_schema)
+      @_mutex.synchronize do
+        defined?(@_schema)
+      end
     end
 
     def self.schema_policy
@@ -109,7 +115,10 @@ module Hanami
     end
 
     def self.attribute(name, type = nil, &blk)
-      @_schema = true
+      @_mutex.synchronize do
+        @_schema = true
+      end
+
       super(name, type, &blk)
     end
 
