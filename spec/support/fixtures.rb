@@ -69,7 +69,6 @@ class PageVisit < Hanami::Entity
   end
 end
 
-# FIXME: this must define `strict` schema
 class Person < Hanami::Entity[:strict]
   attribute :id,   Types::Strict::Integer
   attribute :name, Types::Strict::String
