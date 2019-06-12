@@ -4,7 +4,7 @@ require "ostruct"
 
 RSpec.describe Hanami::Entity do
   let(:described_class) do
-    Class.new(Hanami::Entity)
+    Class.new(Hanami::Entity[:struct])
   end
 
   describe "equality" do

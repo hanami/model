@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe "Hanami::Model::Sql::Types::Schema::Int" do
-  let(:described_class) { Hanami::Model::Sql::Types::Schema::Int }
+RSpec.describe "Hanami::Model::Sql::Types::Schema::Integer" do
+  let(:described_class) { Hanami::Model::Sql::Types::Schema::Integer }
 
   let(:input) do
     Class.new do
@@ -33,13 +33,13 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Int" do
   it "raises error for meaningless string" do
     input = "foo"
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 
   it "raises error for symbol" do
     input = :house_11
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 
   it "coerces integer" do
@@ -60,30 +60,30 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Int" do
   it "raises error for date" do
     input = Date.today
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 
   it "raises error for datetime" do
     input = DateTime.new
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 
   it "raises error for time" do
     input = Time.now
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 
   it "raises error for array" do
     input = []
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 
   it "raises error for hash" do
     input = {}
     expect { described_class[input] }
-      .to raise_error(Dry::Types::ConstraintError, "#{input.inspect} violates constraints (invalid value for Integer(): #{input.inspect} failed)")
+      .to raise_error(Dry::Types::CoercionError, "invalid value for Integer(): #{input.inspect}")
   end
 end

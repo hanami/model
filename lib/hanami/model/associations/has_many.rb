@@ -13,8 +13,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def self.schema_type(entity)
-          type = Sql::Types::Schema::AssociationType.new(entity)
-          Types::Strict::Array.of(type)
+          Sql::Types.Collection(entity)
         end
 
         # @since 0.7.0
@@ -51,7 +50,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def create(data)
-          entity.new(command(:create, aggregate(target), mapper: nil, use: [:timestamps])
+          entity.new(command(:create, combine(target), mapper: nil, use: [:timestamps])
             .call(serialize(data)))
         rescue => e
           raise Hanami::Model::Error.for(e)
@@ -132,8 +131,8 @@ module Hanami
 
         # @since 0.7.0
         # @api private
-        def aggregate(name)
-          repository.aggregate(name)
+        def combine(name)
+          repository.root.combine(name)
         end
 
         # @since 0.7.0

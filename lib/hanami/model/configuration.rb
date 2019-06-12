@@ -131,7 +131,7 @@ module Hanami
           relation = r.relation
           entity   = r.entity
 
-          entity.schema = Sql::Entity::Schema.new(entities, container.relations[relation], mappings.fetch(relation))
+          entity.schema = Sql::Entity::Schema.build(entities, container.relations[relation], mappings.fetch(relation))
         end
       end
 
