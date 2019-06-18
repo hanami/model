@@ -109,7 +109,7 @@ module Hanami
           case original_message
           when /already exists/
             DB_CREATION_ERROR
-          when /does not exist/
+          when /database ".+" does not exist/
             "Cannot find database: #{database}"
           when /No such file or directory/
             "Could not find executable in your PATH: `#{original_message.split.last}`"
