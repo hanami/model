@@ -95,7 +95,7 @@ clone:
   disable: true
 
 depends_on:
-  - jruby-2-6
+  - ruby-2-6
 
 steps:
 - name: slack
