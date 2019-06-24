@@ -23,7 +23,7 @@ module Platform
       end
 
       def drone?
-        ENV.key?('DRONE_SERVER')
+        ENV['DRONE'] == 'true'
       end
     end
   end

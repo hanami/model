@@ -20,6 +20,7 @@ steps:
     path: /usr/local/bundle
   environment:
     DB: sqlite3
+    DRONE: true
   commands:
   - COVERAGE=true bundle exec rake
 
