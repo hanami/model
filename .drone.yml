@@ -179,7 +179,7 @@ services:
 
 ---
 kind: pipeline
-name: ruby-2.4
+name: ruby-2-4
 group: build
 
 steps:
@@ -269,7 +269,7 @@ services:
 
 ---
 kind: pipeline
-name: ruby-2.3
+name: ruby-2-3
 group: build
 
 steps:
