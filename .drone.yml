@@ -179,12 +179,12 @@ services:
 
 ---
 kind: pipeline
-name: ruby-2.3
+name: ruby-2.4
 group: build
 
 steps:
 - name: install
-  image: hanami/ruby-2.3-db
+  image: hanami/ruby-2.4-db
   volumes:
   - name: bundle
     path: /usr/local/bundle
@@ -194,7 +194,7 @@ steps:
   - bundle install --jobs=3 --retry=3
 
 - name: unit-sqlite3
-  image: hanami/ruby-2.3-db
+  image: hanami/ruby-2.4-db
   volumes:
   - name: bundle
     path: /usr/local/bundle
@@ -205,7 +205,7 @@ steps:
   - COVERAGE=true bundle exec rake
 
 - name: unit-mysql
-  image: hanami/ruby-2.3-db
+  image: hanami/ruby-2.4-db
   volumes:
   - name: bundle
     path: /usr/local/bundle
@@ -219,7 +219,7 @@ steps:
   - COVERAGE=true bundle exec rake
 
 - name: unit-postgres
-  image: hanami/ruby-2.3-db
+  image: hanami/ruby-2.4-db
   volumes:
   - name: bundle
     path: /usr/local/bundle
@@ -234,7 +234,7 @@ steps:
   - COVERAGE=true bundle exec rake
 
 - name: quality
-  image: hanami/ruby-2.3-db
+  image: hanami/ruby-2.4-db
   environment:
     CODECOV_TOKEN:
       from_secret: codecov
@@ -266,6 +266,7 @@ services:
   environment:
     POSTGRES_USER: postgres
     POSTGRES_DB: hanami_model
+
 ---
 kind: pipeline
 name: ruby-2.3
