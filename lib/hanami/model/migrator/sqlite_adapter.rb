@@ -119,7 +119,6 @@ module Hanami
             raise MigrationError.new(exception.message)
           end
         end
-
         # rubocop:enable Metrics/AbcSize
       end
     end

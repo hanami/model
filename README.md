@@ -56,6 +56,7 @@ This class provides a DSL to configure the connection.
 
 ```ruby
 require 'hanami/model'
+require 'hanami/model/sql'
 
 class User < Hanami::Entity
 end
@@ -192,6 +193,8 @@ This is a **huge improvement**, because:
 
 Hanami::Model can **_automap_** columns from relations and entities attributes.
 
+When using a `sql` adapter, you must require `hanami/model/sql` before `Hanami::Model.load!` is called so the relations are loaded correctly.
+
 However, there are cases where columns and attribute names do not match (mainly **legacy databases**).
 
 ```ruby
@@ -234,6 +237,7 @@ If an entity has the following accessors: `:created_at` and `:updated_at`, they 
 
 ```ruby
 require 'hanami/model'
+require 'hanami/model/sql'
 
 class User < Hanami::Entity
 end
