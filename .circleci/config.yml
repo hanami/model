@@ -43,7 +43,7 @@ jobs:
            HANAMI_DATABASE_USERNAME: root
            HANAMI_DATABASE_PASSWORD: hanami
            HANAMI_DATABASE_HOST: 127.0.0.1
-       - image: cytopia/mysql-5.7
+       - image: circleci/mysql:5.7-ram
          environment:
            MYSQL_ROOT_PASSWORD: hanami
     working_directory: ~/hanami-model

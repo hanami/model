@@ -30,8 +30,8 @@ RSpec.shared_examples 'migrator_postgresql' do
       db = database
 
       Platform.match do
-        engine(:ruby)  { "postgresql://127.0.0.1/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
-        engine(:jruby) { "jdbc:postgresql://127.0.0.1/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+        engine(:ruby)  { "postgresql://#{ENV.fetch('HANAMI_DATABASE_HOST', '127.0.0.1')}/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+        engine(:jruby) { "jdbc:postgresql://#{ENV.fetch('HANAMI_DATABASE_HOST', '127.0.0.1')}/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
       end
     end
 

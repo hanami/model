@@ -155,7 +155,6 @@ module Hanami
     def command(*args, **opts, &block)
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
       opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
-
       super(*args, **opts, &block)
     end
 
