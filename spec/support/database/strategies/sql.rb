@@ -62,6 +62,12 @@ module Database
         ENV['HANAMI_DATABASE_HOST'] || 'localhost'
       end
 
+      def host_and_credentials
+        result = [host]
+        result.unshift(credentials) unless Hanami::Utils::Blank.blank?(credentials)
+        result.join("@")
+      end
+
       def logger
         Pathname.new('tmp').join('hanami_model.log')
       end

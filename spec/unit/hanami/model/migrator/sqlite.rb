@@ -46,6 +46,8 @@ RSpec.shared_examples 'migrator_sqlite' do
         let(:database) { '/usr/bin/create.sqlite3' }
 
         it 'raises an error' do
+          skip if Platform::Ci.ci?(:drone)
+
           error = Platform.match do
             os(:macos).engine(:jruby) { Java::JavaLang::RuntimeException }
             default { Hanami::Model::MigrationError }
