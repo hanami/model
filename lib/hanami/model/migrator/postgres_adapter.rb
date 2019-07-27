@@ -100,8 +100,8 @@ module Hanami
             Open3.popen3(*command_with_credentials(command)) do |_stdin, _stdout, stderr, wait_thr|
               raise MigrationError.new(modified_message(stderr.read)) unless wait_thr.value.success? # wait_thr.value is the exit status
             end
-          rescue SystemCallError => e
-            raise MigrationError.new(modified_message(e.message))
+          rescue SystemCallError => exception
+            raise MigrationError.new(modified_message(exception.message))
           end
         end
 

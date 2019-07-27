@@ -357,8 +357,8 @@ module Hanami
       #   entity.id # => nil - It doesn't mutate original entity
       def create(*args)
         super
-      rescue => e
-        raise Hanami::Model::Error.for(e)
+      rescue => exception
+        raise Hanami::Model::Error.for(exception)
       end
 
       # Update a record
@@ -386,8 +386,8 @@ module Hanami
       #   entity.id # => nil - It doesn't mutate original entity
       def update(*args)
         super
-      rescue => e
-        raise Hanami::Model::Error.for(e)
+      rescue => exception
+        raise Hanami::Model::Error.for(exception)
       end
 
       # Delete a record
@@ -405,8 +405,8 @@ module Hanami
       #   user       = repository.delete(user.id)
       def delete(*args)
         super
-      rescue => e
-        raise Hanami::Model::Error.for(e)
+      rescue => exception
+        raise Hanami::Model::Error.for(exception)
       end
     end
 
@@ -435,8 +435,8 @@ module Hanami
     #   user       = repository.find(user.id)
     def find(id)
       root.by_pk(id).as(:entity).one
-    rescue => e
-      raise Hanami::Model::Error.for(e)
+    rescue => exception
+      raise Hanami::Model::Error.for(exception)
     end
 
     # Return all the records for the relation
