@@ -51,8 +51,8 @@ module Hanami
       #   end
       def [](attribute)
         @relation[attribute]
-      rescue KeyError => e
-        raise UnknownAttributeError.new(e.message)
+      rescue KeyError => exception
+        raise UnknownAttributeError.new(exception.message)
       end
     end
   end

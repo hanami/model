@@ -20,11 +20,11 @@ module Hanami
         # @api private
         def create
           new_connection(global: true).run %(CREATE DATABASE `#{database}`;)
-        rescue Sequel::DatabaseError => e
-          message = if e.message.match(/database exists/) # rubocop:disable Performance/RedundantMatch
+        rescue Sequel::DatabaseError => exception
+          message = if exception.message.match(/database exists/)
                       DB_CREATION_ERROR
                     else
-                      e.message
+                      exception.message
                     end
 
           raise MigrationError.new(message)
@@ -34,11 +34,11 @@ module Hanami
         # @api private
         def drop
           new_connection(global: true).run %(DROP DATABASE `#{database}`;)
-        rescue Sequel::DatabaseError => e
-          message = if e.message.match(/doesn\'t exist/) # rubocop:disable Performance/RedundantMatch
+        rescue Sequel::DatabaseError => exception
+          message = if exception.message.match(/doesn\'t exist/)
                       "Cannot find database: #{database}"
                     else
-                      e.message
+                      exception.message
                     end
 
           raise MigrationError.new(message)

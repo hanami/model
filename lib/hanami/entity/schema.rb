@@ -182,10 +182,10 @@ module Hanami
         # @api private
         def call(attributes)
           schema.call(attributes)
-        rescue Dry::Types::SchemaError => e
-          raise TypeError.new(e.message)
-        rescue Dry::Types::MissingKeyError, Dry::Types::UnknownKeysError => e
-          raise ArgumentError.new(e.message)
+        rescue Dry::Types::SchemaError => exception
+          raise TypeError.new(exception.message)
+        rescue Dry::Types::MissingKeyError, Dry::Types::UnknownKeysError => exception
+          raise ArgumentError.new(exception.message)
         end
 
         # Check if the attribute is known

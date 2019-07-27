@@ -80,8 +80,8 @@ module Hanami
           version = Integer(version) unless version.nil?
 
           Sequel::Migrator.run(connection.raw, migrations, target: version, allow_missing_migration_files: true)
-        rescue Sequel::Migrator::Error => e
-          raise MigrationError.new(e.message)
+        rescue Sequel::Migrator::Error => exception
+          raise MigrationError.new(exception.message)
         end
 
         # @since 1.1.0
@@ -91,8 +91,8 @@ module Hanami
           version = version_to_rollback(table, steps)
 
           Sequel::Migrator.run(connection.raw, migrations, target: version, allow_missing_migration_files: true)
-        rescue Sequel::Migrator::Error => e
-          raise MigrationError.new(e.message)
+        rescue Sequel::Migrator::Error => exception
+          raise MigrationError.new(exception.message)
         end
 
         # Load database schema.
