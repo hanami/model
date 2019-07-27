@@ -6,7 +6,7 @@ module Platform
   class Matcher
     class Nope < Hanami::Utils::BasicObject
       def or(other, &blk)
-        blk.nil? ? other : blk.call # rubocop:disable Performance/RedundantBlockCall
+        blk.nil? ? other : blk.call
       end
 
       # rubocop:disable Style/MethodMissingSuper

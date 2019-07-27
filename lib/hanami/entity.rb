@@ -78,8 +78,8 @@ module Hanami
       return if attributes.nil?
 
       super(Utils::Hash.deep_symbolize(attributes.to_hash), safe).freeze
-    rescue Dry::Struct::Error => e
-      raise Hanami::Model::Error.new(e.message)
+    rescue Dry::Struct::Error => exception
+      raise Hanami::Model::Error.new(exception.message)
     end
 
     def self.[](type)

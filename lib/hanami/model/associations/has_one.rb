@@ -55,14 +55,14 @@ module Hanami
           entity.new(
             command(:create, combine(target), mapper: nil).call(serialize(data))
           )
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         def add(data)
           command(:create, relation(target)).call(associate(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         def update(data)
@@ -70,8 +70,8 @@ module Hanami
             .by_pk(
               one.public_send(relation(target).primary_key)
             ).call(serialize(data))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         def delete

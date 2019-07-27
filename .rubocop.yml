@@ -2,6 +2,8 @@
 # alphabetically
 inherit_from:
   - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop-unstable.yml
+Naming/RescuedExceptionsVariableName:
+  PreferredName: "exception"
 Style/RescueStandardError:
   Enabled: false
 Style/DateTime:

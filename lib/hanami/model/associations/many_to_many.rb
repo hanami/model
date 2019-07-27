@@ -77,8 +77,8 @@ module Hanami
         def add(*data)
           command(:create, relation(through), use: [:timestamps])
             .call(associate(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         # @since 1.1.0

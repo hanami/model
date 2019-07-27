@@ -52,8 +52,8 @@ module Hanami
         def create(data)
           entity.new(command(:create, combine(target), mapper: nil, use: [:timestamps])
             .call(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         # @since 0.7.0
@@ -61,8 +61,8 @@ module Hanami
         def add(data)
           command(:create, relation(target), use: [:timestamps])
             .call(associate(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         # @since 0.7.0
