@@ -1,6 +1,8 @@
-require 'pathname'
-require 'hanami/utils'
-require 'English'
+# frozen_string_literal: true
+
+require "pathname"
+require "hanami/utils"
+require "English"
 
 module Hanami
   module Model
@@ -71,7 +73,7 @@ module Hanami
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, '')
+            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, "")
           )
         end
 
@@ -105,22 +107,18 @@ module Hanami
         # @api private
         #
         # rubocop:disable Metrics/AbcSize
-        # rubocop:disable Metrics/MethodLength
         def dump_migrations_data
           execute "sqlite3 #{escape(path)} .dump" do |stdout|
-            begin
-              contents = stdout.read.split($INPUT_RECORD_SEPARATOR)
-              contents = contents.grep(/^INSERT INTO "?#{migrations_table}"?/)
+            contents = stdout.read.split($INPUT_RECORD_SEPARATOR)
+            contents = contents.grep(/^INSERT INTO "#{migrations_table}"/)
 
-              ::File.open(schema, ::File::CREAT | ::File::BINARY | ::File::WRONLY | ::File::APPEND) do |file|
-                file.write(contents.join($INPUT_RECORD_SEPARATOR))
-              end
-            rescue => exception
-              raise MigrationError.new(exception.message)
+            ::File.open(schema, ::File::CREAT | ::File::BINARY | ::File::WRONLY | ::File::APPEND) do |file|
+              file.write(contents.join($INPUT_RECORD_SEPARATOR))
             end
+          rescue => exception
+            raise MigrationError.new(exception.message)
           end
         end
-        # rubocop:enable Metrics/MethodLength
         # rubocop:enable Metrics/AbcSize
       end
     end

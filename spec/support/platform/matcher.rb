@@ -1,4 +1,6 @@
-require 'hanami/utils/basic_object'
+# frozen_string_literal: true
+
+require "hanami/utils/basic_object"
 
 module Platform
   class Matcher

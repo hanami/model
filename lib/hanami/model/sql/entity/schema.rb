@@ -1,6 +1,7 @@
-require 'hanami/entity/schema'
-require 'hanami/model/types'
-require 'hanami/model/association'
+# frozen_string_literal: true
+
+require "hanami/model/types"
+require "hanami/model/association"
 
 module Hanami
   module Model
@@ -17,61 +18,7 @@ module Hanami
         # @api private
         #
         # @see Hanami::Entity::Schema
-        class Schema < Hanami::Entity::Schema
-          # Build a new instance of Schema according to database columns,
-          # associations and potentially to mapping defined by the repository.
-          #
-          # @param registry [Hash] a registry that keeps reference between
-          #   entities class and their underscored names
-          # @param relation [ROM::Relation] the database relation
-          # @param mapping [Hanami::Model::Mapping] the optional repository
-          #   mapping
-          #
-          # @return [Hanami::Model::Sql::Entity::Schema] the schema
-          #
-          # @since 0.7.0
-          # @api private
-          def initialize(registry, relation, mapping)
-            attributes  = build(registry, relation, mapping)
-            @schema     = Types::Coercible::Hash.schema(attributes)
-            @attributes = Hash[attributes.map { |k, _| [k, true] }]
-            freeze
-          end
-
-          # Process attributes
-          #
-          # @param attributes [#to_hash] the attributes hash
-          #
-          # @raise [TypeError] if the process fails
-          #
-          # @since 1.0.1
-          # @api private
-          def call(attributes)
-            schema.call(attributes)
-          end
-
-          # @since 1.0.1
-          # @api private
-          alias [] call
-
-          # Check if the attribute is known
-          #
-          # @param name [Symbol] the attribute name
-          #
-          # @return [TrueClass,FalseClass] the result of the check
-          #
-          # @since 0.7.0
-          # @api private
-          def attribute?(name)
-            attributes.key?(name)
-          end
-
-          private
-
-          # @since 0.7.0
-          # @api private
-          attr_reader :attributes
-
+        class Schema
           # Build the schema
           #
           # @param registry [Hash] a registry that keeps reference between
@@ -82,9 +29,9 @@ module Hanami
           #
           # @return [Dry::Types::Constructor] the inner schema
           #
-          # @since 0.7.0
+          # @since 2.0.0
           # @api private
-          def build(registry, relation, mapping)
+          def self.build(registry, relation, mapping)
             build_attributes(relation, mapping).merge(
               build_associations(registry, relation.associations)
             )
@@ -99,9 +46,9 @@ module Hanami
           #
           # @return [Hash] a set of attributes
           #
-          # @since 0.7.0
+          # @since 2.0.0
           # @api private
-          def build_attributes(relation, mapping)
+          def self.build_attributes(relation, mapping)
             schema = relation.schema.to_h
             schema.each_with_object({}) do |(attribute, type), result|
               attribute = mapping.translate(attribute) if mapping.reverse?
@@ -118,20 +65,20 @@ module Hanami
           #
           # @return [Hash] attributes with associations
           #
-          # @since 0.7.0
+          # @since 2.0.0
           # @api private
-          def build_associations(registry, associations)
+          def self.build_associations(registry, associations)
             associations.each_with_object({}) do |(name, association), result|
-              target       = registry.fetch(association.target.to_sym)
+              target = registry.fetch(association.name)
               result[name] = Association.lookup(association).schema_type(target)
             end
           end
 
           # Converts given ROM type into coercible type for entity attribute
           #
-          # @since 0.7.0
+          # @since 2.0.0
           # @api private
-          def coercible(type)
+          def self.coercible(type)
             Types::Schema.coercible(type)
           end
         end

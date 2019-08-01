@@ -1,4 +1,6 @@
-require 'hanami/model/types'
+# frozen_string_literal: true
+
+require "hanami/model/types"
 
 module Hanami
   module Model
@@ -11,7 +13,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def self.schema_type(entity)
-          Sql::Types::Schema::AssociationType.new(entity)
+          Sql::Types.Entity(entity)
         end
 
         # @since 1.1.0
@@ -68,7 +70,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def relation(name)
-          repository.relations[Hanami::Utils::String.pluralize(name)]
+          container.relations[inflector.pluralize(name)]
         end
 
         # @since 1.1.0
@@ -83,7 +85,7 @@ module Hanami
         # @api private
         def association_keys
           association
-            .__send__(:join_key_map, container.relations)
+            .__send__(:join_key_map)
         end
 
         # Return the ROM::Associations for the source relation
@@ -97,9 +99,15 @@ module Hanami
         # @since 1.1.0
         # @api private
         def _build_scope
-          result = relation(association.target.to_sym)
+          result = relation(association.target.name.to_sym)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
-          result.as(Model::MappedRelation.mapper_name)
+          result.map_with(Model::MappedRelation.mapper_name)
+        end
+
+        # @since x.x.x
+        # @api private
+        def inflector
+          Model.configuration.inflector
         end
       end
     end

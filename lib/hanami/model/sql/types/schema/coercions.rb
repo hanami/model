@@ -1,5 +1,7 @@
-require 'hanami/utils/string'
-require 'hanami/utils/hash'
+# frozen_string_literal: true
+
+require "hanami/utils/string"
+require "hanami/utils/hash"
 
 module Hanami
   module Model
@@ -184,7 +186,7 @@ module Hanami
             def self.hash(arg)
               case arg
               when ::Hash
-                arg
+                Utils::Hash.deep_symbolize(arg)
               when ->(a) { a.respond_to?(:to_hash) }
                 Utils::Hash.deep_symbolize(
                   ::Kernel.Hash(arg)
