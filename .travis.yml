@@ -18,6 +18,7 @@ addons:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - env: DB=mysql
 
 notifications:
   webhooks:

@@ -21,10 +21,10 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.5.0"
 
   spec.add_runtime_dependency "hanami-utils",    "~> 2.0.alpha"
-  spec.add_runtime_dependency "rom",             "~> 5.0"
+  spec.add_runtime_dependency "rom",             "~> 5.1"
+  spec.add_runtime_dependency "rom-repository",  "~> 5.1"
   spec.add_runtime_dependency "rom-sql",         "~> 3.0"
-  spec.add_runtime_dependency "rom-repository",  "~> 5.0"
-  spec.add_runtime_dependency "dry-types",       "~> 1.0"
+  spec.add_runtime_dependency "dry-types",       "~> 1.1"
   spec.add_runtime_dependency "dry-inflector",   "~> 0.1"
   spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
 
