@@ -254,10 +254,6 @@ class AuthorRepository < Hanami::Repository
     assoc(:books, author).where(on_sale: true).count
   end
 
-  def find_book(author, id)
-    book_for(author, id).one
-  end
-
   def book_exists?(author, id)
     book_for(author, id).exists?
   end
