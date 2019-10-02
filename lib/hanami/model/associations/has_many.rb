@@ -46,6 +46,16 @@ module Hanami
           freeze
         end
 
+        # @raise [MultipleResultsError] if more than one record is available
+        #
+        # @since 1.3.3
+        # @api private
+        def one
+          raise Hanami::Model::MultipleResultsError, "#{count} results returned" if count > 1
+
+          scope.one
+        end
+
         # @since 0.7.0
         # @api private
         def create(data)

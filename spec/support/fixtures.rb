@@ -258,11 +258,19 @@ class AuthorRepository < Hanami::Repository
     book_for(author, id).one
   end
 
+  def find_book_by_title(author, title)
+    book_by_title(author, title).one
+  end
+
   def book_exists?(author, id)
     book_for(author, id).exists?
   end
 
   private
+
+  def book_by_title(author, title)
+    assoc(:books, author).where(title: title)
+  end
 
   def book_for(author, id)
     assoc(:books, author).where(id: id)

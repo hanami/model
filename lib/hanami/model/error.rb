@@ -127,5 +127,8 @@ module Hanami
         super("Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
       end
     end
+
+    class MultipleResultsError < Error
+    end
   end
 end

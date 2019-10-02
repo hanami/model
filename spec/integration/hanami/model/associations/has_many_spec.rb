@@ -192,4 +192,33 @@ RSpec.describe 'Associations (has_many)' do
     # skipped spec
     it '#remove'
   end
+
+  describe '#one' do
+    it 'raises an error if more than one record exists' do
+      author = authors.create(name: 'Umberto Eco')
+      book = books.create(author_id: author.id, title: 'Foucault Pendulum')
+      book = books.create(author_id: author.id, title: 'Foucault Pendulum')
+
+      expect do
+        authors.find_book_by_title(author, book.title)
+      end.to raise_error(Hanami::Model::MultipleResultsError)
+    end
+
+    it 'returns an individual record if only one record exists' do
+      author = authors.create(name: 'Umberto Eco')
+      book = books.create(author_id: author.id, title: 'Foucault Pendulum')
+
+      found = authors.find_book(author, book.id)
+
+      expect(found).to eq(book)
+    end
+
+    it 'returns nil if no records exist' do
+      author = authors.create(name: 'Aspiring Author')
+
+      found = authors.find_book(author, nil)
+
+      expect(found).to eq(nil)
+    end
+  end
 end
