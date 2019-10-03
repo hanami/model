@@ -195,9 +195,9 @@ RSpec.describe 'Associations (has_many)' do
 
   describe '#one' do
     it 'raises an error if more than one record exists' do
-      author = authors.create(name: 'Umberto Eco')
-      book = books.create(author_id: author.id, title: 'Foucault Pendulum')
-      book = books.create(author_id: author.id, title: 'Foucault Pendulum')
+      author = authors.create(name: 'Cormac McCarthy')
+      book = books.create(author_id: author.id, title: 'Blood Meridian')
+      book = books.create(author_id: author.id, title: 'Blood Meridian')
 
       expect do
         authors.find_book_by_title(author, book.title)
@@ -205,8 +205,8 @@ RSpec.describe 'Associations (has_many)' do
     end
 
     it 'returns an individual record if only one record exists' do
-      author = authors.create(name: 'Umberto Eco')
-      book = books.create(author_id: author.id, title: 'Foucault Pendulum')
+      author = authors.create(name: 'Toni Morrison')
+      book = books.create(author_id: author.id, title: 'Song of Solomon')
 
       found = authors.find_book(author, book.id)
 
