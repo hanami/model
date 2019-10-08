@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Database
   module Strategies
     class Abstract
@@ -10,9 +12,11 @@ module Database
         load_dependencies
         export_env
         create_database
-        configure
+        configuration = configure
         after
         sleep 1
+
+        configuration
       end
 
       protected
@@ -22,7 +26,7 @@ module Database
       end
 
       def database_name
-        'hanami_model'
+        "hanami_model"
       end
 
       def load_dependencies
@@ -30,7 +34,7 @@ module Database
       end
 
       def export_env
-        ENV['HANAMI_DATABASE_NAME'] = database_name
+        ENV["HANAMI_DATABASE_NAME"] = database_name
       end
 
       def create_database
@@ -38,11 +42,12 @@ module Database
       end
 
       def configure
-        returing = Hanami::Model.configure do
-          adapter ENV['HANAMI_DATABASE_ADAPTER'].to_sym, ENV['HANAMI_DATABASE_URL']
+        returning = Hanami::Model.configure do
+          adapter ENV["HANAMI_DATABASE_ADAPTER"].to_sym, ENV["HANAMI_DATABASE_URL"]
         end
 
-        returing == Hanami::Model or raise 'Hanami::Model.configure should return Hanami::Model'
+        returning == Hanami::Model or raise "Hanami::Model.configure should return Hanami::Model"
+        returning.configuration
       end
 
       def after

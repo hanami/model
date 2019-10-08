@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/utils/hash"
 
 module Hanami
@@ -11,7 +13,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def self.schema_type(entity)
-          Sql::Types::Schema::AssociationType.new(entity)
+          Sql::Types.Entity(entity)
         end
         #
         # @since 1.1.0
@@ -51,14 +53,14 @@ module Hanami
 
         def create(data)
           entity.new(
-            command(:create, aggregate(target), mapper: nil).call(serialize(data))
+            command(:create, combine(target), mapper: nil).call(serialize(data))
           )
         rescue => exception
           raise Hanami::Model::Error.for(exception)
         end
 
         def add(data)
-          command(:create, relation(target), mapper: nil).call(associate(serialize(data)))
+          command(:create, relation(target)).call(associate(serialize(data)))
         rescue => exception
           raise Hanami::Model::Error.for(exception)
         end
@@ -94,20 +96,22 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def aggregate(name)
-          repository.aggregate(name)
+        def combine(name)
+          repository.root.combine(name)
         end
+
+        COMMAND_PLUGINS = %i[schema mapping timestamps].freeze
 
         # @since 1.1.0
         # @api private
-        def command(target, relation, options = {})
-          repository.command(target, relation, options)
+        def command(type, relation, options = {})
+          repository.command(type, relation: relation, **options)
         end
 
         # @since 1.1.0
         # @api private
         def relation(name)
-          repository.relations[Hanami::Utils::String.pluralize(name)]
+          container.relations[inflector.pluralize(name)]
         end
 
         # @since 1.1.0
@@ -133,7 +137,7 @@ module Hanami
         def associate(data)
           relation(source)
             .associations[target]
-            .associate(container.relations, data, subject)
+            .associate(data, subject)
         end
 
         # Returns primary key and foreign key
@@ -143,7 +147,7 @@ module Hanami
         def association_keys
           relation(source)
             .associations[target]
-            .__send__(:join_key_map, container.relations)
+            .__send__(:join_key_map)
         end
 
         # @since 1.1.0
@@ -151,13 +155,19 @@ module Hanami
         def _build_scope
           result = relation(target)
           result = result.where(foreign_key => subject.fetch(primary_key)) unless subject.nil?
-          result.as(Model::MappedRelation.mapper_name)
+          result.map_with(Model::MappedRelation.mapper_name)
         end
 
         # @since 1.1.0
         # @api private
         def serialize(data)
           Utils::Hash.deep_serialize(data)
+        end
+
+        # @since x.x.x
+        # @api private
+        def inflector
+          Model.configuration.inflector
         end
       end
     end

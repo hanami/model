@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "ostruct"
 
 class BaseParams < OpenStruct
@@ -40,44 +42,36 @@ class Comment < Hanami::Entity
 end
 
 class Warehouse < Hanami::Entity
-  attributes do
-    attribute :id,   Types::Int
-    attribute :name, Types::String
-    attribute :code, Types::String.constrained(format: /\Awh\-/)
-  end
+  attribute :id,   Types::Integer
+  attribute :name, Types::String
+  attribute :code, Types::String.constrained(format: /\Awh\-/)
 end
 
 class Account < Hanami::Entity
-  attributes do
-    attribute :id,         Types::Strict::Int
-    attribute :name,       Types::String
-    attribute :codes,      Types::Collection(Types::Coercible::Int)
-    attribute :owner,      Types::Entity(User)
-    attribute :users,      Types::Collection(User)
-    attribute :email,      Types::String.constrained(format: /@/)
-    attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
-  end
+  attribute :id,         Types::Strict::Integer
+  attribute :name,       Types::String
+  attribute :codes,      Types::Collection(Types::Coercible::Integer)
+  attribute :owner,      Types::Entity(User)
+  attribute :users,      Types::Collection(User)
+  attribute :email,      Types::String.constrained(format: /@/)
+  attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
 end
 
 class PageVisit < Hanami::Entity
-  attributes do
-    attribute :id,        Types::Strict::Int
-    attribute :start,     Types::DateTime
-    attribute :end,       Types::DateTime
-    attribute :visitor,   Types::Hash
-    attribute :page_info, Types::Hash.symbolized(
-      name: Types::Coercible::String,
-      scroll_depth: Types::Coercible::Float,
-      meta: Types::Hash
-    )
+  attribute :id,        Types::Strict::Integer
+  attribute :start,     Types::DateTime
+  attribute :end,       Types::DateTime
+  attribute :visitor,   Types::Hash
+  attribute :page_info do
+    attribute :name, Types::Coercible::String
+    attribute :scroll_depth, Types::Coercible::Float
+    attribute :meta, Types::Hash
   end
 end
 
-class Person < Hanami::Entity
-  attributes :strict do
-    attribute :id,   Types::Strict::Int
-    attribute :name, Types::Strict::String
-  end
+class Person < Hanami::Entity[:strict]
+  attribute :id,   Types::Strict::Integer
+  attribute :name, Types::Strict::String
 end
 
 class Product < Hanami::Entity
@@ -89,7 +83,7 @@ end
 class Label < Hanami::Entity
 end
 
-class PostRepository < Hanami::Repository
+class PostRepository < Hanami::Repository[:posts]
   associations do
     belongs_to :user, as: :author
     has_many :comments
@@ -97,7 +91,7 @@ class PostRepository < Hanami::Repository
   end
 
   def find_with_commenters(id)
-    aggregate(:commenters).where(id: id).map_to(Post).to_a
+    combine(:commenters).where(id: id).map_to(Post).to_a
   end
 
   def commenters_for(post)
@@ -105,11 +99,11 @@ class PostRepository < Hanami::Repository
   end
 
   def find_with_author(id)
-    aggregate(:author).where(id: id).map_to(Post).one
+    posts.combine(:author).where(id: id).map_to(Post).one
   end
 
   def feed_for(id)
-    aggregate(:author, comments: :user).where(id: id).map_to(Post).one
+    posts.combine(:author, comments: :user).where(id: id).map_to(Post).one
   end
 
   def author_for(post)
@@ -117,7 +111,7 @@ class PostRepository < Hanami::Repository
   end
 end
 
-class CommentRepository < Hanami::Repository
+class CommentRepository < Hanami::Repository[:comments]
   associations do
     belongs_to :post
     belongs_to :user
@@ -128,7 +122,7 @@ class CommentRepository < Hanami::Repository
   end
 end
 
-class AvatarRepository < Hanami::Repository
+class AvatarRepository < Hanami::Repository[:avatars]
   associations do
     belongs_to :user
   end
@@ -138,7 +132,7 @@ class AvatarRepository < Hanami::Repository
   end
 end
 
-class UserRepository < Hanami::Repository
+class UserRepository < Hanami::Repository[:users]
   associations do
     has_one :avatar
     has_many :posts, as: :threads
@@ -146,7 +140,7 @@ class UserRepository < Hanami::Repository
   end
 
   def find_with_threads(id)
-    aggregate(:threads).where(id: id).map_to(User).one
+    users.combine(:threads).where(id: id).map_to(User).one
   end
 
   def threads_for(user)
@@ -154,7 +148,7 @@ class UserRepository < Hanami::Repository
   end
 
   def find_with_avatar(id)
-    aggregate(:avatar).where(id: id).map_to(User).one
+    users.combine(:avatar).where(id: id).map_to(User).one
   end
 
   def create_with_avatar(data)
@@ -182,7 +176,7 @@ class UserRepository < Hanami::Repository
   end
 
   def by_name(name)
-    users.where(name: name)
+    users.where(name: name).map_to(User)
   end
 
   def by_matching_name(name)
@@ -190,32 +184,29 @@ class UserRepository < Hanami::Repository
   end
 
   def by_name_with_root(name)
-    root.where(name: name).as(:entity)
+    root.where(name: name).map_to(User)
   end
 
   def find_all_by_manual_query
-    users.read("select * from users").to_a
+    users.read("select * from users").map_to(User).to_a
   end
 
   def ids
-    users.select(:id).to_a
+    users.select(:id).map_to(User).to_a
   end
 
   def select_id_and_name
-    users.select(:id, :name).to_a
+    users.select(:id, :name).map_to(User).to_a
   end
 end
 
-class AvatarRepository < Hanami::Repository
-end
-
-class AuthorRepository < Hanami::Repository
+class AuthorRepository < Hanami::Repository[:authors]
   associations do
     has_many :books
   end
 
   def create_many(data, opts: {})
-    command(create: :authors, result: :many, **opts).call(data)
+    command(:create, result: :many, **opts).call(data)
   end
 
   def create_with_books(data)
@@ -223,7 +214,7 @@ class AuthorRepository < Hanami::Repository
   end
 
   def find_with_books(id)
-    aggregate(:books).by_pk(id).map_to(Author).one
+    authors.combine(:books).by_pk(id).map_to(Author).one
   end
 
   def books_for(author)
@@ -269,14 +260,14 @@ class AuthorRepository < Hanami::Repository
   end
 end
 
-class BookOntologyRepository < Hanami::Repository
+class BookOntologyRepository < Hanami::Repository[:book_ontologies]
   associations do
     belongs_to :books
     belongs_to :categories
   end
 end
 
-class CategoryRepository < Hanami::Repository
+class CategoryRepository < Hanami::Repository[:categories]
   associations do
     has_many :books, through: :book_ontologies
   end
@@ -294,7 +285,7 @@ class CategoryRepository < Hanami::Repository
   end
 
   def find_with_books(id)
-    aggregate(:books).where(id: id).map_to(Category).one
+    categories.combine(:books).where(id: id).map_to(Category).one
   end
 
   def add_books(category, *books)
@@ -306,7 +297,7 @@ class CategoryRepository < Hanami::Repository
   end
 end
 
-class BookRepository < Hanami::Repository
+class BookRepository < Hanami::Repository[:books]
   associations do
     belongs_to :author
     has_many :categories, through: :book_ontologies
@@ -325,11 +316,11 @@ class BookRepository < Hanami::Repository
   end
 
   def find_with_categories(id)
-    aggregate(:categories).where(id: id).map_to(Book).one
+    books.combine(:categories).where(id: id).map_to(Book).one
   end
 
   def find_with_author(id)
-    aggregate(:author).where(id: id).map_to(Book).one
+    books.combine(:author).where(id: id).map_to(Book).one
   end
 
   def author_for(book)
@@ -337,38 +328,35 @@ class BookRepository < Hanami::Repository
   end
 end
 
-class OperatorRepository < Hanami::Repository
-  self.relation = :t_operator
-
+class OperatorRepository < Hanami::Repository[:t_operator]
   mapping do
     attribute :id,   from: :operator_id
     attribute :name, from: :s_name
   end
 end
 
-class AccessTokenRepository < Hanami::Repository
-  self.relation = "tokens"
+class AccessTokenRepository < Hanami::Repository[:tokens]
 end
 
-class SourceFileRepository < Hanami::Repository
+class SourceFileRepository < Hanami::Repository[:source_files]
 end
 
-class WarehouseRepository < Hanami::Repository
+class WarehouseRepository < Hanami::Repository[:warehouses]
 end
 
-class ProductRepository < Hanami::Repository
+class ProductRepository < Hanami::Repository[:products]
 end
 
-class ColorRepository < Hanami::Repository
+class ColorRepository < Hanami::Repository[:colors]
   schema do
-    attribute :id,         Hanami::Model::Sql::Types::Int
+    attribute :id,         Hanami::Model::Sql::Types::Integer
     attribute :name,       Hanami::Model::Sql::Types::String
     attribute :created_at, Hanami::Model::Sql::Types::DateTime
     attribute :updated_at, Hanami::Model::Sql::Types::DateTime
   end
 end
 
-class LabelRepository < Hanami::Repository
+class LabelRepository < Hanami::Repository[:labels]
 end
 
-Hanami::Model.load!
+Hanami::Model.configuration.load!(Hanami::Model.repositories)

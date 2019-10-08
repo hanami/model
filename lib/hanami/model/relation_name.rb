@@ -1,5 +1,6 @@
-require_relative 'entity_name'
-require 'hanami/utils/string'
+# frozen_string_literal: true
+
+require_relative "entity_name"
 
 module Hanami
   module Model
@@ -17,7 +18,11 @@ module Hanami
       # @since 0.7.0
       # @api private
       def self.new(name)
-        Utils::String.transform(super, :underscore, :pluralize)
+        inflector.pluralize(inflector.underscore(super))
+      end
+
+      def self.inflector
+        Model.configuration.inflector
       end
     end
   end

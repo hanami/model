@@ -1,4 +1,6 @@
-require 'hanami/logger'
+# frozen_string_literal: true
+
+require "hanami/logger"
 
 module Hanami
   module Model

@@ -1,4 +1,7 @@
-require 'hanami/model/types'
+# frozen_string_literal: true
+
+require "dry/struct"
+require "hanami/model/types"
 
 module Hanami
   # An object that is defined by its identity.
@@ -49,8 +52,11 @@ module Hanami
   # @since 0.1.0
   #
   # @see Hanami::Repository
-  class Entity
-    require 'hanami/entity/schema'
+  class Entity < Dry::Struct
+    require "hanami/entity/strict"
+    require "hanami/entity/schemaless"
+
+    DEFAULT = schema.dup.freeze
 
     # Syntactic shortcut to reference types in custom schema DSL
     #
@@ -59,71 +65,60 @@ module Hanami
       include Hanami::Model::Types
     end
 
-    # Class level interface
-    #
-    # @since 0.7.0
-    # @api private
-    module ClassMethods
-      # Define manual entity schema
-      #
-      # With a SQL database this setup happens automatically and you SHOULD NOT
-      # use this DSL. You should use only when you want to customize the automatic
-      # setup.
-      #
-      # If you're working with an entity that isn't "backed" by a SQL table or
-      # with a schema-less database, you may want to manually setup a set of
-      # attributes via this DSL. If you don't do any setup, the entity accepts all
-      # the given attributes.
-      #
-      # @param type [Symbol] the type of schema to build
-      # @param blk [Proc] the block that defines the attributes
-      #
-      # @since 0.7.0
-      #
-      # @see Hanami::Entity
-      def attributes(type = nil, &blk)
-        self.schema = Schema.new(type, &blk)
-        @attributes = true
-      end
+    def self.inherited(entity)
+      super
 
-      # Assign a schema
-      #
-      # @param value [Hanami::Entity::Schema] the schema
-      #
-      # @since 0.7.0
-      # @api private
-      def schema=(value)
-        return if defined?(@attributes)
-
-        @schema = value
-      end
-
-      # @since 0.7.0
-      # @api private
-      attr_reader :schema
-    end
-
-    # @since 0.7.0
-    # @api private
-    def self.inherited(klass)
-      klass.class_eval do
-        @schema = Schema.new
-        extend  ClassMethods
+      schema_policy.call(entity)
+      entity.class_eval do
+        @_mutex = Mutex.new
       end
     end
 
-    # Instantiate a new entity
-    #
-    # @param attributes [Hash,#to_h,NilClass] data to initialize the entity
-    #
-    # @return [Hanami::Entity] the new entity instance
-    #
-    # @raise [TypeError] if the given attributes are invalid
-    #
-    # @since 0.1.0
-    def initialize(attributes = nil)
-      @attributes = self.class.schema[attributes]
-      freeze
+    def self.new(attributes = default_attributes, safe = false)
+      return if attributes.nil?
+
+      super(Utils::Hash.deep_symbolize(attributes.to_hash), safe).freeze
+    rescue Dry::Struct::Error => exception
+      raise Hanami::Model::Error.new(exception.message)
+    end
+
+    def self.[](type)
+      case type
+      when :struct
+        Schemaless
+      when :strict
+        Strict
+      else
+        raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'")
+      end
+    end
+
+    def self.schema=(attrs)
+      return if schema?
+
+      attrs.each do |name, type|
+        attribute(name, type)
+      end
+    end
+
+    def self.schema?
+      @_mutex.synchronize do
+        defined?(@_schema)
+      end
+    end
+
+    def self.schema_policy
+      lambda do |entity|
+        entity.transform_types(&:omittable)
+      end
+    end
+
+    def self.attribute(name, type = nil, &blk)
+      @_mutex.synchronize do
+        @_schema = true
+      end
+
+      super(name, type, &blk)
     end
 
     # Entity ID
@@ -133,17 +128,6 @@ module Hanami
     # @since 0.7.0
     def id
       attributes.fetch(:id, nil)
-    end
-
-    # Handle dynamic accessors
-    #
-    # If internal attributes set has the requested key, it returns the linked
-    # value, otherwise it raises a <tt>NoMethodError</tt>
-    #
-    # @since 0.7.0
-    def method_missing(method_name, *)
-      attribute?(method_name) or super
-      attributes.fetch(method_name, nil)
     end
 
     # Implement generic equality for entities
@@ -197,7 +181,7 @@ module Hanami
     # @since 0.7.0
     # @api private
     def attribute?(name)
-      self.class.schema.attribute?(name)
+      self.class.has_attribute?(name)
     end
 
     private

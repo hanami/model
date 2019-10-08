@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require "hanami/utils/blank"
+
 module Hanami
   module Model
     class Migrator
@@ -8,20 +12,22 @@ module Hanami
       class MySQLAdapter < Adapter
         # @since 0.7.0
         # @api private
-        PASSWORD = 'MYSQL_PWD'.freeze
+        PASSWORD = "MYSQL_PWD"
+
+        CLI_OPTIONS = %w[host port user].freeze
 
         # @since 1.0.0
         # @api private
-        DB_CREATION_ERROR = 'Database creation failed. If the database exists, ' \
-                            'then its console may be open. See this issue for more details: ' \
-                            'https://github.com/hanami/model/issues/250'.freeze
+        DB_CREATION_ERROR = "Database creation failed. If the database exists, " \
+                            "then its console may be open. See this issue for more details: " \
+                            "https://github.com/hanami/model/issues/250"
 
         # @since 0.4.0
         # @api private
         def create
           new_connection(global: true).run %(CREATE DATABASE `#{database}`;)
         rescue Sequel::DatabaseError => exception
-          message = if exception.message.match(/database exists/)
+          message = if exception.message.match?(/database exists/)
                       DB_CREATION_ERROR
                     else
                       exception.message
@@ -35,7 +41,7 @@ module Hanami
         def drop
           new_connection(global: true).run %(DROP DATABASE `#{database}`;)
         rescue Sequel::DatabaseError => exception
-          message = if exception.message.match(/doesn\'t exist/)
+          message = if exception.message.match?(/doesn\'t exist/)
                       "Cannot find database: #{database}"
                     else
                       exception.message
@@ -68,19 +74,30 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: { PASSWORD => password }
+          execute "mysqldump #{cli_options} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: { PASSWORD => password }
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          execute("mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}", env: { PASSWORD => password }) if schema.exist?
+          execute("mysql #{cli_options} #{database} < #{escape(schema)}", env: { PASSWORD => password }) if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
+          execute "mysqldump #{cli_options} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
+        end
+
+        alias user username
+
+        def cli_options
+          CLI_OPTIONS.map do |option|
+            value = send(option)
+            next if Utils::Blank.blank?(value)
+
+            "--#{option}=#{value}"
+          end.compact.join(" ")
         end
       end
     end

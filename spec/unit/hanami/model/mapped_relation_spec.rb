@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 RSpec.describe Hanami::Model::MappedRelation do
   subject { described_class.new(relation) }
-  let(:relation) { UserRepository.new.users }
+  let(:relation) { UserRepository.new(configuration: configuration).users }
 
   describe "#[]" do
     it "returns attribute" do

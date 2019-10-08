@@ -1,5 +1,7 @@
-require 'hanami/model/types'
-require 'rom/types'
+# frozen_string_literal: true
+
+require "hanami/model/types"
+require "rom/types"
 
 module Hanami
   module Model
@@ -8,28 +10,28 @@ module Hanami
       #
       # @since 0.7.0
       module Types
-        include Dry::Types.module
+        include Hanami::Model::Types
 
         # Types for schema definitions
         #
         # @since 0.7.0
         module Schema
-          require 'hanami/model/sql/types/schema/coercions'
+          require "hanami/model/sql/types/schema/coercions"
 
           String   = Types::Optional::Coercible::String
 
-          Int      = Types::Strict::Nil | Types::Int.constructor(Coercions.method(:int))
-          Float    = Types::Strict::Nil | Types::Float.constructor(Coercions.method(:float))
-          Decimal  = Types::Strict::Nil | Types::Float.constructor(Coercions.method(:decimal))
+          Integer  = Types::Strict::Nil | Types::Strict::Integer.constructor(Coercions.method(:int))
+          Float    = Types::Strict::Nil | Types::Strict::Float.constructor(Coercions.method(:float))
+          Decimal  = Types::Strict::Nil | Types::Strict::Decimal.constructor(Coercions.method(:decimal))
 
           Bool     = Types::Strict::Nil | Types::Strict::Bool
 
-          Date     = Types::Strict::Nil | Types::Date.constructor(Coercions.method(:date))
-          DateTime = Types::Strict::Nil | Types::DateTime.constructor(Coercions.method(:datetime))
-          Time     = Types::Strict::Nil | Types::Time.constructor(Coercions.method(:time))
+          Date     = Types::Strict::Nil | Types::Strict::Date.constructor(Coercions.method(:date))
+          DateTime = Types::Strict::Nil | Types::Strict::DateTime.constructor(Coercions.method(:datetime))
+          Time     = Types::Strict::Nil | Types::Strict::Time.constructor(Coercions.method(:time))
 
-          Array    = Types::Strict::Nil | Types::Array.constructor(Coercions.method(:array))
-          Hash     = Types::Strict::Nil | Types::Hash.constructor(Coercions.method(:hash))
+          Array    = Types::Strict::Nil | Types::Strict::Array.constructor(Coercions.method(:array))
+          Hash     = Types::Strict::Nil | Types::Strict::Hash.constructor(Coercions.method(:hash))
 
           PG_JSON  = Types::Strict::Nil | Types::Any.constructor(Coercions.method(:pg_json))
 
@@ -37,7 +39,7 @@ module Hanami
           # @api private
           MAPPING = {
             Types::String.pristine => Schema::String,
-            Types::Int.pristine => Schema::Int,
+            Types::Integer.pristine => Schema::Integer,
             Types::Float.pristine => Schema::Float,
             Types::Decimal.pristine => Schema::Decimal,
             Types::Bool.pristine => Schema::Bool,
@@ -47,7 +49,7 @@ module Hanami
             Types::Array.pristine => Schema::Array,
             Types::Hash.pristine => Schema::Hash,
             Types::String.optional.pristine => Schema::String,
-            Types::Int.optional.pristine => Schema::Int,
+            Types::Integer.optional.pristine => Schema::Integer,
             Types::Float.optional.pristine => Schema::Float,
             Types::Decimal.optional.pristine => Schema::Decimal,
             Types::Bool.optional.pristine => Schema::Bool,
@@ -93,35 +95,11 @@ module Hanami
           # @since 1.0.2
           # @api private
           def self.pg_json?(pristine)
-            pristine == pg_json_pristines['JSONB'.freeze] || # rubocop:disable Style/MultipleComparison
-              pristine == pg_json_pristines['JSON'.freeze]
+            pristine == pg_json_pristines["JSONB"] || # rubocop:disable Style/MultipleComparison
+              pristine == pg_json_pristines["JSON"]
           end
 
           private_class_method :pg_json?
-
-          # Coercer for SQL associations target
-          #
-          # @since 0.7.0
-          # @api private
-          class AssociationType < Hanami::Model::Types::Schema::CoercibleType
-            # Check if value can be coerced
-            #
-            # @param value [Object] the value
-            #
-            # @return [TrueClass,FalseClass] the result of the check
-            #
-            # @since 0.7.0
-            # @api private
-            def valid?(value)
-              value.inspect =~ /\[#{primitive}\]/ || super
-            end
-
-            # @since 0.7.0
-            # @api private
-            def success(*args)
-              result(Dry::Types::Result::Success, primitive.new(args.first.to_h))
-            end
-          end
         end
       end
     end

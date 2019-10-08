@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     # Plugins to extend read/write operations from/to the database
@@ -13,13 +15,13 @@ module Hanami
         # @since 0.7.0
         # @api private
         def initialize(_relation, input)
-          @input = input || Hash
+          @input = input || ::Hash
         end
       end
 
-      require 'hanami/model/plugins/mapping'
-      require 'hanami/model/plugins/schema'
-      require 'hanami/model/plugins/timestamps'
+      require "hanami/model/plugins/mapping"
+      require "hanami/model/plugins/schema"
+      require "hanami/model/plugins/timestamps"
     end
   end
 end
