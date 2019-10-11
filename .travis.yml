@@ -17,7 +17,7 @@ env:
   - DB=mysql
 
 addons:
-  postgresql: '9.4'
+  postgresql: '10'
 
 matrix:
   allow_failures:
