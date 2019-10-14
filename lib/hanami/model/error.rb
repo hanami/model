@@ -127,5 +127,17 @@ module Hanami
         super("Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
       end
     end
+
+    # Unknown database error
+    #
+    # @since 1.3.2
+    class UnknownDatabaseError < Error
+      def initialize(url)
+        env = ENV.key?('HANAMI_ENV') ? "HANAMI_ENV=#{ENV['HANAMI_ENV']} " : " "
+        tip = "TIP: In order to create and migrate this database, run: `#{env}bundle exec hanami db prepare`"
+
+        super("Unknown database '#{url.split('/').last}'.\n#{tip}")
+      end
+    end
   end
 end

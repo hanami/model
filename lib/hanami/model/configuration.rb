@@ -138,6 +138,7 @@ module Hanami
         @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
       rescue => exception
         raise UnknownDatabaseAdapterError.new(@url) if exception.message =~ /adapters/
+        raise UnknownDatabaseError.new(@url) if exception.message =~ /database .* does not exist/
 
         raise exception
       end

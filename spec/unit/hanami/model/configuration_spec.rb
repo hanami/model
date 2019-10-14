@@ -1,4 +1,6 @@
 RSpec.describe Hanami::Model::Configuration do
+  extend PlatformHelpers
+
   before do
     database_directory = Pathname.pwd.join('tmp', 'db')
     database_directory.join('migrations').mkpath
@@ -47,6 +49,20 @@ RSpec.describe Hanami::Model::Configuration do
 
       it 'raises error' do
         expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseAdapterError, "Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
+      end
+    end
+
+    context 'with missing database' do
+      with_platform(db: :postgresql) do
+        context "when postgresql" do
+          let(:url) do
+            ENV['HANAMI_DATABASE_URL'] + "_nonexisting"
+          end
+
+          it 'raises error' do
+            expect { subject.connection }.to raise_error(Hanami::Model::UnknownDatabaseError, /Unknown database '#{url.split('/').last}'/)
+          end
+        end
       end
     end
   end
