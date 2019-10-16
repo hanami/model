@@ -16,6 +16,9 @@ env:
   - DB=postgresql
   - DB=mysql
 
+services:
+  - mysql
+
 addons:
   postgresql: '10'
 
