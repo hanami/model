@@ -43,7 +43,7 @@ module Hanami
   # implements that interface then that object can be used as an Entity in the
   # **Hanami::Model** framework.
   #
-  # However, we suggest to implement this interface by including
+  # However, we suggest to implement this interface by inheriting
   # `Hanami::Entity`, in case that future versions of the framework will expand
   # it.
   #
