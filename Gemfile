@@ -19,9 +19,3 @@ gem "jdbc-postgres", require: false, platforms: :jruby, group: :postgres
 gem "jdbc-mysql",    require: false, platforms: :jruby, group: :mysql
 
 gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git"
-
-gem "guard"
-gem "guard-rspec"
-gem "pry"
-
-gem "dry-types", github: "dry-rb/dry-types", branch: :master
