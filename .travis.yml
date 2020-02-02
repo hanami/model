@@ -1,6 +1,9 @@
 language: ruby
 sudo: false
 cache: bundler
+before_install:
+  - travis_retry gem update --system || travis_retry gem update --system 2.7.8
+  - travis_retry gem install bundler --no-document || travis_retry gem install bundler --no-document -v 1.17.3
 script: 'bundle exec rubocop && bundle exec rake spec:unit --trace'
 after_script: 'echo `env`'
 rvm:

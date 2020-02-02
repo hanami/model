@@ -2,6 +2,12 @@
 # alphabetically
 inherit_from:
   - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop.yml
+Naming/MethodParameterName:
+  AllowedNames:
+    - ci
+    - db
+    - id
+    - os
 Naming/RescuedExceptionsVariableName:
   PreferredName: "exception"
 Style/RescueStandardError:
