@@ -4,9 +4,9 @@
 #
 version: 2
 jobs:
-  "ruby-2.6:sqlite":
+  "ruby-2.7:sqlite":
     docker:
-       - image: hanami/ruby-2.6
+       - image: hanami/ruby-2.7
          environment:
            DB: sqlite
     working_directory: ~/hanami-model
@@ -35,9 +35,9 @@ jobs:
           name: run tests
           command: |
             ./script/ci
-  "ruby-2.6:mysql":
+  "ruby-2.7:mysql":
     docker:
-       - image: hanami/ruby-2.6
+       - image: hanami/ruby-2.7
          environment:
            DB: mysql
            HANAMI_DATABASE_USERNAME: root
@@ -76,9 +76,9 @@ jobs:
           name: run tests
           command: |
             ./script/ci
-  "ruby-2.6:postgresql":
+  "ruby-2.7:postgresql":
     docker:
-       - image: hanami/ruby-2.6
+       - image: hanami/ruby-2.7
          environment:
            DB: postgresql
            HANAMI_DATABASE_USERNAME: postgres
@@ -125,6 +125,6 @@ workflows:
   version: 2
   build:
     jobs:
-      - "ruby-2.6:sqlite"
-      - "ruby-2.6:mysql"
-      - "ruby-2.6:postgresql"
+      - "ruby-2.7:sqlite"
+      - "ruby-2.7:mysql"
+      - "ruby-2.7:postgresql"
