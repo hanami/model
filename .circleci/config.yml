@@ -6,7 +6,7 @@ version: 2
 jobs:
   "ruby-2.7:sqlite":
     docker:
-       - image: hanami/ruby-2.7
+       - image: hanami/ruby-2.7-db
          environment:
            DB: sqlite
     working_directory: ~/hanami-model
@@ -18,10 +18,6 @@ jobs:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run:
-          name: install SQLite3
-          command: |
-            sudo apt install -y sqlite3
       - run:
           name: install dependencies
           command: |
@@ -37,7 +33,7 @@ jobs:
             ./script/ci
   "ruby-2.7:mysql":
     docker:
-       - image: hanami/ruby-2.7
+       - image: hanami/ruby-2.7-db
          environment:
            DB: mysql
            HANAMI_DATABASE_USERNAME: root
@@ -55,10 +51,6 @@ jobs:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run:
-          name: install MySQL client
-          command: |
-            sudo apt install -y mysql-client
       - run:
           name: install dependencies
           command: |
@@ -78,7 +70,7 @@ jobs:
             ./script/ci
   "ruby-2.7:postgresql":
     docker:
-       - image: hanami/ruby-2.7
+       - image: hanami/ruby-2.7-db
          environment:
            DB: postgresql
            HANAMI_DATABASE_USERNAME: postgres
@@ -96,13 +88,6 @@ jobs:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run:
-          name: install PostgreSQL client
-          command: |
-            wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
-            sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-            sudo apt-get update
-            sudo apt install -y postgresql-contrib
       - run:
           name: install dependencies
           command: |
