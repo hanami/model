@@ -61,8 +61,8 @@ jobs:
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
       - run:
           name: wait for db
-          # preinstalled in circleci/* docker image
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+          # preinstalled in hanami/*-db docker image
+          command: /usr/local/bin/wait.sh 127.0.0.1 3306
       # run tests!
       - run:
           name: run tests
@@ -98,8 +98,8 @@ jobs:
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
       - run:
           name: wait for db
-          # preinstalled in circleci/* docker image
-          command: dockerize -wait tcp://127.0.0.1:5432 -timeout 120s
+          # preinstalled in hanami/*-db docker image
+          command: /usr/local/bin/wait.sh 127.0.0.1 5432
       # run tests!
       - run:
           name: run tests
