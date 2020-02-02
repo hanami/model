@@ -79,7 +79,7 @@ module Hanami
         require 'hanami/logger'
 
         opts = options.merge(stream: stream)
-        @_logger = Hanami::Logger.new('hanami.model', opts)
+        @_logger = Hanami::Logger.new('hanami.model', **opts)
       end
 
       # @since 1.0.0
