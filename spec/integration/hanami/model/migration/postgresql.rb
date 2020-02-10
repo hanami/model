@@ -420,8 +420,7 @@ RSpec.shared_examples 'migration_integration_postgresql' do
       expect(options.fetch(:allow_null)).to eq(true)
 
       expected = Platform.match do
-        ci(:travis) { '(-1)' }
-        default     { "'-1'::integer" }
+        default { "'-1'::integer" }
       end
 
       expect(options.fetch(:default)).to eq(expected)
