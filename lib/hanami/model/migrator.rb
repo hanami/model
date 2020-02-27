@@ -329,7 +329,7 @@ module Hanami
       # @see Hanami::Model::Migrator.prepare
       def prepare
         drop
-      rescue # rubocop:disable Lint/HandleExceptions
+      rescue # rubocop:disable Lint/SuppressedException
       ensure
         create
         adapter.load
