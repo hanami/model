@@ -6,7 +6,7 @@ module Platform
   class Matcher
     class Nope < Hanami::Utils::BasicObject
       def or(other, &blk)
-        blk.nil? ? other : blk.call
+        blk.nil? ? other : yield
       end
 
       # rubocop:disable Style/MethodMissingSuper

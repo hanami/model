@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rom",             "~> 5.1"
   spec.add_runtime_dependency "rom-repository",  "~> 5.1"
   spec.add_runtime_dependency "rom-sql",         "~> 3.0"
-  spec.add_runtime_dependency "dry-types",       "~> 1.2"
+  spec.add_runtime_dependency "dry-types",       "~> 1.3"
   spec.add_runtime_dependency "dry-inflector",   "~> 0.1"
   spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
 
