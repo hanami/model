@@ -15,7 +15,7 @@ module Hanami
         def self.schema_type(entity)
           Sql::Types.Entity(entity)
         end
-        #
+
         # @since 1.1.0
         # @api private
         attr_reader :repository

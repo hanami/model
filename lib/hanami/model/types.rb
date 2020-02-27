@@ -31,10 +31,8 @@ module Hanami
         #   require "hanami/model"
         #
         #   class Account < Hanami::Entity
-        #     attributes do
-        #       # ...
-        #       attribute :owner, Types::Entity(User)
-        #     end
+        #     # ...
+        #     attribute :owner, Types::Entity(User)
         #   end
         #
         #   account = Account.new(owner: User.new(name: "Luca"))
@@ -45,7 +43,7 @@ module Hanami
         #   account.owner.class # => User
         #   account.owner.name  # => "MG"
         def Entity(type)
-          Hanami::Model::Types.Constructor(type)
+          Hanami::Model::Types.Constructor(type).optional
         end
 
         # Define an array of given type
