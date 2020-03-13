@@ -38,11 +38,11 @@ module Hanami
       def initialize(configurator) # rubocop:disable Metrics/MethodLength
         @backend = configurator.backend
         @url = configurator.url
-        @container         = nil
-        @migrations        = configurator._migrations
-        @schema            = configurator._schema
-        @gateway_config    = configurator._gateway
-        @logger            = configurator._logger
+        @container = nil
+        @migrations = configurator._migrations
+        @schema = configurator._schema
+        @gateway_config = configurator._gateway
+        @logger = configurator._logger
         @migrations_logger = configurator.migrations_logger
         @inflector         = configurator.inflector
         @mappings          = {}

@@ -113,7 +113,7 @@ module Hanami
       end
     end
 
-    def self.attribute(name, type = nil, &blk)
+    def self.attribute(name, type = Undefined, &blk)
       @_mutex.synchronize do
         @_schema = true
       end
