@@ -15,7 +15,7 @@ module Hanami
       # @since x.x.x
       # @api private
       def self.call(repository, configuration)
-        define_relation(repository, configuration)
+        # define_relation(repository, configuration)
         define_mapping(repository, configuration)
       end
 
@@ -54,7 +54,7 @@ module Hanami
         blk = lambda do |_|
           model       e
           register_as :entity
-          instance_exec(&m) unless m.nil?
+          # instance_exec(&m) unless m.nil?
         end
 
         root = repository.root

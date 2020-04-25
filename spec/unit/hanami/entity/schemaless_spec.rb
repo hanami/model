@@ -65,7 +65,8 @@ RSpec.describe Hanami::Entity do
       it "raises error for unknown methods" do
         entity = described_class.new
 
-        expect { entity.foo }.to raise_error(NoMethodError)
+        # TODO: Maybe wrap on a Hanami::Model::Error
+        expect { entity.foo }.to raise_error(ROM::Struct::MissingAttribute)
       end
 
       it "returns empty hash for #attributes" do

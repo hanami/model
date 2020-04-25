@@ -47,6 +47,7 @@ module Hanami
         @inflector         = configurator.inflector
         @mappings          = {}
         @entities          = {}
+        @directory         = configurator.directory
       end
 
       def container
@@ -167,20 +168,21 @@ module Hanami
       # rubocop:disable Metrics/AbcSize
       # rubocop:disable Metrics/MethodLength
       def load!(repositories, &blk)
-        rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
+        rom.auto_registration(@directory) unless @directory.nil?
         rom.instance_eval(&blk)                            if     block_given?
         configure_gateway
-        configure_repositories(repositories)
+        # configure_repositories(repositories)
         self.logger = logger
 
         # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
         gateway.connection.tables
 
         @container = ROM.container(rom)
-        define_entities_mappings(@container, repositories)
+        # define_entities_mappings(@container, repositories)
+
         @container
-      rescue => exception
-        raise Hanami::Model::Error.for(exception)
+      # rescue => exception
+      #   raise Hanami::Model::Error.for(exception)
       end
       # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/AbcSize

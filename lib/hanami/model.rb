@@ -3,6 +3,7 @@
 require "rom"
 require "concurrent"
 require "hanami/entity"
+require "hanami/relation"
 require "hanami/repository"
 
 # Hanami

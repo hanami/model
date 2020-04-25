@@ -32,8 +32,10 @@ module Database
           logger     ENV["HANAMI_DATABASE_LOGGER"], level: :debug
           migrations Dir.pwd + "/spec/support/fixtures/database_migrations"
           schema     Dir.pwd + "/tmp/schema.sql"
+          path       Dir.pwd + "/spec/support/fixtures/project/"
 
           migrations_logger ENV["HANAMI_DATABASE_LOGGER"]
+
 
           gateway do |g|
             g.connection.extension(:pg_enum) if Database.engine?(:postgresql)
