@@ -139,106 +139,8 @@ module Hanami
     # @since 1.2.0
     def command(type, relation: root, **opts, &block)
       opts[:use] = COMMAND_PLUGINS | Array(opts[:use])
-      # opts[:mapper] = opts.fetch(:mapper, Model::MappedRelation.mapper_name)
-
       relation.command(type, **opts, &block)
     end
-
-    # Declare associations for the repository
-    #
-    # NOTE: This is an experimental feature
-    #
-    # @since 0.7.0
-    # @api private
-    #
-    # @example
-    #   class BookRepository < Hanami::Repository
-    #     associations do
-    #       has_many :books
-    #     end
-    #   end
-    # def self.associations(&blk)
-    #   if block_given?
-    #     @associations = blk
-    #   else
-    #     @associations
-    #   end
-    # end
-
-    # Declare database schema
-    #
-    # NOTE: This should be used **only** when Hanami can't find a corresponding Ruby type for your column.
-    #
-    # @since 1.0.0
-    #
-    # @example
-    #   # In this example `name` is a PostgreSQL Enum type that we want to treat like a string.
-    #
-    #   class ColorRepository < Hanami::Repository
-    #     schema do
-    #       attribute :id,         Hanami::Model::Sql::Types::Integer
-    #       attribute :name,       Hanami::Model::Sql::Types::String
-    #       attribute :created_at, Hanami::Model::Sql::Types::DateTime
-    #       attribute :updated_at, Hanami::Model::Sql::Types::DateTime
-    #     end
-    #   end
-    # def self.schema(&blk)
-    #   if block_given?
-    #     @schema = blk
-    #   else
-    #     @schema
-    #   end
-    # end
-
-    # Declare mapping between database columns and entity's attributes
-    #
-    # NOTE: This should be used **only** when there is a name mismatch (eg. in legacy databases).
-    #
-    # @since 0.7.0
-    #
-    # @example
-    #   class BookRepository < Hanami::Repository
-    #     self.relation = :t_operator
-    #
-    #     mapping do
-    #       attribute :id,   from: :operator_id
-    #       attribute :name, from: :s_name
-    #     end
-    #   end
-    # def self.mapping(&blk)
-    #   if block_given?
-    #     @mapping = blk
-    #   else
-    #     @mapping
-    #   end
-    # end
-
-    # @since 0.7.0
-    # @api private
-    #
-    # rubocop:disable Metrics/MethodLength
-    # def self.[](relation_name)
-    #   Class.new(Hanami::Repository) do
-    #     root relation_name
-    #     def self.inherited(klass)
-    #       klass.class_eval <<~CODE, __FILE__, __LINE__ + 1
-    #         include Utils::ClassAttribute
-    #
-    #         class_attribute :entity
-    #         class_attribute :entity_name
-    #         class_attribute :relation
-    #
-    #         self.root :#{root}
-    #
-    #
-    #         commands :create, update: :by_pk, delete: :by_pk, mapper: :entity, use: COMMAND_PLUGINS
-    #         prepend Commands
-    #       CODE
-    #
-    #       # Hanami::Model.repositories << klass
-    #     end
-    #   end
-    # end
 
     def [](name)
       fetch_or_store(name) do
@@ -252,8 +154,6 @@ module Hanami
       klass.commands :create, update: :by_pk, delete: :by_pk, use: COMMAND_PLUGINS
       klass.prepend Commands
     end
-
-    # rubocop:enable Metrics/MethodLength
 
     # Extend commands from ROM::Repository with error management
     #

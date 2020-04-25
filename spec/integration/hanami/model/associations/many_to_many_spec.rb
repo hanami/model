@@ -113,7 +113,7 @@ RSpec.describe "Associations (has_many :through)" do
       actual = []
 
       categories.books_for(category).each do |book|
-        expect(book).to be_an_instance_of(Book)
+        expect(book).to be_a(Project::Entities::Book)
         actual << book
       end
 

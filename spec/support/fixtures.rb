@@ -39,6 +39,12 @@ module Project
     class Book < Hanami::Entity2
     end
 
+    class BookOntology < Hanami::Entity2
+    end
+
+    class Category < Hanami::Entity2
+    end
+
     class Color < Hanami::Entity2
     end
 
@@ -63,7 +69,7 @@ class AuthorRepository < Hanami::Repository[:authors]
 
   # There must be a better way to do this - MRP - 2020-04-25
   def books_for(author)
-    root.assoc(:books).where(root[:id] => author.id).map_to(Project::Entities::Book).to_a
+    books.join(root).where(root[:id] => author.id).to_a
   end
 
   def books_count(author)
@@ -97,14 +103,6 @@ class AuthorRepository < Hanami::Repository[:authors]
   def remove_book(_author, id)
     command(:update, relation: books).by_pk(id).call(author_id: nil)
   end
-
-  #   def find_book(author, id)
-  #     book_for(author, id).one
-  #   end
-  #
-  #   def book_exists?(author, id)
-  #     book_for(author, id).exists?
-  #   end
 end
 
 class AvatarRepository < Hanami::Repository[:avatars]
@@ -119,11 +117,62 @@ class BookRepository < Hanami::Repository[:books]
   struct_namespace Project::Entities
 
   def author_for(book)
-    root.by_pk(book.id).combine(:author).one.author
+    author.join(root).where(root[:id] => book.id).one
   end
 
   def find_with_author(id)
-    books.combine(:author).by_pk(id).one
+    root.combine(:author).by_pk(id).one
+  end
+
+  def find_with_categories(id)
+    root.combine(:categories).by_pk(id).one
+  end
+
+  def categories_for(book)
+    categories.join(root).where(root[:id] => book.id).to_a
+  end
+
+  def add_category(book, *data)
+    associated = categories.associations[:books].associate(data, book)
+    command(:create, relation: book_ontologies).call(associated)
+  end
+
+  def clear_categories(book)
+    book_ontologies.where(book_id: book.id).delete
+  end
+end
+
+class BookOntologyRepository < Hanami::Repository[:book_ontologies]
+  struct_namespace Project::Entities
+end
+
+class CategoryRepository < Hanami::Repository[:categories]
+  struct_namespace Project::Entities
+
+  def books_for(category)
+    books.join(root).where(root[:id] => category.id).to_a
+  end
+
+  def on_sales_books_count(category)
+    root.assoc(:books).where(root[:id] => category.id, on_sale: true).count
+  end
+
+  def books_count(category)
+    books.join(root).where(root[:id] => category.id).count
+  end
+
+  def find_with_books(id)
+    root.combine(:books).by_pk(id).one
+  end
+
+  def add_books(category, *data)
+    # This is a bit weird. Is there any other way to do this?
+    associated = books.associations[:categories].associate(data, category)
+    command(:create, relation: book_ontologies).call(associated)
+  end
+
+  def remove_book(category, book_id)
+    book_ontologies.where(category_id: category.id, book_id: book_id).delete
   end
 end
 
@@ -161,13 +210,6 @@ class UserRepository < Hanami::Repository[:users]
   def select_id_and_name
     root.select(:id, :name).to_a
   end
-
-  #   associations do
-  #     has_one :avatar
-  #     has_many :posts, as: :threads
-  #     has_many :comments
-  #   end
-  #
   #   def find_with_threads(id)
   #     users.combine(:threads).where(id: id).map_to(User).one
   #   end
@@ -176,33 +218,40 @@ class UserRepository < Hanami::Repository[:users]
   #     assoc(:threads, user).to_a
   #   end
   #
-  #   def find_with_avatar(id)
-  #     users.combine(:avatar).where(id: id).map_to(User).one
-  #   end
-  #
-  #   def create_with_avatar(data)
-  #     assoc(:avatar).create(data)
-  #   end
-  #
-  #   def remove_avatar(user)
-  #     assoc(:avatar, user).delete
-  #   end
-  #
-  #   def add_avatar(user, data)
-  #     assoc(:avatar, user).add(data)
-  #   end
-  #
-  #   def update_avatar(user, data)
-  #     assoc(:avatar, user).update(data)
-  #   end
-  #
-  #   def replace_avatar(user, data)
-  #     assoc(:avatar, user).replace(data)
-  #   end
-  #
-  #   def avatar_for(user)
-  #     assoc(:avatar, user).one
-  #   end
+  def find_with_avatar(id)
+    root.combine(:avatar).by_pk(id).one
+  end
+
+  def create_with_avatar(data)
+    command(:create, relation: root.combine(:avatar)).call(data)
+  end
+
+  def remove_avatar(user)
+    avatars.where(user_id: user.id).delete
+  end
+
+  def add_avatar(user, data)
+    # Should I use root.associations[:avatar].relation?
+    # Is there a better way to do this?
+    associated = root.associations[:avatar].associate(data, user)
+    command(:create, relation: avatars).call(associated)
+  end
+
+  def update_avatar(user, data)
+    associated = root.associations[:avatar].associate(data, user)
+    command(:update, relation: avatars).call(associated)
+  end
+
+  def replace_avatar(user, data)
+    transaction do
+      remove_avatar(user)
+      add_avatar(user, data)
+    end
+  end
+
+  def avatar_for(user)
+    avatars.join(root).where(root[:id] => user.id).one
+  end
 end
 
 # class Avatar < Hanami::Entity
@@ -312,102 +361,7 @@ end
 #
 
 #
-# class AuthorRepository < Hanami::Repository[:authors]
-#   associations do
-#     has_many :books
-#   end
-#
-#   def create_many(data, opts: {})
-#     command(:create, result: :many, **opts).call(data)
-#   end
-#
-#   def create_with_books(data)
-#     assoc(:books).create(data)
-#   end
-#
-#   def find_with_books(id)
-#     authors.combine(:books).by_pk(id).map_to(Author).one
-#   end
-#
-#   def books_for(author)
-#     assoc(:books, author)
-#   end
-#
-#   def add_book(author, data)
-#     assoc(:books, author).add(data)
-#   end
-#
-#   def remove_book(author, id)
-#     assoc(:books, author).remove(id)
-#   end
-#
-#   def delete_books(author)
-#     assoc(:books, author).delete
-#   end
-#
-#   def delete_on_sales_books(author)
-#     assoc(:books, author).where(on_sale: true).delete
-#   end
-#
-#   def books_count(author)
-#     assoc(:books, author).count
-#   end
-#
-#   def on_sales_books_count(author)
-#     assoc(:books, author).where(on_sale: true).count
-#   end
-#
-#   def find_book(author, id)
-#     book_for(author, id).one
-#   end
-#
-#   def book_exists?(author, id)
-#     book_for(author, id).exists?
-#   end
-#
-#   private
-#
-#   def book_for(author, id)
-#     assoc(:books, author).where(id: id)
-#   end
-# end
-#
-# class BookOntologyRepository < Hanami::Repository[:book_ontologies]
-#   associations do
-#     belongs_to :books
-#     belongs_to :categories
-#   end
-# end
-#
-# class CategoryRepository < Hanami::Repository[:categories]
-#   associations do
-#     has_many :books, through: :book_ontologies
-#   end
-#
-#   def books_for(category)
-#     assoc(:books, category)
-#   end
-#
-#   def on_sales_books_count(category)
-#     assoc(:books, category).where(on_sale: true).count
-#   end
-#
-#   def books_count(category)
-#     assoc(:books, category).count
-#   end
-#
-#   def find_with_books(id)
-#     categories.combine(:books).where(id: id).map_to(Category).one
-#   end
-#
-#   def add_books(category, *books)
-#     assoc(:books, category).add(*books)
-#   end
-#
-#   def remove_book(category, book_id)
-#     assoc(:books, category).remove(book_id)
-#   end
-# end
+
 #
 # class BookRepository < Hanami::Repository[:books]
 #   associations do

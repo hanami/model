@@ -112,7 +112,7 @@ RSpec.describe "Associations (has_one)" do
       other_found = users.find_with_avatar(other.id)
 
       expect(found.avatar).to be_nil
-      expect(other_found.avatar).to be_an Avatar
+      expect(other_found.avatar).to be_an Project::Entities::Avatar
     end
   end
 
