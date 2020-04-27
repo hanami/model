@@ -2,9 +2,9 @@
 
 require "ostruct"
 
-RSpec.describe Hanami::Entity do
+RSpec.describe Hanami::OldEntity do
   let(:described_class) do
-    Class.new(Hanami::Entity[:struct])
+    Class.new(Hanami::OldEntity[:struct])
   end
 
   describe "equality" do
@@ -61,14 +61,14 @@ RSpec.describe Hanami::Entity do
 
     it "returns different object hash for different class but same id" do
       entity1 = described_class.new(id: 1)
-      entity2 = Class.new(Hanami::Entity).new(id: 1)
+      entity2 = Class.new(Hanami::OldEntity).new(id: 1)
 
       expect(entity1.hash).to_not eq(entity2.hash), "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
     end
 
     it "returns different object hash for different class and different id" do
       entity1 = described_class.new(id: 1)
-      entity2 = Class.new(Hanami::Entity).new(id: 2)
+      entity2 = Class.new(Hanami::OldEntity).new(id: 2)
 
       expect(entity1.hash).to_not eq(entity2.hash), "Expected #{entity1.hash} to NOT equal #{entity2.hash}"
     end

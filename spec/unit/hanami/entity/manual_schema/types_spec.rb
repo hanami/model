@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Entity do
+RSpec.describe Hanami::OldEntity do
   describe "manual schema (types)" do
     %i[strict struct].each do |type|
       it "allows to build schema with #{type.inspect}" do

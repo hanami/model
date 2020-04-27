@@ -8,50 +8,33 @@ class BaseParams < OpenStruct
   end
 end
 
-module Hanami
-  class Entity2 < ROM::Struct
-    # def id
-    #   attributes.fetch(:id, nil)
-    # end
-
-    def hash
-      [self.class, id].hash
-    end
-
-    def ==(other)
-      self.class.to_s == other.class.to_s &&
-        id == other.id
-    end
-  end
-end
-
 module Project
   module Entities
-    class AccessToken < Hanami::Entity2
+    class AccessToken < Hanami::Entity
     end
 
-    class Author < Hanami::Entity2
+    class Author < Hanami::Entity
     end
 
-    class Avatar < Hanami::Entity2
+    class Avatar < Hanami::Entity
     end
 
-    class Book < Hanami::Entity2
+    class Book < Hanami::Entity
     end
 
-    class BookOntology < Hanami::Entity2
+    class BookOntology < Hanami::Entity
     end
 
-    class Category < Hanami::Entity2
+    class Category < Hanami::Entity
     end
 
-    class Color < Hanami::Entity2
+    class Color < Hanami::Entity
     end
 
-    class Label < Hanami::Entity2
+    class Label < Hanami::Entity
     end
 
-    class User < Hanami::Entity2
+    class User < Hanami::Entity
     end
   end
 end
@@ -254,21 +237,9 @@ class UserRepository < Hanami::Repository[:users]
   end
 end
 
-# class Avatar < Hanami::Entity
-# end
-#
-# class Author < Hanami::Entity
-# end
-#
-# class Book < Hanami::Entity
-# end
-#
-# class Category < Hanami::Entity
-# end
-#
-# class BookOntology < Hanami::Entity
-# end
-#
+class Author < Hanami::OldEntity
+end
+
 # class Operator < Hanami::Entity
 # end
 
@@ -287,15 +258,20 @@ end
 #   attribute :code, Types::String.constrained(format: /\Awh\-/)
 # end
 #
-# class Account < Hanami::Entity
-#   attribute :id,         Types::Strict::Integer
-#   attribute :name,       Types::String
-#   attribute :codes,      Types::Collection(Types::Coercible::Integer)
-#   attribute :owner,      Types::Entity(User)
-#   attribute :users,      Types::Collection(User)
-#   attribute :email,      Types::String.constrained(format: /@/)
-#   attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
-# end
+
+class User < Hanami::OldEntity
+end
+
+class Account < Hanami::OldEntity
+  attribute :id,         Types::Strict::Integer
+  attribute :name,       Types::String
+  attribute :codes,      Types::Collection(Types::Coercible::Integer)
+  attribute :owner,      Types::Entity(User)
+  attribute :users,      Types::Collection(User)
+  attribute :email,      Types::String.constrained(format: /@/)
+  attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
+end
+
 #
 # class PageVisit < Hanami::Entity
 #   attribute :id,        Types::Strict::Integer
@@ -309,10 +285,10 @@ end
 #   end
 # end
 #
-# class Person < Hanami::Entity[:strict]
-#   attribute :id,   Types::Strict::Integer
-#   attribute :name, Types::Strict::String
-# end
+class Person < Hanami::OldEntity[:strict]
+  attribute :id,   Types::Strict::Integer
+  attribute :name, Types::Strict::String
+end
 
 # class Product < Hanami::Entity
 # end

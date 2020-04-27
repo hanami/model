@@ -52,7 +52,17 @@ module Hanami
   # @since 0.1.0
   #
   # @see Hanami::Repository
-  class Entity < Dry::Struct
+  class Entity < ROM::Struct
+    def hash
+      [self.class, id].hash
+    end
+
+    def ==(other)
+      self.class.to_s == other.class.to_s && id == other.id
+    end
+  end
+
+  class OldEntity < Dry::Struct
     require "hanami/entity/strict"
     require "hanami/entity/schemaless"
 

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module Hanami
-  class Entity < Dry::Struct
+  class OldEntity < Dry::Struct
     # Strict entity
     #
     # @since 2.0.0
-    class Strict < Entity
+    class Strict < OldEntity
       def self.schema_policy
         lambda do |entity|
           entity.class_eval do

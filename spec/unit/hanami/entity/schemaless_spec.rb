@@ -3,7 +3,7 @@
 RSpec.describe Hanami::Entity do
   describe "schemaless" do
     let(:described_class) do
-      Class.new(Hanami::Entity[:struct])
+      Class.new(Hanami::OldEntity[:struct])
     end
 
     let(:input) do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Entity do
+RSpec.describe Hanami::OldEntity do
   describe "manual schema (base)" do
     let(:described_class) { Account }
 

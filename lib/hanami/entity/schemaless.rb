@@ -4,7 +4,7 @@ require "dry/struct"
 require "hanami/utils/hash"
 
 module Hanami
-  class Entity < Dry::Struct
+  class OldEntity < Dry::Struct
     # Schemaless entity
     #
     # @since 2.0.0
