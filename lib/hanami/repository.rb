@@ -4,7 +4,6 @@ require "rom-repository"
 require "hanami/model/entity_name"
 require "hanami/model/relation_name"
 require "hanami/model/mapped_relation"
-# require "hanami/model/association"
 require "hanami/utils/class"
 require "hanami/utils/class_attribute"
 require "hanami/utils/io"
@@ -142,6 +141,8 @@ module Hanami
       relation.command(type, **opts, &block)
     end
 
+    # @api
+    # @since x.x.x
     def [](name)
       fetch_or_store(name) do
         klass = Class.new(self < ROM::Repository::Root ? self : ROM::Repository::Root)
@@ -149,6 +150,8 @@ module Hanami
       end
     end
 
+    # @api
+    # @since x.x.x
     def self.inherited(klass)
       super
       klass.commands :create, update: :by_pk, delete: :by_pk, use: COMMAND_PLUGINS

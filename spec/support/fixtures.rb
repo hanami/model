@@ -240,18 +240,6 @@ end
 class Author < Hanami::OldEntity
 end
 
-# class Operator < Hanami::Entity
-# end
-
-# class SourceFile < Hanami::Entity
-# end
-#
-# class Post < Hanami::Entity
-# end
-#
-# class Comment < Hanami::Entity
-# end
-#
 # class Warehouse < Hanami::Entity
 #   attribute :id,   Types::Integer
 #   attribute :name, Types::String
@@ -272,29 +260,23 @@ class Account < Hanami::OldEntity
   attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
 end
 
-#
-# class PageVisit < Hanami::Entity
-#   attribute :id,        Types::Strict::Integer
-#   attribute :start,     Types::DateTime
-#   attribute :end,       Types::DateTime
-#   attribute :visitor,   Types::Hash
-#   attribute :page_info do
-#     attribute :name, Types::Coercible::String
-#     attribute :scroll_depth, Types::Coercible::Float
-#     attribute :meta, Types::Hash
-#   end
-# end
-#
+
+class PageVisit < Hanami::OldEntity
+  attribute :id,        Types::Strict::Integer
+  attribute :start,     Types::DateTime
+  attribute :end,       Types::DateTime
+  attribute :visitor,   Types::Hash
+  attribute :page_info do
+    attribute :name, Types::Coercible::String
+    attribute :scroll_depth, Types::Coercible::Float
+    attribute :meta, Types::Hash
+  end
+end
+
 class Person < Hanami::OldEntity[:strict]
   attribute :id,   Types::Strict::Integer
   attribute :name, Types::Strict::String
 end
-
-# class Product < Hanami::Entity
-# end
-
-# class Color < Hanami::Entity
-# end
 
 # class PostRepository < Hanami::Repository[:posts]
 #   associations do
@@ -336,9 +318,6 @@ end
 # end
 #
 
-#
-
-#
 # class BookRepository < Hanami::Repository[:books]
 #   associations do
 #     belongs_to :author
@@ -386,4 +365,4 @@ end
 # class ProductRepository < Hanami::Repository[:products]
 # end
 
-Hanami::Model.configuration.load!([]) # Hanami::Model.repositories)
+Hanami::Model.configuration.load!

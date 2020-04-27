@@ -7,7 +7,6 @@ module Hanami
   # Hanami::Model migrations
   module Model
     require "hanami/model/error"
-    require "hanami/model/association"
     require "hanami/model/migration"
 
     # Define a migration
