@@ -129,5 +129,11 @@ module Hanami
         super("Unknown database adapter for URL: #{url.inspect}. Please check your database configuration (hint: ENV['DATABASE_URL']).")
       end
     end
+
+    class MissingAttributeError < Error
+      def initialize(error)
+        super(error.message)
+      end
+    end
   end
 end

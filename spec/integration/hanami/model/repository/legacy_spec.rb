@@ -68,7 +68,7 @@ RSpec.describe "Repository (legacy)" do
     it "creates record" do
       operator = repository.create(name: "F")
 
-      expect(operator).to be_an_instance_of(Operator)
+      expect(operator).to be_an(Project::Entities::Operator)
       expect(operator.id).to_not be_nil
       expect(operator.name).to eq("F")
     end
@@ -79,7 +79,7 @@ RSpec.describe "Repository (legacy)" do
       operator = repository.create(name: "F")
       updated = repository.update(operator.id, name: "Flo")
 
-      expect(updated).to be_an_instance_of(Operator)
+      expect(updated).to be_an(Project::Entities::Operator)
       expect(updated.id).to eq(operator.id)
       expect(updated.name).to eq("Flo")
     end
@@ -96,7 +96,7 @@ RSpec.describe "Repository (legacy)" do
       operator = repository.create(name: "F")
       deleted = repository.delete(operator.id)
 
-      expect(deleted).to be_an_instance_of(Operator)
+      expect(deleted).to be_an(Project::Entities::Operator)
       expect(deleted.id).to eq(operator.id)
       expect(deleted.name).to eq("F")
 

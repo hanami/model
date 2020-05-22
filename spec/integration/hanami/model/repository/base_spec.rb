@@ -63,7 +63,7 @@ RSpec.describe "Repository (base)" do
       repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
 
-      expect(repository.all).to be_an_instance_of(Array)
+      expect(repository.all).to be_an(Array)
       expect(repository.all).to include(user)
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe "Repository (base)" do
         expect(users).to be_a_kind_of(Array)
 
         user = users.first
-        expect(user).to be_a_kind_of(User)
+        expect(user).to be_a_kind_of(Project::Entities::User)
       end
     end
   end
@@ -137,20 +137,20 @@ RSpec.describe "Repository (base)" do
       repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
 
-      expect(user).to be_an_instance_of(User)
+      expect(user).to be_a(Project::Entities::User)
       expect(user.id).to_not be_nil
       expect(user.name).to eq("L")
     end
 
-    it "creates record from entity" do
-      entity = User.new(name: "L")
+    xit "creates record from entity" do
+      entity = Project::Entities::User.new(name: "L")
       repository = UserRepository.new(configuration: configuration)
       user = repository.create(entity)
 
       # It doesn't mutate original entity
       expect(entity.id).to be_nil
 
-      expect(user).to be_an_instance_of(User)
+      expect(user).to be_a(User)
       expect(user.id).to_not be_nil
       expect(user.name).to eq("L")
     end
@@ -346,13 +346,13 @@ RSpec.describe "Repository (base)" do
       user = repository.create(name: "L")
       updated = repository.update(user.id, name: "Luca")
 
-      expect(updated).to be_an_instance_of(User)
+      expect(updated).to be_a(Project::Entities::User)
       expect(updated.id).to eq(user.id)
       expect(updated.name).to eq("Luca")
     end
 
-    it "updates record from entity" do
-      entity = User.new(name: "Luca")
+    xit "updates record from entity" do
+      entity = Project::Entities::User.new(name: "Luca")
       repository = UserRepository.new(configuration: configuration)
       user = repository.create(name: "L")
       updated = repository.update(user.id, entity)
@@ -360,7 +360,7 @@ RSpec.describe "Repository (base)" do
       # It doesn't mutate original entity
       expect(entity.id).to be_nil
 
-      expect(updated).to be_an_instance_of(User)
+      expect(updated).to be_a(User)
       expect(updated.id).to eq(user.id)
       expect(updated.name).to eq("Luca")
     end
@@ -535,7 +535,7 @@ RSpec.describe "Repository (base)" do
       user = repository.create(name: "L")
       deleted = repository.delete(user.id)
 
-      expect(deleted).to be_an_instance_of(User)
+      expect(deleted).to be_a(Project::Entities::User)
       expect(deleted.id).to eq(user.id)
       expect(deleted.name).to eq("L")
 
@@ -580,10 +580,10 @@ RSpec.describe "Repository (base)" do
 
       expect(found.size).to be(2)
       found.each do |user|
-        expect(user).to be_a_kind_of(User)
+        expect(user).to be_a_kind_of(Project::Entities::User)
         expect(user.id).to_not be(nil)
-        expect(user.name).to be(nil)
-        expect(user.age).to be(nil)
+        expect { user.name }.to raise_error Hanami::Model::MissingAttributeError
+        expect { user.age }.to raise_error Hanami::Model::MissingAttributeError
       end
     end
 
@@ -596,10 +596,10 @@ RSpec.describe "Repository (base)" do
 
       expect(found.size).to be(2)
       found.each do |user|
-        expect(user).to be_a_kind_of(User)
+        expect(user).to be_a(Project::Entities::User)
         expect(user.id).to_not be(nil)
         expect(user.name).to_not be(nil)
-        expect(user.age).to be(nil)
+        expect { user.age }.to raise_error Hanami::Model::MissingAttributeError
       end
     end
   end
@@ -691,7 +691,7 @@ RSpec.describe "Repository (base)" do
         repository = ColorRepository.new(configuration: configuration)
         color = repository.create(name: "red")
 
-        expect(color).to be_a_kind_of(Color)
+        expect(color).to be_a_kind_of(Project::Entities::Color)
         expect(color.name).to eq("red")
       end
 

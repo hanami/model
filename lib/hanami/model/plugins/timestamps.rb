@@ -95,7 +95,7 @@ module Hanami
           #
           # @since 0.7.0
           # @api private
-          def build(relation, options = {})
+          def build(relation, **options)
             plugin = if self < ROM::Commands::Create
                        InputWithCreateTimestamp
                      else

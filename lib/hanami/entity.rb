@@ -52,148 +52,52 @@ module Hanami
   # @since 0.1.0
   #
   # @see Hanami::Repository
-  class Entity < Dry::Struct
-    require "hanami/entity/strict"
-    require "hanami/entity/schemaless"
-
-    DEFAULT = schema.dup.freeze
-
-    # Syntactic shortcut to reference types in custom schema DSL
+  class Entity < ROM::Struct
+    # Note: This is keeping with the previous "Schemaless" interface that we had.
+    # def self.load(attributes = {})
+    #   return attributes if attributes.is_a?(self)
     #
-    # @since 0.7.0
-    module Types
-      include Hanami::Model::Types
-    end
+    #   super(Utils::Hash.deep_symbolize(attributes.to_hash)).freeze
+    # end
 
-    def self.inherited(entity)
-      super
+    # class << self
+    #   alias new load
+    #   alias call load
+    #   alias call_unsafe load
+    # end
 
-      schema_policy.call(entity)
-      entity.class_eval do
-        @_mutex = Mutex.new
-      end
-    end
-
-    def self.new(attributes = default_attributes, safe = false)
-      return if attributes.nil?
-
-      super(Utils::Hash.deep_symbolize(attributes.to_hash), safe).freeze
-    rescue Dry::Struct::Error => exception
-      raise Hanami::Model::Error.new(exception.message)
-    end
-
-    def self.[](type)
-      case type
-      when :struct
-        Schemaless
-      when :strict
-        Strict
-      else
-        raise Hanami::Model::Error.new("Unknown schema type: `#{type.inspect}'")
-      end
-    end
-
-    def self.schema=(attrs)
-      return if schema?
-
-      attrs.each do |name, type|
-        attribute(name, type)
-      end
-    end
-
-    def self.schema?
-      @_mutex.synchronize do
-        defined?(@_schema)
-      end
-    end
-
-    def self.schema_policy
-      lambda do |entity|
-        entity.transform_types(&:omittable)
-      end
-    end
-
-    def self.attribute(name, type = Undefined, &blk)
-      @_mutex.synchronize do
-        @_schema = true
-      end
-
-      super(name, type, &blk)
-    end
-
-    # Entity ID
-    #
-    # @return [Object,NilClass] the ID, if present
-    #
-    # @since 0.7.0
     def id
-      attributes.fetch(:id, nil)
+      attributes.fetch(:id) { nil }
     end
 
-    # Implement generic equality for entities
-    #
-    # Two entities are equal if they are instances of the same class and they
-    # have the same id.
-    #
-    # @param other [Object] the object of comparison
-    #
-    # @return [FalseClass,TrueClass] the result of the check
-    #
-    # @since 0.1.0
-    def ==(other)
-      self.class == other.class &&
-        id == other.id
-    end
-
-    # Implement predictable hashing for hash equality
-    #
-    # @return [Integer] the object hash
-    #
-    # @since 0.7.0
     def hash
       [self.class, id].hash
     end
 
-    # Freeze the entity
-    #
-    # @since 0.7.0
-    def freeze
-      attributes.freeze
+    def ==(other)
+      self.class.to_s == other.class.to_s && id == other.id
+    end
+
+    # def to_h
+    #   Utils::Hash.deep_dup(attributes)
+    # end
+    # alias to_hash to_h
+
+    # def inspect
+    #   "#<#{self.class.name} #{attributes.map { |k, v| "#{k}=#{v.inspect}" }.join(' ')}>"
+    # end
+    # alias to_s inspect
+
+    def method_missing(method_name, *args)
+      # return attributes[method_name] if args.empty? && attributes.key?(method_name)
+
       super
+    rescue => exception
+      raise Hanami::Model::Error.for(exception)
     end
 
-    # Serialize entity to a Hash
-    #
-    # @return [Hash] the result of serialization
-    #
-    # @since 0.1.0
-    def to_h
-      Utils::Hash.deep_dup(attributes)
-    end
-
-    # @since 0.7.0
-    alias to_hash to_h
-
-    protected
-
-    # Check if the attribute is allowed to be read
-    #
-    # @since 0.7.0
-    # @api private
-    def attribute?(name)
-      self.class.has_attribute?(name)
-    end
-
-    private
-
-    # @since 0.1.0
-    # @api private
-    attr_reader :attributes
-
-    # @since 0.7.0
-    # @api private
-    def respond_to_missing?(name, _include_all)
-      attribute?(name)
-    end
+    # def respond_to_missing?(method_name, include_all)
+    #   super || attributes.key?(method_name)
+    # end
   end
 end

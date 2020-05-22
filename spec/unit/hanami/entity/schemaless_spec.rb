@@ -3,7 +3,7 @@
 RSpec.describe Hanami::Entity do
   describe "schemaless" do
     let(:described_class) do
-      Class.new(Hanami::Entity[:struct])
+      Class.new(Hanami::Entity)
     end
 
     let(:input) do
@@ -65,7 +65,7 @@ RSpec.describe Hanami::Entity do
       it "raises error for unknown methods" do
         entity = described_class.new
 
-        expect { entity.foo }.to raise_error(NoMethodError)
+        expect { entity.foo }.to raise_error(Hanami::Model::MissingAttributeError)
       end
 
       it "returns empty hash for #attributes" do

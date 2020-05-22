@@ -2,7 +2,6 @@
 
 require "rom/configuration"
 require "hanami/utils/blank"
-require "hanami/model/repository_configurer"
 
 module Hanami
   module Model
@@ -47,6 +46,7 @@ module Hanami
         @inflector         = configurator.inflector
         @mappings          = {}
         @entities          = {}
+        @directory         = configurator.directory
       end
 
       def container
@@ -122,19 +122,6 @@ module Hanami
         @entities[singular] = klass
       end
 
-      # @since 0.7.0
-      # @api private
-      def define_entities_mappings(container, repositories)
-        return unless defined?(Sql::Entity::Schema)
-
-        repositories.each do |r|
-          relation = r.relation
-          entity   = r.entity
-
-          entity.schema = Sql::Entity::Schema.build(entities, container.relations[relation], mappings.fetch(relation))
-        end
-      end
-
       # @since 1.0.0
       # @api private
       def configure_gateway
@@ -165,33 +152,23 @@ module Hanami
       # @api private
       #
       # rubocop:disable Metrics/AbcSize
-      # rubocop:disable Metrics/MethodLength
-      def load!(repositories, &blk)
-        rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
-        rom.instance_eval(&blk)                            if     block_given?
+      def load!(&blk)
+        rom.auto_registration(@directory) unless @directory.nil?
+        rom.plugin(:sql, relations: :auto_restrictions)
+
+        rom.instance_eval(&blk) if block_given?
         configure_gateway
-        configure_repositories(repositories)
         self.logger = logger
 
         # FIXME: without "touching" the db, inferrer crashes on sqlite, wtf?
         gateway.connection.tables
 
         @container = ROM.container(rom)
-        define_entities_mappings(@container, repositories)
-        @container
       rescue => exception
         raise Hanami::Model::Error.for(exception)
       end
-      # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/AbcSize
 
-      # @since x.x.x
-      # @api private
-      def configure_repositories(repositories)
-        repositories.each do |repository|
-          RepositoryConfigurer.call(repository, self)
-        end
-      end
+      # rubocop:enable Metrics/AbcSize
 
       # @since 1.0.0
       # @api private
