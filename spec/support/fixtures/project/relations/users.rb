@@ -4,7 +4,11 @@ module Project
   module Relations
     class Users < Hanami::Relation[:sql]
       schema(:users, infer: true) do
-        associations { has_one :avatar }
+        associations do
+          has_one :avatar
+          has_many :posts, as: :threads
+          has_many :comments
+        end
       end
     end
   end

@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 require "rom-repository"
-require "hanami/model/entity_name"
-require "hanami/model/relation_name"
 require "hanami/model/mapped_relation"
-require "hanami/utils/class"
-require "hanami/utils/class_attribute"
-require "hanami/utils/io"
 
 module Hanami
   # Mediates between the entities and the persistence layer, by offering an API
@@ -73,7 +68,7 @@ module Hanami
   #   #  * If we change the storage, we are forced to change the code of the
   #   #    caller(s).
   #
-  #   ArticleRepository.new.where(author_id: 23).order(:published_at).limit(8)
+  #   ArticleRepository.new(configuration: config).where(author_id: 23).order(:published_at).limit(8)
   #
   #
   #
@@ -91,11 +86,11 @@ module Hanami
   #   #
   #   #  * If we change the storage, the callers aren't affected.
   #
-  #   ArticleRepository.new.most_recent_by_author(author)
+  #   ArticleRepository.new(configuration: config).most_recent_by_author(author)
   #
   #   class ArticleRepository < Hanami::Repository
   #     def most_recent_by_author(author, limit = 8)
-  #       articles.
+  #       root.
   #         where(author_id: author.id).
   #           order(:published_at).
   #           limit(limit)
@@ -114,7 +109,7 @@ module Hanami
     # @api private
     #
     # @see Hanami::Model::Plugins
-    COMMAND_PLUGINS = %i[schema timestamps].freeze
+    COMMAND_PLUGINS = %i[timestamps].freeze
 
     # Define a new ROM::Command while preserving the defaults used by Hanami itself.
     #
@@ -144,6 +139,7 @@ module Hanami
     # @api
     # @since x.x.x
     def [](name)
+      super
       fetch_or_store(name) do
         klass = Class.new(self < ROM::Repository::Root ? self : ROM::Repository::Root)
         klass.root(name)
@@ -171,14 +167,14 @@ module Hanami
       # @since 0.7.0
       #
       # @example Create From Hash
-      #   user = UserRepository.new.create(name: 'Luca')
+      #   user = UserRepository.new(configuration: config).create(name: 'Luca')
       #
       # @example Create From Entity
-      #   entity = User.new(name: 'Luca')
-      #   user   = UserRepository.new.create(entity)
+      #   entity = { name: 'Luca' }
+      #   user   = UserRepository.new(configuration: config).create(entity)
       #
       #   user.id   # => 23
-      #   entity.id # => nil - It doesn't mutate original entity
+      #   entity[:id] # => nil - It doesn't mutate original entity
       def create(*args)
         super
       rescue => exception
@@ -203,11 +199,11 @@ module Hanami
       #   repository = UserRepository.new
       #   user       = repository.create(name: 'Luca')
       #
-      #   entity     = User.new(age: 34)
+      #   entity     = { age: 34 }
       #   user       = repository.update(user.id, entity)
       #
       #   user.age  # => 34
-      #   entity.id # => nil - It doesn't mutate original entity
+      #   entity[:id] # => nil - It doesn't mutate original entity
       def update(*args)
         super
       rescue => exception

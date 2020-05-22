@@ -136,7 +136,7 @@ RSpec.describe "Associations (has_many :through)" do
     end
   end
 
-  context "raises a Hanami::Model::Error wrapped exception on" do
+  xcontext "raises a Hanami::Model::Error wrapped exception on" do
     it "#add" do
       expect do
         categories.add_books(category, id: -2)

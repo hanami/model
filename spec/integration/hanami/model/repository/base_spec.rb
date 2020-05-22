@@ -582,8 +582,8 @@ RSpec.describe "Repository (base)" do
       found.each do |user|
         expect(user).to be_a_kind_of(Project::Entities::User)
         expect(user.id).to_not be(nil)
-        expect { user.name }.to raise_error ROM::Struct::MissingAttribute
-        expect { user.age }.to raise_error ROM::Struct::MissingAttribute
+        expect { user.name }.to raise_error Hanami::Model::MissingAttributeError
+        expect { user.age }.to raise_error Hanami::Model::MissingAttributeError
       end
     end
 
@@ -599,7 +599,7 @@ RSpec.describe "Repository (base)" do
         expect(user).to be_a(Project::Entities::User)
         expect(user.id).to_not be(nil)
         expect(user.name).to_not be(nil)
-        expect { user.age }.to raise_error ROM::Struct::MissingAttribute
+        expect { user.age }.to raise_error Hanami::Model::MissingAttributeError
       end
     end
   end

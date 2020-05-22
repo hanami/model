@@ -178,7 +178,7 @@ RSpec.describe "Associations (has_many)" do
     expect(books.find(on_sale.id)).to be_nil
   end
 
-  context "raises a Hanami::Model::Error wrapped exception on" do
+  xcontext "raises a Hanami::Model::Error wrapped exception on" do
     it "#create" do
       expect do
         authors.create_with_books(name: "Noam Chomsky")

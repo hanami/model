@@ -36,7 +36,6 @@ module Database
 
           migrations_logger ENV["HANAMI_DATABASE_LOGGER"]
 
-
           gateway do |g|
             g.connection.extension(:pg_enum) if Database.engine?(:postgresql)
           end

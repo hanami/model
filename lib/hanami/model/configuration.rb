@@ -152,10 +152,11 @@ module Hanami
       # @api private
       #
       # rubocop:disable Metrics/AbcSize
-      # rubocop:disable Metrics/MethodLength
       def load!(&blk)
         rom.auto_registration(@directory) unless @directory.nil?
-        rom.instance_eval(&blk)                            if     block_given?
+        rom.plugin(:sql, relations: :auto_restrictions)
+
+        rom.instance_eval(&blk) if block_given?
         configure_gateway
         self.logger = logger
 
@@ -163,12 +164,10 @@ module Hanami
         gateway.connection.tables
 
         @container = ROM.container(rom)
-
-        @container
       rescue => exception
         raise Hanami::Model::Error.for(exception)
       end
-      # rubocop:enable Metrics/MethodLength
+
       # rubocop:enable Metrics/AbcSize
 
       # @since 1.0.0

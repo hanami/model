@@ -18,7 +18,6 @@ module Hanami
     require "hanami/model/error"
     require "hanami/model/configuration"
     require "hanami/model/configurator"
-    require "hanami/model/mapping"
     require "hanami/model/plugins"
 
     # @api private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Project
   module Relations
     class BookOntologies < Hanami::Relation[:sql]

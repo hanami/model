@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Entity do
+RSpec.describe Hanami::Entity, skip: true do
   describe "automatic schema" do
     let(:described_class) { Project::Entities::Author }
 
@@ -65,7 +65,7 @@ RSpec.describe Hanami::Entity do
 
     describe "#id" do
       it "returns the value" do
-        entity = described_class.new(id: 1, name: 'Bob')
+        entity = described_class.new(id: 1, name: "Bob")
         expect(entity.id).to eq(1)
       end
 

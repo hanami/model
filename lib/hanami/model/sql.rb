@@ -55,7 +55,6 @@ module Hanami
     # @since 0.7.0
     module Sql
       require "hanami/model/sql/types"
-      require "hanami/model/sql/entity/schema"
 
       # Returns a SQL fragment that references a database function by the given name
       # This is useful for database migrations
@@ -148,6 +147,7 @@ module Hanami
     Error.register(ROM::SQL::ForeignKeyConstraintError, ForeignKeyConstraintViolationError)
     Error.register(ROM::SQL::UnknownDBTypeError,        UnknownDatabaseTypeError)
     Error.register(ROM::SQL::MissingPrimaryKeyError,    MissingPrimaryKeyError)
+    Error.register(ROM::Struct::MissingAttribute, MissingAttributeError)
 
     Error.register(Java::JavaSql::SQLException, DatabaseError) if Utils.jruby?
   end

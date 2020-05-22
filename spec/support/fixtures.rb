@@ -10,6 +10,16 @@ end
 
 module Project
   module Entities
+    class Operator < Hanami::Entity
+      def name
+        s_name
+      end
+
+      def id
+        operator_id
+      end
+    end
+
     class AccessToken < Hanami::Entity
     end
 
@@ -31,7 +41,13 @@ module Project
     class Color < Hanami::Entity
     end
 
+    class Comment < Hanami::Entity
+    end
+
     class Label < Hanami::Entity
+    end
+
+    class Post < Hanami::Entity
     end
 
     class User < Hanami::Entity
@@ -72,7 +88,8 @@ class AuthorRepository < Hanami::Repository[:authors]
     command(:create, relation: root.combine(:books)).call(data)
   end
 
-  # There's no simple way to delete from the has_many association it seems.
+  # There's no simple way to delete from the has_many association it seems,
+  # as composite scopes aren't changeable.
   # One could argue that this is better done directly on the BookRepository
   # and that we are only mirroring AR behaviour. - MRP - 2020-04-25
   def delete_books(author)
@@ -167,6 +184,34 @@ class LabelRepository < Hanami::Repository[:labels]
   struct_namespace Project::Entities
 end
 
+class CommentRepository < Hanami::Repository[:comments]
+  struct_namespace Project::Entities
+end
+
+class PostRepository < Hanami::Repository[:posts]
+  #   def find_with_commenters(id)
+  #     combine(:commenters).where(id: id).map_to(Post).to_a
+  #   end
+  #
+  def commenters_for(post)
+    target = root.associations[:commenters].call
+    target.where(root[:id] => post.id).to_a
+  end
+
+  def find_with_author(id)
+    root.combine(:author).by_pk(id).one
+  end
+
+  def feed_for(id)
+    root.combine(:author, comments: :user).by_pk(id).one
+  end
+
+  def author_for(post)
+    target = root.associations[:author].call
+    target.where(root[:id] => post.id).one
+  end
+end
+
 class UserRepository < Hanami::Repository[:users]
   struct_namespace Project::Entities
 
@@ -193,20 +238,17 @@ class UserRepository < Hanami::Repository[:users]
   def select_id_and_name
     root.select(:id, :name).to_a
   end
-  #   def find_with_threads(id)
-  #     users.combine(:threads).where(id: id).map_to(User).one
-  #   end
-  #
-  #   def threads_for(user)
-  #     assoc(:threads, user).to_a
-  #   end
-  #
+
+  def threads_for(user)
+    posts.combine(:comments).join(root).where(root[:id] => user.id).to_a
+  end
+
   def find_with_avatar(id)
     root.combine(:avatar).by_pk(id).one
   end
 
   def create_with_avatar(data)
-    command(:create, relation: root.combine(:avatar)).call(data)
+    root.combine(:avatar).command(:create, use: COMMAND_PLUGINS).call(data)
   end
 
   def remove_avatar(user)
@@ -214,15 +256,15 @@ class UserRepository < Hanami::Repository[:users]
   end
 
   def add_avatar(user, data)
-    # Should I use root.associations[:avatar].relation?
+    # Should I use root.associations[:avatar].target?
     # Is there a better way to do this?
     associated = root.associations[:avatar].associate(data, user)
-    command(:create, relation: avatars).call(associated)
+    root.associations[:avatar].target.command(:create).call(associated)
   end
 
   def update_avatar(user, data)
     associated = root.associations[:avatar].associate(data, user)
-    command(:update, relation: avatars).call(associated)
+    command(:update, relation: avatars.where(user_id: user.id)).call(associated)
   end
 
   def replace_avatar(user, data)
@@ -233,136 +275,47 @@ class UserRepository < Hanami::Repository[:users]
   end
 
   def avatar_for(user)
-    avatars.join(root).where(root[:id] => user.id).one
+    target = root.associations[:avatar].call
+    target.where(root[:id] => user.id).one
   end
 end
 
-class Author < Hanami::OldEntity
+# FIXME: This becomes non trivial bringing the need to setup a transformer & mapper
+# We had this before because all the entities had their database schemas loaded onto them
+# Is there a way to achieve this functionality? -> legacy_spec
+class OperatorRepository < Hanami::Repository[:operators]
+  struct_namespace Project::Entities
 end
 
-# class Warehouse < Hanami::Entity
-#   attribute :id,   Types::Integer
-#   attribute :name, Types::String
-#   attribute :code, Types::String.constrained(format: /\Awh\-/)
+# class User < Hanami::OldEntity
 # end
 #
-
-class User < Hanami::OldEntity
-end
-
-class Account < Hanami::OldEntity
-  attribute :id,         Types::Strict::Integer
-  attribute :name,       Types::String
-  attribute :codes,      Types::Collection(Types::Coercible::Integer)
-  attribute :owner,      Types::Entity(User)
-  attribute :users,      Types::Collection(User)
-  attribute :email,      Types::String.constrained(format: /@/)
-  attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
-end
-
-
-class PageVisit < Hanami::OldEntity
-  attribute :id,        Types::Strict::Integer
-  attribute :start,     Types::DateTime
-  attribute :end,       Types::DateTime
-  attribute :visitor,   Types::Hash
-  attribute :page_info do
-    attribute :name, Types::Coercible::String
-    attribute :scroll_depth, Types::Coercible::Float
-    attribute :meta, Types::Hash
-  end
-end
-
-class Person < Hanami::OldEntity[:strict]
-  attribute :id,   Types::Strict::Integer
-  attribute :name, Types::Strict::String
-end
-
-# class PostRepository < Hanami::Repository[:posts]
-#   associations do
-#     belongs_to :user, as: :author
-#     has_many :comments
-#     has_many :users, through: :comments, as: :commenters
-#   end
+# class Account < Hanami::OldEntity
+#   attribute :id,         Types::Strict::Integer
+#   attribute :name,       Types::String
+#   attribute :codes,      Types::Collection(Types::Coercible::Integer)
+#   attribute :owner,      Types::Entity(User)
+#   attribute :users,      Types::Collection(User)
+#   attribute :email,      Types::String.constrained(format: /@/)
+#   attribute :created_at, Types::DateTime.constructor(->(dt) { ::DateTime.parse(dt.to_s) })
+# end
 #
-#   def find_with_commenters(id)
-#     combine(:commenters).where(id: id).map_to(Post).to_a
-#   end
 #
-#   def commenters_for(post)
-#     assoc(:commenters, post).to_a
-#   end
-#
-#   def find_with_author(id)
-#     posts.combine(:author).where(id: id).map_to(Post).one
-#   end
-#
-#   def feed_for(id)
-#     posts.combine(:author, comments: :user).where(id: id).map_to(Post).one
-#   end
-#
-#   def author_for(post)
-#     assoc(:author, post).one
+# class PageVisit < Hanami::OldEntity
+#   attribute :id,        Types::Strict::Integer
+#   attribute :start,     Types::DateTime
+#   attribute :end,       Types::DateTime
+#   attribute :visitor,   Types::Hash
+#   attribute :page_info do
+#     attribute :name, Types::Coercible::String
+#     attribute :scroll_depth, Types::Coercible::Float
+#     attribute :meta, Types::Hash
 #   end
 # end
 #
-# class CommentRepository < Hanami::Repository[:comments]
-#   associations do
-#     belongs_to :post
-#     belongs_to :user
-#   end
-#
-#   def commenter_for(comment)
-#     assoc(:user, comment).one
-#   end
-# end
-#
-
-# class BookRepository < Hanami::Repository[:books]
-#   associations do
-#     belongs_to :author
-#     has_many :categories, through: :book_ontologies
-#   end
-#
-#   def add_category(book, category)
-#     assoc(:categories, book).add(category)
-#   end
-#
-#   def clear_categories(book)
-#     assoc(:categories, book).delete
-#   end
-#
-#   def categories_for(book)
-#     assoc(:categories, book).to_a
-#   end
-#
-#   def find_with_categories(id)
-#     books.combine(:categories).where(id: id).map_to(Book).one
-#   end
-#
-#   def find_with_author(id)
-#     books.combine(:author).where(id: id).map_to(Book).one
-#   end
-#
-#   def author_for(book)
-#     assoc(:author, book).one
-#   end
-# end
-#
-# class OperatorRepository < Hanami::Repository[:t_operator]
-#   mapping do
-#     attribute :id,   from: :operator_id
-#     attribute :name, from: :s_name
-#   end
-# end
-
-# class SourceFileRepository < Hanami::Repository[:source_files]
-# end
-#
-# class WarehouseRepository < Hanami::Repository[:warehouses]
-# end
-
-# class ProductRepository < Hanami::Repository[:products]
+# class Person < Hanami::OldEntity[:strict]
+#   attribute :id,   Types::Strict::Integer
+#   attribute :name, Types::Strict::String
 # end
 
 Hanami::Model.configuration.load!

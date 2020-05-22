@@ -2,9 +2,9 @@
 
 require "ostruct"
 
-RSpec.describe Hanami::OldEntity do
+RSpec.describe Hanami::Entity, skip: true do
   let(:described_class) do
-    Class.new(Hanami::OldEntity[:struct])
+    Class.new(Hanami::Entity[:struct])
   end
 
   describe "equality" do

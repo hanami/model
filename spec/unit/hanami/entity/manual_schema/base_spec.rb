@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::OldEntity do
+RSpec.describe Hanami::Entity, skip: true do
   describe "manual schema (base)" do
     let(:described_class) { Account }
 
@@ -20,7 +20,9 @@ RSpec.describe Hanami::OldEntity do
       end
 
       it "accepts a hash" do
-        entity = described_class.new(id: 1, owner: owner = User.new(name: "MG"), users: users = [User.new], name: "Acme Inc.", codes: [1, 2, 3], email: "account@acme-inc.test", created_at: now = DateTime.now)
+        entity = described_class.new(id: 1, owner: owner = User.new(name: "MG"), users: users = [User.new],
+                                     name: "Acme Inc.", codes: [1, 2, 3], email: "account@acme-inc.test",
+                                     created_at: now = DateTime.now)
 
         expect(entity.id).to eq(1)
         expect(entity.name).to eq("Acme Inc.")
