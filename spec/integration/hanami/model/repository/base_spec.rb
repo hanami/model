@@ -267,7 +267,7 @@ RSpec.describe 'Repository (base)' do
         engine(:ruby).db(:postgresql)  { 'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"' }
         engine(:jruby).db(:postgresql) { %(Java::OrgPostgresqlUtil::PSQLException: ERROR: duplicate key value violates unique constraint "users_email_index"\n  Detail: Key (email)=(#{email}) already exists.) }
 
-        engine(:ruby).db(:mysql)  { "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'" }
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Duplicate entry '#{email}' for key 'users.users_email_index'" }
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Duplicate entry '#{email}' for key 'users_email_index'" }
       end
 
@@ -445,7 +445,7 @@ RSpec.describe 'Repository (base)' do
         engine(:ruby).db(:postgresql)  { 'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "users_email_index"' }
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: duplicate key value violates unique constraint "users_email_index"' }
 
-        engine(:ruby).db(:mysql)  { "Mysql2::Error: Duplicate entry '#{email}' for key 'users_email_index'" }
+        engine(:ruby).db(:mysql)  { "Mysql2::Error: Duplicate entry '#{email}' for key 'users.users_email_index'" }
         engine(:jruby).db(:mysql) { "Java::ComMysqlJdbcExceptionsJdbc4::MySQLIntegrityConstraintViolationException: Duplicate entry '#{email}' for key 'users_email_index'" }
       end
 
