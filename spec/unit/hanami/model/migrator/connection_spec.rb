@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hanami::Model::Migrator::Connection do
   extend PlatformHelpers
 

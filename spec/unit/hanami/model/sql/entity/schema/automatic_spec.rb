@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hanami::Model::Sql::Entity::Schema do
   describe "automatic" do
     subject { Author.schema }

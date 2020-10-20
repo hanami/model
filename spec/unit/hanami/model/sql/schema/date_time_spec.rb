@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Hanami::Model::Sql::Types::Schema::DateTime" do
   let(:described_class) { Hanami::Model::Sql::Types::Schema::DateTime }
 

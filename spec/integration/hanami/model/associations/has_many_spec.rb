@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Associations (has_many)" do
   let(:authors) { AuthorRepository.new }
   let(:books) { BookRepository.new }

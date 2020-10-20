@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hanami::Entity::Schema do
   let(:described_class) { Hanami::Entity::Schema }
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "hanami/model/sql/consoles/postgresql"
 
 RSpec.shared_examples "sql_console_postgresql" do

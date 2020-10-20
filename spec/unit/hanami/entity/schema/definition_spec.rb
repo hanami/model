@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hanami::Entity::Schema::Definition do
   let(:described_class) { Hanami::Entity::Schema::Definition }
   let(:subject) do

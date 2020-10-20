@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Database
   class Setup
     DEFAULT_ADAPTER = "sqlite".freeze

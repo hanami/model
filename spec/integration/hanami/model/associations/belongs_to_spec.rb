@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Associations (belongs_to)" do
   it "returns nil if association wasn't preloaded" do
     repository = BookRepository.new

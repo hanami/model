@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Customized commands" do
   subject(:authors) { AuthorRepository.new }
 

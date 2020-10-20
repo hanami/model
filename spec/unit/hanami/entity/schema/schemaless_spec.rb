@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hanami::Entity::Schema::Schemaless do
   let(:subject) { Hanami::Entity::Schema::Schemaless.new }
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "hanami/entity/schema"
 require "hanami/model/types"
 require "hanami/model/association"

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "hanami/model/sql/consoles/mysql"
 
 RSpec.shared_examples "sql_console_mysql" do

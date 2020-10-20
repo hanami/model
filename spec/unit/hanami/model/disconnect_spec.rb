@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This test is tightly coupled to Sequel
 #
 # We should improve connection management via ROM

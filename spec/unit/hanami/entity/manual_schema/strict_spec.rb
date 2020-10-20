@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hanami::Entity do
   describe "manual schema (strict)" do
     let(:described_class) { Person }

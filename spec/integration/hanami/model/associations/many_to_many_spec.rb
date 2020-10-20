@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Associations (has_many :through)" do
   #### REPOS
   let(:books) { BookRepository.new }

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module TestIO
   def self.with_stdout
     stdout = $stdout

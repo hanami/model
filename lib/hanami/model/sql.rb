@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "rom-sql"
 require "hanami/utils"
 

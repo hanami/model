@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Hanami::Model.load!" do
   let(:message) { "Cannot find corresponding type for form" }
 

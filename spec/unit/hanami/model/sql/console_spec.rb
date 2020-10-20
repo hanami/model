@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "hanami/model/sql/console"
 
 RSpec.describe Hanami::Model::Sql::Console do

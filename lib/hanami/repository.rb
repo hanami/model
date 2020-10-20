@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "rom-repository"
 require "hanami/model/entity_name"
 require "hanami/model/relation_name"

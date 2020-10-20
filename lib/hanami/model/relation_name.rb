@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative "entity_name"
 require "hanami/utils/string"
 
