@@ -674,8 +674,8 @@ RSpec.describe "Repository (base)" do
           repository = ProductRepository.new
 
           product = repository
-                    .command(:create, repository.root, use: %i[timestamps])
-                    .call(name: "NeoVim", categories: ["software"])
+            .command(:create, repository.root, use: %i[timestamps])
+            .call(name: "NeoVim", categories: ["software"])
 
           found = repository.find(product.id)
 

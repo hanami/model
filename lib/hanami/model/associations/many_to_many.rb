@@ -93,8 +93,8 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         def remove(target_id)
           association_record = relation(through)
-                               .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
-                               .one
+            .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
+            .one
 
           return if association_record.nil?
 
@@ -179,8 +179,8 @@ module Hanami
           result = relation(association.target.to_sym).qualified
           unless subject.nil?
             result = result
-                     .join(through, target_foreign_key => target_primary_key)
-                     .where(source_foreign_key => subject.fetch(source_primary_key))
+              .join(through, target_foreign_key => target_primary_key)
+              .where(source_foreign_key => subject.fetch(source_primary_key))
           end
           result.as(Model::MappedRelation.mapper_name)
         end
