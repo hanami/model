@@ -40,7 +40,9 @@ jobs:
            HANAMI_DATABASE_PASSWORD: hanami
            HANAMI_DATABASE_HOST: 127.0.0.1
        - image: circleci/mysql:8
+         command: [--default-authentication-plugin=mysql_native_password]
          environment:
+           MYSQL_DATABASE: hanami_model
            MYSQL_ROOT_PASSWORD: hanami
     working_directory: ~/hanami-model
     steps:
