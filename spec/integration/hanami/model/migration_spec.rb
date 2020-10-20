@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "./migration/#{Database.engine}.rb"
 
 RSpec.describe "Hanami::Model.migration" do

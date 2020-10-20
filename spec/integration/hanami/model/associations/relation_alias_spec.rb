@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe "Alias (:as)  support for associations" do
   let(:users) { UserRepository.new }
   let(:posts) { PostRepository.new }

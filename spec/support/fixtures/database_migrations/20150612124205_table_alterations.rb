@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Hanami::Model.migration do
   change do
     case ENV["HANAMI_DATABASE_TYPE"]

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Hanami
   module Model
     # Defines the version

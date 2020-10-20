@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe "Repository (legacy)" do
   describe "#find" do
     it "finds record by primary key" do

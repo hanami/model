@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "abstract"
 require "hanami/utils/blank"
 require "pathname"

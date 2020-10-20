@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Hanami::Model::Sql::Entity::Schema do
   describe "mapping" do
     subject { Operator.schema }

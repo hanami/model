@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Platform
   require_relative "platform/os"
   require_relative "platform/ci"

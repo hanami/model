@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe "Hanami::Model::Sql::Types::Schema::Bool" do
   let(:described_class) { Hanami::Model::Sql::Types::Schema::Bool }
 

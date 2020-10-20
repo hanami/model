@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Hanami::Model::ConstraintViolationError do
   it "inherits from Hanami::Model::Error" do
     expect(described_class.ancestors).to include(Hanami::Model::Error)

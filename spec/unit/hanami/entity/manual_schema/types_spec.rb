@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Hanami::Entity do
   describe "manual schema (types)" do
     [nil, :schema, :strict, :weak, :permissive, :strict_with_defaults, :symbolized].each do |type|

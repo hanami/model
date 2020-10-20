@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Hanami::Model.migration do
   up do
     create_table :reviews do

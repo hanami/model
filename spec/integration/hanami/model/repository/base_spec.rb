@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "securerandom"
 
 RSpec.describe "Repository (base)" do

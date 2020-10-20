@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Hanami
   module Model
     # Plugins to extend read/write operations from/to the database

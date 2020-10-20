@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.shared_examples "migration_integration_sqlite" do
   before do
     @schema = Pathname.new("#{__dir__}/../../../../../tmp/schema.sql").expand_path

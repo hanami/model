@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Hanami::Model::Sql do
   describe ".migration" do
     it "returns a new migration" do

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Hanami::Model::Configuration do
   before do
     database_directory = Pathname.pwd.join("tmp", "db")

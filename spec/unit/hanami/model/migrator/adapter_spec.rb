@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Hanami::Model::Migrator::Adapter do
   extend PlatformHelpers
 
