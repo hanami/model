@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     class Migrator
@@ -8,7 +10,7 @@ module Hanami
       class MySQLAdapter < Adapter
         # @since 0.7.0
         # @api private
-        PASSWORD = 'MYSQL_PWD'.freeze
+        PASSWORD = "MYSQL_PWD"
 
         # @since x.x.x
         # @api private
@@ -16,9 +18,9 @@ module Hanami
 
         # @since 1.0.0
         # @api private
-        DB_CREATION_ERROR = 'Database creation failed. If the database exists, ' \
-                            'then its console may be open. See this issue for more details: ' \
-                            'https://github.com/hanami/model/issues/250'.freeze
+        DB_CREATION_ERROR = "Database creation failed. If the database exists, " \
+                            "then its console may be open. See this issue for more details: " \
+                            "https://github.com/hanami/model/issues/250"
 
         # @since 0.4.0
         # @api private
@@ -76,19 +78,19 @@ module Hanami
         # @since 0.4.0
         # @api private
         def dump_structure
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: { PASSWORD => password }
+          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --no-data --skip-comments --ignore-table=#{database}.#{migrations_table} #{database} > #{schema}", env: {PASSWORD => password}
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          execute("mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}", env: { PASSWORD => password }) if schema.exist?
+          execute("mysql --host=#{host} --port=#{port} --user=#{username} #{database} < #{escape(schema)}", env: {PASSWORD => password}) if schema.exist?
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
-          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}", env: { PASSWORD => password }
+          execute "mysqldump --host=#{host} --port=#{port} --user=#{username} --skip-comments #{database} #{migrations_table} >> #{schema}", env: {PASSWORD => password}
         end
       end
     end

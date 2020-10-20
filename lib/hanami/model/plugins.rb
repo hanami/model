@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     # Plugins to extend read/write operations from/to the database
@@ -17,9 +19,9 @@ module Hanami
         end
       end
 
-      require 'hanami/model/plugins/mapping'
-      require 'hanami/model/plugins/schema'
-      require 'hanami/model/plugins/timestamps'
+      require "hanami/model/plugins/mapping"
+      require "hanami/model/plugins/schema"
+      require "hanami/model/plugins/timestamps"
     end
   end
 end

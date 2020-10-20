@@ -1,6 +1,8 @@
-require 'uri'
-require 'shellwords'
-require 'open3'
+# frozen_string_literal: true
+
+require "uri"
+require "shellwords"
+require "open3"
 
 module Hanami
   module Model
@@ -26,18 +28,18 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def self.for(configuration) # rubocop:disable Metrics/MethodLength
+        def self.for(configuration)
           connection = Connection.new(configuration)
 
           case connection.database_type
           when :sqlite
-            require 'hanami/model/migrator/sqlite_adapter'
+            require "hanami/model/migrator/sqlite_adapter"
             SQLiteAdapter
           when :postgres
-            require 'hanami/model/migrator/postgres_adapter'
+            require "hanami/model/migrator/postgres_adapter"
             PostgresAdapter
           when :mysql
-            require 'hanami/model/migrator/mysql_adapter'
+            require "hanami/model/migrator/mysql_adapter"
             MySQLAdapter
           else
             self

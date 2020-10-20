@@ -1,4 +1,6 @@
-require 'rom/configuration'
+# frozen_string_literal: true
+
+require "rom/configuration"
 
 module Hanami
   module Model
@@ -147,7 +149,7 @@ module Hanami
       #
       # @since 1.0.0
       # @api private
-      def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize
+      def load!(repositories, &blk)
         rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
         rom.instance_eval(&blk)                            if     block_given?
         configure_gateway

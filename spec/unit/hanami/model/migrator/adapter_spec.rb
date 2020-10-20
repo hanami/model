@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Hanami::Model::Migrator::Adapter do
   extend PlatformHelpers
 
@@ -12,7 +14,7 @@ RSpec.describe Hanami::Model::Migrator::Adapter do
     end
 
     let(:configuration) { instance_double("Hanami::Model::Configuration") }
-    let(:url)           { ENV['HANAMI_DATABASE_URL'] }
+    let(:url)           { ENV["HANAMI_DATABASE_URL"] }
 
     with_platform(db: :sqlite) do
       context "when sqlite" do

@@ -8,6 +8,8 @@ Naming/MethodParameterName:
     - db
     - id
     - os
+Layout/LineLength:
+  Enabled: false
 Naming/RescuedExceptionsVariableName:
   PreferredName: "exception"
 Style/RescueStandardError:

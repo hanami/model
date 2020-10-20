@@ -1,4 +1,6 @@
-require_relative 'abstract'
+# frozen_string_literal: true
+
+require_relative "abstract"
 
 module Hanami
   module Model
@@ -11,7 +13,7 @@ module Hanami
         class Mysql < Abstract
           # @since 0.7.0
           # @api private
-          COMMAND = 'mysql'.freeze
+          COMMAND = "mysql"
 
           # @since 0.7.0
           # @api private

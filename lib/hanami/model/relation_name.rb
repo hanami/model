@@ -1,5 +1,7 @@
-require_relative 'entity_name'
-require 'hanami/utils/string'
+# frozen_string_literal: true
+
+require_relative "entity_name"
+require "hanami/utils/string"
 
 module Hanami
   module Model

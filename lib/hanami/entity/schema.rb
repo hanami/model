@@ -1,5 +1,7 @@
-require 'hanami/model/types'
-require 'hanami/utils/hash'
+# frozen_string_literal: true
+
+require "hanami/model/types"
+require "hanami/utils/hash"
 
 module Hanami
   class Entity
@@ -243,7 +245,7 @@ module Hanami
 
       # @since 0.7.0
       # @api private
-      alias [] call
+      alias_method :[], :call
 
       # Check if the attribute is known
       #

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/utils/hash"
 
 module Hanami
@@ -7,7 +9,7 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      class ManyToMany # rubocop:disable Metrics/ClassLength
+      class ManyToMany
         # @since 0.7.0
         # @api private
         def self.schema_type(entity)
@@ -88,18 +90,16 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        # rubocop:disable Metrics/AbcSize
         def remove(target_id)
           association_record = relation(through)
-                               .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
-                               .one
+            .where(target_foreign_key => target_id, source_foreign_key => subject.fetch(source_primary_key))
+            .one
 
           return if association_record.nil?
 
           ar_id = association_record.public_send relation(through).primary_key
           command(:delete, relation(through)).by_pk(ar_id).call
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -172,17 +172,15 @@ module Hanami
         # @since 1.1.0
         #
         # @api private
-        # rubocop:disable Metrics/AbcSize
         def _build_scope
           result = relation(association.target.to_sym).qualified
           unless subject.nil?
             result = result
-                     .join(through, target_foreign_key => target_primary_key)
-                     .where(source_foreign_key => subject.fetch(source_primary_key))
+              .join(through, target_foreign_key => target_primary_key)
+              .where(source_foreign_key => subject.fetch(source_primary_key))
           end
           result.as(Model::MappedRelation.mapper_name)
         end
-        # rubocop:enable Metrics/AbcSize
 
         # @since 1.1.0
         # @api private

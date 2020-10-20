@@ -1,6 +1,8 @@
-require 'pathname'
-require 'hanami/utils'
-require 'English'
+# frozen_string_literal: true
+
+require "pathname"
+require "hanami/utils"
+require "English"
 
 module Hanami
   module Model
@@ -71,7 +73,7 @@ module Hanami
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, '')
+            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, "")
           )
         end
 
@@ -104,8 +106,6 @@ module Hanami
         # @since 0.4.0
         # @api private
         #
-        # rubocop:disable Metrics/AbcSize
-        # rubocop:disable Metrics/MethodLength
         def dump_migrations_data
           execute "sqlite3 #{escape(path)} .dump" do |stdout|
             begin
@@ -120,8 +120,6 @@ module Hanami
             end
           end
         end
-        # rubocop:enable Metrics/MethodLength
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end
