@@ -2,7 +2,7 @@
 
 module Database
   class Setup
-    DEFAULT_ADAPTER = "sqlite".freeze
+    DEFAULT_ADAPTER = "sqlite"
 
     def initialize(adapter: ENV["DB"])
       @strategy = Strategy.for(adapter || DEFAULT_ADAPTER)

@@ -14,11 +14,11 @@ module Hanami
         class Postgresql < Abstract
           # @since 0.7.0
           # @api private
-          COMMAND = "psql".freeze
+          COMMAND = "psql"
 
           # @since 0.7.0
           # @api private
-          PASSWORD = "PGPASSWORD".freeze
+          PASSWORD = "PGPASSWORD"
 
           # @since 0.7.0
           # @api private

@@ -14,7 +14,7 @@ module Hanami
         class Sqlite < Abstract
           # @since 0.7.0
           # @api private
-          COMMAND = "sqlite3".freeze
+          COMMAND = "sqlite3"
 
           # @since 0.7.0
           # @api private

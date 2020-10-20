@@ -12,25 +12,25 @@ module Hanami
       class PostgresAdapter < Adapter
         # @since 0.4.0
         # @api private
-        HOST     = "PGHOST".freeze
+        HOST     = "PGHOST"
 
         # @since 0.4.0
         # @api private
-        PORT     = "PGPORT".freeze
+        PORT     = "PGPORT"
 
         # @since 0.4.0
         # @api private
-        USER     = "PGUSER".freeze
+        USER     = "PGUSER"
 
         # @since 0.4.0
         # @api private
-        PASSWORD = "PGPASSWORD".freeze
+        PASSWORD = "PGPASSWORD"
 
         # @since 1.0.0
         # @api private
         DB_CREATION_ERROR = "createdb: database creation failed. If the database exists, " \
                             "then its console may be open. See this issue for more details: " \
-                            "https://github.com/hanami/model/issues/250".freeze
+                            "https://github.com/hanami/model/issues/250"
 
         # @since 0.4.0
         # @api private
