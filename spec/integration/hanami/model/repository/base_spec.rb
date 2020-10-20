@@ -575,7 +575,7 @@ RSpec.describe "Repository (base)" do
       repository = UserRepository.new
       repository.clear
 
-      repository.create([{ name: "L", age: 35 }, { name: "MG", age: 34 }])
+      repository.create([{name: "L", age: 35}, {name: "MG", age: 34}])
       found = repository.ids
 
       expect(found.size).to be(2)
@@ -591,7 +591,7 @@ RSpec.describe "Repository (base)" do
       repository = UserRepository.new
       repository.clear
 
-      repository.create([{ name: "L", age: 35 }, { name: "MG", age: 34 }])
+      repository.create([{name: "L", age: 35}, {name: "MG", age: 34}])
       found = repository.select_id_and_name
 
       expect(found.size).to be(2)
@@ -608,7 +608,7 @@ RSpec.describe "Repository (base)" do
     describe "PostgreSQL" do
       it "finds record by primary key (UUID)" do
         repository = SourceFileRepository.new
-        file = repository.create(name: "path/to/file.rb", languages: ["ruby"], metadata: { coverage: 100.0 }, content: "class Foo; end")
+        file = repository.create(name: "path/to/file.rb", languages: ["ruby"], metadata: {coverage: 100.0}, content: "class Foo; end")
         found = repository.find(file.id)
 
         expect(file.languages).to eq(["ruby"])
@@ -638,7 +638,7 @@ RSpec.describe "Repository (base)" do
 
       describe "JSON types" do
         it "writes hashes" do
-          hash = { first_name: "John", age: 53, married: true, car: nil }
+          hash = {first_name: "John", age: 53, married: true, car: nil}
           repository = SourceFileRepository.new
           column_type = repository.create(metadata: hash, name: "test", content: "test", json_info: hash)
           found = repository.find(column_type.id)

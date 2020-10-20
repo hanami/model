@@ -4,7 +4,7 @@ RSpec.describe "Customized commands" do
   subject(:authors) { AuthorRepository.new }
 
   let(:data) do
-    [{ name: "Arthur C. Clarke" }, { name: "Phillip K. Dick" }]
+    [{name: "Arthur C. Clarke"}, {name: "Phillip K. Dick"}]
   end
 
   context "the mapper" do
@@ -15,7 +15,7 @@ RSpec.describe "Customized commands" do
     end
 
     it "can be explictly turned off" do
-      result = authors.create_many(data, opts: { mapper: nil })
+      result = authors.create_many(data, opts: {mapper: nil})
       expect(result).to all(be_an(ROM::Struct))
     end
   end

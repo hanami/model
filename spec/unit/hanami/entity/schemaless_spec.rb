@@ -77,9 +77,9 @@ RSpec.describe Hanami::Entity do
 
     describe "#to_h" do
       it "serializes attributes into hash" do
-        entity = described_class.new(foo: 1, "bar" => { "baz" => 2 })
+        entity = described_class.new(foo: 1, "bar" => {"baz" => 2})
 
-        expect(entity.to_h).to eq(Hash[foo: 1, bar: { baz: 2 }])
+        expect(entity.to_h).to eq(Hash[foo: 1, bar: {baz: 2}])
       end
 
       it "must be an instance of ::Hash" do

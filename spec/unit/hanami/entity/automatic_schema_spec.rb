@@ -48,7 +48,7 @@ RSpec.describe Hanami::Entity do
       end
 
       it "coerces values for array of objects" do
-        entity = described_class.new(books: books = [{ title: "TDD" }, { title: "Refactoring" }])
+        entity = described_class.new(books: books = [{title: "TDD"}, {title: "Refactoring"}])
 
         books.each_with_index do |book, i|
           b = entity.books[i]

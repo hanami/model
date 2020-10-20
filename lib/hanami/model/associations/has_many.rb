@@ -153,7 +153,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def unassociate
-          { foreign_key => nil }
+          {foreign_key => nil}
         end
 
         # @since 0.7.0

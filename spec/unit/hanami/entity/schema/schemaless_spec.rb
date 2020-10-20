@@ -17,7 +17,7 @@ RSpec.describe Hanami::Entity::Schema::Schemaless do
     end
 
     it "returns duped hash" do
-      input = { foo: "bar" }
+      input = {foo: "bar"}
       result = subject.call(input)
 
       expect(result).to eq(input)

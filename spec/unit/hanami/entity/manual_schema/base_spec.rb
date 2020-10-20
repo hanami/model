@@ -58,14 +58,14 @@ RSpec.describe Hanami::Entity do
       end
 
       it "coerces values for single object" do
-        entity = described_class.new(owner: owner = { name: "L" })
+        entity = described_class.new(owner: owner = {name: "L"})
 
         expect(entity.owner).to be_a_kind_of(User)
         expect(entity.owner.name).to eq(owner.fetch(:name))
       end
 
       it "coerces values for array of objects" do
-        entity = described_class.new(users: users = [{ name: "L" }, { name: "MG" }])
+        entity = described_class.new(users: users = [{name: "L"}, {name: "MG"}])
 
         users.each_with_index do |user, i|
           u = entity.users[i]
@@ -105,22 +105,22 @@ RSpec.describe Hanami::Entity do
           start: DateTime.now,
           end: (Time.now + 53).to_datetime,
           visitor: {
-            "user_agent" => "w3m/0.5.3", "language" => { "en" => 0.9 }
+            "user_agent" => "w3m/0.5.3", "language" => {"en" => 0.9}
           },
           page_info: {
             "name" => "landing page",
             scroll_depth: 0.7,
-            "meta" => { "version" => "0.8.3", updated_at: 1_492_769_467_000 }
+            "meta" => {"version" => "0.8.3", updated_at: 1_492_769_467_000}
           }
         )
 
         expect(entity.visitor).to eq(
-          user_agent: "w3m/0.5.3", language: { en: 0.9 }
+          user_agent: "w3m/0.5.3", language: {en: 0.9}
         )
         expect(entity.page_info).to eq(
           name: "landing page",
           scroll_depth: 0.7,
-          meta: { version: "0.8.3", updated_at: 1_492_769_467_000 }
+          meta: {version: "0.8.3", updated_at: 1_492_769_467_000}
         )
       end
     end

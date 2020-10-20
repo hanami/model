@@ -22,7 +22,7 @@ RSpec.describe "Associations (has_many)" do
   end
 
   it "creates an object with a collection of associated objects" do
-    author = authors.create_with_books(name: "Henry Thoreau", books: [{ title: "Walden" }])
+    author = authors.create_with_books(name: "Henry Thoreau", books: [{title: "Walden"}])
 
     expect(author).to be_an_instance_of(Author)
     expect(author.name).to eq("Henry Thoreau")
