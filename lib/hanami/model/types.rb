@@ -19,7 +19,6 @@ module Hanami
       # Class level interface
       #
       # @since 0.7.0
-      # rubocop:disable Naming/MethodName
       module ClassMethods
         # Define an entity of the given type
         #
@@ -79,7 +78,6 @@ module Hanami
           Types::Array.member(type)
         end
       end
-      # rubocop:enable Naming/MethodName
 
       # Types for schema definitions
       #
@@ -103,7 +101,7 @@ module Hanami
           def call(value)
             return if value.nil?
 
-            if valid?(value) # rubocop:disable Style/GuardClause
+            if valid?(value)
               coerce(value)
             else
               raise TypeError.new("#{value.inspect} must be coercible into #{object}")

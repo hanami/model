@@ -28,7 +28,7 @@ module Hanami
         #
         # @since 0.4.0
         # @api private
-        def self.for(configuration) # rubocop:disable Metrics/MethodLength
+        def self.for(configuration)
           connection = Connection.new(configuration)
 
           case connection.database_type

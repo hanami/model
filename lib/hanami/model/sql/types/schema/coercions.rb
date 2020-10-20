@@ -14,7 +14,6 @@ module Hanami
           # @api private
           #
           # rubocop:disable Metrics/ModuleLength
-          # rubocop:disable Metrics/MethodLength
           module Coercions
             # Coerces given argument into Integer
             #
@@ -217,7 +216,7 @@ module Hanami
               end
             end
           end
-          # rubocop:enable Metrics/MethodLength
+
           # rubocop:enable Metrics/ModuleLength
         end
       end

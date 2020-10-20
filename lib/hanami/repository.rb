@@ -109,7 +109,7 @@ module Hanami
   # @see Hanami::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  class Repository < ROM::Repository::Root # rubocop:disable Metrics/ClassLength
+  class Repository < ROM::Repository::Root
     # Plugins for database commands
     #
     # @since 0.7.0
@@ -168,8 +168,6 @@ module Hanami
     # @since 0.7.0
     # @api private
     #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def self.define_relation
       a = @associations
       s = @schema
@@ -192,8 +190,6 @@ module Hanami
         end
       }, __FILE__, __LINE__ - 4
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
 
     # Defines the mapping between a database table and an entity.
     #
@@ -202,8 +198,6 @@ module Hanami
     # @since 0.7.0
     # @api private
     #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def self.define_mapping
       self.entity = Utils::Class.load!(entity_name)
       e = entity
@@ -220,8 +214,6 @@ module Hanami
       configuration.define_mappings(root, &blk)
       configuration.register_entity(relation, entity_name.underscore, e)
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
 
     # It defines associations, by adding relations to the repository
     #
@@ -303,8 +295,6 @@ module Hanami
     # @since 0.7.0
     # @api private
     #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def self.inherited(klass)
       klass.class_eval do
         include Utils::ClassAttribute
@@ -333,8 +323,6 @@ module Hanami
 
       Hanami::Model.repositories << klass
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
 
     # Extend commands from ROM::Repository with error management
     #

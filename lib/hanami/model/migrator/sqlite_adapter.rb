@@ -106,8 +106,6 @@ module Hanami
         # @since 0.4.0
         # @api private
         #
-        # rubocop:disable Metrics/AbcSize
-        # rubocop:disable Metrics/MethodLength
         def dump_migrations_data
           execute "sqlite3 #{escape(path)} .dump" do |stdout|
             begin
@@ -122,8 +120,6 @@ module Hanami
             end
           end
         end
-        # rubocop:enable Metrics/MethodLength
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end

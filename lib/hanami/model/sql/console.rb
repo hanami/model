@@ -26,7 +26,7 @@ module Hanami
 
         # @since 0.7.0
         # @api private
-        def console # rubocop:disable Metrics/MethodLength
+        def console
           case @uri.scheme
           when "sqlite"
             require "hanami/model/sql/consoles/sqlite"

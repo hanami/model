@@ -26,7 +26,7 @@ module Database
         ENV["HANAMI_DATABASE_LOGGER"] = logger.to_s
       end
 
-      def configure # rubocop:disable Metrics/AbcSize
+      def configure
         Hanami::Model.configure do
           adapter    ENV["HANAMI_DATABASE_ADAPTER"].to_sym, ENV["HANAMI_DATABASE_URL"]
           logger     ENV["HANAMI_DATABASE_LOGGER"], level: :debug

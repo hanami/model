@@ -26,7 +26,6 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      # rubocop:disable Metrics/MethodLength
       def self.lookup(association)
         case association
         when ROM::SQL::Association::ManyToMany
@@ -41,7 +40,6 @@ module Hanami
           raise "Unsupported association: #{association}"
         end
       end
-      # rubocop:enable Metrics/MethodLength
     end
   end
 end

@@ -107,7 +107,7 @@ module Hanami
           end
         end
 
-        def command_with_credentials(command) # rubocop:disable Metrics/AbcSize
+        def command_with_credentials(command)
           result = [escape(command)]
           result << "--host=#{host}" unless Utils::Blank.blank?(host)
           result << "--port=#{port}" unless Utils::Blank.blank?(port)

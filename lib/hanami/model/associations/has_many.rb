@@ -9,7 +9,7 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      class HasMany # rubocop:disable Metrics/ClassLength
+      class HasMany
         # @since 0.7.0
         # @api private
         def self.schema_type(entity)
