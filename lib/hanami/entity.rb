@@ -190,7 +190,7 @@ module Hanami
     end
 
     # @since 0.7.0
-    alias to_hash to_h
+    alias_method :to_hash, :to_h
 
     protected
 

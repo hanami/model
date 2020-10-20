@@ -35,7 +35,7 @@ module Hanami
 
       # @since 0.7.0
       # @api private
-      alias loaded? loaded
+      alias_method :loaded?, :loaded
     end
 
     # Configure the framework

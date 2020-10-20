@@ -245,7 +245,7 @@ module Hanami
 
       # @since 0.7.0
       # @api private
-      alias [] call
+      alias_method :[], :call
 
       # Check if the attribute is known
       #

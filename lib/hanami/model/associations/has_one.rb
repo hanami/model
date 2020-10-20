@@ -77,7 +77,7 @@ module Hanami
         def delete
           scope.delete
         end
-        alias remove delete
+        alias_method :remove, :delete
 
         def replace(data)
           repository.transaction do
