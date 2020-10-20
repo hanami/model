@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     # Mapped proxy for ROM relations.
@@ -51,8 +53,8 @@ module Hanami
       #   end
       def [](attribute)
         @relation[attribute]
-      rescue KeyError => e
-        raise UnknownAttributeError.new(e.message)
+      rescue KeyError => exception
+        raise UnknownAttributeError.new(exception.message)
       end
     end
   end

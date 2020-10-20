@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 Hanami::Model.migration do
   change do
-    case ENV['HANAMI_DATABASE_TYPE']
-    when 'sqlite'
+    case ENV["HANAMI_DATABASE_TYPE"]
+    when "sqlite"
       create_table :table_constraints do
         column :age, Integer
         constraint(:age_constraint) { age > 18 }
@@ -9,7 +11,7 @@ Hanami::Model.migration do
         column :role, String
         check %(role IN("contributor", "manager", "owner"))
       end
-    when 'postgresql'
+    when "postgresql"
       create_table :table_constraints do
         column :age, Integer
         constraint(:age_constraint) { age > 18 }
@@ -17,7 +19,7 @@ Hanami::Model.migration do
         column :role, String
         check %(role IN('contributor', 'manager', 'owner'))
       end
-    when 'mysql'
+    when "mysql"
       create_table :table_constraints do
         column :age, Integer
         constraint(:age_constraint) { age > 18 }

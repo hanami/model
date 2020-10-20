@@ -15,7 +15,6 @@ Like all the other Hanami components, it can be used as a standalone framework o
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](https://badge.fury.io/rb/hanami-model)
-[![TravisCI](https://travis-ci.org/hanami/model.svg?branch=master)](https://travis-ci.org/hanami/model)
 [![CircleCI](https://circleci.com/gh/hanami/model/tree/master.svg?style=svg)](https://circleci.com/gh/hanami/model/tree/master)
 [![Test Coverage](https://codecov.io/gh/hanami/model/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/model)
 [![Depfu](https://badges.depfu.com/badges/3a5d3f9e72895493bb6f39402ac4f129/overview.svg)](https://depfu.com/github/hanami/model?project=Bundler)
@@ -56,6 +55,7 @@ This class provides a DSL to configure the connection.
 
 ```ruby
 require 'hanami/model'
+require 'hanami/model/sql'
 
 class User < Hanami::Entity
 end
@@ -192,6 +192,8 @@ This is a **huge improvement**, because:
 
 Hanami::Model can **_automap_** columns from relations and entities attributes.
 
+When using a `sql` adapter, you must require `hanami/model/sql` before `Hanami::Model.load!` is called so the relations are loaded correctly.
+
 However, there are cases where columns and attribute names do not match (mainly **legacy databases**).
 
 ```ruby
@@ -234,6 +236,7 @@ If an entity has the following accessors: `:created_at` and `:updated_at`, they 
 
 ```ruby
 require 'hanami/model'
+require 'hanami/model/sql'
 
 class User < Hanami::Entity
 end
@@ -291,6 +294,6 @@ __Hanami::Model__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
-Copyright © 2014-2017 Luca Guidi – Released under MIT License
+Copyright © 2014-2020 Luca Guidi – Released under MIT License
 
 This project was formerly known as Lotus (`lotus-model`).

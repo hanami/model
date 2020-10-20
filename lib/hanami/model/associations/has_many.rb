@@ -1,4 +1,6 @@
-require 'hanami/model/types'
+# frozen_string_literal: true
+
+require "hanami/model/types"
 
 module Hanami
   module Model
@@ -7,7 +9,7 @@ module Hanami
       #
       # @since 0.7.0
       # @api private
-      class HasMany # rubocop:disable Metrics/ClassLength
+      class HasMany
         # @since 0.7.0
         # @api private
         def self.schema_type(entity)
@@ -51,8 +53,8 @@ module Hanami
         def create(data)
           entity.new(command(:create, aggregate(target), mapper: nil, use: [:timestamps])
             .call(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         # @since 0.7.0
@@ -60,8 +62,8 @@ module Hanami
         def add(data)
           command(:create, relation(target), use: [:timestamps])
             .call(associate(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         # @since 0.7.0
@@ -113,7 +115,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def command(target, relation, options = {})
-          repository.command(target => relation, **options)
+          repository.command(target, relation, options)
         end
 
         # @since 0.7.0
@@ -151,7 +153,7 @@ module Hanami
         # @since 0.7.0
         # @api private
         def unassociate
-          { foreign_key => nil }
+          {foreign_key => nil}
         end
 
         # @since 0.7.0

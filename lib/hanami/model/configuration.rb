@@ -1,4 +1,6 @@
-require 'rom/configuration'
+# frozen_string_literal: true
+
+require "rom/configuration"
 
 module Hanami
   module Model
@@ -30,13 +32,13 @@ module Hanami
       def initialize(configurator)
         @backend = configurator.backend
         @url = configurator.url
-        @migrations        = configurator._migrations
-        @schema            = configurator._schema
-        @gateway_config    = configurator._gateway
-        @logger            = configurator._logger
+        @migrations = configurator._migrations
+        @schema = configurator._schema
+        @gateway_config = configurator._gateway
+        @logger = configurator._logger
         @migrations_logger = configurator.migrations_logger
-        @mappings          = {}
-        @entities          = {}
+        @mappings = {}
+        @entities = {}
       end
 
       # NOTE: This must be changed when we want to support several adapters at the time
@@ -136,10 +138,10 @@ module Hanami
       # @api private
       def rom
         @rom ||= ROM::Configuration.new(@backend, @url, infer_relations: false)
-      rescue => e
-        raise UnknownDatabaseAdapterError.new(@url) if e.message =~ /adapters/
+      rescue => exception
+        raise UnknownDatabaseAdapterError.new(@url) if exception.message =~ /adapters/
 
-        raise e
+        raise exception
       end
 
       # @raise [Hanami::Model::UnknownDatabaseAdapterError] if `url` is blank,
@@ -147,7 +149,7 @@ module Hanami
       #
       # @since 1.0.0
       # @api private
-      def load!(repositories, &blk) # rubocop:disable Metrics/AbcSize
+      def load!(repositories, &blk)
         rom.setup.auto_registration(config.directory.to_s) unless config.directory.nil?
         rom.instance_eval(&blk)                            if     block_given?
         configure_gateway
@@ -157,8 +159,8 @@ module Hanami
         container = ROM.container(rom)
         define_entities_mappings(container, repositories)
         container
-      rescue => e
-        raise Hanami::Model::Error.for(e)
+      rescue => exception
+        raise Hanami::Model::Error.for(exception)
       end
 
       # @since 1.0.0

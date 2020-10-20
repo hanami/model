@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami::Model::Sql::Types::Schema::Decimal" do
   let(:described_class) { Hanami::Model::Sql::Types::Schema::Decimal }
 
@@ -9,81 +11,81 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Decimal" do
     end.new
   end
 
-  it 'returns nil for nil' do
+  it "returns nil for nil" do
     input = nil
     expect(described_class[input]).to eq(input)
   end
 
-  it 'coerces object that respond to #to_d' do
+  it "coerces object that respond to #to_d" do
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'coerces string representing int' do
-    input = '1'
+  it "coerces string representing int" do
+    input = "1"
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'coerces Hanami string representing int' do
-    input = Hanami::Utils::String.new('1')
+  it "coerces Hanami string representing int" do
+    input = Hanami::Utils::String.new("1")
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'coerces string representing float' do
-    input = '3.14'
+  it "coerces string representing float" do
+    input = "3.14"
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'coerces Hanami string representing float' do
-    input = Hanami::Utils::String.new('3.14')
+  it "coerces Hanami string representing float" do
+    input = Hanami::Utils::String.new("3.14")
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'raises error for symbol' do
+  it "raises error for symbol" do
     input = :house_11
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for BigDecimal(): #{input.inspect}")
   end
 
-  it 'coerces integer' do
+  it "coerces integer" do
     input = 23
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'coerces float' do
+  it "coerces float" do
     input = 3.14
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'coerces bigdecimal' do
+  it "coerces bigdecimal" do
     input = BigDecimal(3.14, 10)
     expect(described_class[input]).to eq(input.to_d)
   end
 
-  it 'raises error for date' do
+  it "raises error for date" do
     input = Date.today
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for BigDecimal(): #{input.inspect}")
   end
 
-  it 'raises error for datetime' do
+  it "raises error for datetime" do
     input = DateTime.new
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for BigDecimal(): #{input.inspect}")
   end
 
-  it 'raises error for time' do
+  it "raises error for time" do
     input = Time.now
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for BigDecimal(): #{input.inspect}")
   end
 
-  it 'raises error for array' do
+  it "raises error for array" do
     input = []
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for BigDecimal(): #{input.inspect}")
   end
 
-  it 'raises error for hash' do
+  it "raises error for hash" do
     input = {}
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for BigDecimal(): #{input.inspect}")

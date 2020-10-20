@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Platform
   module Ci
     def self.ci?(name)
@@ -5,8 +7,9 @@ module Platform
     end
 
     def self.current
-      if    travis?  then :travis
-      elsif circle?  then :circle
+      if    travis? then :travis
+      elsif circle? then :circle
+      elsif drone?  then :drone
       end
     end
 
@@ -14,11 +17,15 @@ module Platform
       private
 
       def travis?
-        ENV['TRAVIS'] == 'true'
+        ENV["TRAVIS"] == "true"
       end
 
       def circle?
-        ENV['CIRCLECI'] == 'true'
+        ENV["CIRCLECI"] == "true"
+      end
+
+      def drone?
+        ENV["DRONE"] == "true"
       end
     end
   end

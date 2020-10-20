@@ -1,6 +1,8 @@
-require 'hanami/entity/schema'
-require 'hanami/model/types'
-require 'hanami/model/association'
+# frozen_string_literal: true
+
+require "hanami/entity/schema"
+require "hanami/model/types"
+require "hanami/model/association"
 
 module Hanami
   module Model
@@ -52,7 +54,7 @@ module Hanami
 
           # @since 1.0.1
           # @api private
-          alias [] call
+          alias_method :[], :call
 
           # Check if the attribute is known
           #

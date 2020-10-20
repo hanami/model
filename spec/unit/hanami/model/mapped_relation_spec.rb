@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Hanami::Model::MappedRelation do
   subject { described_class.new(relation) }
   let(:relation) { UserRepository.new.users }

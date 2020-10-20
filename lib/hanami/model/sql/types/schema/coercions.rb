@@ -1,5 +1,7 @@
-require 'hanami/utils/string'
-require 'hanami/utils/hash'
+# frozen_string_literal: true
+
+require "hanami/utils/string"
+require "hanami/utils/hash"
 
 module Hanami
   module Model
@@ -12,7 +14,6 @@ module Hanami
           # @api private
           #
           # rubocop:disable Metrics/ModuleLength
-          # rubocop:disable Metrics/MethodLength
           module Coercions
             # Coerces given argument into Integer
             #
@@ -215,7 +216,7 @@ module Hanami
               end
             end
           end
-          # rubocop:enable Metrics/MethodLength
+
           # rubocop:enable Metrics/ModuleLength
         end
       end

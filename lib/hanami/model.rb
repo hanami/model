@@ -1,7 +1,9 @@
-require 'rom'
-require 'concurrent'
-require 'hanami/entity'
-require 'hanami/repository'
+# frozen_string_literal: true
+
+require "rom"
+require "concurrent"
+require "hanami/entity"
+require "hanami/repository"
 
 # Hanami
 #
@@ -11,12 +13,12 @@ module Hanami
   #
   # @since 0.1.0
   module Model
-    require 'hanami/model/version'
-    require 'hanami/model/error'
-    require 'hanami/model/configuration'
-    require 'hanami/model/configurator'
-    require 'hanami/model/mapping'
-    require 'hanami/model/plugins'
+    require "hanami/model/version"
+    require "hanami/model/error"
+    require "hanami/model/configuration"
+    require "hanami/model/configurator"
+    require "hanami/model/mapping"
+    require "hanami/model/plugins"
 
     # @api private
     # @since 0.7.0
@@ -33,7 +35,7 @@ module Hanami
 
       # @since 0.7.0
       # @api private
-      alias loaded? loaded
+      alias_method :loaded?, :loaded
     end
 
     # Configure the framework
@@ -70,7 +72,7 @@ module Hanami
     # @since 0.7.0
     # @api private
     def self.container
-      raise 'Not loaded' unless loaded?
+      raise "Not loaded" unless loaded?
 
       @container
     end

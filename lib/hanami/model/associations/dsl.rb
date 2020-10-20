@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     module Associations
@@ -6,7 +8,6 @@ module Hanami
       # @since 0.7.0
       # @api private
       #
-      # rubocop:disable Naming/PredicateName
       class Dsl
         # @since 0.7.0
         # @api private
@@ -34,7 +35,6 @@ module Hanami
           @repository.__send__(:relations, Hanami::Utils::String.pluralize(relation).to_sym)
         end
       end
-      # rubocop:enable Naming/PredicateName
     end
   end
 end

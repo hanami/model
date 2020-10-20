@@ -1,4 +1,6 @@
-require 'transproc/all'
+# frozen_string_literal: true
+
+require "transproc/all"
 
 module Hanami
   module Model

@@ -1,10 +1,12 @@
-require 'hanami/utils/basic_object'
+# frozen_string_literal: true
+
+require "hanami/utils/basic_object"
 
 module Platform
   class Matcher
     class Nope < Hanami::Utils::BasicObject
       def or(other, &blk)
-        blk.nil? ? other : blk.call # rubocop:disable Performance/RedundantBlockCall
+        blk.nil? ? other : blk.call
       end
 
       # rubocop:disable Style/MethodMissingSuper
@@ -22,7 +24,7 @@ module Platform
       end
     end
 
-    def self.match?(os: Os.current, ci: Ci.current, engine: Engine.current, db: Db.current) # rubocop:disable Naming/UncommunicativeMethodParamName
+    def self.match?(os: Os.current, ci: Ci.current, engine: Engine.current, db: Db.current)
       catch :match do
         new.os(os).ci(ci).engine(engine).db(db) { true }.or(false)
       end

@@ -1,4 +1,6 @@
-require 'hanami/model/types'
+# frozen_string_literal: true
+
+require "hanami/model/types"
 
 module Hanami
   # An object that is defined by its identity.
@@ -50,7 +52,7 @@ module Hanami
   #
   # @see Hanami::Repository
   class Entity
-    require 'hanami/entity/schema'
+    require "hanami/entity/schema"
 
     # Syntactic shortcut to reference types in custom schema DSL
     #
@@ -188,7 +190,7 @@ module Hanami
     end
 
     # @since 0.7.0
-    alias to_hash to_h
+    alias_method :to_hash, :to_h
 
     protected
 

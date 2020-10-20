@@ -1,5 +1,7 @@
-require 'hanami/model/types'
-require 'hanami/utils/hash'
+# frozen_string_literal: true
+
+require "hanami/model/types"
+require "hanami/utils/hash"
 
 module Hanami
   class Entity
@@ -182,10 +184,10 @@ module Hanami
         # @api private
         def call(attributes)
           schema.call(attributes)
-        rescue Dry::Types::SchemaError => e
-          raise TypeError.new(e.message)
-        rescue Dry::Types::MissingKeyError, Dry::Types::UnknownKeysError => e
-          raise ArgumentError.new(e.message)
+        rescue Dry::Types::SchemaError => exception
+          raise TypeError.new(exception.message)
+        rescue Dry::Types::MissingKeyError, Dry::Types::UnknownKeysError => exception
+          raise ArgumentError.new(exception.message)
         end
 
         # Check if the attribute is known
@@ -243,7 +245,7 @@ module Hanami
 
       # @since 0.7.0
       # @api private
-      alias [] call
+      alias_method :[], :call
 
       # Check if the attribute is known
       #

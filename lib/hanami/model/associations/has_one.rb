@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/utils/hash"
 
 module Hanami
@@ -53,14 +55,14 @@ module Hanami
           entity.new(
             command(:create, aggregate(target), mapper: nil).call(serialize(data))
           )
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         def add(data)
           command(:create, relation(target), mapper: nil).call(associate(serialize(data)))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         def update(data)
@@ -68,14 +70,14 @@ module Hanami
             .by_pk(
               one.public_send(relation(target).primary_key)
             ).call(serialize(data))
-        rescue => e
-          raise Hanami::Model::Error.for(e)
+        rescue => exception
+          raise Hanami::Model::Error.for(exception)
         end
 
         def delete
           scope.delete
         end
-        alias remove delete
+        alias_method :remove, :delete
 
         def replace(data)
           repository.transaction do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Model
     # Conventional name for entities.
@@ -18,7 +20,7 @@ module Hanami
       # @since 0.7.0
       # @api private
       def initialize(name)
-        @name = name.sub(SUFFIX, '')
+        @name = name.sub(SUFFIX, "")
       end
 
       # @since 0.7.0
