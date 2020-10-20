@@ -1,6 +1,6 @@
-require 'hanami/entity/schema'
-require 'hanami/model/types'
-require 'hanami/model/association'
+require "hanami/entity/schema"
+require "hanami/model/types"
+require "hanami/model/association"
 
 module Hanami
   module Model

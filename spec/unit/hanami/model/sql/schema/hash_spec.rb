@@ -9,70 +9,70 @@ RSpec.describe "Hanami::Model::Sql::Types::Schema::Hash" do
     end.new
   end
 
-  it 'returns nil for nil' do
+  it "returns nil for nil" do
     input = nil
     expect(described_class[input]).to eq(input)
   end
 
-  it 'coerces object that respond to #to_hash' do
+  it "coerces object that respond to #to_hash" do
     expect(described_class[input]).to eq(input.to_hash)
   end
 
-  it 'coerces string' do
-    input = 'foo'
+  it "coerces string" do
+    input = "foo"
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for symbol' do
+  it "raises error for symbol" do
     input = :foo
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for integer' do
+  it "raises error for integer" do
     input = 11
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for float' do
+  it "raises error for float" do
     input = 3.14
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for bigdecimal' do
+  it "raises error for bigdecimal" do
     input = BigDecimal(3.14, 10)
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for date' do
+  it "raises error for date" do
     input = Date.today
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for datetime' do
+  it "raises error for datetime" do
     input = DateTime.new
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for time' do
+  it "raises error for time" do
     input = Time.now
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'raises error for array' do
+  it "raises error for array" do
     input = []
     expect { described_class[input] }
       .to raise_error(ArgumentError, "invalid value for Hash(): #{input.inspect}")
   end
 
-  it 'coerces hash' do
+  it "coerces hash" do
     input = {}
     expect(described_class[input]).to eq(input)
   end

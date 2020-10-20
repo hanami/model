@@ -1,4 +1,4 @@
-require 'hanami/utils'
+require "hanami/utils"
 
 module Platform
   module Engine
@@ -16,7 +16,7 @@ module Platform
       private
 
       def ruby?
-        RUBY_ENGINE == 'ruby'
+        RUBY_ENGINE == "ruby"
       end
 
       def jruby?

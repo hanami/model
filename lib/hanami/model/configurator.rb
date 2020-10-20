@@ -42,7 +42,7 @@ module Hanami
       # @since 1.0.0
       # @api private
       def migrations_logger(stream = $stdout)
-        require 'hanami/model/migrator/logger'
+        require "hanami/model/migrator/logger"
         @migrations_logger ||= Hanami::Model::Migrator::Logger.new(stream)
       end
 
@@ -76,10 +76,10 @@ module Hanami
       # @since 1.0.0
       # @api private
       def logger(stream, options = {})
-        require 'hanami/logger'
+        require "hanami/logger"
 
         opts = options.merge(stream: stream)
-        @_logger = Hanami::Logger.new('hanami.model', **opts)
+        @_logger = Hanami::Logger.new("hanami.model", **opts)
       end
 
       # @since 1.0.0

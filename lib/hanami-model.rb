@@ -1,1 +1,1 @@
-require 'hanami/model'
+require "hanami/model"

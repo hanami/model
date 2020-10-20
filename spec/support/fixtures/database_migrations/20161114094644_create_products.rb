@@ -5,7 +5,7 @@ Hanami::Model.migration do
       create_table :products do
         primary_key :id
         column :name,       String
-        column :categories, 'text[]'
+        column :categories, "text[]"
       end
     else
       create_table :products do

@@ -1,6 +1,6 @@
-require 'uri'
-require 'shellwords'
-require 'open3'
+require "uri"
+require "shellwords"
+require "open3"
 
 module Hanami
   module Model
@@ -31,13 +31,13 @@ module Hanami
 
           case connection.database_type
           when :sqlite
-            require 'hanami/model/migrator/sqlite_adapter'
+            require "hanami/model/migrator/sqlite_adapter"
             SQLiteAdapter
           when :postgres
-            require 'hanami/model/migrator/postgres_adapter'
+            require "hanami/model/migrator/postgres_adapter"
             PostgresAdapter
           when :mysql
-            require 'hanami/model/migrator/mysql_adapter'
+            require "hanami/model/migrator/mysql_adapter"
             MySQLAdapter
           else
             self

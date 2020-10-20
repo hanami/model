@@ -1,4 +1,4 @@
-require 'hanami/model/types'
+require "hanami/model/types"
 
 module Hanami
   module Model

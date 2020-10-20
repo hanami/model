@@ -8,7 +8,7 @@ module Hanami
       class MySQLAdapter < Adapter
         # @since 0.7.0
         # @api private
-        PASSWORD = 'MYSQL_PWD'.freeze
+        PASSWORD = "MYSQL_PWD".freeze
 
         # @since x.x.x
         # @api private
@@ -16,9 +16,9 @@ module Hanami
 
         # @since 1.0.0
         # @api private
-        DB_CREATION_ERROR = 'Database creation failed. If the database exists, ' \
-                            'then its console may be open. See this issue for more details: ' \
-                            'https://github.com/hanami/model/issues/250'.freeze
+        DB_CREATION_ERROR = "Database creation failed. If the database exists, " \
+                            "then its console may be open. See this issue for more details: " \
+                            "https://github.com/hanami/model/issues/250".freeze
 
         # @since 0.4.0
         # @api private

@@ -1,4 +1,4 @@
-require 'transproc/all'
+require "transproc/all"
 
 module Hanami
   module Model

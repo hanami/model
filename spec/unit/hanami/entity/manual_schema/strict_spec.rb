@@ -1,5 +1,5 @@
 RSpec.describe Hanami::Entity do
-  describe 'manual schema (strict)' do
+  describe "manual schema (strict)" do
     let(:described_class) { Person }
 
     let(:input) do
@@ -10,7 +10,7 @@ RSpec.describe Hanami::Entity do
       end.new
     end
 
-    describe '#initialize' do
+    describe "#initialize" do
       it "can't be instantiated without attributes" do
         expect { described_class.new }.to raise_error(ArgumentError, ":id is missing in Hash input")
       end
@@ -34,14 +34,14 @@ RSpec.describe Hanami::Entity do
         expect(entity.name).to eq("Luca")
       end
 
-      it 'accepts object that implements #to_hash' do
+      it "accepts object that implements #to_hash" do
         entity = described_class.new(input)
 
         expect(entity.id).to   eq(2)
         expect(entity.name).to eq("MG")
       end
 
-      it 'freezes the instance' do
+      it "freezes the instance" do
         entity = described_class.new(id: 1, name: "Luca")
 
         expect(entity).to be_frozen

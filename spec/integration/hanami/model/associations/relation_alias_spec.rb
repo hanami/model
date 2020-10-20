@@ -1,11 +1,11 @@
-RSpec.describe 'Alias (:as)  support for associations' do
+RSpec.describe "Alias (:as)  support for associations" do
   let(:users) { UserRepository.new }
   let(:posts) { PostRepository.new }
   let(:comments) { CommentRepository.new }
 
-  it 'the attribute is named after the association' do
-    user = users.create(name: 'Jules Verne')
-    post = posts.create(title: 'World Traveling made easy', user_id: user.id)
+  it "the attribute is named after the association" do
+    user = users.create(name: "Jules Verne")
+    post = posts.create(title: "World Traveling made easy", user_id: user.id)
 
     post_found = posts.find_with_author(post.id)
     expect(post_found.author).to eq(user)
@@ -14,10 +14,10 @@ RSpec.describe 'Alias (:as)  support for associations' do
     expect(user_found.threads).to match_array([post])
   end
 
-  it 'it works with nested aggregates' do
-    user = users.create(name: 'Jules Verne')
-    post = posts.create(title: 'World Traveling made easy', user_id: user.id)
-    commenter = users.create(name: 'Thomas Reid')
+  it "it works with nested aggregates" do
+    user = users.create(name: "Jules Verne")
+    post = posts.create(title: "World Traveling made easy", user_id: user.id)
+    commenter = users.create(name: "Thomas Reid")
     comments.create(user_id: commenter.id, post_id: post.id)
 
     found = posts.feed_for(post.id)
@@ -25,11 +25,11 @@ RSpec.describe 'Alias (:as)  support for associations' do
     expect(found.comments[0].user).to eq(commenter)
   end
 
-  context '#assoc support (calling assoc by the alias)' do
-    it 'for #belongs_to' do
-      user = users.create(name: 'Jules Verne')
-      post = posts.create(title: 'World Traveling made easy', user_id: user.id)
-      commenter = users.create(name: 'Thomas Reid')
+  context "#assoc support (calling assoc by the alias)" do
+    it "for #belongs_to" do
+      user = users.create(name: "Jules Verne")
+      post = posts.create(title: "World Traveling made easy", user_id: user.id)
+      commenter = users.create(name: "Thomas Reid")
       comment = comments.create(user_id: commenter.id, post_id: post.id)
 
       found_author = posts.author_for(post)
@@ -39,18 +39,18 @@ RSpec.describe 'Alias (:as)  support for associations' do
       expect(found_commenter).to eq(commenter)
     end
 
-    it 'for #has_many' do
-      user = users.create(name: 'Jules Verne')
-      post = posts.create(title: 'World Traveling made easy', user_id: user.id)
+    it "for #has_many" do
+      user = users.create(name: "Jules Verne")
+      post = posts.create(title: "World Traveling made easy", user_id: user.id)
 
       found_threads = users.threads_for(user)
       expect(found_threads).to match_array [post]
     end
 
-    it 'for #has_many :through' do
-      user = users.create(name: 'Jules Verne')
-      post = posts.create(title: 'World Traveling made easy', user_id: user.id)
-      commenter = users.create(name: 'Thomas Reid')
+    it "for #has_many :through" do
+      user = users.create(name: "Jules Verne")
+      post = posts.create(title: "World Traveling made easy", user_id: user.id)
+      commenter = users.create(name: "Thomas Reid")
       comments.create(user_id: commenter.id, post_id: post.id)
 
       commenters = posts.commenters_for(post)

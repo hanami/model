@@ -1,7 +1,7 @@
 Hanami::Model.migration do
   change do
-    case ENV['HANAMI_DATABASE_TYPE']
-    when 'sqlite'
+    case ENV["HANAMI_DATABASE_TYPE"]
+    when "sqlite"
       create_table :songs do
         column :title, String
         column :useless, String
@@ -19,7 +19,7 @@ Hanami::Model.migration do
         set_column_type :useless,         File
 
         rename_column :title, :primary_title
-        set_column_default :primary_title, 'Unknown title'
+        set_column_default :primary_title, "Unknown title"
 
         # add_index :album_id
         # drop_index :artist_id
@@ -34,7 +34,7 @@ Hanami::Model.migration do
         drop_constraint :useless_min_length
         drop_column     :useless
       end
-    when 'postgresql'
+    when "postgresql"
       create_table :songs do
         column :title, String
         column :useless, String
@@ -52,7 +52,7 @@ Hanami::Model.migration do
         # set_column_type :useless, File
 
         rename_column :title, :primary_title
-        set_column_default :primary_title, 'Unknown title'
+        set_column_default :primary_title, "Unknown title"
 
         # add_index :album_id
         # drop_index :artist_id

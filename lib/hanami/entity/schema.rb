@@ -1,5 +1,5 @@
-require 'hanami/model/types'
-require 'hanami/utils/hash'
+require "hanami/model/types"
+require "hanami/utils/hash"
 
 module Hanami
   class Entity

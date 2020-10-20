@@ -1,8 +1,8 @@
 module Database
   class Setup
-    DEFAULT_ADAPTER = 'sqlite'.freeze
+    DEFAULT_ADAPTER = "sqlite".freeze
 
-    def initialize(adapter: ENV['DB'])
+    def initialize(adapter: ENV["DB"])
       @strategy = Strategy.for(adapter || DEFAULT_ADAPTER)
     end
 
@@ -12,9 +12,9 @@ module Database
   end
 
   module Strategies
-    require_relative './database/strategies/sqlite'
-    require_relative './database/strategies/postgresql'
-    require_relative './database/strategies/mysql'
+    require_relative "./database/strategies/sqlite"
+    require_relative "./database/strategies/postgresql"
+    require_relative "./database/strategies/mysql"
 
     def self.strategies
       constants.map do |const|
@@ -40,7 +40,7 @@ module Database
   end
 
   def self.engine
-    ENV['HANAMI_DATABASE_TYPE'].to_sym
+    ENV["HANAMI_DATABASE_TYPE"].to_sym
   end
 
   def self.engine?(name)

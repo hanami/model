@@ -1,6 +1,6 @@
 Hanami::Model.migration do
   up do
-    add_column :reviews, :rating, 'integer', default: 0
+    add_column :reviews, :rating, "integer", default: 0
   end
 
   down do

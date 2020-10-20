@@ -1,4 +1,4 @@
-require 'rom/configuration'
+require "rom/configuration"
 
 module Hanami
   module Model

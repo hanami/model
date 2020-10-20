@@ -1,6 +1,6 @@
-require 'pathname'
-require 'hanami/utils'
-require 'English'
+require "pathname"
+require "hanami/utils"
+require "English"
 
 module Hanami
   module Model
@@ -71,7 +71,7 @@ module Hanami
         # @api private
         def path
           root.join(
-            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, '')
+            @connection.uri.sub(/\A(jdbc:sqlite:\/\/|sqlite:\/\/)/, "")
           )
         end
 

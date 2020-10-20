@@ -1,7 +1,7 @@
-require_relative 'abstract'
-require 'hanami/utils/blank'
-require 'pathname'
-require 'stringio'
+require_relative "abstract"
+require "hanami/utils/blank"
+require "pathname"
+require "stringio"
 
 module Database
   module Strategies
@@ -20,18 +20,18 @@ module Database
 
       def export_env
         super
-        ENV['HANAMI_DATABASE_ADAPTER'] = 'sql'
-        ENV['HANAMI_DATABASE_LOGGER'] = logger.to_s
+        ENV["HANAMI_DATABASE_ADAPTER"] = "sql"
+        ENV["HANAMI_DATABASE_LOGGER"] = logger.to_s
       end
 
       def configure # rubocop:disable Metrics/AbcSize
         Hanami::Model.configure do
-          adapter    ENV['HANAMI_DATABASE_ADAPTER'].to_sym, ENV['HANAMI_DATABASE_URL']
-          logger     ENV['HANAMI_DATABASE_LOGGER'], level: :debug
-          migrations Dir.pwd + '/spec/support/fixtures/database_migrations'
-          schema     Dir.pwd + '/tmp/schema.sql'
+          adapter    ENV["HANAMI_DATABASE_ADAPTER"].to_sym, ENV["HANAMI_DATABASE_URL"]
+          logger     ENV["HANAMI_DATABASE_LOGGER"], level: :debug
+          migrations Dir.pwd + "/spec/support/fixtures/database_migrations"
+          schema     Dir.pwd + "/tmp/schema.sql"
 
-          migrations_logger ENV['HANAMI_DATABASE_LOGGER']
+          migrations_logger ENV["HANAMI_DATABASE_LOGGER"]
 
           gateway do |g|
             g.connection.extension(:pg_enum) if Database.engine?(:postgresql)
@@ -47,19 +47,19 @@ module Database
 
       def migrate
         TestIO.with_stdout do
-          require 'hanami/model/migrator'
+          require "hanami/model/migrator"
           Hanami::Model::Migrator.migrate
         end
       end
 
       def credentials
-        [ENV['HANAMI_DATABASE_USERNAME'], ENV['HANAMI_DATABASE_PASSWORD']].reject do |token|
+        [ENV["HANAMI_DATABASE_USERNAME"], ENV["HANAMI_DATABASE_PASSWORD"]].reject do |token|
           Hanami::Utils::Blank.blank?(token)
-        end.join(':')
+        end.join(":")
       end
 
       def host
-        ENV['HANAMI_DATABASE_HOST'] || 'localhost'
+        ENV["HANAMI_DATABASE_HOST"] || "localhost"
       end
 
       def host_and_credentials
@@ -69,7 +69,7 @@ module Database
       end
 
       def logger
-        Pathname.new('tmp').join('hanami_model.log')
+        Pathname.new("tmp").join("hanami_model.log")
       end
     end
   end

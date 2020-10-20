@@ -1,5 +1,5 @@
-require 'hanami/utils/string'
-require 'hanami/utils/hash'
+require "hanami/utils/string"
+require "hanami/utils/hash"
 
 module Hanami
   module Model

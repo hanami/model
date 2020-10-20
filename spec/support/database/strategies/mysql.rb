@@ -1,4 +1,4 @@
-require_relative 'sql'
+require_relative "sql"
 
 module Database
   module Strategies
@@ -7,27 +7,27 @@ module Database
         protected
 
         def load_dependencies
-          require 'hanami/model/sql'
-          require 'jdbc/mysql'
+          require "hanami/model/sql"
+          require "jdbc/mysql"
         end
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_URL'] = "jdbc:mysql://#{host}/#{database_name}?#{credentials}"
+          ENV["HANAMI_DATABASE_URL"] = "jdbc:mysql://#{host}/#{database_name}?#{credentials}"
         end
 
         def host
-          ENV['HANAMI_DATABASE_HOST'] || '127.0.0.1'
+          ENV["HANAMI_DATABASE_HOST"] || "127.0.0.1"
         end
 
         def credentials
           Hash[
-            'user' => ENV['HANAMI_DATABASE_USERNAME'],
-            'password' => ENV['HANAMI_DATABASE_PASSWORD'],
-            'useSSL' => 'false'
+            "user" => ENV["HANAMI_DATABASE_USERNAME"],
+            "password" => ENV["HANAMI_DATABASE_PASSWORD"],
+            "useSSL" => "false"
           ].map do |key, value|
             "#{key}=#{value}" unless Hanami::Utils::Blank.blank?(value)
-          end.compact.join('&')
+          end.compact.join("&")
         end
       end
 
@@ -36,8 +36,8 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] = 'travis'
-          ENV['HANAMI_DATABASE_URL'] = "mysql2://#{credentials}@#{host}/#{database_name}"
+          ENV["HANAMI_DATABASE_USERNAME"] = "travis"
+          ENV["HANAMI_DATABASE_URL"] = "mysql2://#{credentials}@#{host}/#{database_name}"
         end
 
         def create_database
@@ -59,8 +59,8 @@ module Database
 
         def export_env
           super
-          ENV['HANAMI_DATABASE_USERNAME'] ||= 'root'
-          ENV['HANAMI_DATABASE_URL'] = "mysql2://#{credentials}@#{host}/#{database_name}"
+          ENV["HANAMI_DATABASE_USERNAME"] ||= "root"
+          ENV["HANAMI_DATABASE_URL"] = "mysql2://#{credentials}@#{host}/#{database_name}"
         end
 
         def create_database
@@ -77,7 +77,7 @@ module Database
       end
 
       def self.eligible?(adapter)
-        adapter.start_with?('mysql')
+        adapter.start_with?("mysql")
       end
 
       def initialize
@@ -94,16 +94,16 @@ module Database
       protected
 
       def load_dependencies
-        require 'hanami/model/sql'
-        require 'mysql2'
+        require "hanami/model/sql"
+        require "mysql2"
       end
 
       def export_env
         super
-        ENV['HANAMI_DATABASE_TYPE'] = 'mysql'
-        ENV['HANAMI_DATABASE_USERNAME'] ||= 'root'
-        ENV['HANAMI_DATABASE_PASSWORD'] ||= ''
-        ENV['HANAMI_DATABASE_URL'] = "mysql2://#{credentials}@#{host}/#{database_name}"
+        ENV["HANAMI_DATABASE_TYPE"] = "mysql"
+        ENV["HANAMI_DATABASE_USERNAME"] ||= "root"
+        ENV["HANAMI_DATABASE_PASSWORD"] ||= ""
+        ENV["HANAMI_DATABASE_URL"] = "mysql2://#{credentials}@#{host}/#{database_name}"
       end
 
       def create_database

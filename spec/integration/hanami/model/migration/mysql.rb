@@ -1,13 +1,13 @@
-RSpec.shared_examples 'migration_integration_mysql' do
+RSpec.shared_examples "migration_integration_mysql" do
   before do
     @schema = Pathname.new("#{__dir__}/../../../../../tmp/schema.sql").expand_path
-    @connection = Sequel.connect(ENV['HANAMI_DATABASE_URL'])
+    @connection = Sequel.connect(ENV["HANAMI_DATABASE_URL"])
 
     Hanami::Model::Migrator::Adapter.for(Hanami::Model.configuration).dump
   end
 
-  describe 'columns' do
-    it 'defines column types' do
+  describe "columns" do
+    it "defines column types" do
       table = @connection.schema(:column_types)
 
       name, options = table[0]
@@ -16,7 +16,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[1]
@@ -25,7 +25,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[2]
@@ -34,7 +34,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[3]
@@ -43,7 +43,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('varchar(255)')
+      expect(options.fetch(:db_type)).to eq("varchar(255)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[4]
@@ -52,7 +52,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('varchar(3)')
+      expect(options.fetch(:db_type)).to eq("varchar(3)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[5]
@@ -61,7 +61,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('varchar(50)')
+      expect(options.fetch(:db_type)).to eq("varchar(50)")
       expect(options.fetch(:max_length)).to eq(50)
       expect(options.fetch(:primary_key)).to eq(false)
 
@@ -71,7 +71,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('char(255)')
+      expect(options.fetch(:db_type)).to eq("char(255)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[7]
@@ -80,7 +80,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('char(64)')
+      expect(options.fetch(:db_type)).to eq("char(64)")
       expect(options.fetch(:max_length)).to eq(64)
       expect(options.fetch(:primary_key)).to eq(false)
 
@@ -90,7 +90,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('text')
+      expect(options.fetch(:db_type)).to eq("text")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[9]
@@ -99,7 +99,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:blob)
-      expect(options.fetch(:db_type)).to eq('blob')
+      expect(options.fetch(:db_type)).to eq("blob")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[10]
@@ -108,7 +108,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:blob)
-      expect(options.fetch(:db_type)).to eq('blob')
+      expect(options.fetch(:db_type)).to eq("blob")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[11]
@@ -117,7 +117,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[12]
@@ -126,7 +126,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('bigint')
+      expect(options.fetch(:db_type)).to eq("bigint")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[13]
@@ -135,7 +135,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:float)
-      expect(options.fetch(:db_type)).to eq('double')
+      expect(options.fetch(:db_type)).to eq("double")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[14]
@@ -144,7 +144,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('decimal(10,0)')
+      expect(options.fetch(:db_type)).to eq("decimal(10,0)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[15]
@@ -153,7 +153,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       # expect(options.fetch(:type)).to eq(:decimal)
-      expect(options.fetch(:db_type)).to eq('decimal(10,0)')
+      expect(options.fetch(:db_type)).to eq("decimal(10,0)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[16]
@@ -162,7 +162,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:decimal)
-      expect(options.fetch(:db_type)).to eq('decimal(10,2)')
+      expect(options.fetch(:db_type)).to eq("decimal(10,2)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[17]
@@ -171,7 +171,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('decimal(10,0)')
+      expect(options.fetch(:db_type)).to eq("decimal(10,0)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[18]
@@ -180,7 +180,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:date)
-      expect(options.fetch(:db_type)).to eq('date')
+      expect(options.fetch(:db_type)).to eq("date")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[19]
@@ -189,7 +189,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:datetime)
-      expect(options.fetch(:db_type)).to eq('datetime')
+      expect(options.fetch(:db_type)).to eq("datetime")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[20]
@@ -198,7 +198,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:datetime)
-      expect(options.fetch(:db_type)).to eq('datetime')
+      expect(options.fetch(:db_type)).to eq("datetime")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[21]
@@ -207,7 +207,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:time)
-      expect(options.fetch(:db_type)).to eq('time')
+      expect(options.fetch(:db_type)).to eq("time")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[22]
@@ -216,7 +216,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:boolean)
-      expect(options.fetch(:db_type)).to eq('tinyint(1)')
+      expect(options.fetch(:db_type)).to eq("tinyint(1)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[23]
@@ -225,105 +225,105 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:boolean)
-      expect(options.fetch(:db_type)).to eq('tinyint(1)')
+      expect(options.fetch(:db_type)).to eq("tinyint(1)")
       expect(options.fetch(:primary_key)).to eq(false)
     end
 
-    it 'defines column defaults' do
+    it "defines column defaults" do
       table = @connection.schema(:default_values)
 
       name, options = table[0]
       expect(name).to eq(:a)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('23')
+      expect(options.fetch(:default)).to eq("23")
       expect(options.fetch(:ruby_default)).to eq(23)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[1]
       expect(name).to eq(:b)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('Hanami')
-      expect(options.fetch(:ruby_default)).to eq('Hanami')
+      expect(options.fetch(:default)).to eq("Hanami")
+      expect(options.fetch(:ruby_default)).to eq("Hanami")
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('varchar(255)')
+      expect(options.fetch(:db_type)).to eq("varchar(255)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[2]
       expect(name).to eq(:c)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('-1')
+      expect(options.fetch(:default)).to eq("-1")
       expect(options.fetch(:ruby_default)).to eq(-1)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[3]
       expect(name).to eq(:d)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('0')
+      expect(options.fetch(:default)).to eq("0")
       expect(options.fetch(:ruby_default)).to eq(0)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('bigint')
+      expect(options.fetch(:db_type)).to eq("bigint")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[4]
       expect(name).to eq(:e)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('3.14')
+      expect(options.fetch(:default)).to eq("3.14")
       expect(options.fetch(:ruby_default)).to eq(3.14)
       expect(options.fetch(:type)).to eq(:float)
-      expect(options.fetch(:db_type)).to eq('double')
+      expect(options.fetch(:db_type)).to eq("double")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[5]
       expect(name).to eq(:f)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('1')
+      expect(options.fetch(:default)).to eq("1")
       expect(options.fetch(:ruby_default)).to eq(1.0)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('decimal(10,0)')
+      expect(options.fetch(:db_type)).to eq("decimal(10,0)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[6]
       expect(name).to eq(:g)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('943943')
+      expect(options.fetch(:default)).to eq("943943")
       expect(options.fetch(:ruby_default)).to eq(943_943)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('decimal(10,0)')
+      expect(options.fetch(:db_type)).to eq("decimal(10,0)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[10]
       expect(name).to eq(:k)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('1')
+      expect(options.fetch(:default)).to eq("1")
       expect(options.fetch(:ruby_default)).to eq(true)
       expect(options.fetch(:type)).to eq(:boolean)
-      expect(options.fetch(:db_type)).to eq('tinyint(1)')
+      expect(options.fetch(:db_type)).to eq("tinyint(1)")
       expect(options.fetch(:primary_key)).to eq(false)
 
       name, options = table[11]
       expect(name).to eq(:l)
 
       expect(options.fetch(:allow_null)).to eq(true)
-      expect(options.fetch(:default)).to eq('0')
+      expect(options.fetch(:default)).to eq("0")
       expect(options.fetch(:ruby_default)).to eq(false)
       expect(options.fetch(:type)).to eq(:boolean)
-      expect(options.fetch(:db_type)).to eq('tinyint(1)')
+      expect(options.fetch(:db_type)).to eq("tinyint(1)")
       expect(options.fetch(:primary_key)).to eq(false)
     end
 
-    it 'defines null constraint' do
+    it "defines null constraint" do
       table = @connection.schema(:null_constraints)
 
       name, options = table[0]
@@ -342,7 +342,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(true)
     end
 
-    it 'defines column index' do
+    it "defines column index" do
       indexes = @connection.indexes(:column_indexes)
 
       expect(indexes.fetch(:column_indexes_a_index, nil)).to be_nil
@@ -353,7 +353,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(index[:columns]).to eq([:c])
     end
 
-    it 'defines index via #index' do
+    it "defines index via #index" do
       indexes = @connection.indexes(:column_indexes)
 
       index = indexes.fetch(:column_indexes_d_index)
@@ -369,7 +369,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(index[:columns]).to eq(%i[lat lng])
     end
 
-    it 'defines primary key (via #primary_key :id)' do
+    it "defines primary key (via #primary_key :id)" do
       table = @connection.schema(:primary_keys_1)
 
       name, options = table[0]
@@ -378,12 +378,12 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(false)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(true)
       expect(options.fetch(:auto_increment)).to eq(true)
     end
 
-    it 'defines composite primary key (via #primary_key [:column1, :column2])' do
+    it "defines composite primary key (via #primary_key [:column1, :column2])" do
       table = @connection.schema(:primary_keys_3)
 
       name, options = table[0]
@@ -398,7 +398,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:default)).to eq(expected)
 
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(true)
       expect(options.fetch(:auto_increment)).to eq(false)
 
@@ -414,12 +414,12 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:default)).to eq(expected)
 
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(true)
       expect(options.fetch(:auto_increment)).to eq(false)
     end
 
-    it 'defines primary key (via #column primary_key: true)' do
+    it "defines primary key (via #column primary_key: true)" do
       table = @connection.schema(:primary_keys_2)
 
       name, options = table[0]
@@ -428,12 +428,12 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(false)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:string)
-      expect(options.fetch(:db_type)).to eq('varchar(255)')
+      expect(options.fetch(:db_type)).to eq("varchar(255)")
       expect(options.fetch(:primary_key)).to eq(true)
       expect(options.fetch(:auto_increment)).to eq(false)
     end
 
-    it 'defines foreign key (via #foreign_key)' do
+    it "defines foreign key (via #foreign_key)" do
       table = @connection.schema(:albums)
 
       name, options = table[1]
@@ -442,7 +442,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       expect(options.fetch(:allow_null)).to eq(false)
       expect(options.fetch(:default)).to eq(nil)
       expect(options.fetch(:type)).to eq(:integer)
-      expect(options.fetch(:db_type)).to eq('int')
+      expect(options.fetch(:db_type)).to eq("int")
       expect(options.fetch(:primary_key)).to eq(false)
 
       foreign_key = @connection.foreign_key_list(:albums).first
@@ -453,7 +453,7 @@ RSpec.shared_examples 'migration_integration_mysql' do
       # expect(foreign_key.fetch(:on_delete)).to eq(:cascade)
     end
 
-    it 'defines column constraint and check'
+    it "defines column constraint and check"
     # it 'defines column constraint and check' do
     #   expect(@schema.read).to include %(CREATE TABLE `table_constraints` (`age` integer, `role` varchar(255), CONSTRAINT `age_constraint` CHECK (`age` > 18), CHECK (role IN("contributor", "manager", "owner")));)
     # end

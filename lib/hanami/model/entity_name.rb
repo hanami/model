@@ -18,7 +18,7 @@ module Hanami
       # @since 0.7.0
       # @api private
       def initialize(name)
-        @name = name.sub(SUFFIX, '')
+        @name = name.sub(SUFFIX, "")
       end
 
       # @since 0.7.0

@@ -5,12 +5,12 @@ Hanami::Model.migration do
       create_table :column_types do
         column :integer1, Integer
         column :integer2, :integer
-        column :integer3, 'integer'
+        column :integer3, "integer"
 
         column :string1, String
         column :string2, :string
-        column :string3, 'string'
-        column :string4, 'varchar(3)'
+        column :string3, "string"
+        column :string4, "varchar(3)"
 
         column :string5, String, size: 50
         column :string6, String, fixed: true
@@ -18,7 +18,7 @@ Hanami::Model.migration do
         column :string8, String, text: true
 
         column :file1, File
-        column :file2, 'blob'
+        column :file2, "blob"
 
         column :number1, Fixnum # rubocop:disable Lint/UnifiedInteger
         column :number2, :Bignum
@@ -51,14 +51,14 @@ Hanami::Model.migration do
       create_table :column_types do
         column :integer1, Integer
         column :integer2, :integer
-        column :integer3, 'integer'
+        column :integer3, "integer"
 
         column :string1, String
-        column :string2, 'text'
-        column :string3, 'character varying(1)'
-        column :string4, 'varchar(2)'
-        column :string5, 'character(3)'
-        column :string6, 'char(4)'
+        column :string2, "text"
+        column :string3, "character varying(1)"
+        column :string4, "varchar(2)"
+        column :string5, "character(3)"
+        column :string6, "char(4)"
 
         column :string7, String, size: 50
         column :string8, String, fixed: true
@@ -66,7 +66,7 @@ Hanami::Model.migration do
         column :string10, String, text: true
 
         column :file1, File
-        column :file2, 'bytea'
+        column :file2, "bytea"
 
         column :number1, Fixnum # rubocop:disable Lint/UnifiedInteger
         column :number2, :Bignum
@@ -85,37 +85,37 @@ Hanami::Model.migration do
         column :boolean1, TrueClass
         column :boolean2, FalseClass
 
-        column :array1, 'integer[]'
-        column :array2, 'integer[3]'
-        column :array3, 'text[][]'
+        column :array1, "integer[]"
+        column :array2, "integer[3]"
+        column :array3, "text[][]"
 
-        column :money1, 'money'
+        column :money1, "money"
 
-        column :enum1, 'mood'
+        column :enum1, "mood"
 
-        column :geometric1, 'point'
-        column :geometric2, 'line'
-        column :geometric3, 'circle', default: '<(15,15), 1>'
+        column :geometric1, "point"
+        column :geometric2, "line"
+        column :geometric3, "circle", default: "<(15,15), 1>"
 
-        column :net1, 'cidr', default: '192.168/24'
+        column :net1, "cidr", default: "192.168/24"
 
-        column :uuid1, 'uuid', default: Hanami::Model::Sql.function(:uuid_generate_v4)
+        column :uuid1, "uuid", default: Hanami::Model::Sql.function(:uuid_generate_v4)
 
-        column :xml1, 'xml'
+        column :xml1, "xml"
 
-        column :json1, 'json'
-        column :json2, 'jsonb'
+        column :json1, "json"
+        column :json2, "jsonb"
 
-        column :composite1, 'inventory_item', default: Hanami::Model::Sql.literal("ROW('fuzzy dice', 42, 1.99)")
+        column :composite1, "inventory_item", default: Hanami::Model::Sql.literal("ROW('fuzzy dice', 42, 1.99)")
       end
     when :mysql
       create_table :column_types do
         column :integer1, Integer
         column :integer2, :integer
-        column :integer3, 'integer'
+        column :integer3, "integer"
 
         column :string1, String
-        column :string2, 'varchar(3)'
+        column :string2, "varchar(3)"
 
         column :string5, String, size: 50
         column :string6, String, fixed: true
@@ -123,7 +123,7 @@ Hanami::Model.migration do
         column :string8, String, text: true
 
         column :file1, File
-        column :file2, 'blob'
+        column :file2, "blob"
 
         column :number1, Fixnum # rubocop:disable Lint/UnifiedInteger
         column :number2, :Bignum

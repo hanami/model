@@ -6,8 +6,8 @@ RSpec.describe Hanami::Entity::Schema::Definition do
     end
   end
 
-  describe '#initialize' do
-    it 'returns frozen instance' do
+  describe "#initialize" do
+    it "returns frozen instance" do
       subject = described_class.new {}
 
       expect(subject).to be_frozen
@@ -18,26 +18,26 @@ RSpec.describe Hanami::Entity::Schema::Definition do
     end
   end
 
-  describe '#call' do
-    it 'returns empty hash when nil is given' do
+  describe "#call" do
+    it "returns empty hash when nil is given" do
       result = subject.call(nil)
 
       expect(result).to eq({})
     end
 
-    it 'processes attributes' do
+    it "processes attributes" do
       result = subject.call(id: 1)
 
       expect(result).to eq(id: 1)
     end
 
-    it 'ignores unknown attributes' do
-      result = subject.call(foo: 'bar')
+    it "ignores unknown attributes" do
+      result = subject.call(foo: "bar")
 
       expect(result).to eq({})
     end
 
-    it 'raises error if the process fails' do
+    it "raises error if the process fails" do
       message = Platform.match do
         engine(:jruby) { "no implicit conversion of Symbol into Integer" }
         default        { "can't convert Symbol into Integer" }
@@ -47,12 +47,12 @@ RSpec.describe Hanami::Entity::Schema::Definition do
     end
   end
 
-  describe '#attribute?' do
-    it 'returns true for known attributes' do
+  describe "#attribute?" do
+    it "returns true for known attributes" do
       expect(subject.attribute?(:id)).to eq(true)
     end
 
-    it 'returns false for unknown attributes' do
+    it "returns false for unknown attributes" do
       expect(subject.attribute?(:foo)).to eq(false)
     end
   end

@@ -15,15 +15,15 @@ module Platform
       private
 
       def travis?
-        ENV['TRAVIS'] == 'true'
+        ENV["TRAVIS"] == "true"
       end
 
       def circle?
-        ENV['CIRCLECI'] == 'true'
+        ENV["CIRCLECI"] == "true"
       end
 
       def drone?
-        ENV['DRONE'] == 'true'
+        ENV["DRONE"] == "true"
       end
     end
   end

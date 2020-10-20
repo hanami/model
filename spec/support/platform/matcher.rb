@@ -1,4 +1,4 @@
-require 'hanami/utils/basic_object'
+require "hanami/utils/basic_object"
 
 module Platform
   class Matcher

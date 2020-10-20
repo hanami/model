@@ -1,5 +1,5 @@
-require_relative 'abstract'
-require 'cgi'
+require_relative "abstract"
+require "cgi"
 
 module Hanami
   module Model
@@ -12,11 +12,11 @@ module Hanami
         class Postgresql < Abstract
           # @since 0.7.0
           # @api private
-          COMMAND = 'psql'.freeze
+          COMMAND = "psql".freeze
 
           # @since 0.7.0
           # @api private
-          PASSWORD = 'PGPASSWORD'.freeze
+          PASSWORD = "PGPASSWORD".freeze
 
           # @since 0.7.0
           # @api private
@@ -48,22 +48,22 @@ module Hanami
           # @since 0.7.0
           # @api private
           def port
-            port = query['port'] || @uri.port
+            port = query["port"] || @uri.port
             " -p #{port}" if port
           end
 
           # @since 0.7.0
           # @api private
           def username
-            username = query['user'] || @uri.user
+            username = query["user"] || @uri.user
             " -U #{username}" if username
           end
 
           # @since 0.7.0
           # @api private
           def configure_password
-            password = query['password'] || @uri.password
-            ENV[PASSWORD] = CGI.unescape(query['password'] || @uri.password) if password
+            password = query["password"] || @uri.password
+            ENV[PASSWORD] = CGI.unescape(query["password"] || @uri.password) if password
           end
 
           # @since 1.1.0

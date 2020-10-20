@@ -1,4 +1,4 @@
-require 'hanami/logger'
+require "hanami/logger"
 
 module Hanami
   module Model

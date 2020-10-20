@@ -1,4 +1,4 @@
-require 'rom/types'
+require "rom/types"
 
 module Hanami
   module Model

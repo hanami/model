@@ -18,7 +18,7 @@ module Hanami
           # @since 0.7.0
           # @api private
           def database_name
-            @uri.path.sub(/^\//, '')
+            @uri.path.sub(/^\//, "")
           end
 
           # @since 0.7.0

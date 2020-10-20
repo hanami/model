@@ -1,4 +1,4 @@
-require 'rbconfig'
+require "rbconfig"
 
 module Platform
   module Os
@@ -7,7 +7,7 @@ module Platform
     end
 
     def self.current
-      case RbConfig::CONFIG['host_os']
+      case RbConfig::CONFIG["host_os"]
       when /linux/  then :linux
       when /darwin/ then :macos
       end

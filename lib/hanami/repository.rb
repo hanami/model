@@ -1,12 +1,12 @@
-require 'rom-repository'
-require 'hanami/model/entity_name'
-require 'hanami/model/relation_name'
-require 'hanami/model/mapped_relation'
-require 'hanami/model/associations/dsl'
-require 'hanami/model/association'
-require 'hanami/utils/class'
-require 'hanami/utils/class_attribute'
-require 'hanami/utils/io'
+require "rom-repository"
+require "hanami/model/entity_name"
+require "hanami/model/relation_name"
+require "hanami/model/mapped_relation"
+require "hanami/model/associations/dsl"
+require "hanami/model/association"
+require "hanami/utils/class"
+require "hanami/utils/class_attribute"
+require "hanami/utils/io"
 
 module Hanami
   # Mediates between the entities and the persistence layer, by offering an API

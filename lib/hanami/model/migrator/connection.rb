@@ -1,4 +1,4 @@
-require 'cgi'
+require "cgi"
 
 module Hanami
   module Model
@@ -36,7 +36,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def host
-          @host ||= parsed_uri.host || parsed_opt('host')
+          @host ||= parsed_uri.host || parsed_opt("host")
         end
 
         # Returns DB connection port
@@ -46,7 +46,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def port
-          @port ||= parsed_uri.port || parsed_opt('port').to_i.nonzero?
+          @port ||= parsed_uri.port || parsed_opt("port").to_i.nonzero?
         end
 
         # Returns DB name from conenction
@@ -85,7 +85,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def user
-          @user ||= parsed_opt('user') || parsed_uri.user
+          @user ||= parsed_opt("user") || parsed_uri.user
         end
 
         # Returns user from DB connection
@@ -95,7 +95,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def password
-          @password ||= parsed_opt('password') || parsed_uri.password
+          @password ||= parsed_opt("password") || parsed_uri.password
         end
 
         # Returns DB connection URI directly from adapter
@@ -111,7 +111,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def global_uri
-          uri.sub(parsed_uri.select(:path).first, '')
+          uri.sub(parsed_uri.select(:path).first, "")
         end
 
         # Returns a boolean telling if a DB connection is from JDBC or not
@@ -119,7 +119,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def jdbc?
-          !uri.scan('jdbc:').empty?
+          !uri.scan("jdbc:").empty?
         end
 
         # Returns database connection URI instance without JDBC namespace
@@ -127,7 +127,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def parsed_uri
-          @parsed_uri ||= URI.parse(uri.sub('jdbc:', ''))
+          @parsed_uri ||= URI.parse(uri.sub("jdbc:", ""))
         end
 
         # @api private

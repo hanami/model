@@ -1,4 +1,4 @@
-require 'uri'
+require "uri"
 
 module Hanami
   module Model
@@ -26,14 +26,14 @@ module Hanami
         # @api private
         def console # rubocop:disable Metrics/MethodLength
           case @uri.scheme
-          when 'sqlite'
-            require 'hanami/model/sql/consoles/sqlite'
+          when "sqlite"
+            require "hanami/model/sql/consoles/sqlite"
             Sql::Consoles::Sqlite.new(@uri)
-          when 'postgres', 'postgresql'
-            require 'hanami/model/sql/consoles/postgresql'
+          when "postgres", "postgresql"
+            require "hanami/model/sql/consoles/postgresql"
             Sql::Consoles::Postgresql.new(@uri)
-          when 'mysql', 'mysql2'
-            require 'hanami/model/sql/consoles/mysql'
+          when "mysql", "mysql2"
+            require "hanami/model/sql/consoles/mysql"
             Sql::Consoles::Mysql.new(@uri)
           end
         end
