@@ -51,6 +51,7 @@ jobs:
         env:
           HANAMI_DATABASE_USERNAME: root
           HANAMI_DATABASE_PASSWORD: root
+          HANAMI_DATABASE_HOST: 127.0.0.1
           HANAMI_DATABASE_NAME: hanami_model
         run: script/ci
     services:
