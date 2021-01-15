@@ -48,21 +48,34 @@ jobs:
       - name: Bundle install
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
+        env:
+          HANAMI_DATABASE_USERNAME: root
+          HANAMI_DATABASE_PASSWORD: root
+          HANAMI_DATABASE_NAME: hanami_model
         run: script/ci
     services:
       mysql:
         image: mysql:5.7
         ports:
-        - 3306:3306
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
         env:
-          HANAMI_DATABASE_USERNAME: hanami
-          HANAMI_DATABASE_PASSWORD: hanami
-          HANAMI_DATABASE_NAME: hanami_model
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: hanami_model
       postgres:
         image: postgres:13
         ports:
-        - 5432:5432
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         env:
-          HANAMI_DATABASE_USERNAME: hanami
-          HANAMI_DATABASE_PASSWORD: hanami
-          HANAMI_DATABASE_NAME: hanami_model
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: hanami_model
