@@ -55,6 +55,8 @@ jobs:
         env:
           ALLOW_EMPTY_PASSWORD: true
           MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: hanami_model
         ports:
           - 3306:3306
         options: >-
@@ -62,9 +64,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: hanami_model
       postgres:
         image: postgres:13
         ports:
