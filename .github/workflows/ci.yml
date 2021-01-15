@@ -32,6 +32,8 @@ jobs:
           - sqlite3
           - mysql
           - postgresql
+    env:
+      DB: ${{matrix.db}}
     steps:
       - uses: actions/checkout@v1
       - name: Install package dependencies
@@ -47,8 +49,6 @@ jobs:
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
         run: script/ci
-      env:
-        DB: ${{matrix.db}}
     services:
       mysql:
         image: mysql:5.7
