@@ -53,7 +53,7 @@ jobs:
       mysql:
         image: mysql:5.7
         ports:
-        - 3307:3306
+        - 3306:3306
         env:
           HANAMI_DATABASE_USERNAME: hanami
           HANAMI_DATABASE_PASSWORD: hanami
@@ -61,7 +61,7 @@ jobs:
       postgres:
         image: postgres:13
         ports:
-        - 5433:5432
+        - 5432:5432
         env:
           HANAMI_DATABASE_USERNAME: hanami
           HANAMI_DATABASE_PASSWORD: hanami
