@@ -245,7 +245,7 @@ RSpec.describe "Repository (base)" do
         engine(:ruby).db(:sqlite)  { "SQLite3::ConstraintException" }
         engine(:jruby).db(:sqlite) { "Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_NOTNULL]  A NOT NULL constraint failed (NOT NULL constraint failed: users.active)" }
 
-        engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint' }
+        engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" of relation "users" violates not-null constraint' }
         engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: null value in column "active" violates not-null constraint' }
 
         engine(:ruby).db(:mysql)  { "Mysql2::Error: Column 'active' cannot be null" }
@@ -419,7 +419,7 @@ RSpec.describe "Repository (base)" do
           engine(:ruby).db(:sqlite)  { "SQLite3::ConstraintException" }
           engine(:jruby).db(:sqlite) { "Java::OrgSqlite::SQLiteException: [SQLITE_CONSTRAINT_NOTNULL]  A NOT NULL constraint failed (NOT NULL constraint failed: users.active)" }
 
-          engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" violates not-null constraint' }
+          engine(:ruby).db(:postgresql)  { 'PG::NotNullViolation: ERROR:  null value in column "active" of relation "users" violates not-null constraint' }
           engine(:jruby).db(:postgresql) { 'Java::OrgPostgresqlUtil::PSQLException: ERROR: null value in column "active" violates not-null constraint' }
 
           engine(:ruby).db(:mysql)  { "Mysql2::Error: Column 'active' cannot be null" }
