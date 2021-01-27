@@ -51,7 +51,7 @@ module Database
 
         def export_env
           super
-          ENV["HANAMI_DATABASE_HOST"] = "postgres"
+          ENV["HANAMI_DATABASE_HOST"] = "localhost"
         end
       end
 
