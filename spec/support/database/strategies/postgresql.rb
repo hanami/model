@@ -45,13 +45,21 @@ module Database
       end
 
       module GithubActionsImplementation
-        include CircleCiImplementation
-
         protected
 
         def export_env
           super
           ENV["HANAMI_DATABASE_HOST"] = "localhost"
+        end
+
+        def create_database
+          try("Failed to drop Postgres database: #{database_name}") do
+            system "dropdb --host=#{ENV['HANAMI_DATABASE_HOST']} --username=#{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} --if-exists #{database_name}"
+          end
+
+          try("Failed to create Postgres database: #{database_name}") do
+            system "createdb --host=#{ENV['HANAMI_DATABASE_HOST']} --username=#{ENV['HANAMI_DATABASE_USERNAME']} --password=#{ENV['HANAMI_DATABASE_PASSWORD']} #{database_name}"
+          end
         end
       end
 
