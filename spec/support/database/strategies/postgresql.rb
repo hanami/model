@@ -44,6 +44,17 @@ module Database
         end
       end
 
+      module GithubActionsImplementation
+        include CircleCiImplementation
+
+        protected
+
+        def export_env
+          super
+          ENV["HANAMI_DATABASE_HOST"] = "postgres"
+        end
+      end
+
       def self.eligible?(adapter)
         adapter.start_with?("postgres")
       end
@@ -52,6 +63,7 @@ module Database
         ci_implementation = Platform.match do
           ci(:travis) { TravisCiImplementation }
           ci(:circle) { CircleCiImplementation }
+          ci(:github) { GithubActionsImplementation }
           default { Module.new }
         end
 

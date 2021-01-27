@@ -10,6 +10,7 @@ module Platform
       if    travis? then :travis
       elsif circle? then :circle
       elsif drone?  then :drone
+      elsif github? then :github
       end
     end
 
@@ -26,6 +27,10 @@ module Platform
 
       def drone?
         ENV["DRONE"] == "true"
+      end
+
+      def github?
+        ENV["GITHUB_ACTIONS"] == "true"
       end
     end
   end
