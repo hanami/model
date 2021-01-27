@@ -65,7 +65,7 @@ jobs:
           --health-timeout=5s
           --health-retries=3
       postgres:
-        image: postgres:11
+        image: postgres:13
         ports:
           - 5432:5432
         options: >-
