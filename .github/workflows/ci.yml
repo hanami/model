@@ -10,6 +10,7 @@ name: ci
       - "Rakefile"
       - "Gemfile"
       - ".rubocop.yml"
+      - "script/ci"
   pull_request:
     branches:
       - master
