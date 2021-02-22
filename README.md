@@ -15,7 +15,7 @@ Like all the other Hanami components, it can be used as a standalone framework o
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](https://badge.fury.io/rb/hanami-model)
-[![CircleCI](https://circleci.com/gh/hanami/model/tree/master.svg?style=svg)](https://circleci.com/gh/hanami/model/tree/master)
+[![CI](https://github.com/hanami/model/workflows/ci/badge.svg?branch=master)](https://github.com/hanami/model/actions?query=workflow%3Aci+branch%3Amaster)
 [![Test Coverage](https://codecov.io/gh/hanami/model/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/model)
 [![Depfu](https://badges.depfu.com/badges/3a5d3f9e72895493bb6f39402ac4f129/overview.svg)](https://depfu.com/github/hanami/model?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/model.svg)](http://inch-ci.org/github/hanami/model)
@@ -294,6 +294,6 @@ __Hanami::Model__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
-Copyright © 2014-2020 Luca Guidi – Released under MIT License
+Copyright © 2014-2021 Luca Guidi – Released under MIT License
 
 This project was formerly known as Lotus (`lotus-model`).

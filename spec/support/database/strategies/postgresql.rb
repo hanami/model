@@ -44,6 +44,26 @@ module Database
         end
       end
 
+      module GithubActionsImplementation
+        protected
+
+        def export_env
+          super
+          ENV["HANAMI_DATABASE_HOST"] = "localhost"
+          ENV["HANAMI_DATABASE_URL"] = "postgres://#{credentials}@#{host}/#{database_name}"
+        end
+
+        def create_database
+          try("Failed to drop Postgres database: #{database_name}") do
+            system "PGPASSWORD=#{ENV['HANAMI_DATABASE_PASSWORD']} dropdb --host=#{ENV['HANAMI_DATABASE_HOST']} --username=#{ENV['HANAMI_DATABASE_USERNAME']} --if-exists #{database_name}"
+          end
+
+          try("Failed to create Postgres database: #{database_name}") do
+            system "PGPASSWORD=#{ENV['HANAMI_DATABASE_PASSWORD']} createdb --host=#{ENV['HANAMI_DATABASE_HOST']} --username=#{ENV['HANAMI_DATABASE_USERNAME']} #{database_name}"
+          end
+        end
+      end
+
       def self.eligible?(adapter)
         adapter.start_with?("postgres")
       end
@@ -52,6 +72,7 @@ module Database
         ci_implementation = Platform.match do
           ci(:travis) { TravisCiImplementation }
           ci(:circle) { CircleCiImplementation }
+          ci(:github) { GithubActionsImplementation }
           default { Module.new }
         end
 

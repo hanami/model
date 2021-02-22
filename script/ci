@@ -18,7 +18,7 @@ run_code_quality_checks() {
 }
 
 run_unit_tests() {
-  bundle exec rake spec:unit
+  bundle exec rake spec:unit --trace
 }
 
 upload_code_coverage() {
