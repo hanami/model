@@ -5,6 +5,12 @@ require "hanami/model/sql/consoles/postgresql"
 RSpec.shared_examples "sql_console_postgresql" do
   let(:sql_console) { Hanami::Model::Sql::Consoles::Postgresql.new(uri) }
 
+  around(:each) do |example|
+    original_pgpassword = ENV["PGPASSWORD"]
+    example.run
+    ENV["PGPASSWORD"] = original_pgpassword
+  end
+
   describe "#connection_string" do
     let(:uri) { URI.parse("postgres://username:password@localhost:1234/foo_development") }
 

@@ -1,0 +1,77 @@
+name: ci
+
+"on":
+  push:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "lib/**"
+      - "*.gemspec"
+      - "spec/**"
+      - "Rakefile"
+      - "Gemfile"
+      - ".rubocop.yml"
+      - "script/ci"
+  pull_request:
+    branches:
+      - master
+  create:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.7"
+        db:
+          - sqlite3
+          - mysql
+          - postgresql
+    env:
+      DB: ${{matrix.db}}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install package dependencies
+        run: "[ -e $APT_DEPS ] || sudo apt-get install -y --no-install-recommends $APT_DEPS"
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ${{matrix.ruby}}
+      - name: Run all tests
+        env:
+          PGPASSWORD: root
+          HANAMI_DATABASE_USERNAME: root
+          HANAMI_DATABASE_PASSWORD: root
+          HANAMI_DATABASE_HOST: 127.0.0.1
+          HANAMI_DATABASE_NAME: hanami_model
+        run: script/ci
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          ALLOW_EMPTY_PASSWORD: true
+          MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: hanami_model
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: hanami_model
