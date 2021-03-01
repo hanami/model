@@ -40,7 +40,7 @@ module Hanami
           super(nil, stream: stream, formatter: Formatter.new)
         end
 
-        # @since <version>
+        # @since x.x.x
         # @api public
         def error(progname = nil, &block)
           return true if _ignorable(progname)
@@ -50,7 +50,7 @@ module Hanami
 
         private
 
-        # @since <version>
+        # @since x.x.x
         # @api private
         def _ignorable(progname)
           IGNORABLE_PATTERNS.any? { |r| progname =~ r }
