@@ -98,24 +98,15 @@ module Hanami
         def call_db_command(command)
           require "open3"
 
+          set_environment_variables
+
           begin
-            Open3.popen3(*command_with_credentials(command)) do |_stdin, _stdout, stderr, wait_thr|
+            Open3.popen3(command, database) do |_stdin, _stdout, stderr, wait_thr|
               raise MigrationError.new(modified_message(stderr.read)) unless wait_thr.value.success? # wait_thr.value is the exit status
             end
           rescue SystemCallError => exception
             raise MigrationError.new(modified_message(exception.message))
           end
-        end
-
-        def command_with_credentials(command)
-          result = [escape(command)]
-          result << "--host=#{host}" unless Utils::Blank.blank?(host)
-          result << "--port=#{port}" unless Utils::Blank.blank?(port)
-          result << "--username=#{username}" unless Utils::Blank.blank?(username)
-          result << "--password=#{password}" unless Utils::Blank.blank?(password)
-          result << database
-
-          result.compact
         end
 
         # @since 1.1.0
