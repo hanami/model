@@ -35,23 +35,18 @@ module Hanami
         # @since 0.4.0
         # @api private
         def create
-          set_environment_variables
-
           call_db_command("createdb")
         end
 
         # @since 0.4.0
         # @api private
         def drop
-          set_environment_variables
-
           call_db_command("dropdb")
         end
 
         # @since 0.4.0
         # @api private
         def dump
-          set_environment_variables
           dump_structure
           dump_migrations_data
         end
@@ -59,38 +54,41 @@ module Hanami
         # @since 0.4.0
         # @api private
         def load
-          set_environment_variables
           load_structure
         end
 
         private
 
-        # @since 0.4.0
+        # @since x.x.x
         # @api private
-        def set_environment_variables
-          ENV[HOST]     = host      unless host.nil?
-          ENV[PORT]     = port.to_s unless port.nil?
-          ENV[PASSWORD] = password  unless password.nil?
-          ENV[USER]     = username  unless username.nil?
+        def environment_variables
+          {}.tap do |env|
+            env[HOST] = host unless host.nil?
+            env[PORT] = port.to_s unless port.nil?
+            env[PASSWORD] = password unless password.nil?
+            env[USER] = username unless username.nil?
+          end
         end
 
         # @since 0.4.0
         # @api private
         def dump_structure
-          execute "pg_dump -s -x -O -T #{migrations_table} -f #{escape(schema)} #{database}"
+          execute "pg_dump -s -x -O -T #{migrations_table} -f #{escape(schema)} #{database}", env: environment_variables
         end
 
         # @since 0.4.0
         # @api private
         def load_structure
-          execute "psql -X -q -f #{escape(schema)} #{database}" if schema.exist?
+          return unless schema.exist?
+
+          execute "psql -X -q -f #{escape(schema)} #{database}", env: environment_variables
         end
 
         # @since 0.4.0
         # @api private
         def dump_migrations_data
           error = ->(err) { raise MigrationError.new(err) unless err =~ /no matching tables/i }
-          execute "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}", error: error
+          execute "pg_dump -t #{migrations_table} #{database} >> #{escape(schema)}", error: error, env: environment_variables
         end
 
         # @since 0.5.1
@@ -98,10 +96,8 @@ module Hanami
         def call_db_command(command)
           require "open3"
 
-          set_environment_variables
-
           begin
-            Open3.popen3(command, database) do |_stdin, _stdout, stderr, wait_thr|
+            Open3.popen3(environment_variables, command, database) do |_stdin, _stdout, stderr, wait_thr|
               raise MigrationError.new(modified_message(stderr.read)) unless wait_thr.value.success? # wait_thr.value is the exit status
             end
           rescue SystemCallError => exception
