@@ -88,12 +88,18 @@ module Database
       end
 
       def create_database
+        env = {
+          "PGHOST" => ENV["HANAMI_DATABASE_HOST"],
+          "PGUSER" => ENV["HANAMI_DATABASE_USERNAME"],
+          "PGPASSWORD" => ENV["HANAMI_DATABASE_PASSWORD"]
+        }
+
         try("Failed to drop Postgres database: #{database_name}") do
-          system "dropdb --if-exists #{database_name}"
+          system env, "dropdb --if-exists #{database_name}"
         end
 
         try("Failed to create Postgres database: #{database_name}") do
-          system "createdb #{database_name}"
+          system env, "createdb #{database_name}"
         end
       end
 
