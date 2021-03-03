@@ -30,10 +30,15 @@ RSpec.shared_examples "migrator_postgresql" do
     let(:database) { random }
     let(:url) do
       db = database
+      uri = format("%<host>s/%<db>s?user=%<user>s&password=%<password>s",
+                   host: ENV.fetch("HANAMI_DATABASE_HOST", "127.0.0.1"),
+                   db: db,
+                   user: ENV["HANAMI_DATABASE_USERNAME"],
+                   password: ENV["HANAMI_DATABASE_PASSWORD"])
 
       Platform.match do
-        engine(:ruby)  { "postgresql://#{ENV.fetch('HANAMI_DATABASE_HOST', '127.0.0.1')}/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
-        engine(:jruby) { "jdbc:postgresql://#{ENV.fetch('HANAMI_DATABASE_HOST', '127.0.0.1')}/#{db}?user=#{ENV['HANAMI_DATABASE_USERNAME']}" }
+        engine(:ruby) { "postgresql://#{uri}" }
+        engine(:jruby) { "jdbc:postgresql://#{uri}" }
       end
     end
 
