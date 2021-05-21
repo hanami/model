@@ -59,7 +59,7 @@ module Hanami
 
         private
 
-        # @since x.x.x
+        # @since 1.3.3
         # @api private
         def environment_variables
           {}.tap do |env|
