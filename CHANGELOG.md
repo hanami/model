@@ -1,6 +1,11 @@
 # Hanami::Model
 A persistence layer for Hanami
 
+## v1.3.3 - 2021-05-21
+### Fixed
+- [Sean Collins] Specify dependency on BigDecimal v1.4
+- [Adam Daniels] Use environment variables for PostgreSQL CLI tools
+
 ## v1.3.2 - 2019-01-31
 ### Fixed
 - [Luca Guidi] Depend on `dry-logic` `~> 0.4.2`, `< 0.5`

@@ -41,7 +41,6 @@ jobs:
           ruby-version: ${{matrix.ruby}}
       - name: Run all tests
         env:
-          PGPASSWORD: root
           HANAMI_DATABASE_USERNAME: root
           HANAMI_DATABASE_PASSWORD: root
           HANAMI_DATABASE_HOST: 127.0.0.1

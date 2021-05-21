@@ -12,7 +12,7 @@ module Hanami
         # @api private
         PASSWORD = "MYSQL_PWD"
 
-        # @since x.x.x
+        # @since 1.3.3
         # @api private
         DEFAULT_PORT = 3306
 
