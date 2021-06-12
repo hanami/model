@@ -53,7 +53,7 @@ module Hanami
         # @since x.x.x
         # @api private
         def _ignorable(progname)
-          IGNORABLE_PATTERNS.any? { |r| progname =~ r }
+          IGNORABLE_PATTERNS.any? { |r| progname.match?(r) }
         end
       end
     end
