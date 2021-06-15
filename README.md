@@ -12,11 +12,15 @@ It implements the following concepts:
 
 Like all the other Hanami components, it can be used as a standalone framework or within a full Hanami application.
 
+## Version
+
+**This branch contains the code for `hanami-model` 2.x.**
+
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](https://badge.fury.io/rb/hanami-model)
-[![CI](https://github.com/hanami/model/workflows/ci/badge.svg?branch=master)](https://github.com/hanami/model/actions?query=workflow%3Aci+branch%3Amaster)
-[![Test Coverage](https://codecov.io/gh/hanami/model/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/model)
+[![CI](https://github.com/hanami/model/workflows/ci/badge.svg?branch=main)](https://github.com/hanami/model/actions?query=workflow%3Aci+branch%3Amain)
+[![Test Coverage](https://codecov.io/gh/hanami/model/branch/main/graph/badge.svg)](https://codecov.io/gh/hanami/model)
 [![Depfu](https://badges.depfu.com/badges/3a5d3f9e72895493bb6f39402ac4f129/overview.svg)](https://depfu.com/github/hanami/model?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/model.svg)](http://inch-ci.org/github/hanami/model)
 
@@ -31,7 +35,7 @@ Like all the other Hanami components, it can be used as a standalone framework o
 
 ## Rubies
 
-__Hanami::Model__ supports Ruby (MRI) 2.3+ and JRuby 9.1.5.0+
+__Hanami::Model__ supports Ruby (MRI) 2.6+
 
 ## Installation
 
