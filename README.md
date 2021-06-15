@@ -12,11 +12,15 @@ It implements the following concepts:
 
 Like all the other Hanami components, it can be used as a standalone framework or within a full Hanami application.
 
+## Version
+
+**This branch contains the code for `hanami-model` 1.3.x.**
+
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](https://badge.fury.io/rb/hanami-model)
-[![CI](https://github.com/hanami/model/workflows/ci/badge.svg?branch=master)](https://github.com/hanami/model/actions?query=workflow%3Aci+branch%3Amaster)
-[![Test Coverage](https://codecov.io/gh/hanami/model/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/model)
+[![CI](https://github.com/hanami/model/workflows/ci/badge.svg?branch=1.3.x)](https://github.com/hanami/model/actions?query=workflow%3Aci+branch%3A1.3.x)
+[![Test Coverage](https://codecov.io/gh/hanami/model/branch/1.3.x/graph/badge.svg)](https://codecov.io/gh/hanami/model)
 [![Depfu](https://badges.depfu.com/badges/3a5d3f9e72895493bb6f39402ac4f129/overview.svg)](https://depfu.com/github/hanami/model?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/model.svg)](http://inch-ci.org/github/hanami/model)
 

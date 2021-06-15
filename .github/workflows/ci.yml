@@ -13,7 +13,7 @@ name: ci
       - "script/ci"
   pull_request:
     branches:
-      - master
+      - main
   create:
 
 jobs:
