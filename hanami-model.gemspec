@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rom-repository",  "~> 1.4"
   spec.add_runtime_dependency "dry-types",       "~> 0.11.0"
   spec.add_runtime_dependency "dry-logic",       "~> 0.4.2", "< 0.5"
-  spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
+  spec.add_runtime_dependency "concurrent-ruby", "1.1.10"
   spec.add_runtime_dependency "bigdecimal",      "~> 1.4"
 
   spec.add_development_dependency "bundler", ">= 1.6", "< 3"
