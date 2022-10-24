@@ -28,7 +28,7 @@ module Database
       end
 
       def load_dependencies
-        raise NotImplementedError
+        raise NoMethodError
       end
 
       def export_env
@@ -36,7 +36,7 @@ module Database
       end
 
       def create_database
-        raise NotImplementedError
+        raise NoMethodError
       end
 
       def configure
