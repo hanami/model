@@ -16,3 +16,5 @@ Style/RescueStandardError:
   Enabled: false
 Style/DateTime:
   Enabled: false
+AllCops:
+  TargetRubyVersion: 2.6

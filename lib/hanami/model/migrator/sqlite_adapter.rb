@@ -108,16 +108,14 @@ module Hanami
         #
         def dump_migrations_data
           execute "sqlite3 #{escape(path)} .dump" do |stdout|
-            begin
-              contents = stdout.read.split($INPUT_RECORD_SEPARATOR)
-              contents = contents.grep(/^INSERT INTO "?#{migrations_table}"?/)
+            contents = stdout.read.split($INPUT_RECORD_SEPARATOR)
+            contents = contents.grep(/^INSERT INTO "?#{migrations_table}"?/)
 
-              ::File.open(schema, ::File::CREAT | ::File::BINARY | ::File::WRONLY | ::File::APPEND) do |file|
-                file.write(contents.join($INPUT_RECORD_SEPARATOR))
-              end
-            rescue => exception
-              raise MigrationError.new(exception.message)
+            ::File.open(schema, ::File::CREAT | ::File::BINARY | ::File::WRONLY | ::File::APPEND) do |file|
+              file.write(contents.join($INPUT_RECORD_SEPARATOR))
             end
+          rescue => exception
+            raise MigrationError.new(exception.message)
           end
         end
       end
