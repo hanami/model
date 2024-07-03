@@ -1,41 +1,19 @@
-# Hanami::Model
+**NOTE**: Hanami::Model was the persistence layer for Hanami 1.x. For the persistence layer for Hanami 2.x, please see (`hanami/db`)[https://github.com/hanami/db]
 
-A persistence framework for [Hanami](http://hanamirb.org).
+This repository will not receive any updates.
 
-It delivers a convenient public API to execute queries and commands against a database.
-The architecture eases keeping the business logic (entities) separated from details such as persistence or validations.
-
-It implements the following concepts:
-
-  * [Entity](#entities) - A model domain object defined by its identity.
-  * [Repository](#repositories) - An object that mediates between the entities and the persistence layer.
-
-Like all the other Hanami components, it can be used as a standalone framework or within a full Hanami application.
-
-## Version
-
-**This branch contains the code for `hanami-model` 2.x.**
-
-## Status
-
-[![Gem Version](https://badge.fury.io/rb/hanami-model.svg)](https://badge.fury.io/rb/hanami-model)
-[![CI](https://github.com/hanami/model/workflows/ci/badge.svg?branch=main)](https://github.com/hanami/model/actions?query=workflow%3Aci+branch%3Amain)
-[![Test Coverage](https://codecov.io/gh/hanami/model/branch/main/graph/badge.svg)](https://codecov.io/gh/hanami/model)
-[![Depfu](https://badges.depfu.com/badges/3a5d3f9e72895493bb6f39402ac4f129/overview.svg)](https://depfu.com/github/hanami/model?project=Bundler)
-[![Inline Docs](http://inch-ci.org/github/hanami/model.svg)](http://inch-ci.org/github/hanami/model)
+# Hanami::Model (deprecated)
 
 ## Contact
 
 * Home page: http://hanamirb.org
 * Mailing List: http://hanamirb.org/mailing-list
-* API Doc: http://rdoc.info/gems/hanami-model
-* Bugs/Issues: https://github.com/hanami/model/issues
-* Support: http://stackoverflow.com/questions/tagged/hanami
+* API Doc: http://rubydoc.info/gems/hanami-model
 * Chat: https://chat.hanamirb.org
 
 ## Rubies
 
-__Hanami::Model__ supports Ruby (MRI) 2.6+
+`Hanami::Model` **supports Hanami 1.x only**, and Ruby (MRI) 2.6 and 2.7.
 
 ## Installation
 
