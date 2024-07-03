@@ -1,10 +1,9 @@
 # Hanami::Model (deprecated)
 
 ## _Important notice_
-**NOTE**: Hanami::Model was the persistence layer for Hanami 1.x. For the persistence layer for Hanami 2.x, please see (`hanami/db`)[https://github.com/hanami/db]
+**NOTE**: Hanami::Model was the persistence layer for Hanami 1.x. This library will not receive any updates.
 
-This repository will not receive any updates.
-
+For the persistence layer for Hanami 2.x, please see [`hanami/db`](https://github.com/hanami/db)
 
 ## Contact
 
