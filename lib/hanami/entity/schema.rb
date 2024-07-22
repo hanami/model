@@ -169,7 +169,7 @@ module Hanami
           raise LocalJumpError unless block_given?
 
           @attributes, @schema = Dsl.build(type, &blk)
-          @attributes = Hash[@attributes.map { |k, _| [k, true] }]
+          @attributes = @attributes.transform_values { |_| true }
           freeze
         end
 
